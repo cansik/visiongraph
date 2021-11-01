@@ -1,4 +1,19 @@
 import argparse
+from typing import Dict
+
+from visiongraph.PipelineStep import PipelineStep
+
+
+def step_choice(steps):
+    def step_choice_checker(arg):
+        try:
+            step = steps[arg]
+        except ValueError:
+            raise argparse.ArgumentTypeError(f"step {arg} is not defined")
+
+        return step()
+
+    return step_choice_checker
 
 
 def float_range(mini, maxi):
@@ -21,3 +36,14 @@ def float_range(mini, maxi):
 
     # Return function handle to checking function
     return float_range_checker
+
+
+def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineStep],
+                             name: str, help: str = "", default: int = 0, add_params: bool = True):
+    items = list(steps.keys())
+    parser.add_argument(name, default=steps[items[default]], choices=items, type=step_choice(steps),
+                        help=f"{help}, default: {items[default]}")
+
+    if add_params:
+        for item in items:
+            steps[item].add_params(parser)

@@ -3,7 +3,6 @@
 # base packages
 opencv-python
 numpy<1.20
-ConfigArgParse
 requests
 tqdm
 
