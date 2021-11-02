@@ -1,24 +1,23 @@
 import logging
-from typing import Optional, Callable
+from argparse import ArgumentParser, Namespace
+from typing import Optional
 
 import numpy as np
 import pyrealsense2 as rs
 
-from visiongraph.util.TimeUtils import current_millis
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.util.TimeUtils import current_millis
 
 
 class RealSenseInput(BaseInput):
-    def __init__(self, width: int = 640, height: int = 480):
-        self.width = width
-        self.height = height
-        self.fps = 30
+    def __init__(self):
+        super().__init__()
         self.use_infrared = False
         self.enable_depth = False
 
         self.exposure: Optional[float] = None
 
-        self.pipeline: rs.pipeline = None
+        self.pipeline: Optional[rs.pipeline] = None
         self.frames: Optional[rs.composite_frame] = None
         self.align: Optional[rs.align] = None
 
@@ -72,10 +71,17 @@ class RealSenseInput(BaseInput):
 
         return time_stamp, np.asanyarray(image.get_data())
 
-    def configure(self, args):
+    def configure(self, args: Namespace):
         self.use_infrared = args.infrared
-        self.width, self.height = args.input_size
-        self.fps = args.input_fps
-
-        self.enable_depth = args.depth and args.depth_estimator == "realsense"
         self.exposure = args.exposure
+
+        # todo: implement depth as input again
+        # self.enable_depth = args.depth and args.depth_estimator == "realsense"
+
+    @staticmethod
+    def add_params(parser: ArgumentParser):
+        super(RealSenseInput, RealSenseInput).add_params(parser)
+        parser.add_argument("-ir", "--infrared", action="store_true",
+                            help="Use infrared as input stream (RealSense).")
+        parser.add_argument("--exposure", default=None, type=float,
+                            help="Exposure value (usec) for realsense input (disables auto-exposure).")

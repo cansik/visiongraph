@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 
 
 class PipelineStep(ABC):
@@ -12,7 +12,7 @@ class PipelineStep(ABC):
         pass
 
     @abstractmethod
-    def configure(self, args):
+    def configure(self, args: Namespace):
         pass
 
     @staticmethod
