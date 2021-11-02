@@ -24,7 +24,7 @@ class BaseInput(PipelineStep, ABC):
         pass
 
     def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
-        if not image:
+        if image is None:
             return ts, image
 
         if self.rotate:

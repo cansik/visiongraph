@@ -1,3 +1,4 @@
+import time
 from argparse import ArgumentParser, Namespace
 from typing import Optional
 
@@ -15,7 +16,12 @@ class VideoCaptureInput(BaseInput):
         super().__init__()
         self.channel = 0
         self.loop = True
+        self.fps_lock = True
         self._cap: Optional[cv2.VideoCapture] = None
+
+        self._last_read_time = 0
+        self._no_frame_count = 0
+        self._no_frame_max = 3
 
     def setup(self):
         self._cap = cv2.VideoCapture(self.channel)
@@ -27,26 +33,41 @@ class VideoCaptureInput(BaseInput):
         if not (self._cap.set(cv2.CAP_PROP_FPS, self.fps)):
             logging.warning(f"{self.__class__.__name__} could not set media framerate")
 
+        self.fps = self._cap.get(cv2.CAP_PROP_FPS)
+
     def release(self):
         self._cap.release()
 
     def read(self) -> (int, Optional[np.ndarray]):
         if not self._cap.isOpened():
             logging.critical(f"{self.__class__.__name__} is not opened")
-            return None
+            return 0, None
+
+        # wait with read to match fps
+        if self.fps_lock:
+            fps_wait_time = (1000.0 / self.fps) - (current_millis() - self._last_read_time)
+            if fps_wait_time < 1000.0 and fps_wait_time > 1:
+                time.sleep(fps_wait_time / 1000.0)
 
         success, image = self._cap.read()
         time_stamp = current_millis()
+
+        self._last_read_time = time_stamp
 
         if not success:
             if self.loop:
                 self._cap.set(cv2.CAP_PROP_POS_FRAMES, 0)
 
-            # fix this behaviour to nto show (could not read frame)
+            # retry getting frame
+            if self._no_frame_count < self._no_frame_max:
+                self._no_frame_count += 1
+                self._last_read_time = 0
+                return self._post_process(*self.read())
 
             logging.warning(f"{self.__class__.__name__} could not read frame")
             return self._post_process(time_stamp, None)
 
+        self._no_frame_count = 0
         return self._post_process(time_stamp, image)
 
     def configure(self, args: Namespace):
