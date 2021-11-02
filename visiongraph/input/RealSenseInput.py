@@ -72,6 +72,8 @@ class RealSenseInput(BaseInput):
         return self._post_process(time_stamp, np.asanyarray(image.get_data()))
 
     def configure(self, args: Namespace):
+        super().configure(args)
+
         self.use_infrared = args.infrared
         self.exposure = args.exposure
 

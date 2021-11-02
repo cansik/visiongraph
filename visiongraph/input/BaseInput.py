@@ -27,10 +27,10 @@ class BaseInput(PipelineStep, ABC):
         if image is None:
             return ts, image
 
-        if self.rotate:
+        if self.rotate is not None:
             image = cv2.rotate(image, self.rotate)
 
-        if self.flip:
+        if self.flip is not None:
             image = cv2.flip(image, self.flip)
 
         return ts, image
@@ -39,6 +39,8 @@ class BaseInput(PipelineStep, ABC):
     def configure(self, args: Namespace):
         self.width, self.height = args.input_size
         self.fps = args.input_fps
+        self.rotate = args.input_rotate
+        self.flip = args.input_flip
 
     @staticmethod
     @abstractmethod

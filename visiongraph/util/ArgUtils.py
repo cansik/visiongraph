@@ -8,8 +8,9 @@ def dict_choice(table):
     def dict_choice_checker(key):
         try:
             item = table[key]
-        except ValueError:
-            raise argparse.ArgumentTypeError(f"key {key} is not defined")
+        except KeyError:
+            choices = ", ".join(list(table.keys()))
+            raise argparse.ArgumentTypeError(f"Option {key} is not defined in ({choices})")
 
         return item
 
