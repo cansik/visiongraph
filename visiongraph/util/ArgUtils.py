@@ -1,11 +1,11 @@
 import argparse
-from typing import Dict
+from typing import Dict, Any, Optional
 
 from visiongraph.PipelineStep import PipelineStep
 
 
-def step_choice(steps):
-    def step_choice_checker(arg):
+def dict_choice(steps):
+    def dict_choice_checker(arg):
         try:
             step = steps[arg]
         except ValueError:
@@ -13,7 +13,7 @@ def step_choice(steps):
 
         return step()
 
-    return step_choice_checker
+    return dict_choice_checker
 
 
 def float_range(mini, maxi):
@@ -38,12 +38,22 @@ def float_range(mini, maxi):
     return float_range_checker
 
 
+def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, Any],
+                             name: str, help: str = "", default: Optional[int] = 0):
+    items = list(source.keys())
+
+    default_item = None
+    if default is not None:
+        default_item = source[items[default]]
+
+    parser.add_argument(name, default=default_item, choices=items, type=dict_choice(source),
+                        help=f"{help}, default: {default_item}")
+
+
 def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineStep],
-                             name: str, help: str = "", default: int = 0, add_params: bool = True):
-    items = list(steps.keys())
-    parser.add_argument(name, default=steps[items[default]], choices=items, type=step_choice(steps),
-                        help=f"{help}, default: {items[default]}")
+                             name: str, help: str = "", default: Optional[int] = 0, add_params: bool = True):
+    add_dict_choice_argument(parser, steps, name, help, default)
 
     if add_params:
-        for item in items:
+        for item in steps.keys():
             steps[item].add_params(parser)

@@ -45,9 +45,9 @@ class VideoCaptureInput(BaseInput):
             # fix this behaviour to nto show (could not read frame)
 
             logging.warning(f"{self.__class__.__name__} could not read frame")
-            return time_stamp, None
+            return self._post_process(time_stamp, None)
 
-        return time_stamp, image
+        return self._post_process(time_stamp, image)
 
     def configure(self, args: Namespace):
         super().configure(args)

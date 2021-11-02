@@ -67,9 +67,9 @@ class RealSenseInput(BaseInput):
 
         if not image:
             logging.warning(f"{self.__class__.__name__} could not read frame.")
-            return time_stamp, None
+            return self._post_process(time_stamp, None)
 
-        return time_stamp, np.asanyarray(image.get_data())
+        return self._post_process(time_stamp, np.asanyarray(image.get_data()))
 
     def configure(self, args: Namespace):
         self.use_infrared = args.infrared
