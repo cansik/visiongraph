@@ -66,7 +66,7 @@ class RealSenseInput(BaseInput):
             image = self.frames.get_color_frame()
 
         if not image:
-            logging.critical("RealSense could not read frame")
+            logging.warning(f"{self.__class__.__name__} could not read frame.")
             return time_stamp, None
 
         return time_stamp, np.asanyarray(image.get_data())

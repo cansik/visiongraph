@@ -22,10 +22,10 @@ class VideoCaptureInput(BaseInput):
 
         if not (self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width) and
                 self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)):
-            print("Could not set media input size!")
+            logging.warning(f"{self.__class__.__name__} could not set media input size")
 
         if not (self._cap.set(cv2.CAP_PROP_FPS, self.fps)):
-            print("Could not set media framerate!")
+            logging.warning(f"{self.__class__.__name__} could not set media framerate")
 
     def release(self):
         self._cap.release()
