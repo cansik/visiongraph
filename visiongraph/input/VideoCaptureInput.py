@@ -35,6 +35,10 @@ class VideoCaptureInput(BaseInput):
 
         self.fps = self._cap.get(cv2.CAP_PROP_FPS)
 
+        if self.fps == 0:
+            logging.warning(f"{self.__class__.__name__} fps could not be read")
+            self.fps = 30
+
     def release(self):
         self._cap.release()
 
