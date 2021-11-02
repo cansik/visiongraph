@@ -1,17 +1,17 @@
 import argparse
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Union
 
 from visiongraph.PipelineStep import PipelineStep
 
 
-def dict_choice(steps):
-    def dict_choice_checker(arg):
+def dict_choice(table):
+    def dict_choice_checker(key):
         try:
-            step = steps[arg]
+            item = table[key]
         except ValueError:
-            raise argparse.ArgumentTypeError(f"step {arg} is not defined")
+            raise argparse.ArgumentTypeError(f"key {key} is not defined")
 
-        return step()
+        return item
 
     return dict_choice_checker
 
@@ -41,13 +41,19 @@ def float_range(mini, maxi):
 def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, Any],
                              name: str, help: str = "", default: Optional[int] = 0):
     items = list(source.keys())
+    help_text = f"{help}"
 
     default_item = None
     if default is not None:
+        default_name = items[default]
         default_item = source[items[default]]
+        help_text += f", default: {default_name}."
+    else:
+        help_text += "."
 
-    parser.add_argument(name, default=default_item, choices=items, type=dict_choice(source),
-                        help=f"{help}, default: {default_item}")
+    choices = ",".join(list(source.keys()))
+    parser.add_argument(name, default=default_item, metavar=choices, type=dict_choice(source),
+                        help=help_text)
 
 
 def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineStep],
