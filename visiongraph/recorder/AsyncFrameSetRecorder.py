@@ -28,6 +28,7 @@ class AsyncFrameSetRecorder(FrameSetRecorder):
             time.sleep(0.1)
 
     def shutdown(self):
+        self.close()
         self._running = False
 
     def _writer_loop(self):

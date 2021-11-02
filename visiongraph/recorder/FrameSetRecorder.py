@@ -13,7 +13,8 @@ class FrameSetRecorder(BaseFrameRecorder):
         self._frames = Queue()
 
     def open(self):
-        self._frames = Queue()
+        # clear all items
+        self.clear()
         os.makedirs(self.output_path, exist_ok=True)
 
     def add_image(self, image: np.ndarray):
@@ -25,6 +26,10 @@ class FrameSetRecorder(BaseFrameRecorder):
             image = self._frames.get()
             self._write_image(i, image)
             i += 1
+
+    def clear(self):
+        while self._frames.qsize():
+            self._frames.get_nowait()
 
     def _write_image(self, id: int, image: np.ndarray):
         output_path = os.path.join(self.output_path, f"{id:06d}.png")
