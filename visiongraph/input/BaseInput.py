@@ -1,12 +1,12 @@
 from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Optional, Tuple
+from typing import Optional
 
 import numpy as np
 import cv2
 
 from visiongraph.PipelineStep import PipelineStep
-from visiongraph.model.NamedParameter import RotationParameter, FlipParameter
+from visiongraph.model.parameter.NamedParameter import RotationParameter, FlipParameter
 from visiongraph.util.ArgUtils import add_dict_choice_argument
 
 

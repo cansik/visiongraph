@@ -1,10 +1,11 @@
 -f https://github.com/cansik/pyrealsense2-macosx/releases
 
 # base packages
-opencv-python
+opencv-python>=4.5.3.56
 numpy<1.20
 requests
 tqdm
+vector
 
 # extra realsense
 pyrealsense2

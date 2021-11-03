@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from argparse import Namespace
 
-from visiongraph.ArgumentConfigurable import ArgumentConfigurable
+from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
 
 class PipelineStep(ArgumentConfigurable, ABC):

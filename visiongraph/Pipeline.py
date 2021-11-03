@@ -4,7 +4,7 @@ from argparse import Namespace
 from threading import Thread
 from typing import List
 
-from visiongraph.ArgumentConfigurable import ArgumentConfigurable
+from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from visiongraph.PipelineStep import PipelineStep
 
 

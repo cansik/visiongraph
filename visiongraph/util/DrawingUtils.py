@@ -1,7 +1,6 @@
-from typing import Tuple
-
 import cv2
 import numpy as np
+import vector
 
 COLOR_SEQUENCE = [
     (230, 25, 75),
@@ -32,56 +31,19 @@ AXIS_COLORS = [
 ]
 
 
-def draw_axis(image: np.ndarray, rotation: Tuple[float, float, float],
-              center: Tuple[float, float], length: float = 0.1):
+def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
+              center: vector.Vector2D, length: float = 0.1):
     h, w = image.shape[:2]
-    rays = np.asarray([[length, 0, 0], [0, length, 0], [0, 0, -length]])
+    rays = [vector.obj(x=length, y=0, z=0),
+            vector.obj(x=0, y=length, z=0),
+            vector.obj(x=0, y=0, z=length)]
 
     for i, p in enumerate(rays):
         color = AXIS_COLORS[i]
-        pp = apply_axis_rotation(p, *rotation)
+        pp = p.rotate_nautical(rotation.x, rotation.y, rotation.z)
 
-        x = (pp[0] + center[0]) * w
-        y = (-pp[1] + center[1]) * h
+        x = (pp.x + center.x) * w
+        y = (-pp.y + center.y) * h
 
-        cv2.line(image, (round(center[0] * w), round(center[1] * h)),
+        cv2.line(image, (round(center.x * w), round(center.y * h)),
                  (round(x), round(y)), color=color, thickness=2)
-
-
-def apply_axis_rotation(v: Tuple[float, float, float], rx: float, ry: float, rz: float) -> Tuple[float, float, float]:
-    """
-    Apply rotation to a vector
-    :param v: Input vector x, y, z
-    :param rx: Rotation x in degree
-    :param ry: Rotation y in degree
-    :param rz: Rotation z in degree
-    :return: Rotated vector coordinates
-    """
-
-    v = np.asarray(v)
-
-    # convert to radians
-    rx = np.radians(rx)
-    ry = np.radians(ry)
-    rz = np.radians(rz)
-
-    mx = np.asarray([
-        [1, 0, 0],
-        [0, np.cos(rx), -np.sin(rx)],
-        [0, np.sin(rx), np.cos(rx)],
-    ])
-
-    my = np.asarray([
-        [np.cos(ry), 0, np.sin(ry)],
-        [0, 1, 0],
-        [-np.sin(ry), 0, np.cos(ry)],
-    ])
-
-    mz = np.asarray([
-        [np.cos(rz), -np.sin(rz), 0],
-        [np.sin(rz), np.cos(rz), 0],
-        [0, 0, 1],
-    ])
-
-    result = v.dot(mx).dot(my).dot(mz)
-    return result
