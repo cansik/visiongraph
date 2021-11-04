@@ -1,8 +1,8 @@
-from typing import Optional, List
+from typing import Optional
 
+import mediapipe as mp
 import numpy as np
 import vector
-import mediapipe as mp
 
 from visiongraph.model.result.spatial.PoseLandmarkResult import PoseLandmarkResult
 
@@ -10,11 +10,11 @@ from visiongraph.model.result.spatial.PoseLandmarkResult import PoseLandmarkResu
 class BlazePose(PoseLandmarkResult):
     def __init__(self, class_id: int, class_name: str, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(class_id, class_name, score, landmarks)
-        self.pose_connections = mp.solutions.pose.POSE_CONNECTIONS
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  show_bounding_box: bool = True, min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, show_bounding_box, min_score, self.pose_connections, **kwargs)
+        super().annotate(image, show_info, info_text, show_bounding_box, min_score,
+                         mp.solutions.pose.POSE_CONNECTIONS, **kwargs)
 
     @property
     def nose(self) -> vector.Vector4D:
