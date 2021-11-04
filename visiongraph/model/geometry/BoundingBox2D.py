@@ -31,3 +31,4 @@ class BoundingBox2D:
     @property
     def size(self) -> vector.Vector2D:
         return vector.obj(x=self.width, y=self.height)
+
