@@ -1,7 +1,7 @@
 import numpy as np
 import vector
 
-from visiongraph.model.result.BaseResult import BaseResult
+from visiongraph.result.BaseResult import BaseResult
 from visiongraph.util.DrawingUtils import draw_axis
 
 

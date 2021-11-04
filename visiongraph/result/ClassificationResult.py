@@ -1,6 +1,6 @@
 import numpy as np
 
-from visiongraph.model.result.BaseResult import BaseResult
+from visiongraph.result.BaseResult import BaseResult
 
 
 class ClassificationResult(BaseResult):

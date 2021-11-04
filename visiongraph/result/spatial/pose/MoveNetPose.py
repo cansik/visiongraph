@@ -3,7 +3,7 @@ from typing import Optional
 import numpy as np
 import vector
 
-from visiongraph.model.result.spatial.PoseLandmarkResult import PoseLandmarkResult
+from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
 MOVE_NET_CONNECTIONS = frozenset([
     [0, 1],  # nose → left eye

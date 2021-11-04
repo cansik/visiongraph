@@ -5,7 +5,7 @@ import numpy as np
 import vector
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-from visiongraph.model.result.spatial.ObjectDetectionResult import ObjectDetectionResult
+from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
 
 class LandmarkDetectionResult(ObjectDetectionResult):

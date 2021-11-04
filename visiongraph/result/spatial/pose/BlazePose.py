@@ -4,7 +4,7 @@ import mediapipe as mp
 import numpy as np
 import vector
 
-from visiongraph.model.result.spatial.PoseLandmarkResult import PoseLandmarkResult
+from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
 
 class BlazePose(PoseLandmarkResult):

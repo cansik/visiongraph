@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import vector
 
-from visiongraph.model.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
+from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 
 
 class PoseLandmarkResult(LandmarkDetectionResult, ABC):

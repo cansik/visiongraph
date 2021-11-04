@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-from visiongraph.model.result.ClassificationResult import ClassificationResult
+from visiongraph.result.ClassificationResult import ClassificationResult
 from visiongraph.model.tracker.Trackable import Trackable
 from visiongraph.util.DrawingUtils import COLOR_SEQUENCE
 
