@@ -4,7 +4,7 @@ from argparse import Namespace
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
 
-class PipelineStep(ArgumentConfigurable, ABC):
+class PipelineNode(ArgumentConfigurable, ABC):
     @abstractmethod
     def setup(self):
         pass
@@ -16,4 +16,3 @@ class PipelineStep(ArgumentConfigurable, ABC):
     def configure_and_setup(self, args: Namespace):
         self.configure(args)
         self.setup()
-

@@ -5,12 +5,12 @@ from typing import Optional
 import numpy as np
 import cv2
 
-from visiongraph.PipelineNode import PipelineStep
+from visiongraph.PipelineNode import PipelineNode
 from visiongraph.model.parameter.NamedParameter import RotationParameter, FlipParameter
 from visiongraph.util.ArgUtils import add_dict_choice_argument
 
 
-class BaseInput(PipelineStep, ABC):
+class BaseInput(PipelineNode, ABC):
     @abstractmethod
     def __init__(self):
         self.width = 640

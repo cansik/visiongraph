@@ -5,17 +5,18 @@ from threading import Thread
 from typing import List
 
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
-from visiongraph.PipelineNode import PipelineStep
+from visiongraph.PipelineNode import PipelineNode
 
 
 class Pipeline(ArgumentConfigurable, ABC):
-    def __init__(self, deamon: bool = True):
+    def __init__(self, multi_threaded: bool = True, deamon: bool = True):
         self._open = False
+        self.multi_threaded = multi_threaded
         self._loop_thread = Thread(target=self._loop, daemon=deamon)
-        self.steps: List[PipelineStep] = []
+        self.nodes: List[PipelineNode] = []
 
-    def add_steps(self, *steps: List[PipelineStep]):
-        self.steps += steps
+    def add_nodes(self, *nodes: PipelineNode):
+        self.nodes += nodes
 
     def open(self):
         if self._open:
@@ -24,7 +25,11 @@ class Pipeline(ArgumentConfigurable, ABC):
 
         logging.info("open pipeline...")
         self._open = True
-        self._loop_thread.start()
+
+        if self.multi_threaded:
+            self._loop_thread.start()
+        else:
+            self._loop()
 
     def close(self):
         if not self._open:
@@ -45,10 +50,9 @@ class Pipeline(ArgumentConfigurable, ABC):
 
         self._release()
 
-    @abstractmethod
     def _init(self):
         """Runs before pipeline loop."""
-        for step in self.steps:
+        for step in self.nodes:
             step.setup()
 
     @abstractmethod
@@ -56,12 +60,11 @@ class Pipeline(ArgumentConfigurable, ABC):
         """Runs inside pipeline loop."""
         pass
 
-    @abstractmethod
     def _release(self):
         """Runs after pipeline loop"""
-        for step in self.steps:
+        for step in self.nodes:
             step.release()
 
     def configure(self, args: Namespace):
-        for step in self.steps:
+        for step in self.nodes:
             step.configure(args)

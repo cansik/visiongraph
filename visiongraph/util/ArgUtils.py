@@ -1,7 +1,7 @@
 import argparse
 from typing import Dict, Any, Optional, Union
 
-from visiongraph.PipelineNode import PipelineStep
+from visiongraph.PipelineNode import PipelineNode
 
 
 def dict_choice(table):
@@ -57,7 +57,7 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
                         help=help_text)
 
 
-def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineStep],
+def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineNode],
                              name: str, help: str = "", default: Optional[int] = 0, add_params: bool = True):
     add_dict_choice_argument(parser, steps, name, help, default)
 
