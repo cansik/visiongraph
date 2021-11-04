@@ -5,7 +5,7 @@ from threading import Thread
 from typing import List
 
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
-from visiongraph.PipelineStep import PipelineStep
+from visiongraph.PipelineNode import PipelineStep
 
 
 class Pipeline(ArgumentConfigurable, ABC):

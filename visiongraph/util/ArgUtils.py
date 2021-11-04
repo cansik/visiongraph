@@ -1,7 +1,7 @@
 import argparse
 from typing import Dict, Any, Optional, Union
 
-from visiongraph.PipelineStep import PipelineStep
+from visiongraph.PipelineNode import PipelineStep
 
 
 def dict_choice(table):

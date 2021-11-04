@@ -2,7 +2,7 @@ from typing import List
 
 from setuptools import setup, find_packages
 
-required_packages = find_packages(exclude=[])
+required_packages = find_packages(exclude=["tests", "examples"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
