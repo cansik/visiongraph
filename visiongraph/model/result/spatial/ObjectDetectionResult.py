@@ -18,7 +18,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         super().annotate(image, **kwargs)
 
         h, w = image.shape[:2]
-        color = COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
+        color = self.annotation_color
 
         bbox = self.bounding_box
         cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
@@ -39,3 +39,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     @property
     def bounding_box(self) -> BoundingBox2D:
         return self._bounding_box
+
+    @property
+    def annotation_color(self):
+        return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
