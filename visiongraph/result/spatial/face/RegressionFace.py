@@ -1,11 +1,13 @@
+from typing import Optional
+
 import vector
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 
 
-class RegressionRetailFace(FaceLandmarkResult):
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D):
+class RegressionFace(FaceLandmarkResult):
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
         super().__init__(score, landmarks, bounding_box)
 
     @property

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 import vector
 
@@ -7,7 +8,7 @@ from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetection
 
 
 class FaceLandmarkResult(LandmarkDetectionResult, ABC):
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D):
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
         super().__init__(0, "face", score, landmarks, bounding_box)
 
     @property
