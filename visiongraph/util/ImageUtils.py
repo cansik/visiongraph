@@ -1,8 +1,31 @@
 from typing import Tuple
 
+import cv2
 import numpy as np
 
 from visiongraph.util.MathUtils import constrain
+
+
+def resize_and_letter_box(image, width, height):
+    """
+    Letter box (black bars) a color image (think pan & scan movie shown
+    on widescreen) if not same aspect ratio as specified rows and cols.
+    :param image: numpy.ndarray((image_rows, image_cols, channels), dtype=numpy.uint8)
+    :param width: int cols of letter boxed image returned
+    :param height: int rows of letter boxed image returned
+    :return: numpy.ndarray((rows, cols, channels), dtype=numpy.uint8)
+    From: https://stackoverflow.com/a/53623469/1138326
+    """
+    image_rows, image_cols = image.shape[:2]
+    row_ratio = height / float(image_rows)
+    col_ratio = width / float(image_cols)
+    ratio = min(row_ratio, col_ratio)
+    image_resized = cv2.resize(image, dsize=(0, 0), fx=ratio, fy=ratio)
+    letter_box = np.zeros((int(height), int(width), 3))
+    row_start = int((letter_box.shape[0] - image_resized.shape[0]) / 2)
+    col_start = int((letter_box.shape[1] - image_resized.shape[1]) / 2)
+    letter_box[row_start:row_start + image_resized.shape[0], col_start:col_start + image_resized.shape[1]] = image_resized
+    return letter_box
 
 
 def extract_roi_safe(image: np.ndarray,
