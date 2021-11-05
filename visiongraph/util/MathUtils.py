@@ -1,7 +1,4 @@
 import math
-from typing import Tuple
-
-import numpy as np
 
 
 def constrain(value: float, lower: float = 0, upper: float = 1) -> float:

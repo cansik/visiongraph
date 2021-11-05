@@ -3,7 +3,6 @@ from typing import List, Tuple
 
 import numpy as np
 import vector
-from vector import VectorNumpy4D
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -11,6 +10,7 @@ from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInference
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.spatial.pose.MoveNetPose import MoveNetPose
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
+from visiongraph.util.ResultUtils import list_of_vector4D
 
 
 class MoveNetConfig(Enum):
@@ -59,8 +59,10 @@ class MoveNetPoseEstimator(PoseEstimator):
                 if score > max_score:
                     max_score = score
 
-            landmarks = vector.array(key_points, dtype=[("x", float), ("y", float), ("z", float), ("t", float)])
-            poses.append(MoveNetPose(max_score, landmarks.view(vector.VectorNumpy4D)))
+            if max_score < self.min_score:
+                continue
+
+            poses.append(MoveNetPose(max_score, list_of_vector4D(key_points)))
         return poses
 
     def release(self):

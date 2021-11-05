@@ -22,6 +22,7 @@ class RealSenseInput(BaseInput):
         self.align: Optional[rs.align] = None
 
     def setup(self):
+        #  todo: implement starting by device serial-number
         self.pipeline = rs.pipeline()
 
         config = rs.config()
