@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import cv2
 import numpy as np
@@ -20,15 +20,21 @@ class YOLOConfig(Enum):
 class YOLODetector(ObjectDetector):
 
     def __init__(self, model: Asset, weights: Asset, labels: List[str],
-                 width: int, height: int, min_score: float = 0.5, nms_threshold: float = 0.5, device: str = "CPU"):
+                 width: int, height: int, min_score: float = 0.5, iou_threshold: float = 0.5, device: str = "CPU"):
         super().__init__(min_score)
+        self.model = model
+        self.weights = weights
         self.labels = labels
-        self.nms_threshold = nms_threshold
+        self.width = width
+        self.height = height
+        self.iou_threshold = iou_threshold
+        self.device = device
 
-        self.engine = VisionInferenceEngine(model, weights, 1, 3, width, height,
-                                            flip_channels=True, normalize=True, device=device)
+        self.engine: Optional[VisionInferenceEngine] = None
 
     def setup(self):
+        self.engine = VisionInferenceEngine(self.model, self.weights, 1, 3, self.width, self.height,
+                                            flip_channels=True, normalize=True, device=self.device)
         self.engine.setup()
 
     def estimate(self, image: np.ndarray, **kwargs) -> List[ObjectDetectionResult]:
