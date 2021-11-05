@@ -24,7 +24,10 @@ class RepositoryAsset(Asset):
         return os.path.abspath(self._local_path)
 
     def prepare(self):
-        self._local_path = prepare_data_file(self.name, self.repository_url)
+        self._local_path = prepare_data_file(self.name, f"{self.repository_url}{self.name}")
+
+    def __repr__(self):
+        return self.name
 
     @staticmethod
     def openVino(name: str, repository_url: str = PUBLIC_DATA_URL) -> Tuple["RepositoryAsset", "RepositoryAsset"]:

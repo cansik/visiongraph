@@ -14,3 +14,6 @@ class LocalAsset(Asset):
     @property
     def path(self) -> str:
         return self._file_path
+
+    def __repr__(self):
+        return self._file_path

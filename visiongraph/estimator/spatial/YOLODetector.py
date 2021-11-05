@@ -34,6 +34,8 @@ class YOLODetector(ObjectDetector):
     def estimate(self, image: np.ndarray, **kwargs) -> List[ObjectDetectionResult]:
         output = self.engine.estimate(image)
 
+        raise NotImplementedError("YOLO has to be implemented first.")
+        # todo: implement yolo by using the OpenVino Example
         print(output)
 
     def release(self):

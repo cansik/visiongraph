@@ -52,8 +52,8 @@ class Pipeline(ArgumentConfigurable, ABC):
 
     def _init(self):
         """Runs before pipeline loop."""
-        for step in self.nodes:
-            step.setup()
+        for node in self.nodes:
+            node.setup()
 
     @abstractmethod
     def _process(self):
@@ -62,9 +62,9 @@ class Pipeline(ArgumentConfigurable, ABC):
 
     def _release(self):
         """Runs after pipeline loop"""
-        for step in self.nodes:
-            step.release()
+        for node in self.nodes:
+            node.release()
 
     def configure(self, args: Namespace):
-        for step in self.nodes:
-            step.configure(args)
+        for node in self.nodes:
+            node.configure(args)

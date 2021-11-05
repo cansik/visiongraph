@@ -39,6 +39,7 @@ class ObjectDetectionExample(Pipeline):
 
 def main():
     pipeline = ObjectDetectionExample(args.input(), multi_threaded=False)
+    pipeline.configure(args)
     pipeline.open()
 
 

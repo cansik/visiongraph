@@ -44,13 +44,12 @@ class VideoCaptureInput(BaseInput):
 
     def read(self) -> (int, Optional[np.ndarray]):
         if not self._cap.isOpened():
-            logging.critical(f"{self.__class__.__name__} is not opened")
-            return 0, None
+            raise Exception(f"{self.__class__.__name__} is not opened with channel {self.channel}")
 
         # wait with read to match fps
         if self.fps_lock:
             fps_wait_time = (1000.0 / self.fps) - (current_millis() - self._last_read_time)
-            if fps_wait_time < 1000.0 and fps_wait_time > 1:
+            if 1000.0 > fps_wait_time > 1:
                 time.sleep(fps_wait_time / 1000.0)
 
         success, image = self._cap.read()
