@@ -5,7 +5,7 @@ from typing import Tuple
 import requests
 from tqdm import tqdm
 
-import visiongraph.data
+import visiongraph.cache
 
 PUBLIC_DATA_URL = "https://github.com/cansik/data-storage/releases/download/sarmotion/"
 
@@ -40,7 +40,7 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
     if url is None:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 
-    data_path = os.path.abspath(os.path.dirname(visiongraph.data.__file__))
+    data_path = os.path.abspath(os.path.dirname(visiongraph.cache.__file__))
     file_path = os.path.join(data_path, file_name)
 
     if os.path.exists(file_path):

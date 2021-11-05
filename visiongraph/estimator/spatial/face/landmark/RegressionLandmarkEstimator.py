@@ -9,8 +9,8 @@ from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResul
 from visiongraph.util.ResultUtils import list_of_vector4D
 
 
-class AdasHeadPoseEstimator(FaceLandmarkEstimator):
-    def __init__(self, min_score: float, device: str = "CPU"):
+class RegressionLandmarkEstimator(FaceLandmarkEstimator):
+    def __init__(self, min_score: float = 0.0, device: str = "CPU"):
         super().__init__(min_score)
         model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
         self.engine = VisionInferenceEngine(model, weights, 1, 3, 48, 48, device=device)
