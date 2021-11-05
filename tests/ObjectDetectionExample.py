@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.Pipeline import Pipeline
-from visiongraph.estimator.spatial.YOLODetector import YOLODetector
+from visiongraph.estimator.spatial.YOLODetector import YOLODetector, YOLOConfig
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -15,7 +15,7 @@ class ObjectDetectionExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.object_detector = YOLODetector()
+        self.object_detector = YOLODetector.create(YOLOConfig.YOLOv4_Tiny_VOC_416x416_FP32)
 
         self.add_nodes(self.input, self.object_detector)
 
