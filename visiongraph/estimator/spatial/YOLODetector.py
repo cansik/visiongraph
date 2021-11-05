@@ -1,13 +1,12 @@
 from enum import Enum
 from typing import List
 
-import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
-from visiongraph.estimator.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
@@ -42,6 +41,6 @@ class YOLODetector(ObjectDetector):
         self.engine.release()
 
     @staticmethod
-    def create(config: YOLOConfig) -> "YOLODetector":
+    def create(config: YOLOConfig = YOLOConfig.YOLOv4_Tiny_VOC_416x416_FP32) -> "YOLODetector":
         model, weights, labels, size = config.value
         return YOLODetector(model, weights, labels, size, size)

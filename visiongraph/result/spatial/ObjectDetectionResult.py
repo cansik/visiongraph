@@ -12,6 +12,8 @@ from visiongraph.util.DrawingUtils import COLOR_SEQUENCE
 class ObjectDetectionResult(ClassificationResult, Trackable):
     def __init__(self, class_id: int, class_name: str, score: float, bounding_box: BoundingBox2D):
         super().__init__(class_id, class_name, score)
+
+        self._tracking_id = -1
         self._bounding_box = bounding_box
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None, **kwargs):
@@ -43,3 +45,13 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     @property
     def annotation_color(self):
         return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
+
+    @property
+    def tracking_id(self) -> int:
+        return self._tracking_id
+
+    @tracking_id.setter
+    def tracking_id(self, value: int):
+        self._tracking_id = value
+
+

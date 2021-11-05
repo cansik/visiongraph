@@ -1,4 +1,4 @@
-from typing import Optional, List
+from typing import Optional, List, Sequence, Tuple
 
 import cv2
 import numpy as np
@@ -19,7 +19,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  show_bounding_box: bool = True, min_score: float = 0,
-                 connections: Optional[List[int, int]] = None, **kwargs):
+                 connections: Optional[List[Tuple[int, int]]] = None, **kwargs):
 
         if show_bounding_box:
             super().annotate(image, show_info, info_text, **kwargs)
