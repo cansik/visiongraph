@@ -2,12 +2,13 @@ from abc import ABC, abstractmethod
 
 import vector
 
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 
 
 class FaceLandmarkResult(LandmarkDetectionResult, ABC):
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
-        super().__init__(0, "face", score, landmarks)
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D):
+        super().__init__(0, "face", score, landmarks, bounding_box)
 
     @property
     @abstractmethod

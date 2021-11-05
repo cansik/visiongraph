@@ -9,8 +9,12 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class LandmarkDetectionResult(ObjectDetectionResult):
-    def __init__(self, class_id: int, class_name: str, score: float, landmarks: vector.VectorNumpy4D):
-        super().__init__(class_id, class_name, score, self._create_bounding_box(landmarks))
+    def __init__(self, class_id: int, class_name: str, score: float,
+                 landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
+        if bounding_box is None:
+            bounding_box = self._create_bounding_box(landmarks)
+
+        super().__init__(class_id, class_name, score, bounding_box)
         self.landmarks: vector.VectorNumpy4D = landmarks
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,

@@ -1,11 +1,12 @@
 import vector
 
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 
 
 class RegressionRetailFace(FaceLandmarkResult):
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
-        super().__init__(score, landmarks)
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D):
+        super().__init__(score, landmarks, bounding_box)
 
     @property
     def left_eye(self) -> vector.Vector4D:
