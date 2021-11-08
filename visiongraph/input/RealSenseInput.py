@@ -16,6 +16,7 @@ class RealSenseInput(BaseInput):
         self.enable_depth = False
 
         self.exposure: Optional[float] = None
+        self.gain: Optional[float] = None
 
         self.pipeline: Optional[rs.pipeline] = None
         self.frames: Optional[rs.composite_frame] = None
@@ -47,8 +48,12 @@ class RealSenseInput(BaseInput):
         # setting options
         image_sensor = device.first_depth_sensor() if self.use_infrared else device.first_color_sensor()
         image_sensor.set_option(rs.option.enable_auto_exposure, int(not bool(self.exposure)))
+
         if self.exposure:
             image_sensor.set_option(rs.option.exposure, float(self.exposure))
+
+        if self.gain:
+            image_sensor.set_option(rs.option.gain, float(self.gain))
 
     def release(self):
         self.pipeline.stop()
@@ -77,6 +82,7 @@ class RealSenseInput(BaseInput):
 
         self.use_infrared = args.infrared
         self.exposure = args.exposure
+        self.gain = args.gain
 
         # todo: implement depth as input again
         # self.enable_depth = args.depth and args.depth_estimator == "realsense"
@@ -88,3 +94,5 @@ class RealSenseInput(BaseInput):
                             help="Use infrared as input stream (RealSense).")
         parser.add_argument("--exposure", default=None, type=float,
                             help="Exposure value (usec) for realsense input (disables auto-exposure).")
+        parser.add_argument("--gain", default=None, type=float,
+                            help="Gain value for realsense input (disables auto-exposure).")
