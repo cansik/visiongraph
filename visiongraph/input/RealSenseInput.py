@@ -15,12 +15,17 @@ class RealSenseInput(BaseInput):
         self.use_infrared = False
         self.enable_depth = False
 
-        self.exposure: Optional[float] = None
-        self.gain: Optional[float] = None
+        # todo: remove duplicate values
+        self._exposure: Optional[float] = None
+        self._gain: Optional[float] = None
 
         self.pipeline: Optional[rs.pipeline] = None
         self.frames: Optional[rs.composite_frame] = None
         self.align: Optional[rs.align] = None
+
+        self.profile: Optional[rs.pipeline_profile] = None
+        self.device: Optional[rs.device] = None
+        self.image_sensor: Optional[rs.sensor] = None
 
     def setup(self):
         #  todo: implement starting by device serial-number
@@ -37,23 +42,23 @@ class RealSenseInput(BaseInput):
         if self.enable_depth:
             config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
 
-        profile = self.pipeline.start(config)
+        self.profile = self.pipeline.start(config)
 
-        device = profile.get_device()
+        self.device = self.profile.get_device()
 
         # disable emitter
-        depth_sensor = device.first_depth_sensor()
+        depth_sensor = self.device.first_depth_sensor()
         depth_sensor.set_option(rs.option.emitter_enabled, 0)
 
         # setting options
-        image_sensor = device.first_depth_sensor() if self.use_infrared else device.first_color_sensor()
-        image_sensor.set_option(rs.option.enable_auto_exposure, int(not bool(self.exposure)))
+        self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
+        self.image_sensor.set_option(rs.option.enable_auto_exposure, int(not bool(self._exposure)))
 
-        if self.exposure:
-            image_sensor.set_option(rs.option.exposure, float(self.exposure))
+        if self._exposure:
+            self.image_sensor.set_option(rs.option.exposure, float(self._exposure))
 
-        if self.gain:
-            image_sensor.set_option(rs.option.gain, float(self.gain))
+        if self._gain:
+            self.image_sensor.set_option(rs.option.gain, float(self._gain))
 
     def release(self):
         self.pipeline.stop()
@@ -81,11 +86,58 @@ class RealSenseInput(BaseInput):
         super().configure(args)
 
         self.use_infrared = args.infrared
-        self.exposure = args.exposure
-        self.gain = args.gain
+        self._exposure = args.exposure
+        self._gain = args.gain
 
         # todo: implement depth as input again
         # self.enable_depth = args.depth and args.depth_estimator == "realsense"
+
+    def get_option(self, option: rs.option) -> float:
+        return self.image_sensor.get_option(option)
+
+    def set_option(self, option: rs.option, value: float):
+        self.image_sensor.set_option(option, value)
+
+    @property
+    def gain(self) -> int:
+        return int(self.get_option(rs.option.gain))
+
+    @gain.setter
+    def gain(self, value: int):
+        self.set_option(rs.option.gain, value)
+
+    @property
+    def exposure(self) -> int:
+        return int(self.get_option(rs.option.exposure))
+
+    @exposure.setter
+    def exposure(self, value: int):
+        self.set_option(rs.option.exposure, value)
+
+    @property
+    def enable_auto_exposure(self) -> bool:
+        return bool(self.get_option(rs.option.enable_auto_exposure))
+
+    @enable_auto_exposure.setter
+    def enable_auto_exposure(self, value: bool):
+        self.set_option(rs.option.enable_auto_exposure, value)
+
+    @property
+    def enable_auto_white_balance(self) -> bool:
+        return bool(self.get_option(rs.option.enable_auto_white_balance))
+
+    @enable_auto_white_balance.setter
+    def enable_auto_white_balance(self, value: bool):
+        self.set_option(rs.option.enable_auto_white_balance, value)
+
+    @property
+    def white_balance(self) -> int:
+        return int(self.get_option(rs.option.white_balance))
+
+    @white_balance.setter
+    def white_balance(self, value: int):
+        value = value // 100 * 100
+        self.set_option(rs.option.white_balance, value)
 
     @staticmethod
     def add_params(parser: ArgumentParser):
