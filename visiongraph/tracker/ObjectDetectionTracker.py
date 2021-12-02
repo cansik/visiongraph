@@ -22,7 +22,7 @@ class ObjectDetectionTracker(PipelineNode):
         if not self.enabled:
             return detections
 
-        inputs = [(d.bounding_box, d.score, d.tracking_id, i) for i, d in enumerate(detections)]
+        inputs = [(list(d.bounding_box), d.score, d.tracking_id, i) for i, d in enumerate(detections)]
         bboxes, scores, ids, references = zip(*inputs) if len(detections) else ([], [], [], [])
         tracks = self.tracker.update(np.asarray(bboxes), np.asarray(scores), np.asarray(ids), np.asarray(references))
 
@@ -42,4 +42,4 @@ class ObjectDetectionTracker(PipelineNode):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        parser.add_argument("--tracker-max-lost", type=int, default=0, help="Max frames trackable not visible.")
+        parser.add_argument("--tracker-max-lost", type=int, default=5, help="Max frames trackable not visible.")
