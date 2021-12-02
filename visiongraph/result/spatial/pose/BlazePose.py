@@ -8,13 +8,10 @@ from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResul
 
 
 class BlazePose(PoseLandmarkResult):
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
-        super().__init__(score, landmarks)
-
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  show_bounding_box: bool = False, min_score: float = 0, **kwargs):
         super().annotate(image, show_info, info_text, show_bounding_box, min_score,
-                         mp.solutions.pose.POSE_CONNECTIONS, **kwargs)
+                         connections=mp.solutions.pose.POSE_CONNECTIONS, **kwargs)
 
     @property
     def nose(self) -> vector.Vector4D:
