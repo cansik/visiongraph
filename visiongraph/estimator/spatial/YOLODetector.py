@@ -26,16 +26,19 @@ class YOLOConfig(Enum):
 
 
 class YOLODetector(OpenVinoObjectDetector):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5,
-                 nms_threshold: float = 0.5, architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], keep_aspect_ratio: bool = False,
+                 min_score: float = 0.5, nms_threshold: float = 0.5,
+                 architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
                  device: str = "CPU"):
         super().__init__(model, weights, labels, min_score, device)
+
+        self.keep_aspect_ratio = keep_aspect_ratio
         self.nms_threshold = nms_threshold
         self.architecture = architecture
 
     def _create_ie_model(self) -> Model:
         model_class = YoloV4 if self.architecture == YOLOArchitecture.YOLOv4 else YOLO
-        return model_class(self.ie, self.model.path, self.labels,
+        return model_class(self.ie, self.model.path, self.labels, self.keep_aspect_ratio,
                            threshold=self.min_score, iou_threshold=self.nms_threshold)
 
     @staticmethod
