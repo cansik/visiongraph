@@ -5,7 +5,7 @@ import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
-MOVE_NET_CONNECTIONS = frozenset([
+COCO_CONNECTIONS = frozenset([
     (0, 1),  # nose → left eye
     (0, 2),  # nose → right eye
     (1, 3),  # left eye → left ear
@@ -27,13 +27,14 @@ MOVE_NET_CONNECTIONS = frozenset([
 ])
 
 
-class MoveNetPose(PoseLandmarkResult):
+class COCOPose(PoseLandmarkResult):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(score, landmarks)
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 show_bounding_box: bool = True, min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, show_bounding_box, min_score, MOVE_NET_CONNECTIONS, **kwargs)
+                 show_bounding_box: bool = False, min_score: float = 0, **kwargs):
+        super().annotate(image, show_info, info_text, show_bounding_box, min_score,
+                         connections=COCO_CONNECTIONS, **kwargs)
 
     @property
     def nose(self) -> vector.Vector4D:

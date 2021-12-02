@@ -8,6 +8,7 @@ from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.external.intel.model import Model
 
 
+# todo: check if this really is a vision estimator?!
 class SyncInferencePipeline(VisionEstimator):
     def __init__(self, model: Model, device: str = "CPU", ie: Optional[IECore] = None):
 

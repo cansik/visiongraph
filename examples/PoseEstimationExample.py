@@ -6,6 +6,7 @@ import cv2
 from visiongraph.Pipeline import Pipeline
 from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 from visiongraph.estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
+from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -16,7 +17,7 @@ class PoseEstimationExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.pose_network = MediaPipePoseEstimator() # MoveNetPoseEstimator.create()
+        self.pose_network = OpenPoseEstimator.create() # MediaPipePoseEstimator.create() # MoveNetPoseEstimator.create()
 
         self.add_nodes(self.input, self.pose_network)
 

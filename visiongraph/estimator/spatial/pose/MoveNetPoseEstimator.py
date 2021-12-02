@@ -8,7 +8,7 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.result.spatial.pose.MoveNetPose import MoveNetPose
+from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util.ResultUtils import list_of_vector4D, non_maximum_suppression
 
@@ -40,14 +40,14 @@ class MoveNetPoseEstimator(PoseEstimator):
     def setup(self):
         self.engine.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[PoseLandmarkResult]:
+    def estimate(self, image: np.ndarray, **kwargs) -> List[COCOPose]:
         outputs = self.engine.estimate(image)
         output = outputs[self.engine.output_names[0]]
 
         key_points_with_scores = output[0]
         key_points_with_scores = np.squeeze(key_points_with_scores)
 
-        poses: List[MoveNetPose] = []
+        poses: List[COCOPose] = []
         for key_points_with_score in key_points_with_scores:
             key_points: List[Tuple[float, float, float, float]] = []
             max_score = 0.0
@@ -65,7 +65,7 @@ class MoveNetPoseEstimator(PoseEstimator):
             if max_score < self.min_score:
                 continue
 
-            poses.append(MoveNetPose(max_score, list_of_vector4D(key_points)))
+            poses.append(COCOPose(max_score, list_of_vector4D(key_points)))
 
         if self.enable_nms:
             poses = non_maximum_suppression(poses, self.min_score, self.iou_threshold)

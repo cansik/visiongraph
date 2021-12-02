@@ -9,6 +9,7 @@ from visiongraph.data.Asset import Asset
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 
 
+# todo: check if this really is a vision estimator?!
 class VisionInferenceEngine(VisionEstimator):
     def __init__(self, model: Asset, weights: Asset,
                  batch_size: int, channels: int, width: int, height: int,

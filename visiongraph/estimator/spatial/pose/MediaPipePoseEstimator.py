@@ -65,3 +65,7 @@ class MediaPipePoseEstimator(PoseEstimator):
     def configure(self, args: Namespace):
         super().configure(args)
         # todo: implement arg parse
+
+    @staticmethod
+    def create(complexity: PoseModelComplexity = PoseModelComplexity.Normal) -> "MediaPipePoseEstimator":
+        return MediaPipePoseEstimator(complexity)

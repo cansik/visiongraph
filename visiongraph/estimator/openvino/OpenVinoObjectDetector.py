@@ -9,7 +9,6 @@ from visiongraph.estimator.openvino.SyncInferencePipeline import SyncInferencePi
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.external.intel.model import Model
 from visiongraph.external.intel.utils import Detection
-from visiongraph.external.intel.yolo import YOLO
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
@@ -24,7 +23,7 @@ class OpenVinoObjectDetector(ObjectDetector, ABC):
 
         self.ie = IECore()
         self.pipeline: Optional[SyncInferencePipeline] = None
-        self.ie_model: Optional[YOLO] = None
+        self.ie_model: Optional[Model] = None
 
     def setup(self):
         Asset.prepare_all(self.model, self.weights)
