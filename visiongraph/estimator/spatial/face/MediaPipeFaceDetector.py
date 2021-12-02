@@ -2,13 +2,12 @@ from argparse import Namespace
 from enum import Enum
 from typing import List, Optional
 
-import numpy as np
 import mediapipe as mp
+import numpy as np
 
 from visiongraph.estimator.spatial.face.FaceDetector import FaceDetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.face.BlazeFace import BlazeFace
-from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from visiongraph.util.ResultUtils import list_of_vector4D
 
 
@@ -39,7 +38,7 @@ class MediaPipeFaceDetector(FaceDetector):
         if not results.detections:
             return []
 
-        faces: List[FaceLandmarkResult] = []
+        faces: List[BlazeFace] = []
 
         for detection in results.detections:
             rbb = detection.location_data.relative_bounding_box

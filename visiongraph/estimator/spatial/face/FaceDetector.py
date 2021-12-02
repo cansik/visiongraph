@@ -4,10 +4,10 @@ from typing import List
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
-from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
+from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
 
 class FaceDetector(ObjectDetector, ABC):
     @abstractmethod
-    def estimate(self, image: np.ndarray, **kwargs) -> List[FaceLandmarkResult]:
+    def estimate(self, image: np.ndarray, **kwargs) -> List[ObjectDetectionResult]:
         pass

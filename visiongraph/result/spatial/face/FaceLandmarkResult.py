@@ -5,11 +5,12 @@ import vector
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
+from visiongraph.result.spatial.face.FaceDetectionResult import FACE_DETECTION_NAME, FACE_DETECTION_ID
 
 
 class FaceLandmarkResult(LandmarkDetectionResult, ABC):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
-        super().__init__(0, "face", score, landmarks, bounding_box)
+        super().__init__(FACE_DETECTION_ID, FACE_DETECTION_NAME, score, landmarks, bounding_box)
 
     @property
     @abstractmethod
