@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import List, Tuple
 
+import cv2
 import numpy as np
-import vector
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -29,10 +29,13 @@ MOVE_NET_KEY_POINT_COUNT = 17
 
 class MoveNetPoseEstimator(PoseEstimator):
     def __init__(self, model: Asset, weights: Asset, width: int, height: int,
-                 min_score: float = 0.3, device: str = "CPU"):
+                 min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
+                 device: str = "CPU"):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights, 1, 3, width, height, device=device)
+        self.enable_nms = enable_nms
+        self.iou_threshold = iou_threshold
 
     def setup(self):
         self.engine.setup()
@@ -63,6 +66,10 @@ class MoveNetPoseEstimator(PoseEstimator):
                 continue
 
             poses.append(MoveNetPose(max_score, list_of_vector4D(key_points)))
+
+        if self.enable_nms:
+            poses = self._nms_poses(poses, self.min_score, self.iou_threshold)
+
         return poses
 
     def release(self):
@@ -72,3 +79,10 @@ class MoveNetPoseEstimator(PoseEstimator):
     def create(config: MoveNetConfig = MoveNetConfig.MoveNet_MultiPose_256x320_FP32) -> "MoveNetPoseEstimator":
         model, weights, height, width = config.value
         return MoveNetPoseEstimator(model, weights, width, height)
+
+    def _nms_poses(self, poses: List[MoveNetPose], min_score: float, iou_threshold: float) -> List[MoveNetPose]:
+        boxes = [list(p.bounding_box) for p in poses]
+        confidences = [p.score for p in poses]
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold)
+
+        return [poses[i[0]] for i in indices]
