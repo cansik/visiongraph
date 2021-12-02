@@ -85,4 +85,4 @@ class MoveNetPoseEstimator(PoseEstimator):
         confidences = [p.score for p in poses]
         indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold)
 
-        return [poses[i[0]] for i in indices]
+        return [poses[i] for i in list(indices)]
