@@ -33,6 +33,9 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         if info_text is None:
             info_text = f"#{self.tracking_id}"
 
+        if self.class_name is not None:
+            info_text += f" {self.class_name}"
+
         cv2.putText(image, info_text,
                     (round(self.bounding_box.x_min * w) - 5,
                      round(self.bounding_box.y_min * h) - 5),
