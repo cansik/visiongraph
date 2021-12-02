@@ -14,3 +14,8 @@ class Asset(ABC):
 
     def prepare(self) -> bool:
         pass
+
+    @staticmethod
+    def prepare_all(*assets: "Asset"):
+        for asset in assets:
+            asset.prepare()

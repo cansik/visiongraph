@@ -50,7 +50,7 @@ class YOLODetector(ObjectDetector):
     def setup(self):
         model_class = YoloV4 if self.architecture == YOLOArchitecture.YOLOv4 else YOLO
         # download models
-        weights = self.weights.path
+        Asset.prepare_all(self.model, self.weights)
         self.ie_model = model_class(self.ie, self.model.path, self.labels,
                                     threshold=self.min_score, iou_threshold=self.nms_threshold)
         self.pipeline = SyncInferencePipeline(self.ie_model, self.device, self.ie)
