@@ -15,7 +15,7 @@ class ObjectDetectionExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.object_detector = YOLODetector.create(YOLOConfig.YOLOv4_Tiny_VOC_416x416_FP32)
+        self.object_detector = YOLODetector.create()
 
         self.add_nodes(self.input, self.object_detector)
 
