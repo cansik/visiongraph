@@ -10,7 +10,7 @@ from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInference
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.spatial.pose.MoveNetPose import MoveNetPose
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.ResultUtils import list_of_vector4D, non_maximum_suppression
 
 
 class MoveNetConfig(Enum):
@@ -68,7 +68,7 @@ class MoveNetPoseEstimator(PoseEstimator):
             poses.append(MoveNetPose(max_score, list_of_vector4D(key_points)))
 
         if self.enable_nms:
-            poses = self._nms_poses(poses, self.min_score, self.iou_threshold)
+            poses = non_maximum_suppression(poses, self.min_score, self.iou_threshold)
 
         return poses
 
@@ -79,10 +79,3 @@ class MoveNetPoseEstimator(PoseEstimator):
     def create(config: MoveNetConfig = MoveNetConfig.MoveNet_MultiPose_256x320_FP32) -> "MoveNetPoseEstimator":
         model, weights, height, width = config.value
         return MoveNetPoseEstimator(model, weights, width, height)
-
-    def _nms_poses(self, poses: List[MoveNetPose], min_score: float, iou_threshold: float) -> List[MoveNetPose]:
-        boxes = [list(p.bounding_box) for p in poses]
-        confidences = [p.score for p in poses]
-        indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold)
-
-        return [poses[i] for i in list(indices)]
