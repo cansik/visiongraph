@@ -9,7 +9,7 @@ from visiongraph.estimator.openvino.SyncInferencePipeline import SyncInferencePi
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.external.intel.model import Model
 from visiongraph.external.intel.utils import Detection
-from visiongraph.external.intel.yolo import YOLO, YoloV4
+from visiongraph.external.intel.yolo import YOLO
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
@@ -36,10 +36,15 @@ class OpenVinoObjectDetector(ObjectDetector, ABC):
     def estimate(self, image: np.ndarray, **kwargs) -> List[ObjectDetectionResult]:
         h, w = image.shape[:2]
         output: List[Detection] = self.pipeline.estimate(image)
-        return [ObjectDetectionResult(d.id, self.labels[d.id], d.score,
-                                      BoundingBox2D(d.xmin / w, d.ymin / h,
-                                                    (d.xmax - d.xmin) / w, (d.ymax - d.ymin) / h))
-                for d in output]
+
+        return [ObjectDetectionResult(int(d.id),
+                                      self._get_label(int(d.id)),
+                                      float(d.score),
+                                      BoundingBox2D(float(d.xmin) / w,
+                                                    float(d.ymin) / h,
+                                                    float(d.xmax - d.xmin) / w,
+                                                    float(d.ymax - d.ymin) / h))
+                for d in output if float(d.score) >= self.min_score]
 
     def release(self):
         self.pipeline.release()
@@ -47,3 +52,9 @@ class OpenVinoObjectDetector(ObjectDetector, ABC):
     @abstractmethod
     def _create_ie_model(self) -> Model:
         pass
+
+    def _get_label(self, index: int):
+        if index < len(self.labels):
+            return self.labels[index]
+        else:
+            return "NoLabelFound"
