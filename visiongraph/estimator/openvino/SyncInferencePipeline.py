@@ -1,7 +1,6 @@
 from argparse import ArgumentParser, Namespace
-from typing import Dict, Optional, List
+from typing import Optional, List
 
-import cv2
 import numpy as np
 from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
