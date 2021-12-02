@@ -5,7 +5,7 @@ from typing import List, Optional
 import mediapipe as mp
 import numpy as np
 
-from visiongraph.estimator.spatial.face.FaceDetector import FaceDetector
+from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.face.BlazeFace import BlazeFace
 from visiongraph.util.ResultUtils import list_of_vector4D
@@ -19,7 +19,7 @@ class MediaPipeFaceModel(Enum):
 _mp_face_detection = mp.solutions.face_detection
 
 
-class MediaPipeFaceDetector(FaceDetector):
+class MediaPipeFaceDetector(FaceLandmarkEstimator):
 
     def __init__(self, model: MediaPipeFaceModel = MediaPipeFaceModel.Short_Range, min_score: float = 0.5):
         super().__init__(min_score)

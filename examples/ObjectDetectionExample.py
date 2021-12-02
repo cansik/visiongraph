@@ -16,9 +16,9 @@ class ObjectDetectionExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.object_detector = SSDDetector.create() # YOLODetector.create()
+        self.network = SSDDetector.create() # YOLODetector.create()
 
-        self.add_nodes(self.input, self.object_detector)
+        self.add_nodes(self.input, self.network)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -26,7 +26,7 @@ class ObjectDetectionExample(Pipeline):
         if frame is None:
             return
 
-        results = self.object_detector.estimate(frame)
+        results = self.network.estimate(frame)
         for result in results:
             result.annotate(frame)
 

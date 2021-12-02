@@ -18,9 +18,9 @@ class PoseEstimationExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.pose_network = AEPoseEstimator.create() # OpenPoseEstimator.create() # MediaPipePoseEstimator.create() # MoveNetPoseEstimator.create()
+        self.network = AEPoseEstimator.create() # OpenPoseEstimator.create() # MediaPipePoseEstimator.create() # MoveNetPoseEstimator.create()
 
-        self.add_nodes(self.input, self.pose_network)
+        self.add_nodes(self.input, self.network)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -28,7 +28,7 @@ class PoseEstimationExample(Pipeline):
         if frame is None:
             return
 
-        results = self.pose_network.estimate(frame)
+        results = self.network.estimate(frame)
         for result in results:
             result.annotate(frame)
 

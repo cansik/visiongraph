@@ -3,12 +3,13 @@ from abc import ABC, abstractmethod
 import vector
 
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
+from visiongraph.result.spatial.hand.HandDetectionResult import HAND_DETECTION_ID, HAND_DETECTION_LABEL
 from visiongraph.result.spatial.hand.Handedness import Handedness
 
 
 class HandLandmarkResult(LandmarkDetectionResult, ABC):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D, handedness: Handedness):
-        super().__init__(0, "hand", score, landmarks)
+        super().__init__(HAND_DETECTION_ID, HAND_DETECTION_LABEL, score, landmarks)
         self.handedness = handedness
 
     @property

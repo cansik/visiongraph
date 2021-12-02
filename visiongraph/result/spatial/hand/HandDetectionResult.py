@@ -1,10 +1,10 @@
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
-FACE_DETECTION_ID = 0
-FACE_DETECTION_LABEL = "face"
+HAND_DETECTION_ID = 0
+HAND_DETECTION_LABEL = "hand"
 
 
-class FaceDetectionResult(ObjectDetectionResult):
+class HandDetectionResult(ObjectDetectionResult):
     def __init__(self, score: float, bounding_box: BoundingBox2D):
-        super().__init__(FACE_DETECTION_ID, FACE_DETECTION_LABEL, score, bounding_box)
+        super().__init__(HAND_DETECTION_ID, HAND_DETECTION_LABEL, score, bounding_box)
