@@ -14,8 +14,8 @@ class RealSenseInput(BaseInput):
         super().__init__()
         self.use_infrared = False
         self.enable_depth = False
+        self.serial: Optional[str] = None
 
-        # todo: remove duplicate values
         self._exposure: Optional[float] = None
         self._gain: Optional[float] = None
 
@@ -28,10 +28,19 @@ class RealSenseInput(BaseInput):
         self.image_sensor: Optional[rs.sensor] = None
 
     def setup(self):
-        #  todo: implement starting by device serial-number
-        self.pipeline = rs.pipeline()
+        ctx = rs.context()
+        devices = ctx.query_devices()
+
+        if len(devices) == 0:
+            raise Exception("No RealSense device found!")
+
+        self.pipeline = rs.pipeline(ctx)
 
         config = rs.config()
+
+        if self.serial is not None:
+            config.enable_device(serial=self.serial)
+
         if self.use_infrared:
             config.enable_stream(rs.stream.infrared, self.width, self.height, rs.format.y8, self.fps)
             self.align = rs.align(rs.stream.infrared)
@@ -43,7 +52,6 @@ class RealSenseInput(BaseInput):
             config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
 
         self.profile = self.pipeline.start(config)
-
         self.device = self.profile.get_device()
 
         # disable emitter
@@ -88,6 +96,7 @@ class RealSenseInput(BaseInput):
         self.use_infrared = args.infrared
         self._exposure = args.exposure
         self._gain = args.gain
+        self.serial = args.rs_serial
 
         # todo: implement depth as input again
         # self.enable_depth = args.depth and args.depth_estimator == "realsense"
@@ -148,3 +157,5 @@ class RealSenseInput(BaseInput):
                             help="Exposure value (usec) for realsense input (disables auto-exposure).")
         parser.add_argument("--gain", default=None, type=float,
                             help="Gain value for realsense input (disables auto-exposure).")
+        parser.add_argument("--rs-serial", default=None, type=str,
+                            help="RealSense serial number to choose specific device.")
