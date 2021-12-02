@@ -4,22 +4,25 @@ import cv2
 import numpy as np
 
 from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
+from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 
-class VideoRecorder(BaseFrameRecorder):
+class MoviePyVideoRecorder(BaseFrameRecorder):
     def __init__(self, width: int, height: int, output_path: str = "video.mp4", fps: int = 30):
         self.output_path = output_path
         self.fps = fps
         self.width = width
         self.height = height
-        self._writer: Optional[cv2.VideoWriter] = None
+        self._images = []
 
     def open(self):
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self._writer = cv2.VideoWriter(self.output_path, fourcc, self.fps, (self.width, self.height))
+        self._images = []
 
     def add_image(self, image: np.ndarray):
-        self._writer.write(image)
+        im_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        self.add_image(im_rgb)
 
     def close(self):
-        self._writer.release()
+        clip = ImageSequenceClip(self._images, fps=self.fps)
+        clip.write_videofile(self.output_path, logger=None)
+        clip.close()
