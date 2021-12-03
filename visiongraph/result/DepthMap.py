@@ -7,6 +7,10 @@ from visiongraph.util.MathUtils import constrain
 
 
 class DepthMap(DepthBuffer, ImageResult):
+    @property
+    def depth_map(self) -> np.ndarray:
+        return self.output
+
     def apply_colormap(self, color_map=cv2.COLORMAP_INFERNO) -> np.ndarray:
         return cv2.applyColorMap(self.output, colormap=color_map)
 

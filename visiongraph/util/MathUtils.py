@@ -1,4 +1,28 @@
 import math
+from typing import Optional, Tuple
+
+import cv2
+
+
+def transform_coordinates(x: float, y: float, rotate: Optional[int], flip: Optional[int]) -> Tuple[float, float]:
+    nx, ny = x, y
+
+    if rotate == cv2.ROTATE_90_CLOCKWISE:
+        nx = 1.0 - y
+        ny = x
+    elif rotate == cv2.ROTATE_90_COUNTERCLOCKWISE:
+        nx = y
+        ny = 1.0 - x
+    elif rotate == cv2.ROTATE_180:
+        nx = 1.0 - x
+        ny = 1.0 - y
+
+    if flip == 1:
+        nx = 1.0 - x
+    elif flip == 0:
+        ny = 1.0 - y
+
+    return nx, ny
 
 
 def constrain(value: float, lower: float = 0, upper: float = 1) -> float:

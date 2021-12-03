@@ -6,10 +6,12 @@ import numpy as np
 import pyrealsense2 as rs
 
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.model.DepthBuffer import DepthBuffer
+from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
 
-class RealSenseInput(BaseInput):
+class RealSenseInput(DepthBuffer, BaseInput):
     def __init__(self):
         super().__init__()
         self.use_infrared = False
@@ -18,6 +20,8 @@ class RealSenseInput(BaseInput):
 
         self._exposure: Optional[float] = None
         self._gain: Optional[float] = None
+
+        self.colorizer: Optional[rs.colorizer] = None
 
         self.pipeline: Optional[rs.pipeline] = None
         self.frames: Optional[rs.composite_frame] = None
@@ -49,6 +53,7 @@ class RealSenseInput(BaseInput):
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
+            self.colorizer = rs.colorizer(color_scheme=2)
             config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
 
         self.profile = self.pipeline.start(config)
@@ -90,6 +95,30 @@ class RealSenseInput(BaseInput):
 
         return self._post_process(time_stamp, np.asanyarray(image.get_data()))
 
+    @property
+    def depth_frame(self):
+        if not self.enable_depth:
+            raise Exception("Depth is not enabled for RealSense input.")
+
+        return self.frames.get_depth_frame()
+
+    def distance(self, x: float, y: float) -> float:
+        depth_frame = self.depth_frame
+
+        x, y = transform_coordinates(x, y, self.rotate, self.flip)
+
+        ix = round(constrain(depth_frame.width * x, upper=depth_frame.width - 1))
+        iy = round(constrain(depth_frame.height * y, upper=depth_frame.height - 1))
+
+        return depth_frame.get_distance(ix, iy)
+
+    @property
+    def depth_map(self) -> np.ndarray:
+        depth_frame = self.depth_frame
+        depth_colormap = np.asanyarray(self.colorizer.colorize(depth_frame).get_data())
+        ts, transformed_depth = self._post_process(0, depth_colormap)
+        return transformed_depth
+
     def configure(self, args: Namespace):
         super().configure(args)
 
@@ -98,8 +127,7 @@ class RealSenseInput(BaseInput):
         self._gain = args.gain
         self.serial = args.rs_serial
 
-        # todo: implement depth as input again
-        # self.enable_depth = args.depth and args.depth_estimator == "realsense"
+        self.enable_depth = args.depth
 
     def get_option(self, option: rs.option) -> float:
         return self.image_sensor.get_option(option)
@@ -159,3 +187,5 @@ class RealSenseInput(BaseInput):
                             help="Gain value for realsense input (disables auto-exposure).")
         parser.add_argument("--rs-serial", default=None, type=str,
                             help="RealSense serial number to choose specific device.")
+        parser.add_argument("--depth", action="store_true",
+                            help="Enable RealSense depth stream.")
