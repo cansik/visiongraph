@@ -9,3 +9,5 @@ class ImageResult(BaseResult):
 
     def annotate(self, image: np.ndarray, **kwargs):
         super().annotate(image, **kwargs)
+
+        # todo: implement drawing image onto other image
