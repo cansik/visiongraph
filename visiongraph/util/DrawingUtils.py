@@ -40,7 +40,7 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
 
     for i, p in enumerate(rays):
         color = AXIS_COLORS[i]
-        pp = p.rotate_nautical(rotation.x, rotation.y, rotation.z)
+        pp = p.rotate_nautical(np.radians(rotation.z), -np.radians(rotation.y), -np.radians(rotation.x))
 
         x = (pp.x + center.x) * w
         y = (-pp.y + center.y) * h
