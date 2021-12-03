@@ -10,13 +10,13 @@ from visiongraph.PipelineNode import PipelineNode
 
 
 class Pipeline(ArgumentConfigurable, ABC):
-    def __init__(self, multi_threaded: bool = True, deamon: bool = True, signal_listener: bool = True):
+    def __init__(self, multi_threaded: bool = True, deamon: bool = True, handle_signals: bool = True):
         self._open = False
         self.multi_threaded = multi_threaded
         self._loop_thread = Thread(target=self._loop, daemon=deamon)
         self.nodes: List[PipelineNode] = []
 
-        if signal_listener:
+        if handle_signals:
             signal.signal(signal.SIGINT, self._signal_handler)
 
     def add_nodes(self, *nodes: PipelineNode):
