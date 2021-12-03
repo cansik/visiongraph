@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.Pipeline import Pipeline
+from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
@@ -15,7 +16,7 @@ class FaceDetectionExample(Pipeline):
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.network = OpenVinoFaceDetector.create() # MediaPipeFaceDetector(MediaPipeFaceModel.Full_Range)
+        self.network = AdasFaceDetector.create() # OpenVinoFaceDetector.create() # MediaPipeFaceDetector(MediaPipeFaceModel.Full_Range)
 
         self.add_nodes(self.input, self.network)
 
