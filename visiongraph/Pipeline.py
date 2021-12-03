@@ -1,4 +1,5 @@
 import logging
+import signal
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from threading import Thread
@@ -9,11 +10,14 @@ from visiongraph.PipelineNode import PipelineNode
 
 
 class Pipeline(ArgumentConfigurable, ABC):
-    def __init__(self, multi_threaded: bool = True, deamon: bool = True):
+    def __init__(self, multi_threaded: bool = True, deamon: bool = True, signal_listener: bool = True):
         self._open = False
         self.multi_threaded = multi_threaded
         self._loop_thread = Thread(target=self._loop, daemon=deamon)
         self.nodes: List[PipelineNode] = []
+
+        if signal_listener:
+            signal.signal(signal.SIGINT, self._signal_handler)
 
     def add_nodes(self, *nodes: PipelineNode):
         self.nodes += nodes
@@ -38,7 +42,10 @@ class Pipeline(ArgumentConfigurable, ABC):
 
         logging.info(f"closing {self.__class__.__name__}...")
         self._open = False
-        self._loop_thread.join(5000)
+
+        if self.multi_threaded:
+            self._loop_thread.join(5000)
+
         logging.info(f"{self.__class__.__name__} has been closed")
 
     def _loop(self):
@@ -68,3 +75,6 @@ class Pipeline(ArgumentConfigurable, ABC):
     def configure(self, args: Namespace):
         for node in self.nodes:
             node.configure(args)
+
+    def _signal_handler(self, signal, frame):
+        self.close()
