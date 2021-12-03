@@ -18,7 +18,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         self.landmarks: vector.VectorNumpy4D = landmarks
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 show_bounding_box: bool = True, min_score: float = 0,
+                 show_bounding_box: bool = False, min_score: float = 0,
                  connections: Optional[List[Tuple[int, int]]] = None, **kwargs):
 
         if show_bounding_box:

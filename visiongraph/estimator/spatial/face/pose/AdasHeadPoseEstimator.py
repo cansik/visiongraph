@@ -25,6 +25,9 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
             z=float(output["angle_r_fc"][0][0])
         ))
 
+    def _transform_result(self, result: HeadPoseResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float):
+        pass
+
     def release(self):
         self.engine.release()
 

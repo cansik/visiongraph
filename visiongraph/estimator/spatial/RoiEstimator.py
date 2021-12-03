@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 
 import numpy as np
 
@@ -26,5 +26,6 @@ class RoiEstimator(VisionEstimator, ABC):
         return self.estimate_roi(image, bbox.x_min, bbox.y_min,
                                  bbox.x_min + bbox.width, bbox.y_min + bbox.height, rectified)
 
+    @abstractmethod
     def _transform_result(self, result: BaseResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float):
         pass
