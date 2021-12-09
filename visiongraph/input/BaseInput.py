@@ -18,6 +18,7 @@ class BaseInput(PipelineNode, ABC):
         self.fps = 30
         self.rotate: Optional[int] = None
         self.flip: Optional[int] = None
+        self.raw_input = False
 
     @abstractmethod
     def read(self) -> (int, Optional[np.ndarray]):
@@ -33,6 +34,10 @@ class BaseInput(PipelineNode, ABC):
         if self.flip is not None:
             image = cv2.flip(image, self.flip)
 
+        # prepare image to be 3 channel
+        if not self.raw_input and (len(image.shape) < 3 or image.shape[2] == 1):
+            image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
+
         return ts, image
 
     @abstractmethod
@@ -41,6 +46,7 @@ class BaseInput(PipelineNode, ABC):
         self.fps = args.input_fps
         self.rotate = args.input_rotate
         self.flip = args.input_flip
+        self.raw_input = args.raw_input
 
     @staticmethod
     @abstractmethod
@@ -52,6 +58,8 @@ class BaseInput(PipelineNode, ABC):
             add_dict_choice_argument(parser, RotationParameter, "--input-rotate", help="Rotate input media",
                                      default=None)
             add_dict_choice_argument(parser, FlipParameter, "--input-flip", help="Flip input media", default=None)
+            parser.add_argument("--raw-input", action="store_true",
+                                help="Skip automatic input conversion to 3-channel image.")
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return
