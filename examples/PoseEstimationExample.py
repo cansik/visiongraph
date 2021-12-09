@@ -26,9 +26,6 @@ class PoseEstimationExample(Pipeline):
         if frame is None:
             return
 
-        # prepare image
-        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
         results = self.network.estimate(frame)
         for result in results:
             result.annotate(frame)

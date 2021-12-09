@@ -2,6 +2,7 @@ from argparse import Namespace
 from enum import Enum
 from typing import List, Optional
 
+import cv2
 import mediapipe as mp
 import numpy as np
 
@@ -47,6 +48,9 @@ class MediaPipePoseEstimator(PoseEstimator):
                                       smooth_segmentation=self.smooth_segmentation)
 
     def estimate(self, image: np.ndarray, **kwargs) -> List[BlazePose]:
+        # pre-process image
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
         results = self.detector.process(image)
 
         # check if results are there

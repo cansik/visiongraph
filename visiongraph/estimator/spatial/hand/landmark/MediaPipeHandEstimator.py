@@ -2,6 +2,7 @@ from argparse import Namespace
 from enum import Enum
 from typing import List, Optional
 
+import cv2
 import mediapipe as mp
 import numpy as np
 
@@ -45,6 +46,9 @@ class MediaPipeHandEstimator(HandLandmarkEstimator):
                                         max_num_hands=self.max_num_hands)
 
     def estimate(self, image: np.ndarray, **kwargs) -> List[BlazeHand]:
+        # pre-process image
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
         results = self.detector.process(image)
 
         # check if results are there
