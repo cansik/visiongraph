@@ -16,6 +16,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         super().__init__()
         self.use_infrared = False
         self.enable_depth = False
+        self.disable_emitter = False
         self.serial: Optional[str] = None
 
         self._exposure: Optional[float] = None
@@ -59,19 +60,22 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self.profile = self.pipeline.start(config)
         self.device = self.profile.get_device()
 
-        # disable emitter
+        # set emitter
         depth_sensor = self.device.first_depth_sensor()
-        depth_sensor.set_option(rs.option.emitter_enabled, 0)
+        if self.disable_emitter:
+            depth_sensor.set_option(rs.option.emitter_enabled, 0)
+        else:
+            depth_sensor.set_option(rs.option.emitter_enabled, 1)
 
         # setting options
         self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
-        self.image_sensor.set_option(rs.option.enable_auto_exposure, int(not bool(self._exposure)))
+        self.set_option(rs.option.enable_auto_exposure, int(not bool(self._exposure)))
 
         if self._exposure:
-            self.image_sensor.set_option(rs.option.exposure, float(self._exposure))
+            self.set_option(rs.option.exposure, float(self._exposure))
 
         if self._gain:
-            self.image_sensor.set_option(rs.option.gain, float(self._gain))
+            self.set_option(rs.option.gain, float(self._gain))
 
     def release(self):
         self.pipeline.stop()
@@ -128,12 +132,16 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self.serial = args.rs_serial
 
         self.enable_depth = args.depth
+        self.disable_emitter = args.disable_emitter
 
     def get_option(self, option: rs.option) -> float:
         return self.image_sensor.get_option(option)
 
     def set_option(self, option: rs.option, value: float):
-        self.image_sensor.set_option(option, value)
+        if self.image_sensor.supports(option):
+            self.image_sensor.set_option(option, value)
+        else:
+            logging.warning(f"{self.__class__.__name__} the option {option} is not supported!")
 
     @property
     def gain(self) -> int:
@@ -187,5 +195,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
                             help="Gain value for realsense input (disables auto-exposure).")
         parser.add_argument("--rs-serial", default=None, type=str,
                             help="RealSense serial number to choose specific device.")
+        parser.add_argument("--disable-emitter", action="store_true",
+                            help="Disable RealSense IR emitter.")
         parser.add_argument("--depth", action="store_true",
                             help="Enable RealSense depth stream.")
