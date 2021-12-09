@@ -8,7 +8,7 @@ To install visiongraph with all dependencies call pip like this:
 pip install "visiongraph[all]"
 ```
 
-It is also possible to only install certain packages:
+It is also possible to only install certain packages depending on your needs:
 
 ```bash
 pip install "visiongraph[realsense, openvino, mediapipe, onnx, media]"
@@ -16,7 +16,7 @@ pip install "visiongraph[realsense, openvino, mediapipe, onnx, media]"
 
 ### Development
 
-To develop it is recommended to clone this repository and install the dependencies like this:
+To develop on visiograph itself it is recommended to clone this repository and install the dependencies like this:
 
 ```bash
 # in the visiongraph directory
@@ -30,6 +30,18 @@ To build a new wheel package of visiongraph run the following command in the roo
 ```bash
 python setup.py bdist_wheel
 ```
+
+## Example
+
+## Content
+
+### Pipeline
+
+### Input
+
+### Estimator
+
+### Tracker
 
 ## About
 Copyright (c) 2021 Florian Bruggisser
