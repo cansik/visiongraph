@@ -22,7 +22,8 @@ class RealSenseDepthExample(Pipeline):
             return
 
         cv2.imshow("Depth Estimation", self.input.depth_map)
-        cv2.waitKey(15)
+        if cv2.waitKey(15) & 0xFF == 27:
+            self.close()
 
     @staticmethod
     def add_params(parser: ArgumentParser):

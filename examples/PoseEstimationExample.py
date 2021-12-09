@@ -34,7 +34,8 @@ class PoseEstimationExample(Pipeline):
             result.annotate(frame)
 
         cv2.imshow("Pose Estimator", frame)
-        cv2.waitKey(15)
+        if cv2.waitKey(15) & 0xFF == 27:
+            self.close()
 
     @staticmethod
     def add_params(parser: ArgumentParser):

@@ -28,7 +28,8 @@ class MidasDepthExample(Pipeline):
         result = self.network.estimate(frame)
 
         cv2.imshow("Depth Estimation", result.apply_colormap())
-        cv2.waitKey(15)
+        if cv2.waitKey(15) & 0xFF == 27:
+            self.close()
 
     @staticmethod
     def add_params(parser: ArgumentParser):
