@@ -32,14 +32,11 @@ class RegressionLandmarkEstimator(FaceLandmarkEstimator):
         hi, wi = image.shape[:2]
         hr, wr = roi.shape[:2]
 
-        # not so nice because there is no re-assignment of vector datatype
-        transformed = []
         for i, lm in enumerate(result.landmarks):
             x = ((lm.x * wr) + xs) / float(wi)
             y = ((lm.y * hr) + ys) / float(hi)
-            transformed.append((x, y, lm.z, lm.t))
-
-        result.landmarks = list_of_vector4D(transformed)
+            result.landmarks.x[i] = x
+            result.landmarks.y[i] = y
 
     def release(self):
         self.engine.release()
