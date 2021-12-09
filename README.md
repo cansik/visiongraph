@@ -23,5 +23,13 @@ To develop it is recommended to clone this repository and install the dependenci
 pip install -e ".[all]"
 ```
 
+### Build
+
+To build a new wheel package of visiongraph run the following command in the root directory.
+
+```bash
+python setup.py bdist_wheel
+```
+
 ## About
 Copyright (c) 2021 Florian Bruggisser
