@@ -27,24 +27,22 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         h, w = image.shape[:2]
         color = self.annotation_color
 
+        # draw connections
+        if connections is not None:
+            for ia, ib in connections:
+                a: vector.Vector4D = self.landmarks[ia]
+                b: vector.Vector4D = self.landmarks[ib]
+
+                if a.t > min_score and b.t > min_score:
+                    point01 = (round(a.x * w), round(a.y * h))
+                    point02 = (round(b.x * w), round(b.y * h))
+                    cv2.line(image, point01, point02, color, 2)
+
         # mark landmark joints
         for lm in self.landmarks:
             if lm.t < min_score:
                 continue
             cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 2, (0, 0, 255), -1)
-
-        # draw connections
-        if connections is None:
-            return
-
-        for ia, ib in connections:
-            a: vector.Vector4D = self.landmarks[ia]
-            b: vector.Vector4D = self.landmarks[ib]
-
-            if a.t > min_score and b.t > min_score:
-                point01 = (round(a.x * w), round(a.y * h))
-                point02 = (round(b.x * w), round(b.y * h))
-                cv2.line(image, point01, point02, color, 2)
 
     @staticmethod
     def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
