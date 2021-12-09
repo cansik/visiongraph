@@ -7,7 +7,6 @@ requests
 tqdm
 vector
 scipy
-configargparse
 
 # extra realsense
 pyrealsense2
