@@ -12,7 +12,7 @@ scipy
 pyrealsense2
 
 # extra openvino
-openvino>=2021.4.0
+openvino>=2021.4.2
 
 # extra mediapipe
 mediapipe==0.8.9
