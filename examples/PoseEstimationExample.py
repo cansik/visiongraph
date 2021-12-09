@@ -4,10 +4,8 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.Pipeline import Pipeline
-from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator
-from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
-from visiongraph.estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
-from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
+from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
+from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -15,10 +13,10 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class PoseEstimationExample(Pipeline):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
+    def __init__(self, input: BaseInput, pose_network: PoseEstimator, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
         self.input = input
-        self.network = OpenPoseEstimator.create(OpenPoseConfig.LightWeightOpenPose_FP32) # AEPoseEstimator.create() # OpenPoseEstimator.create() # MediaPipePoseEstimator.create() # MoveNetPoseEstimator.create()
+        self.network = pose_network
 
         self.add_nodes(self.input, self.network)
 
@@ -44,7 +42,7 @@ class PoseEstimationExample(Pipeline):
 
 
 def main():
-    pipeline = PoseEstimationExample(args.input(), multi_threaded=False)
+    pipeline = PoseEstimationExample(args.input(),  args.pose_estimator(), multi_threaded=False)
     pipeline.configure(args)
     pipeline.open()
 
@@ -52,8 +50,12 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Pose Estimation Example", description="Example Pipeline")
     add_logging_parameter(parser)
+
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group)
+
+    pose_group = parser.add_argument_group("pose estimator")
+    add_pose_estimation_step_choices(pose_group)
 
     args = parser.parse_args()
 

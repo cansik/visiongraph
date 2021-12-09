@@ -1,5 +1,5 @@
 import argparse
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Any, Optional, Callable
 
 from visiongraph.PipelineNode import PipelineNode
 
@@ -64,3 +64,11 @@ def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, P
     if add_params:
         for item in steps.keys():
             steps[item].add_params(parser)
+
+
+class PipelineNodeFactory:
+    def __init__(self, pipeline_node: PipelineNode, method: Callable, *params: Any):
+        self.pipeline_node = pipeline_node
+        self.method = method
+        self.params = params
+

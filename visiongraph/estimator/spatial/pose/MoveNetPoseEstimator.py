@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import List, Tuple
 
-import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
@@ -9,7 +8,6 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util.ResultUtils import list_of_vector4D, non_maximum_suppression
 
 
