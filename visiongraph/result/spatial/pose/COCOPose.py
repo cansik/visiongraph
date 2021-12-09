@@ -10,8 +10,8 @@ COCO_CONNECTIONS = frozenset([
     (0, 2),  # nose → right eye
     (1, 3),  # left eye → left ear
     (2, 4),  # right eye → right ear
-    (0, 5),  # nose → left shoulder
-    (0, 6),  # nose → right shoulder
+    # (0, 5),  # nose → left shoulder
+    # (0, 6),  # nose → right shoulder
     (5, 6),  # left shoulder → right shoulder
     (5, 7),  # left shoulder → left elbow
     (7, 9),  # left elbow → left wrist
