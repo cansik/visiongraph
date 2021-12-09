@@ -42,7 +42,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         for lm in self.landmarks:
             if lm.t < min_score:
                 continue
-            cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 2, (0, 0, 255), -1)
+            cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 3, (0, 0, 255), -1)
 
     @staticmethod
     def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
