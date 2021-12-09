@@ -20,8 +20,8 @@ class AEPoseConfig(Enum):
 class AEPoseEstimator(OpenVinoPoseEstimator):
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.1,
-                 device: str = "CPU"):
-        super().__init__(model, weights, target_size, aspect_ratio, min_score, device)
+                 auto_adjust_aspect_ratio: bool = True, device: str = "CPU"):
+        super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
     def _create_ie_model(self) -> Model:
         return HpeAssociativeEmbedding(self.ie, self.model.path, target_size=self.target_size,
