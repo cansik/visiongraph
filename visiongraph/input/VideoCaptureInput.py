@@ -15,6 +15,7 @@ class VideoCaptureInput(BaseInput):
     def __init__(self):
         super().__init__()
         self.channel = 0
+        self.input_skip = -1
         self.loop = True
         self.fps_lock = True
         self._cap: Optional[cv2.VideoCapture] = None
@@ -38,6 +39,9 @@ class VideoCaptureInput(BaseInput):
         if self.fps == 0:
             logging.warning(f"{self.__class__.__name__} fps could not be read")
             self.fps = 30
+
+        if self.input_skip >= 0:
+            self._cap.set(cv2.CAP_PROP_POS_MSEC, self.input_skip)
 
     def release(self):
         self._cap.release()
@@ -81,8 +85,12 @@ class VideoCaptureInput(BaseInput):
         else:
             self.channel = args.channel
 
+        self.input_skip = args.input_skip
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(VideoCaptureInput, VideoCaptureInput).add_params(parser)
         parser.add_argument("--channel", type=str, default=0,
                             help="Input device channel (camera id, video path, image sequence).")
+        parser.add_argument("--input-skip", type=int, default=-1,
+                            help="If set the input will be skipped to the value in milliseconds.")

@@ -42,7 +42,7 @@ def extract_roi_safe(image: np.ndarray,
     hw = ye - ys
 
     if not rectified:
-        return image[ys:ye, xs:xe]
+        return image[ys:ye, xs:xe], xs, ys
 
     if rw > hw:
         diff = (rw - hw) * 0.5
