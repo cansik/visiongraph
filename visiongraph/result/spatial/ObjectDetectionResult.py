@@ -6,7 +6,7 @@ import numpy as np
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ClassificationResult import ClassificationResult
 from visiongraph.model.tracker.Trackable import Trackable
-from visiongraph.util.DrawingUtils import COLOR_SEQUENCE
+from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox
 
 
 class ObjectDetectionResult(ClassificationResult, Trackable):
@@ -22,10 +22,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         h, w = image.shape[:2]
         color = self.annotation_color
 
-        bbox = self.bounding_box
-        cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
-                      (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
-                      color, thickness=2)
+        draw_bbox(image, self.bounding_box, color=color)
 
         if not show_info:
             return

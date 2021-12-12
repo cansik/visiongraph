@@ -1,6 +1,10 @@
+from typing import Sequence
+
 import cv2
 import numpy as np
 import vector
+
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 
 COLOR_SEQUENCE = [
     (230, 25, 75),
@@ -47,3 +51,10 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
 
         cv2.line(image, (round(center.x * w), round(center.y * h)),
                  (round(x), round(y)), color=color, thickness=2)
+
+
+def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thickness: int = 2):
+    h, w = image.shape[:2]
+    cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
+                  (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
+                  color, thickness=thickness)
