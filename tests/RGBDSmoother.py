@@ -43,6 +43,7 @@ class RGBDSmoother(Pipeline):
         ts, frame = self.input.read()
 
         if frame is None:
+            self.close()
             return
 
         # extract depth only
