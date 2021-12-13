@@ -29,7 +29,11 @@ class VideoCaptureInput(BaseInput):
 
         if not (self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width) and
                 self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)):
-            logging.warning(f"{self.__class__.__name__} could not set media input size")
+
+            # if not settable-try to read
+            self.width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+            self.height = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+            # logging.warning(f"{self.__class__.__name__} could not set media input size")
 
         if not (self._cap.set(cv2.CAP_PROP_FPS, self.fps)):
             logging.warning(f"{self.__class__.__name__} could not set media framerate")
@@ -76,6 +80,12 @@ class VideoCaptureInput(BaseInput):
 
         self._no_frame_count = 0
         return self._post_process(time_stamp, image)
+
+    @property
+    def frame_count(self) -> int:
+        if not self._cap.isOpened():
+            return -1
+        return int(self._cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     def configure(self, args: Namespace):
         super().configure(args)
