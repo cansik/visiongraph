@@ -7,7 +7,7 @@ def add_logging_parameter(parser):
                         help='Provide logging level. Example --loglevel debug, default=warning')
 
 
-def setup_logging(loglevel):
+def setup_logging(loglevel: str):
     logging.basicConfig(level=loglevel.upper(),
-                        format="%(asctime)s [%(levelname)s] %(message)s",
-                        datefmt="%Y-%m-%d %H:%M:%S")
+                        format="%(levelname)s - %(asctime)s.%(msecs)03d - %(module)s - %(message)s",
+                        datefmt="%Y-%m-%d %H:%M:%S", force=True)

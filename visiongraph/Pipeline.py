@@ -24,7 +24,7 @@ class Pipeline(ArgumentConfigurable, ABC):
 
     def open(self):
         if self._open:
-            logging.warning(f"{self.__class__.__name__} is already running")
+            logging.warning("is already running")
             return
 
         logging.info("open pipeline...")
@@ -37,7 +37,7 @@ class Pipeline(ArgumentConfigurable, ABC):
 
     def close(self):
         if not self._open:
-            logging.warning(f"{self.__class__.__name__} is not running")
+            logging.warning("is not running")
             return
 
         logging.info(f"closing {self.__class__.__name__}...")
@@ -46,11 +46,11 @@ class Pipeline(ArgumentConfigurable, ABC):
         if self.multi_threaded:
             self._loop_thread.join(5000)
 
-        logging.info(f"{self.__class__.__name__} has been closed")
+        logging.info("has been closed")
 
     def _loop(self):
         self._init()
-        logging.info(f"{self.__class__.__name__} is setup and running")
+        logging.info("is setup and running")
 
         while self._open:
             self._process()

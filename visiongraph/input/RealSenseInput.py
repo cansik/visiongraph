@@ -94,7 +94,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
             image = self.frames.get_color_frame()
 
         if not image:
-            logging.warning(f"{self.__class__.__name__} could not read frame.")
+            logging.warning("could not read frame.")
             return self._post_process(time_stamp, None)
 
         return self._post_process(time_stamp, np.asanyarray(image.get_data()))
@@ -141,7 +141,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         if self.image_sensor.supports(option):
             self.image_sensor.set_option(option, value)
         else:
-            logging.warning(f"{self.__class__.__name__} the option {option} is not supported!")
+            logging.warning("the option {option} is not supported!")
 
     @property
     def gain(self) -> int:

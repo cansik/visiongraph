@@ -33,15 +33,15 @@ class VideoCaptureInput(BaseInput):
             # if not settable-try to read
             self.width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.height = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-            # logging.warning(f"{self.__class__.__name__} could not set media input size")
+            # logging.warning("could not set media input size")
 
         if not (self._cap.set(cv2.CAP_PROP_FPS, self.fps)):
-            logging.warning(f"{self.__class__.__name__} could not set media framerate")
+            logging.warning("could not set media framerate")
 
         self.fps = self._cap.get(cv2.CAP_PROP_FPS)
 
         if self.fps == 0:
-            logging.warning(f"{self.__class__.__name__} fps could not be read")
+            logging.warning("fps could not be read")
             self.fps = 30
 
         if self.input_skip >= 0:
@@ -52,7 +52,7 @@ class VideoCaptureInput(BaseInput):
 
     def read(self) -> (int, Optional[np.ndarray]):
         if not self._cap.isOpened():
-            raise Exception(f"{self.__class__.__name__} is not opened with channel {self.channel}")
+            raise Exception("is not opened with channel {self.channel}")
 
         # wait with read to match fps
         if self.fps_lock:
@@ -75,7 +75,7 @@ class VideoCaptureInput(BaseInput):
                 self._last_read_time = 0
                 return self._post_process(*self.read())
 
-            logging.warning(f"{self.__class__.__name__} could not read frame")
+            logging.warning("could not read frame")
             return self._post_process(time_stamp, None)
 
         self._no_frame_count = 0
