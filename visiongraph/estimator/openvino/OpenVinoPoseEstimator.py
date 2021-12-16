@@ -44,7 +44,7 @@ class OpenVinoPoseEstimator(PoseEstimator, ABC):
         # auto-adjust aspect ratio
         ratio = w / h
         if not math.isclose(ratio, self.aspect_ratio, rel_tol=0, abs_tol=0.001) and self.auto_adjust_aspect_ratio:
-            logging.warning("auto-adjusting aspect ratio to {ratio:.2f}")
+            logging.warning(f"auto-adjusting aspect ratio to {ratio:.2f}")
             self.aspect_ratio = ratio
 
             # restart network
