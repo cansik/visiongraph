@@ -1,6 +1,6 @@
 import argparse
 from enum import Enum
-from typing import Dict, Any, Optional, Callable
+from typing import Dict, Any, Optional, Callable, Union
 
 from visiongraph.PipelineNode import PipelineNode
 
@@ -41,7 +41,8 @@ def float_range(mini, maxi):
 
 
 def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, Any],
-                             name: str, help: str = "", default: Optional[int] = 0):
+                             name: str, help: str = "", default: Optional[int] = 0,
+                             nargs: Optional[Union[str, int]] = None):
     items = list(source.keys())
     help_text = f"{help}"
 
@@ -54,8 +55,8 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
         help_text += "."
 
     choices = ",".join(list(source.keys()))
-    parser.add_argument(name, default=default_item, metavar=choices, type=dict_choice(source),
-                        help=help_text)
+    parser.add_argument(name, default=default_item, metavar=choices, nargs=nargs,
+                        type=dict_choice(source), help=help_text)
 
 
 def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineNode],

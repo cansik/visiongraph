@@ -1,7 +1,7 @@
 import logging
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 import numpy as np
 import pyrealsense2 as rs
@@ -9,7 +9,8 @@ import pyrealsense2 as rs
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.DepthBuffer import DepthBuffer
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
-from visiongraph.util.ArgUtils import add_enum_choice_argument
+from visiongraph.model.types.RealSenseFilter import RealSenseFilters
+from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
@@ -37,6 +38,12 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self.device: Optional[rs.device] = None
         self.image_sensor: Optional[rs.sensor] = None
 
+        self._depth_frame: Optional[rs.depth_frame] = None
+
+        # filter
+        self.depth_filters: List[rs.filter] = []
+        self._filters_to_enable: List[type(rs.filter)] = []
+
     def setup(self):
         ctx = rs.context()
         devices = ctx.query_devices()
@@ -61,6 +68,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
             config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
+            [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         self.profile = self.pipeline.start(config)
         self.device = self.profile.get_device()
@@ -93,6 +101,13 @@ class RealSenseInput(DepthBuffer, BaseInput):
             # alignment only happens if depth is enabled!
             self.frames = self.align.process(self.frames)
 
+        # filter depth
+        if self.enable_depth:
+            self._depth_frame = self.frames.get_depth_frame()
+
+            for depth_filter in self.depth_filters:
+                self._depth_frame = depth_filter.process(self._depth_frame)
+
         if self.use_infrared:
             image = self.frames.get_infrared_frame()
         else:
@@ -109,10 +124,10 @@ class RealSenseInput(DepthBuffer, BaseInput):
 
     @property
     def depth_frame(self):
-        if not self.enable_depth:
+        if self._depth_frame is None:
             raise Exception("Depth is not enabled for RealSense input.")
 
-        return self.frames.get_depth_frame()
+        return self._depth_frame
 
     def distance(self, x: float, y: float) -> float:
         depth_frame = self.depth_frame
@@ -146,6 +161,10 @@ class RealSenseInput(DepthBuffer, BaseInput):
 
         if self.use_depth_as_input:
             self.enable_depth = True
+
+        # filter enabler
+        if args.rs_filter is not None:
+            self._filters_to_enable = args.rs_filter
 
     def get_option(self, option: rs.option) -> float:
         return self.image_sensor.get_option(option)
@@ -212,6 +231,8 @@ class RealSenseInput(DepthBuffer, BaseInput):
                             help="Disable RealSense IR emitter.")
         parser.add_argument("--depth", action="store_true",
                             help="Enable RealSense depth stream.")
+        add_dict_choice_argument(parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter",
+                                 default=None, nargs="+")
         parser.add_argument("--depth-as-input", action="store_true",
                             help="Use colored depth stream as input stream.")
         add_enum_choice_argument(parser, RealSenseColorScheme, "--color-scheme",

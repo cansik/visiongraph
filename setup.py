@@ -51,7 +51,7 @@ install_required, extras_required = parse_requirements()
 
 setup(
     name="visiongraph",
-    version='0.1.6',
+    version='0.1.7',
     packages=required_packages,
     url='https://github.com/cansik/visiongraph',
     license='MIT License',
