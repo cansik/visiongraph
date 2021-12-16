@@ -16,6 +16,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         super().__init__()
         self.use_infrared = False
         self.enable_depth = False
+        self.use_depth_as_input = False
         self.disable_emitter = False
         self.serial: Optional[str] = None
 
@@ -92,8 +93,11 @@ class RealSenseInput(DepthBuffer, BaseInput):
             image = self.frames.get_infrared_frame()
         else:
             image = self.frames.get_color_frame()
+            
+        if self.use_depth_as_input:
+            return self._post_process(time_stamp, self.depth_map)
 
-        if not image:
+        if image is None:
             logging.warning("could not read frame.")
             return self._post_process(time_stamp, None)
 
@@ -132,7 +136,11 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self.serial = args.rs_serial
 
         self.enable_depth = args.depth
+        self.use_depth_as_input = args.depth_as_input
         self.disable_emitter = args.disable_emitter
+
+        if self.use_depth_as_input:
+            self.enable_depth = True
 
     def get_option(self, option: rs.option) -> float:
         return self.image_sensor.get_option(option)
@@ -199,3 +207,5 @@ class RealSenseInput(DepthBuffer, BaseInput):
                             help="Disable RealSense IR emitter.")
         parser.add_argument("--depth", action="store_true",
                             help="Enable RealSense depth stream.")
+        parser.add_argument("--depth-as-input", action="store_true",
+                            help="Use colored depth stream as input stream.")
