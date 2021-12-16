@@ -106,7 +106,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
             self._depth_frame = self.frames.get_depth_frame()
 
             for depth_filter in self.depth_filters:
-                self._depth_frame = depth_filter.process(self._depth_frame)
+                self._depth_frame = depth_filter.process(self._depth_frame).as_depth_frame()
 
         if self.use_infrared:
             image = self.frames.get_infrared_frame()
