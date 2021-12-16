@@ -1,4 +1,5 @@
 import argparse
+from enum import Enum
 from typing import Dict, Any, Optional, Callable
 
 from visiongraph.PipelineNode import PipelineNode
@@ -66,9 +67,21 @@ def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, P
             steps[item].add_params(parser)
 
 
+def add_enum_choice_argument(parser: argparse.ArgumentParser, enum_type: Any, name: str, help: str = "",
+                             default: Optional[Any] = None):
+    values = list(enum_type)
+    items = {item.name: item for item in list(enum_type)}
+
+    if default is not None:
+        default_index = values.index(default)
+    else:
+        default_index = 0
+
+    add_dict_choice_argument(parser, items, name, help, default_index)
+
+
 class PipelineNodeFactory:
     def __init__(self, pipeline_node: PipelineNode, method: Callable, *params: Any):
         self.pipeline_node = pipeline_node
         self.method = method
         self.params = params
-

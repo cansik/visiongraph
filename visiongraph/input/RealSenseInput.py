@@ -1,5 +1,6 @@
 import logging
 from argparse import ArgumentParser, Namespace
+from enum import Enum
 from typing import Optional
 
 import numpy as np
@@ -7,6 +8,8 @@ import pyrealsense2 as rs
 
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.DepthBuffer import DepthBuffer
+from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
+from visiongraph.util.ArgUtils import add_enum_choice_argument
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
@@ -24,6 +27,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self._gain: Optional[float] = None
 
         self.colorizer: Optional[rs.colorizer] = None
+        self.color_scheme = RealSenseColorScheme.WhiteToBlack
 
         self.pipeline: Optional[rs.pipeline] = None
         self.frames: Optional[rs.composite_frame] = None
@@ -55,7 +59,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
-            self.colorizer = rs.colorizer(color_scheme=2)
+            self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
             config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
 
         self.profile = self.pipeline.start(config)
@@ -93,7 +97,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
             image = self.frames.get_infrared_frame()
         else:
             image = self.frames.get_color_frame()
-            
+
         if self.use_depth_as_input:
             return self._post_process(time_stamp, self.depth_map)
 
@@ -138,6 +142,7 @@ class RealSenseInput(DepthBuffer, BaseInput):
         self.enable_depth = args.depth
         self.use_depth_as_input = args.depth_as_input
         self.disable_emitter = args.disable_emitter
+        self.color_scheme = args.color_scheme
 
         if self.use_depth_as_input:
             self.enable_depth = True
@@ -209,3 +214,6 @@ class RealSenseInput(DepthBuffer, BaseInput):
                             help="Enable RealSense depth stream.")
         parser.add_argument("--depth-as-input", action="store_true",
                             help="Use colored depth stream as input stream.")
+        add_enum_choice_argument(parser, RealSenseColorScheme, "--color-scheme",
+                                 default=RealSenseColorScheme.WhiteToBlack,
+                                 help="Color scheme for depth map")
