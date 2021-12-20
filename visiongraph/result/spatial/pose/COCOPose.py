@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List, Tuple, FrozenSet
 
 import numpy as np
 import vector
@@ -32,6 +32,10 @@ class COCOPose(PoseLandmarkResult):
                  show_bounding_box: bool = False, min_score: float = 0, **kwargs):
         super().annotate(image, show_info, info_text, show_bounding_box, min_score,
                          connections=COCO_CONNECTIONS, **kwargs)
+
+    @property
+    def connections(self) -> FrozenSet[Tuple[int, int]]:
+        return COCO_CONNECTIONS
 
     @property
     def nose(self) -> vector.Vector4D:

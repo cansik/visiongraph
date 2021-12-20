@@ -17,6 +17,8 @@ from visiongraph.input.BaseInput import BaseInput
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
+MIN_SCORE = 0.5
+
 
 class ProjectedPoseExample(Pipeline):
 
@@ -41,6 +43,12 @@ class ProjectedPoseExample(Pipeline):
 
         for pose in results:
             for i, lm in enumerate(pose.landmarks):
+                if lm.t < MIN_SCORE:
+                    pose.landmarks.x[i] = 0
+                    pose.landmarks.y[i] = 0
+                    pose.landmarks.z[i] = 0
+                    continue
+
                 if self.use_projection:
                     p = rs.pixel_to_point(lm.x, lm.y)
                     pose.landmarks.x[i] = p.x
@@ -80,6 +88,7 @@ class MainWindow:
         self.vis.add_geometry("realsense", self.camera_geometry)
 
         self.pose_cloud: Optional[o3d.geometry.PointCloud] = None
+        self.lines: Optional[o3d.geometry.LineSet] = None
 
         gui.Application.instance.add_window(self.vis)
 
@@ -92,8 +101,6 @@ class MainWindow:
         gui.Application.instance.quit()
 
     def on_result_ready(self, results: List[PoseLandmarkResult]):
-        # logging.info(f"{len(results)} poses detected")
-
         pose_detected = False
 
         if len(results) > 0:
@@ -111,11 +118,20 @@ class MainWindow:
                                     axis=1)
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
 
+            connections = [line for line in pose.connections
+                           if pose.landmarks.t[line[0]] >= MIN_SCORE and pose.landmarks.t[line[1]] >= MIN_SCORE]
+
+            # create connection lines
+            self.lines = o3d.geometry.LineSet().create_from_point_cloud_correspondences(self.pose_cloud,
+                                                                                        self.pose_cloud,
+                                                                                        connections)
+
             pose_detected = True
 
         def update():
             if self._first_run and pose_detected:
                 self.vis.add_geometry("pose", self.pose_cloud)
+                self.vis.add_geometry("lines", self.lines)
                 self.vis.reset_camera_to_default()
                 self._first_run = False
 
@@ -126,6 +142,9 @@ class MainWindow:
                 # self.vis.update_geometry("pose", self.pose_cloud, update_flags)
                 self.vis.remove_geometry("pose")
                 self.vis.add_geometry("pose", self.pose_cloud)
+
+                self.vis.remove_geometry("lines")
+                self.vis.add_geometry("lines", self.lines)
 
         gui.Application.instance.post_to_main_thread(self.vis, update)
 

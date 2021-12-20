@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Tuple, FrozenSet
 
 import vector
 
@@ -33,6 +33,11 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
     @property
     def default_landmarks(self) -> List[vector.Vector4D]:
         return [getattr(self, lm_name) for lm_name in DEFAULT_POSE_LANDMARKS]
+
+    @property
+    @abstractmethod
+    def connections(self) -> FrozenSet[Tuple[int, int]]:
+        pass
 
     @property
     @abstractmethod
