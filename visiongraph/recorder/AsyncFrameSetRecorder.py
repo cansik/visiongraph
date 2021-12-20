@@ -17,8 +17,8 @@ class AsyncFrameSetRecorder(FrameSetRecorder):
         self._image_index = 0
 
     def open(self):
-        super().open()
         self._image_index = 0
+        super().open()
 
     def add_image(self, image: np.ndarray):
         super().add_image(image)

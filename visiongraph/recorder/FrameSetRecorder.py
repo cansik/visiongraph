@@ -9,6 +9,7 @@ from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
 
 class FrameSetRecorder(BaseFrameRecorder):
     def __init__(self, output_path: str = "recordings"):
+        super().__init__()
         self.output_path = output_path
         self._frames = Queue()
 
@@ -16,6 +17,7 @@ class FrameSetRecorder(BaseFrameRecorder):
         # clear all items
         self.clear()
         os.makedirs(self.output_path, exist_ok=True)
+        super().open()
 
     def add_image(self, image: np.ndarray):
         self._frames.put(image)
@@ -26,6 +28,7 @@ class FrameSetRecorder(BaseFrameRecorder):
             image = self._frames.get()
             self._write_image(i, image)
             i += 1
+        super().close()
 
     def clear(self):
         while self._frames.qsize():

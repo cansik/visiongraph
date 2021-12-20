@@ -5,6 +5,9 @@ import numpy as np
 
 
 class BaseFrameRecorder(ABC):
+    def __init__(self):
+        self._is_open = False
+
     def __enter__(self):
         self.open()
 
@@ -17,7 +20,7 @@ class BaseFrameRecorder(ABC):
 
     @abstractmethod
     def open(self):
-        pass
+        self._is_open = True
 
     @abstractmethod
     def add_image(self, image: np.ndarray):
@@ -25,4 +28,8 @@ class BaseFrameRecorder(ABC):
 
     @abstractmethod
     def close(self):
-        pass
+        self._is_open = False
+
+    @property
+    def is_open(self):
+        return self._is_open
