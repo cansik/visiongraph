@@ -28,6 +28,8 @@ class ProjectedPoseExample(Pipeline):
         self.add_nodes(self.input, self.network)
         self.on_result_ready: Optional[Callable[[List[PoseLandmarkResult]], None]] = None
 
+        self.use_projection = True
+
     def _process(self):
         ts, frame = self.input.read()
 
@@ -39,8 +41,14 @@ class ProjectedPoseExample(Pipeline):
 
         for pose in results:
             for i, lm in enumerate(pose.landmarks):
-                depth = rs.distance(lm.x, lm.y)
-                pose.landmarks.z[i] = depth
+                if self.use_projection:
+                    p = rs.pixel_to_point(lm.x, lm.y)
+                    pose.landmarks.x[i] = p.x
+                    pose.landmarks.y[i] = p.y
+                    pose.landmarks.z[i] = p.z
+                else:
+                    depth = rs.distance(lm.x, lm.y)
+                    pose.landmarks.z[i] = depth
 
         for result in results:
             result.annotate(frame)
@@ -97,7 +105,10 @@ class MainWindow:
 
             lm_positions = pose.landmarks.to_xyz()
             size = len(lm_positions)
-            points = np.concatenate((lm_positions.x.reshape(size, 1), lm_positions.y.reshape(size, 1), lm_positions.z.reshape(size, 1)), axis=1)
+            points = np.concatenate((lm_positions.x.reshape(size, 1) * -1,
+                                     lm_positions.y.reshape(size, 1) * -1,
+                                     lm_positions.z.reshape(size, 1)),
+                                    axis=1)
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
 
             pose_detected = True
