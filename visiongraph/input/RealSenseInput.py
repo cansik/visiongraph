@@ -1,10 +1,10 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Tuple
 
 import numpy as np
 import pyrealsense2 as rs
+import vector
 
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.DepthBuffer import DepthBuffer
@@ -129,15 +129,29 @@ class RealSenseInput(DepthBuffer, BaseInput):
 
         return self._depth_frame
 
-    def distance(self, x: float, y: float) -> float:
-        depth_frame = self.depth_frame
-
+    def _calculate_depth_coordinates(self, x: float, y: float, depth_frame: rs.depth_frame) -> Tuple[int, int]:
         x, y = transform_coordinates(x, y, self.rotate, self.flip)
 
         ix = round(constrain(depth_frame.width * x, upper=depth_frame.width - 1))
         iy = round(constrain(depth_frame.height * y, upper=depth_frame.height - 1))
 
+        return ix, iy
+
+    def distance(self, x: float, y: float) -> float:
+        depth_frame = self.depth_frame
+        ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
+
         return depth_frame.get_distance(ix, iy)
+
+    def pixel_to_point(self, x: float, y: float) -> vector.Vector3D:
+        depth_frame: rs.depth_frame = self.depth_frame
+        ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
+
+        depth_intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
+        distance = depth_frame.get_distance(ix, iy)
+
+        point = rs.rs2_deproject_pixel_to_point(depth_intrinsics, [ix, iy], distance)
+        return vector.obj(x=point[0], y=point[1], z=point[2])
 
     @property
     def depth_map(self) -> np.ndarray:
