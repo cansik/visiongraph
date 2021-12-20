@@ -35,6 +35,13 @@ class ProjectedPoseExample(Pipeline):
             return
 
         results = self.network.estimate(frame)
+        rs: RealSenseInput = self.input
+
+        for pose in results:
+            for i, lm in enumerate(pose.landmarks):
+                depth = rs.distance(lm.x, lm.y)
+                pose.landmarks.z[i] = depth
+
         for result in results:
             result.annotate(frame)
 
@@ -55,6 +62,7 @@ class MainWindow:
         self.vis.show_axes = True
         self.vis.show_ground = True
         self.vis.show_settings = True
+        self.vis.point_size = 10
 
         self.vis.set_on_close(self._on_close)
 
@@ -103,6 +111,7 @@ class MainWindow:
             if pose_detected:
                 update_flags = (rendering.Scene.UPDATE_POINTS_FLAG |
                                 rendering.Scene.UPDATE_COLORS_FLAG)
+                # not working atm
                 # self.vis.update_geometry("pose", self.pose_cloud, update_flags)
                 self.vis.remove_geometry("pose")
                 self.vis.add_geometry("pose", self.pose_cloud)
@@ -138,7 +147,7 @@ if __name__ == "__main__":
     add_input_step_choices(input_group, default=1)
 
     pose_group = parser.add_argument_group("pose estimator")
-    add_pose_estimation_step_choices(pose_group)
+    add_pose_estimation_step_choices(pose_group, default=3)
 
     args = parser.parse_args()
 
@@ -146,4 +155,5 @@ if __name__ == "__main__":
         logging.error("This example only runs with a RealSense Input")
         exit(1)
 
+    args.depth = True
     main()
