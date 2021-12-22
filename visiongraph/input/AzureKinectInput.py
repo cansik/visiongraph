@@ -10,11 +10,8 @@ from visiongraph.util.CollectionUtils import default_value_dict
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
-try:
-    import pyk4a
-    from pyk4a import PyK4A, PyK4ACapture, Config
-except Exception as ex:
-    logging.warning(f"PyK4A not found or not properly installed: {ex}")
+import pyk4a
+from pyk4a import PyK4A, PyK4ACapture, Config
 
 
 class AzureKinectInput(BaseDepthInput):
