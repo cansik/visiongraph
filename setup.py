@@ -36,7 +36,7 @@ def parse_requirements():
                 os_names = tokens[3].split(",")
                 if not any([platform.startswith(os_name) for os_name in os_names]):
                     # os not supporting this dependency
-                    print(f"skipping extra {extra_name}")
+                    print(f"Setup: Skipping extra {extra_name} because it is not support on {platform}.")
                     skip_extra = True
                     continue
 
