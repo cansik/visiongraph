@@ -6,8 +6,7 @@ import numpy as np
 import pyrealsense2 as rs
 import vector
 
-from visiongraph.input.BaseInput import BaseInput
-from visiongraph.model.DepthBuffer import DepthBuffer
+from visiongraph.input.BaseDepthInput import BaseDepthInput
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
@@ -15,12 +14,10 @@ from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
 
-class RealSenseInput(DepthBuffer, BaseInput):
+class RealSenseInput(BaseDepthInput):
     def __init__(self):
         super().__init__()
         self.use_infrared = False
-        self.enable_depth = False
-        self.use_depth_as_input = False
         self.disable_emitter = False
         self.serial: Optional[str] = None
 
@@ -164,17 +161,13 @@ class RealSenseInput(DepthBuffer, BaseInput):
         super().configure(args)
 
         self.use_infrared = args.infrared
+
         self._exposure = args.exposure
         self._gain = args.gain
         self.serial = args.rs_serial
 
-        self.enable_depth = args.depth
-        self.use_depth_as_input = args.depth_as_input
         self.disable_emitter = args.disable_emitter
         self.color_scheme = args.color_scheme
-
-        if self.use_depth_as_input:
-            self.enable_depth = True
 
         # filter enabler
         if args.rs_filter is not None:

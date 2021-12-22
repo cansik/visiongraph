@@ -12,6 +12,9 @@ scipy
 # extra realsense
 pyrealsense2
 
+# extra azure
+pyk4a
+
 # extra openvino
 openvino>=2021.4.2
 
