@@ -1,5 +1,5 @@
 from typing import List
-
+from sys import platform
 from setuptools import setup, find_packages
 
 required_packages = find_packages(exclude=["tests", "examples"])
@@ -17,18 +17,33 @@ def parse_requirements():
     extra_name = BASE_NAME
     extra_items: List[str] = []
 
+    skip_extra = False
     for line in [line.strip() for line in lines if line != ""]:
         if line.startswith("# extra"):
-            extras[extra_name] = extra_items
+            # add current extra
+            if not skip_extra:
+                extras[extra_name] = extra_items
+            else:
+                skip_extra = False
+
+            # prepare new extra
             extra_items: List[str] = []
 
             tokens = line.split(" ")
             extra_name = tokens[2]
 
+            if len(tokens) > 3:
+                os_names = tokens[3].split(",")
+                if not any([platform.startswith(os_name) for os_name in os_names]):
+                    # os not supporting this dependency
+                    print(f"skipping extra {extra_name}")
+                    skip_extra = True
+                    continue
+
         elif line.startswith("#"):
-            pass
+            continue
         elif line.startswith("-"):
-            pass
+            continue
         else:
             extra_items.append(line)
 

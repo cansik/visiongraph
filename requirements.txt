@@ -12,7 +12,7 @@ scipy
 # extra realsense
 pyrealsense2
 
-# extra azure
+# extra azure win,linux
 pyk4a
 
 # extra openvino
