@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Set
 from sys import platform
 from setuptools import setup, find_packages
 
@@ -17,6 +17,8 @@ def parse_requirements():
     extra_name = BASE_NAME
     extra_items: List[str] = []
 
+    os_dependent: Set[str] = set()
+
     skip_extra = False
     for line in [line.strip() for line in lines if line != ""]:
         if line.startswith("# extra"):
@@ -33,6 +35,7 @@ def parse_requirements():
             extra_name = tokens[2]
 
             if len(tokens) > 3:
+                os_dependent.add(extra_name)
                 os_names = tokens[3].split(",")
                 if not any([platform.startswith(os_name) for os_name in os_names]):
                     # os not supporting this dependency
@@ -54,7 +57,7 @@ def parse_requirements():
     install = extras.pop(BASE_NAME)
 
     # create all group
-    all_reqs = list(extras.values())
+    all_reqs = [v for k, v in extras.items() if k not in os_dependent]
     extras[ALL_NAME] = []
     for reqs in all_reqs:
         extras[ALL_NAME] += reqs

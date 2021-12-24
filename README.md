@@ -2,7 +2,7 @@
 Vision Graph is a simple computer vision pipeline.
 
 ## Installation
-To install visiongraph with all dependencies call pip like this:
+To install visiongraph with all dependencies (which are cross-platform) call pip like this:
 
 ```bash
 pip install "visiongraph[all]"
@@ -11,7 +11,15 @@ pip install "visiongraph[all]"
 It is also possible to only install certain packages depending on your needs:
 
 ```bash
-pip install "visiongraph[realsense, openvino, mediapipe, onnx, media]"
+pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure]"
+```
+
+#### Azure Kinect
+
+The Azure Kinect is only available on Linux & Windows systems and will not be installed with `all` extra identifier. To install the Azure Kinect support, specify the azure kinect as well:
+
+```bash
+pip install "visiongraph[all, azure]"
 ```
 
 ### Development
