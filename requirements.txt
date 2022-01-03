@@ -19,11 +19,11 @@ pyk4a
 openvino>=2021.4.2
 
 # extra mediapipe
-mediapipe==0.8.9
+mediapipe==0.8.9.1
 
 # extra onnx
-onnx==1.10.1
-onnxruntime==1.9.0
+onnx==1.10.2
+onnxruntime==1.10.0
 
 # extra media
 moviepy
