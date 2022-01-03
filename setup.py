@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import List, Set
 from sys import platform
 from setuptools import setup, find_packages
@@ -67,6 +68,10 @@ def parse_requirements():
 
 install_required, extras_required = parse_requirements()
 
+# read readme
+current_dir = Path(__file__).parent
+long_description = (current_dir / "README.md").read_text()
+
 setup(
     name="visiongraph",
     version='0.1.9',
@@ -75,7 +80,9 @@ setup(
     license='MIT License',
     author='Florian Bruggisser',
     author_email='github@broox.ch',
-    description='Visiongraph is a computer vision pipeline.',
+    description='Visiongraph is a high level computer vision pipeline.',
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     install_requires=install_required,
     extras_require=extras_required
 )
