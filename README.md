@@ -50,6 +50,8 @@ python setup.py bdist_wheel
 ## Examples
 To demonstrate the possibilities of visiongraph there are already implemented [examples](examples) ready for you to try out. Here is a list of the current examples:
 
+- [SimpleVisionGraph](examples/SimpleVisionGraph.py) - Object detection & tracking of live webcam input on `10` lines of code.
+- [VisionGraphExample](examples/VisionGraphExample.py) - A face detection and tracking example with events.
 - [InputExample](examples/InputExample.py) - A basic input example that determines the center if possible.
 - [RealSenseDepthExample](examples/RealSenseDepthExample.py) - Display the RealSense depth map.
 - [FaceDetectionExample](examples/FaceDetectionExample.py) - A face detection pipeline example.
@@ -66,6 +68,8 @@ There are even more examples where visiongraph is currently in use:
 - [Spout RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RealSense RGB-D images over spout.
 
 ## Documentation
+
+### VisionPipeline
 
 ### Pipeline
 

@@ -12,5 +12,5 @@ class BaseClassifier(ScoreThresholdEstimator, ABC):
         self.labels: List[str] = []
 
     @abstractmethod
-    def estimate(self, **kwargs) -> ClassificationResult:
+    def estimate(self, *args, **kwargs) -> ClassificationResult:
         pass
