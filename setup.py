@@ -3,6 +3,8 @@ from typing import List, Set
 from sys import platform
 from setuptools import setup, find_packages
 
+from generate_init import generate_init
+
 required_packages = find_packages(exclude=["tests", "examples"])
 
 BASE_NAME = "__required__"
@@ -67,6 +69,9 @@ def parse_requirements():
 
 
 install_required, extras_required = parse_requirements()
+
+# generate init file with all imports
+generate_init()
 
 # read readme
 current_dir = Path(__file__).parent
