@@ -1,5 +1,4 @@
 import argparse
-from enum import Enum
 from typing import Dict, Any, Optional, Callable, Union
 
 from visiongraph.PipelineNode import PipelineNode

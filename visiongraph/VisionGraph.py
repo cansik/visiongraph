@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from collections import Callable
-from typing import Optional, Dict
+from typing import Optional, Dict, Callable
 
 import cv2
 import numpy as np
