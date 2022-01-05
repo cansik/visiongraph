@@ -1,10 +1,10 @@
 from abc import abstractmethod, ABC
 from typing import Any
 
-from visiongraph.PipelineNode import PipelineNode
+from visiongraph.GraphNode import GraphNode
 
 
-class ChainableNode(PipelineNode, ABC):
+class ChainableNode(GraphNode, ABC):
 
     @abstractmethod
     def _chain_apply(self, *args, **kwargs) -> Any:

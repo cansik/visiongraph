@@ -3,15 +3,14 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph.Pipeline import Pipeline
-from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-class HandDetectionExample(Pipeline):
+class HandDetectionExample(BaseGraph):
 
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)

@@ -4,7 +4,7 @@ from typing import Optional, Dict, Callable
 import cv2
 import numpy as np
 
-from visiongraph.Pipeline import Pipeline
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
@@ -12,7 +12,7 @@ from visiongraph.result.BaseResult import BaseResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-class VisionGraph(Pipeline):
+class VisionGraph(BaseGraph):
 
     def __init__(self, estimators: Optional[Dict[str, VisionEstimator]] = None, input: Optional[BaseInput] = None,
                  name: str = "VisionPipeline", display: bool = True, annotate: bool = True,

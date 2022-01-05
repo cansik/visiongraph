@@ -55,7 +55,7 @@ class VideoCaptureInput(BaseInput):
 
     def read(self) -> (int, Optional[np.ndarray]):
         if not self._cap.isOpened():
-            raise Exception(f"is not opened with channel {self.channel}")
+            raise Exception(f"Could not open channel {self.channel}, please check path.")
 
         # wait with read to match fps
         if self.fps_lock:

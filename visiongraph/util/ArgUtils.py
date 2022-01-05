@@ -1,7 +1,7 @@
 import argparse
 from typing import Dict, Any, Optional, Callable, Union
 
-from visiongraph.PipelineNode import PipelineNode
+from visiongraph.GraphNode import GraphNode
 
 
 def dict_choice(table):
@@ -58,7 +58,7 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
                         type=dict_choice(source), help=help_text)
 
 
-def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, PipelineNode],
+def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, GraphNode],
                              name: str, help: str = "", default: Optional[int] = 0, add_params: bool = True):
     add_dict_choice_argument(parser, steps, name, help, default)
 
@@ -81,7 +81,7 @@ def add_enum_choice_argument(parser: argparse.ArgumentParser, enum_type: Any, na
 
 
 class PipelineNodeFactory:
-    def __init__(self, pipeline_node: PipelineNode, method: Callable, *params: Any):
+    def __init__(self, pipeline_node: GraphNode, method: Callable, *params: Any):
         self.pipeline_node = pipeline_node
         self.method = method
         self.params = params

@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph.Pipeline import Pipeline
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
@@ -11,7 +11,7 @@ from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-class PoseEstimationExample(Pipeline):
+class PoseEstimationExample(BaseGraph):
 
     def __init__(self, input: BaseInput, pose_network: PoseEstimator, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)

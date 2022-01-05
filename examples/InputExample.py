@@ -3,16 +3,13 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph.Pipeline import Pipeline
-from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
-from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices
-from visiongraph.input.BaseDepthInput import BaseDepthInput
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-class InputExample(Pipeline):
+class InputExample(BaseGraph):
 
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)

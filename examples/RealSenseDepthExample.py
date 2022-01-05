@@ -3,12 +3,12 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph.Pipeline import Pipeline
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices, RealSenseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-class RealSenseDepthExample(Pipeline):
+class RealSenseDepthExample(BaseGraph):
 
     def __init__(self, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)

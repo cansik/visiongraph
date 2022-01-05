@@ -4,7 +4,7 @@ from argparse import Namespace
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
 
-class PipelineNode(ArgumentConfigurable, ABC):
+class GraphNode(ArgumentConfigurable, ABC):
     @abstractmethod
     def setup(self):
         pass

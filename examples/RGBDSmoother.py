@@ -6,7 +6,7 @@ import cv2
 import numpy as np
 from tqdm import tqdm
 
-from visiongraph.Pipeline import Pipeline
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices, VideoCaptureInput
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.recorder.CV2VideoRecorder import CV2VideoRecorder
@@ -15,7 +15,7 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
 
 
-class RGBDSmoother(Pipeline):
+class RGBDSmoother(BaseGraph):
 
     def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
         super().__init__(multi_threaded, deamon)
