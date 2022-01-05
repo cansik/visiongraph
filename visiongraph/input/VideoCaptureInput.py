@@ -27,6 +27,9 @@ class VideoCaptureInput(BaseInput):
     def setup(self):
         self._cap = cv2.VideoCapture(self.channel)
 
+        if not self._cap.isOpened():
+            logging.warning("Could not open VideoCapture, please check if channel is correct.")
+
         if not (self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width) and
                 self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)):
 
@@ -52,7 +55,7 @@ class VideoCaptureInput(BaseInput):
 
     def read(self) -> (int, Optional[np.ndarray]):
         if not self._cap.isOpened():
-            raise Exception("is not opened with channel {self.channel}")
+            raise Exception(f"is not opened with channel {self.channel}")
 
         # wait with read to match fps
         if self.fps_lock:
