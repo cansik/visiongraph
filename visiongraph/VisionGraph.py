@@ -14,9 +14,10 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class VisionGraph(BaseGraph):
 
-    def __init__(self, estimators: Optional[Dict[str, VisionEstimator]] = None, input: Optional[BaseInput] = None,
+    def __init__(self, input: Optional[BaseInput] = None,
                  name: str = "VisionPipeline", display: bool = True, annotate: bool = True,
-                 multi_threaded: bool = True, deamon: bool = True, handle_signals: bool = True):
+                 multi_threaded: bool = True, deamon: bool = True, handle_signals: bool = True,
+                 **estimators: VisionEstimator):
         super().__init__(multi_threaded, deamon, handle_signals)
 
         self.input: Optional[BaseInput] = input
