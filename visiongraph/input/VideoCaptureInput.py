@@ -1,6 +1,6 @@
 import time
 from argparse import ArgumentParser, Namespace
-from typing import Optional
+from typing import Optional, Union
 
 import numpy as np
 
@@ -12,12 +12,13 @@ from visiongraph.util.TimeUtils import current_millis
 
 
 class VideoCaptureInput(BaseInput):
-    def __init__(self):
+    def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
+                 loop: bool = True, fps_lock: bool = True):
         super().__init__()
-        self.channel = 0
-        self.input_skip = -1
-        self.loop = True
-        self.fps_lock = True
+        self.channel = channel
+        self.input_skip = input_skip
+        self.loop = loop
+        self.fps_lock = fps_lock
         self._cap: Optional[cv2.VideoCapture] = None
 
         self._last_read_time = 0
@@ -32,7 +33,6 @@ class VideoCaptureInput(BaseInput):
 
         if not (self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width) and
                 self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)):
-
             # if not settable-try to read
             self.width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.height = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
