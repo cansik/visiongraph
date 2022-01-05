@@ -10,6 +10,7 @@ from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.result.BaseResult import BaseResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
+from visiongraph.util.TimeUtils import FPSTracer
 
 
 class VisionGraph(BaseGraph):
@@ -22,6 +23,7 @@ class VisionGraph(BaseGraph):
 
         self.input: Optional[BaseInput] = input
         self.estimators: Dict[str, VisionEstimator] = dict() if estimators is None else estimators
+        self.fps = FPSTracer()
 
         self.name = name
         self.display = display
@@ -47,10 +49,8 @@ class VisionGraph(BaseGraph):
         if self.on_frame_ready is not None:
             self.on_frame_ready(ts, frame)
 
-        # inference
-        results: Dict[str, BaseResult] = dict()
-        for name, estimator in self.estimators.items():
-            results[name] = estimator.estimate(frame)
+        results: Dict[str, BaseResult] = self._inference(frame)
+        self.fps.update()
 
         if self.on_results_ready is not None:
             self.on_results_ready(results)
@@ -76,6 +76,12 @@ class VisionGraph(BaseGraph):
 
         if self.input is None:
             self.input = args.input()
+
+    def _inference(self, frame: np.ndarray) -> Dict[str, BaseResult]:
+        results: Dict[str, BaseResult] = dict()
+        for name, estimator in self.estimators.items():
+            results[name] = estimator.estimate(frame)
+        return results
 
     @staticmethod
     def add_params(parser: ArgumentParser):

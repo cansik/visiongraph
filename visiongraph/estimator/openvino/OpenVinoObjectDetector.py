@@ -21,12 +21,15 @@ class OpenVinoObjectDetector(ObjectDetector, ABC):
         self.labels = labels
         self.device = device
 
-        self.ie = IECore()
+        self.ie: Optional[IECore] = None
         self.pipeline: Optional[SyncInferencePipeline] = None
         self.ie_model: Optional[Model] = None
 
     def setup(self):
         Asset.prepare_all(self.model, self.weights)
+
+        if self.ie is None:
+            self.ie = IECore()
 
         self.ie_model = self._create_ie_model()
         self.pipeline = SyncInferencePipeline(self.ie_model, self.device, self.ie)
