@@ -69,9 +69,9 @@ There are even more examples where visiongraph is currently in use:
 
 ## Documentation
 
-### VisionPipeline
+### VisionGraph
 
-### Pipeline
+### Graph
 
 ### Input
 Supported are video, webcam, RealSense and Azure Kinect input types. Azure Kinect may need a [special install](https://github.com/etiennedub/pyk4a#windows) on Windows and the [Azure-Kinect-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK)
