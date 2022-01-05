@@ -1,22 +1,29 @@
+import ast
 import distutils.cmd
-import importlib
-import inspect
-import sys
+import glob
+import os
 from pathlib import Path
-from pkgutil import iter_modules
 from sys import platform
-from typing import List, Set
+from typing import Set
+from typing import Tuple, List
 
 from setuptools import find_packages
 from setuptools import setup
 
 
 class GenerateInitPy(distutils.cmd.Command):
+    description = 'generate top-level init py'
+    user_options = []
+
     root_package = "visiongraph"
 
-    module_blacklist = {
+    excluded_modules = {
         "visiongraph.external",
         "visiongraph.tracker.motrackers"
+    }
+
+    late_import_modules = {
+        "visiongraph.estimator.openvino.OpenVinoPoseEstimator"
     }
 
     optional_modules = {
@@ -32,99 +39,73 @@ class GenerateInitPy(distutils.cmd.Command):
         "visiongraph.util"
     }
 
-    import_blacklist = {
-        "abstractmethod"
-    }
-
-    description = 'generate top-level init py'
-    user_options = []
-
     @staticmethod
-    def find_modules(pkg, pkgpath):
-        modules = set()
-        if sys.version_info.major == 2 or (sys.version_info.major == 3 and sys.version_info.minor < 6):
-            for _, name, ispkg in iter_modules([pkgpath]):
-                if not ispkg:
-                    if pkg != "":
-                        modules.add(pkg + '.' + name)
-                    else:
-                        modules.add(name)
-        else:
-            for info in iter_modules([pkgpath]):
-                if not info.ispkg:
-                    if pkg != "":
-                        modules.add(pkg + '.' + info.name)
-                    else:
-                        modules.add(info.name)
-        return modules
+    def get_files_in_path(path: str, extensions: [str] = ["*.*"]) -> [str]:
+        return sorted([f for ext in extensions for f in glob.glob(os.path.join(path, ext), recursive=True)])
 
-    @staticmethod
-    def find_modules_in_packages(path):
-        modules = GenerateInitPy.find_modules("", path)
-        for pkg in find_packages(path):
-            modules.add(pkg)
-            pkgpath = path + '/' + pkg.replace('.', '/')
-            modules.update(GenerateInitPy.find_modules(pkg, pkgpath))
+    def analyse_source_file(self, file_path: str) -> List[Tuple[str, str, bool]]:
+        """
+        Finds all class definitions in the source files and imports them.
+        :param file_path: Path to the python source file.
+        :return: List of imported modules / names and if they should be optional.
+        """
+        with open(file_path, "r") as file:
+            source = file.read()
 
-        return modules
+        results: List[Tuple[str, str, bool]] = []
 
-    @staticmethod
-    def is_class_or_method(value) -> bool:
-        if inspect.isclass(value):
-            return True
-        if inspect.isfunction(value) and not inspect.isabstract(value) and not value.__name__.startswith("_"):
-            return True
-        return False
+        module = file_path.replace("/", ".").replace("\\", ".").replace(".py", "")
+        optional = False
 
-    def initialize_options(self) -> None:
-        pass
+        # skip if is excluded
+        if any([module.startswith(e) for e in self.excluded_modules]):
+            return results
+
+        nodes = ast.parse(source)
+        for node in ast.iter_child_nodes(nodes):
+            # classes
+            if isinstance(node, ast.ClassDef):
+                results.append((module, node.name, optional))
+
+            # imports to check if is optional module
+            elif isinstance(node, ast.Import):
+                for import_name in node.names:
+                    if any([import_name.name.startswith(e) for e in self.optional_modules]):
+                        optional = True
+
+            elif isinstance(node, ast.ImportFrom):
+                if any([node.module.startswith(e) for e in self.optional_modules]):
+                    optional = True
+
+            # methods for modules that should be included
+            elif isinstance(node, ast.FunctionDef):
+                if any([module.startswith(e) for e in self.module_with_methods]):
+                    results.append((module, node.name, optional))
+
+        return results
 
     def run(self) -> None:
-        modules = self.find_modules_in_packages(self.root_package)
-        optional_packages = set()
+        # analyse source files
+        source_files = self.get_files_in_path(f"{self.root_package}/**", ["*.py"])
+        imports = [self.analyse_source_file(f) for f in source_files]
+        imports = [i for sl in imports for i in sl]
 
-        imports = []
-        for module in modules:
-            pgk_path = f"{self.root_package}.{module}"
-
-            filter_method = inspect.isclass
-
-            if any([pgk_path.startswith(e) for e in self.module_blacklist]):
-                continue
-
-            if any([pgk_path.startswith(e) for e in self.module_with_methods]):
-                filter_method = self.is_class_or_method
-
-            for name, cls in inspect.getmembers(importlib.import_module(pgk_path)):
-                if inspect.ismodule(cls) and any([cls.__name__.startswith(e) for e in self.optional_modules]):
-                    optional_packages.add(pgk_path)
-
-                if inspect.isclass(cls) and any([cls.__module__.startswith(e)
-                                                 for e in self.optional_modules]):
-                    optional_packages.add(pgk_path)
-
-                if inspect.isclass(cls) and cls.__module__ != pgk_path:
-                    continue
-
-                if name in self.import_blacklist:
-                    continue
-
-                if not filter_method(cls):
-                    continue
-
-                imports.append((module, name))
+        # re-order-late imports
+        late_imports = [i for i in imports if any([i[0].startswith(e) for e in self.late_import_modules])]
+        for li in late_imports:
+            imports.remove(li)
+            imports.append(li)
 
         # generate python code
         lines = []
-        for module, name in imports:
-            import_line = f"from .{module} import {name}"
+        for module, name, optional in imports:
+            # relative import
+            module = module.replace(self.root_package, "")
+            import_line = f"from {module} import {name}"
 
-            if f"{self.root_package}.{module}" in optional_packages:
-                line = f"""try:
-    {import_line}
-except ModuleNotFoundError as ex:
-    logging.debug(f"Could not import {name}")"""
-
+            if optional:
+                line = f"try:\n    {import_line}\nexcept ModuleNotFoundError as ex:\n    " \
+                       f"logging.debug(f\"Could not import {name}\")"
                 lines.append(line)
             else:
                 lines.append(import_line)
@@ -136,6 +117,9 @@ except ModuleNotFoundError as ex:
 
         with open(f"{self.root_package}/__init__.py", "w+") as file:
             file.write("\n".join(lines))
+
+    def initialize_options(self) -> None:
+        pass
 
     def finalize_options(self) -> None:
         pass
