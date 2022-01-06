@@ -82,6 +82,9 @@ class GenerateInitPy(distutils.cmd.Command):
                 if any([module.startswith(e) for e in self.module_with_methods]):
                     results.append((module, node.name, optional))
 
+        # filter private and protected imports
+        results = [r for r in results if not r[1].startswith("_")]
+
         return results
 
     def run(self) -> None:
