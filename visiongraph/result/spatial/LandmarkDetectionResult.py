@@ -30,8 +30,8 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         # draw connections
         if connections is not None:
             for ia, ib in connections:
-                a: vector.Vector4D = self.landmarks[ia]
-                b: vector.Vector4D = self.landmarks[ib]
+                a: vector.Vector4D = self.landmarks[ia]  # type: ignore
+                b: vector.Vector4D = self.landmarks[ib]  # type: ignore
 
                 if a.t > min_score and b.t > min_score:
                     point01 = (round(a.x * w), round(a.y * h))
