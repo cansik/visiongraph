@@ -32,7 +32,8 @@ class GenerateInitPy(distutils.cmd.Command):
         "openvino",
         "mediapipe",
         "onnxruntime",
-        "moviepy"
+        "moviepy",
+        "numba"
     }
 
     module_with_methods = {

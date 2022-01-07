@@ -26,3 +26,6 @@ onnxruntime==1.10.0
 
 # extra media
 moviepy
+
+# extra numba
+numba
