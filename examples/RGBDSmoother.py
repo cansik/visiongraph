@@ -10,7 +10,8 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices, VideoCaptureInput
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.recorder.CV2VideoRecorder import CV2VideoRecorder
-from visiongraph.signal.OneEuroFilter import OneEuroFilter
+from visiongraph.dsp.OneEuroFilterNumba import OneEuroFilterNumba
+from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
 
@@ -24,7 +25,7 @@ class RGBDSmoother(BaseGraph):
         self.input.loop = False
         self.input.fps_lock = False
 
-        self.filter: Optional[OneEuroFilter] = None
+        self.filter: Optional[OneEuroFilterNumpy] = None
         self.output_path = None
 
         self.recorder: Optional[CV2VideoRecorder] = None
@@ -56,9 +57,11 @@ class RGBDSmoother(BaseGraph):
         hue_frame = cv2.cvtColor(bgr_frame, cv2.COLOR_RGB2HSV_FULL)
         depth = hue_frame[:, :, 0].astype("float32") / 255.0
 
-        # late init
+        # late init of OneEuroFilter
+        # currently Numba version of the filter is used for improved performance
+        # it is possible to use OneEuroFilterNumpy as well
         if self.filter is None:
-            self.filter = OneEuroFilter(depth, min_cutoff=0.5, beta=0.001)
+            self.filter = OneEuroFilterNumba(depth, min_cutoff=0.5, beta=0.001)
             smooth_depth = depth
 
             if self.output_path is not None:

@@ -134,7 +134,12 @@ except ModuleNotFoundError as ex:
     logging.debug(f"Could not import BlazePose")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
-from .signal.OneEuroFilter import OneEuroFilter
+from .dsp.OneEuroFilter import OneEuroFilter
+try:
+    from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
+except ModuleNotFoundError as ex:
+    logging.debug(f"Could not import OneEuroFilterNumba")
+from .dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from .tracker.ObjectDetectionTracker import ObjectDetectionTracker
 from .util.ArgUtils import dict_choice
 from .util.ArgUtils import float_range
