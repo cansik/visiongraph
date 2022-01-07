@@ -23,7 +23,8 @@ class GenerateInitPy(distutils.cmd.Command):
     }
 
     late_import_modules = {
-        "visiongraph.estimator.openvino.OpenVinoPoseEstimator"
+        "visiongraph.estimator.openvino.OpenVinoPoseEstimator",
+        "visiongraph.dsp.OneEuroFilterNumba"
     }
 
     optional_modules = {
@@ -93,6 +94,7 @@ class GenerateInitPy(distutils.cmd.Command):
         source_files = self.get_files_in_path(f"{self.root_package}/**", ["*.py"])
         imports = [self.analyse_source_file(f) for f in source_files]
         imports = [i for sl in imports for i in sl]
+        imports = sorted(imports, key=lambda x: f"{x[0]}.{x[1]}")
 
         # re-order-late imports
         late_imports = [i for i in imports if any([i[0].startswith(e) for e in self.late_import_modules])]

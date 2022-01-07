@@ -6,6 +6,8 @@ from .VisionGraph import VisionGraph
 from .data.Asset import Asset
 from .data.LocalAsset import LocalAsset
 from .data.RepositoryAsset import RepositoryAsset
+from .dsp.OneEuroFilter import OneEuroFilter
+from .dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from .estimator.BaseClassifier import BaseClassifier
 from .estimator.BaseEstimator import BaseEstimator
 from .estimator.ChainEstimator import ChainEstimator
@@ -37,13 +39,13 @@ from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
 from .estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 from .estimator.spatial.face.FaceDetector import FaceDetector
 try:
-    from .estimator.spatial.face.MediaPipeFaceDetector import MediaPipeFaceModel
-except ModuleNotFoundError as ex:
-    logging.debug(f"Could not import MediaPipeFaceModel")
-try:
     from .estimator.spatial.face.MediaPipeFaceDetector import MediaPipeFaceDetector
 except ModuleNotFoundError as ex:
     logging.debug(f"Could not import MediaPipeFaceDetector")
+try:
+    from .estimator.spatial.face.MediaPipeFaceDetector import MediaPipeFaceModel
+except ModuleNotFoundError as ex:
+    logging.debug(f"Could not import MediaPipeFaceModel")
 from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceConfig
 from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
@@ -63,13 +65,13 @@ except ModuleNotFoundError as ex:
 from .estimator.spatial.pose.AEPoseEstimator import AEPoseConfig
 from .estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator
 try:
-    from .estimator.spatial.pose.MediaPipePoseEstimator import PoseModelComplexity
-except ModuleNotFoundError as ex:
-    logging.debug(f"Could not import PoseModelComplexity")
-try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 except ModuleNotFoundError as ex:
     logging.debug(f"Could not import MediaPipePoseEstimator")
+try:
+    from .estimator.spatial.pose.MediaPipePoseEstimator import PoseModelComplexity
+except ModuleNotFoundError as ex:
+    logging.debug(f"Could not import PoseModelComplexity")
 from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
 from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
 from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseConfig
@@ -134,40 +136,38 @@ except ModuleNotFoundError as ex:
     logging.debug(f"Could not import BlazePose")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
-from .dsp.OneEuroFilter import OneEuroFilter
+from .tracker.ObjectDetectionTracker import ObjectDetectionTracker
+from .util.ArgUtils import PipelineNodeFactory
+from .util.ArgUtils import add_dict_choice_argument
+from .util.ArgUtils import add_enum_choice_argument
+from .util.ArgUtils import add_step_choice_argument
+from .util.ArgUtils import dict_choice
+from .util.ArgUtils import float_range
+from .util.CollectionUtils import default_value_dict
+from .util.DrawingUtils import draw_axis
+from .util.DrawingUtils import draw_bbox
+from .util.ImageUtils import extract_roi_safe
+from .util.ImageUtils import resize_and_letter_box
+from .util.LoggingUtils import add_logging_parameter
+from .util.LoggingUtils import setup_logging
+from .util.MathUtils import StreamingMovingAverage
+from .util.MathUtils import constrain
+from .util.MathUtils import map_value
+from .util.MathUtils import rotate_2d
+from .util.MathUtils import transform_coordinates
+from .util.NetworkUtils import download_file
+from .util.NetworkUtils import prepare_data_file
+from .util.NetworkUtils import prepare_openvino_model
+from .util.ResultUtils import list_of_vector4D
+from .util.ResultUtils import non_maximum_suppression
+from .util.TimeUtils import FPSTracer
+from .util.TimeUtils import ProfileWatch
+from .util.TimeUtils import Watch
+from .util.TimeUtils import current_millis
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
 except ModuleNotFoundError as ex:
     logging.debug(f"Could not import OneEuroFilterNumba")
-from .dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
-from .tracker.ObjectDetectionTracker import ObjectDetectionTracker
-from .util.ArgUtils import dict_choice
-from .util.ArgUtils import float_range
-from .util.ArgUtils import add_dict_choice_argument
-from .util.ArgUtils import add_step_choice_argument
-from .util.ArgUtils import add_enum_choice_argument
-from .util.ArgUtils import PipelineNodeFactory
-from .util.CollectionUtils import default_value_dict
-from .util.DrawingUtils import draw_axis
-from .util.DrawingUtils import draw_bbox
-from .util.ImageUtils import resize_and_letter_box
-from .util.ImageUtils import extract_roi_safe
-from .util.LoggingUtils import add_logging_parameter
-from .util.LoggingUtils import setup_logging
-from .util.MathUtils import transform_coordinates
-from .util.MathUtils import constrain
-from .util.MathUtils import map_value
-from .util.MathUtils import rotate_2d
-from .util.MathUtils import StreamingMovingAverage
-from .util.NetworkUtils import download_file
-from .util.NetworkUtils import prepare_openvino_model
-from .util.NetworkUtils import prepare_data_file
-from .util.ResultUtils import list_of_vector4D
-from .util.ResultUtils import non_maximum_suppression
-from .util.TimeUtils import current_millis
-from .util.TimeUtils import Watch
-from .util.TimeUtils import ProfileWatch
-from .util.TimeUtils import FPSTracer
 try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 except ModuleNotFoundError as ex:
