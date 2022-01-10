@@ -58,11 +58,6 @@ class VisionGraph(BaseGraph):
         # annotate
         if self.annotate:
             for result in results.values():
-                if isinstance(result, list):
-                    for r in result:
-                        r.annotate(frame)
-                    continue
-
                 result.annotate(frame)
 
         # analyse
