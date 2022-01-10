@@ -1,12 +1,13 @@
 from argparse import Namespace
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 import cv2
 import mediapipe as mp
 import numpy as np
 
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.util.ResultUtils import list_of_vector4D
 
@@ -19,7 +20,7 @@ class PoseModelComplexity(Enum):
     Heavy = 2
 
 
-class MediaPipePoseEstimator(PoseEstimator):
+class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
     def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
                  min_score: float = 0.5,
                  min_tracking_confidence: float = 0.5,
@@ -47,21 +48,21 @@ class MediaPipePoseEstimator(PoseEstimator):
                                       enable_segmentation=self.enable_segmentation,
                                       smooth_segmentation=self.smooth_segmentation)
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[BlazePose]:
+    def process(self, data: np.ndarray) -> ResultList[BlazePose]:
         # pre-process image
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
 
         results = self.detector.process(image)
 
         # check if results are there
         if not results.pose_landmarks:
-            return []
+            return ResultList()
 
         raw_landmarks = [(lm.x, lm.y, lm.z, lm.visibility) for lm in results.pose_landmarks.landmark]
         landmarks = list_of_vector4D(raw_landmarks)
         score = np.average(landmarks["t"])
 
-        return [BlazePose(score, landmarks)]
+        return ResultList([BlazePose(score, landmarks)])
 
     def release(self):
         self.detector.close()

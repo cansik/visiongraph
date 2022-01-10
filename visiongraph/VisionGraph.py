@@ -76,11 +76,12 @@ class VisionGraph(BaseGraph):
 
         if self.input is None:
             self.input = args.input()
+            self.input.configure(args)
 
     def _inference(self, frame: np.ndarray) -> Dict[str, BaseResult]:
         results: Dict[str, BaseResult] = dict()
         for name, estimator in self.estimators.items():
-            results[name] = estimator.estimate(frame)
+            results[name] = estimator.process(frame)
         return results
 
     @staticmethod

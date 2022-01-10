@@ -17,8 +17,8 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
     def setup(self):
         self.engine.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> HeadPoseResult:
-        output = self.engine.estimate(image)
+    def process(self, data: np.ndarray) -> HeadPoseResult:
+        output = self.engine.process(data)
         return HeadPoseResult(vector.obj(
             x=float(output["angle_p_fc"][0][0]),
             y=float(output["angle_y_fc"][0][0]),
@@ -32,7 +32,7 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         self.engine.release()
 
     def configure(self, args: Namespace):
-        self.engine.configure(args)
+        pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):

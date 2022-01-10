@@ -38,7 +38,7 @@ class ProjectedPoseExample(BaseGraph):
         if frame is None:
             return
 
-        results = self.network.estimate(frame)
+        results = self.network.process(frame)
         rs: RealSenseInput = self.input
 
         for pose in results:

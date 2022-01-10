@@ -8,5 +8,5 @@ from visiongraph.result.HeadPoseResult import HeadPoseResult
 
 class HeadPoseEstimator(RoiEstimator):
     @abstractmethod
-    def estimate(self, image: np.ndarray, **kwargs) -> HeadPoseResult:
+    def process(self, image: np.ndarray) -> HeadPoseResult:
         pass

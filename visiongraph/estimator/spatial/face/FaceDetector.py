@@ -1,13 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import TypeVar
 
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult
 
+OutputType = TypeVar('OutputType', bound=FaceDetectionResult)
 
-class FaceDetector(ObjectDetector, ABC):
+
+class FaceDetector(ObjectDetector[OutputType], ABC):
     @abstractmethod
-    def estimate(self, image: np.ndarray, **kwargs) -> List[FaceDetectionResult]:
+    def process(self, image: np.ndarray) -> ResultList[OutputType]:
         pass

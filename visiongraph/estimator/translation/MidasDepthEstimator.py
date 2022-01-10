@@ -52,7 +52,7 @@ class MidasDepthEstimator(DepthEstimator):
 
         self._max_val = (2 ** self.prediction_bit_depth) - 1
 
-    def estimate(self, image: np.ndarray, **kwargs) -> DepthMap:
+    def process(self, image: np.ndarray) -> DepthMap:
         # todo: maybe convert COLOR_BGR2RGB
         normalized_image = image / 255.0
         img_input = self.transform({"image": normalized_image})["image"]

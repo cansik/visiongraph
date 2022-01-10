@@ -2,14 +2,14 @@ from argparse import ArgumentParser, Namespace
 
 import numpy as np
 
+from visiongraph import VisionClassifier, RoiEstimator
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 from visiongraph.result.spatial.face.RegressionFace import RegressionFace
 from visiongraph.util.ResultUtils import list_of_vector4D
 
 
-class RegressionLandmarkEstimator(FaceLandmarkEstimator):
+class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator):
     def __init__(self, min_score: float = 0.0, device: str = "CPU"):
         super().__init__(min_score)
         model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
@@ -18,8 +18,8 @@ class RegressionLandmarkEstimator(FaceLandmarkEstimator):
     def setup(self):
         self.engine.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> RegressionFace:
-        outputs = self.engine.estimate(image)
+    def process(self, data: np.ndarray) -> RegressionFace:
+        outputs = self.engine.process(data)
         output = outputs[self.engine.output_names[0]].reshape((-1, 2))
         result = []
 
@@ -42,7 +42,7 @@ class RegressionLandmarkEstimator(FaceLandmarkEstimator):
         self.engine.release()
 
     def configure(self, args: Namespace):
-        self.engine.configure(args)
+        pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):

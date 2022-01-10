@@ -31,7 +31,7 @@ class CascadeFaceDetectionExample(BaseGraph):
         if frame is None:
             return
 
-        results = self.network.estimate(frame)
+        results = self.network.process(frame)
         for result in results:
             result.annotate(frame)
 

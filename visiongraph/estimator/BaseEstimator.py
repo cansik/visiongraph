@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Any
+from typing import TypeVar, Union
 
-from visiongraph.model.chain.ChainableNode import ChainableNode
+from visiongraph import GraphNode
 from visiongraph.result.BaseResult import BaseResult
 
+InputType = TypeVar('InputType')
+OutputType = TypeVar('OutputType', bound=BaseResult)
 
-class BaseEstimator(ChainableNode, ABC):
+
+class BaseEstimator(GraphNode[InputType, OutputType], ABC):
     @abstractmethod
-    def estimate(self, *args, **kwargs) -> BaseResult:
+    def process(self, data: InputType) -> OutputType:
         pass
-
-    def _chain_apply(self, *args, **kwargs) -> Any:
-        return self.estimate(*args, **kwargs)

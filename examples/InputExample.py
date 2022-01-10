@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph import BaseDepthInput
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
@@ -22,7 +23,7 @@ class InputExample(BaseGraph):
         if frame is None:
             return
 
-        if args.depth:
+        if isinstance(self.input, BaseDepthInput):
             depth = self.input.distance(0.5, 0.5)
             print(f"{depth:.2f}m")
 

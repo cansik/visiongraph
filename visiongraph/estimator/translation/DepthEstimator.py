@@ -6,7 +6,7 @@ from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.DepthMap import DepthMap
 
 
-class DepthEstimator(VisionEstimator, ABC):
+class DepthEstimator(VisionEstimator[DepthMap], ABC):
     @abstractmethod
-    def estimate(self, image: np.ndarray, **kwargs) -> DepthMap:
+    def process(self, data: np.ndarray) -> DepthMap:
         pass

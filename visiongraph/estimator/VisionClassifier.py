@@ -1,5 +1,6 @@
 from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace
+from typing import TypeVar
 
 import numpy as np
 
@@ -7,10 +8,12 @@ from visiongraph.estimator.BaseClassifier import BaseClassifier
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult
 
+OutputType = TypeVar('OutputType', bound=ClassificationResult)
 
-class VisionClassifier(VisionEstimator, BaseClassifier, ABC):
+
+class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, OutputType], ABC):
     @abstractmethod
-    def estimate(self, image: np.ndarray, **kwargs) -> ClassificationResult:
+    def process(self, data: np.ndarray) -> OutputType:
         pass
 
     def configure(self, args: Namespace):
@@ -21,5 +24,3 @@ class VisionClassifier(VisionEstimator, BaseClassifier, ABC):
     def add_params(parser: ArgumentParser):
         VisionEstimator.add_params(parser)
         BaseClassifier.add_params(parser)
-
-

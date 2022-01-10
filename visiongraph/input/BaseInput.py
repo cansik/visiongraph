@@ -5,12 +5,12 @@ from typing import Optional
 import numpy as np
 import cv2
 
-from visiongraph.GraphNode import GraphNode
+from visiongraph.GraphNode import GraphNode, InputType, OutputType
 from visiongraph.model.parameter.NamedParameter import RotationParameter, FlipParameter
 from visiongraph.util.ArgUtils import add_dict_choice_argument
 
 
-class BaseInput(GraphNode, ABC):
+class BaseInput(GraphNode[None, np.ndarray], ABC):
     @abstractmethod
     def __init__(self):
         self.width = 640
@@ -23,6 +23,10 @@ class BaseInput(GraphNode, ABC):
     @abstractmethod
     def read(self) -> (int, Optional[np.ndarray]):
         pass
+
+    def process(self, data: InputType) -> OutputType:
+        ts, image = self.read()
+        return image
 
     def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
         if image is None:

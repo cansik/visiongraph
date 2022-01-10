@@ -8,6 +8,7 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.face.FaceDetector import FaceDetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult
 
 
@@ -29,7 +30,7 @@ class OpenVinoFaceConfig(Enum):
     MobileNetV2_640_FP32 = (*RepositoryAsset.openVino("face-detection-0206-fp32"), 640)
 
 
-class OpenVinoFaceDetector(FaceDetector):
+class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
     def __init__(self, model: Asset, weights: Asset,
                  width: int, height: int, min_score: float = 0.5, device: str = "CPU"):
         super().__init__(min_score)
@@ -38,10 +39,10 @@ class OpenVinoFaceDetector(FaceDetector):
     def setup(self):
         self.engine.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[FaceDetectionResult]:
-        output = self._get_results(self.engine.estimate(image))
+    def process(self, data: np.ndarray) -> ResultList[FaceDetectionResult]:
+        output = self._get_results(self.engine.process(data))
 
-        results = []
+        results = ResultList()
         for score, xmin, ymin, xmax, ymax in output:
             if score < self.min_score:
                 continue

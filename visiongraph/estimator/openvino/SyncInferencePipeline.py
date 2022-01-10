@@ -1,15 +1,12 @@
-from argparse import ArgumentParser, Namespace
 from typing import Optional, List
 
 import numpy as np
 from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
-from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.external.intel.model import Model
 
 
-# todo: check if this really is a vision estimator?!
-class SyncInferencePipeline(VisionEstimator):
+class SyncInferencePipeline:
     def __init__(self, model: Model, device: str = "CPU", ie: Optional[IECore] = None):
 
         self.device = device
@@ -27,18 +24,11 @@ class SyncInferencePipeline(VisionEstimator):
         self.net = self.model.net
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List:
-        inputs, preprocessing_meta = self.model.preprocess(image)
+    def process(self, data: np.ndarray) -> List:
+        inputs, preprocessing_meta = self.model.preprocess(data)
         raw_result = self.infer_network.infer(inputs=inputs)
         outputs = self.model.postprocess(raw_result, preprocessing_meta)
         return outputs
 
     def release(self):
-        pass
-
-    def configure(self, args: Namespace):
-        pass
-
-    @staticmethod
-    def add_params(parser: ArgumentParser):
         pass

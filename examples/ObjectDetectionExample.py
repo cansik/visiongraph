@@ -28,7 +28,7 @@ class ObjectDetectionExample(BaseGraph):
         if frame is None:
             return
 
-        results = self.network.estimate(frame)
+        results = self.network.process(frame)
         results = self.tracker.track(results)
 
         for result in results:

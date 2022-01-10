@@ -1,4 +1,3 @@
-from argparse import ArgumentParser, Namespace
 from typing import Dict, Optional, List
 
 import cv2
@@ -6,11 +5,9 @@ import numpy as np
 from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
 from visiongraph.data.Asset import Asset
-from visiongraph.estimator.VisionEstimator import VisionEstimator
 
 
-# todo: check if this really is a vision estimator?!
-class VisionInferenceEngine(VisionEstimator):
+class VisionInferenceEngine:
     def __init__(self, model: Asset, weights: Asset,
                  batch_size: int, channels: int, width: int, height: int,
                  flip_channels: bool = True, normalize: bool = False,
@@ -40,7 +37,7 @@ class VisionInferenceEngine(VisionEstimator):
         self.output_names = list(self.net.outputs.keys())
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 
-    def estimate(self, image: np.ndarray, **kwargs) -> Dict[str, np.ndarray]:
+    def process(self, image: np.ndarray) -> Dict[str, np.ndarray]:
         in_frame = cv2.resize(image, (self.width, self.height))
 
         if self.flip_channels:
@@ -55,11 +52,4 @@ class VisionInferenceEngine(VisionEstimator):
         return outputs
 
     def release(self):
-        pass
-
-    def configure(self, args: Namespace):
-        pass
-
-    @staticmethod
-    def add_params(parser: ArgumentParser):
         pass

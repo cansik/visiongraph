@@ -7,11 +7,9 @@ import mediapipe as mp
 import numpy as np
 
 from visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator
-from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-from visiongraph.result.spatial.face.BlazeFace import BlazeFace
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
 from visiongraph.result.spatial.hand.Handedness import Handedness
-from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.util.ResultUtils import list_of_vector4D
 
 
@@ -23,7 +21,7 @@ class HandModelComplexity(Enum):
 _mp_hands = mp.solutions.hands
 
 
-class MediaPipeHandEstimator(HandLandmarkEstimator):
+class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
 
     def __init__(self, complexity: HandModelComplexity = HandModelComplexity.Normal,
                  min_score: float = 0.5,
@@ -45,7 +43,7 @@ class MediaPipeHandEstimator(HandLandmarkEstimator):
                                         min_tracking_confidence=self.min_tracking_confidence,
                                         max_num_hands=self.max_num_hands)
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[BlazeHand]:
+    def process(self, image: np.ndarray, **kwargs) -> ResultList[BlazeHand]:
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -53,11 +51,11 @@ class MediaPipeHandEstimator(HandLandmarkEstimator):
 
         # check if results are there
         if not (results.multi_hand_landmarks and results.multi_handedness):
-            return []
+            return ResultList()
 
         raw_hands = zip(results.multi_hand_landmarks, results.multi_handedness)
 
-        hands: List[BlazeHand] = []
+        hands: ResultList[BlazeHand] = ResultList()
         for landmarks, handedness in raw_hands:
             landmarks = [(lm.x, lm.y, lm.z, 1.0) for lm in landmarks.landmark]
             class_res = handedness.classification[0]

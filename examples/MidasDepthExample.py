@@ -25,7 +25,7 @@ class MidasDepthExample(BaseGraph):
         if frame is None:
             return
 
-        result = self.network.estimate(frame)
+        result = self.network.process(frame)
 
         cv2.imshow("Depth Estimation", result.apply_colormap())
         if cv2.waitKey(15) & 0xFF == 27:

@@ -1,7 +1,7 @@
 import logging
 import math
 from abc import abstractmethod, ABC
-from typing import List, Optional
+from typing import Optional
 
 import numpy as np
 from openvino.inference_engine import IECore
@@ -10,11 +10,12 @@ from visiongraph.data.Asset import Asset
 from visiongraph.estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.external.intel.model import Model
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.util.ResultUtils import list_of_vector4D
 
 
-class OpenVinoPoseEstimator(PoseEstimator, ABC):
+class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.5,
                  auto_adjust_aspect_ratio: bool = True, device: str = "CPU"):
@@ -41,8 +42,8 @@ class OpenVinoPoseEstimator(PoseEstimator, ABC):
         self.pipeline = SyncInferencePipeline(self.ie_model, self.device, self.ie)
         self.pipeline.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[COCOPose]:
-        h, w = image.shape[:2]
+    def process(self, data: np.ndarray) -> ResultList[COCOPose]:
+        h, w = data.shape[:2]
 
         # auto-adjust aspect ratio
         ratio = w / h
@@ -55,9 +56,9 @@ class OpenVinoPoseEstimator(PoseEstimator, ABC):
             self.setup()
 
         # estimate on image
-        key_points, scores = self.pipeline.estimate(image)
+        key_points, scores = self.pipeline.process(data)
 
-        poses = []
+        poses = ResultList()
         for score, kps in zip(scores, key_points):
             # todo: maybe improve performance by not iterating but using np
             kp_score = np.average(kps[:, 2])

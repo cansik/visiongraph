@@ -4,10 +4,11 @@ import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 
 
-class SpatialCascadeEstimator(ObjectDetector):
+class SpatialCascadeEstimator(ObjectDetector[SpatialCascadeResult]):
     def __init__(self, root_detector: ObjectDetector, **child_detectors: RoiEstimator):
         super().__init__(min_score=0)
         self.root_detector = root_detector
@@ -19,15 +20,15 @@ class SpatialCascadeEstimator(ObjectDetector):
         for detector in self._detectors:
             detector.setup()
 
-    def estimate(self, image: np.ndarray, **kwargs) -> List[SpatialCascadeResult]:
-        root_results = self.root_detector.estimate(image, **kwargs)
+    def process(self, data: np.ndarray) -> ResultList[SpatialCascadeResult]:
+        root_results = self.root_detector.process(data)
 
-        results = []
+        results = ResultList()
         for root_result in root_results:
             child_results = {}
 
             for name, detector in self.child_detectors.items():
-                result = detector.estimate_detection(image, root_result, **kwargs)
+                result = detector.process_detection(data, root_result)
                 child_results.update({name: result})
 
             results.append(SpatialCascadeResult(root_result, **child_results))

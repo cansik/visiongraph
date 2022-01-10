@@ -1,14 +1,14 @@
 from argparse import ArgumentParser
-from typing import Optional, List, Any
+from typing import Optional, List
 
 import numpy as np
 
-from visiongraph.model.chain.ChainableNode import ChainableNode
+from visiongraph.GraphNode import GraphNode
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.motrackers.Tracker import Tracker
 
 
-class ObjectDetectionTracker(ChainableNode):
+class ObjectDetectionTracker(GraphNode[List[ObjectDetectionResult], List[ObjectDetectionResult]]):
     def __init__(self, tracker: Optional[Tracker] = None):
         self.tracker = tracker
         self.enabled = True
@@ -34,11 +34,11 @@ class ObjectDetectionTracker(ChainableNode):
 
         return tracked_detections
 
+    def process(self, data: List[ObjectDetectionResult]) -> List[ObjectDetectionResult]:
+        return self.track(data)
+
     def release(self):
         pass
-
-    def _chain_apply(self, detections, *args, **kwargs) -> Any:
-        return self.track(detections)
 
     def configure(self, args):
         self.max_lost = args.tracker_max_lost
