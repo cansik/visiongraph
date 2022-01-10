@@ -14,8 +14,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class ObjectDetectionExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.network = SSDDetector.create() # YOLODetector.create()
         self.tracker = ObjectDetectionTracker()
@@ -44,7 +44,7 @@ class ObjectDetectionExample(BaseGraph):
 
 
 def main():
-    pipeline = ObjectDetectionExample(args.input(), multi_threaded=False)
+    pipeline = ObjectDetectionExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

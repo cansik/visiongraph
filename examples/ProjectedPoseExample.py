@@ -22,8 +22,8 @@ MIN_SCORE = 0.5
 
 class ProjectedPoseExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, pose_network: PoseEstimator, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput, pose_network: PoseEstimator):
+        super().__init__(multi_threaded=True, deamon=True)
         self.input = input
         self.network = pose_network
 
@@ -158,7 +158,7 @@ class MainWindow:
 
 
 def main():
-    pipeline = ProjectedPoseExample(args.input(), args.pose_estimator(), multi_threaded=True)
+    pipeline = ProjectedPoseExample(args.input(), args.pose_estimator())
     pipeline.configure(args)
     pipeline.open()
 

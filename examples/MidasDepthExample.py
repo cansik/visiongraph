@@ -12,8 +12,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class MidasDepthExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.network = MidasDepthEstimator.create()
 
@@ -37,7 +37,7 @@ class MidasDepthExample(BaseGraph):
 
 
 def main():
-    pipeline = MidasDepthExample(args.input(), multi_threaded=False)
+    pipeline = MidasDepthExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

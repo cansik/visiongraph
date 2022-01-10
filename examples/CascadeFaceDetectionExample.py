@@ -16,8 +16,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class CascadeFaceDetectionExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator(),
@@ -45,7 +45,7 @@ class CascadeFaceDetectionExample(BaseGraph):
 
 
 def main():
-    pipeline = CascadeFaceDetectionExample(args.input(), multi_threaded=False)
+    pipeline = CascadeFaceDetectionExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

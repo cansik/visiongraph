@@ -10,8 +10,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class RealSenseDepthExample(BaseGraph):
 
-    def __init__(self, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self):
+        super().__init__()
         self.input = RealSenseInput()
         self.add_nodes(self.input)
 
@@ -31,7 +31,7 @@ class RealSenseDepthExample(BaseGraph):
 
 
 def main():
-    pipeline = RealSenseDepthExample(multi_threaded=False)
+    pipeline = RealSenseDepthExample()
     pipeline.configure(args)
     pipeline.open()
 

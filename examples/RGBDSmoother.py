@@ -18,8 +18,8 @@ from visiongraph.util.TimeUtils import FPSTracer
 
 class RGBDSmoother(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input: VideoCaptureInput = input
 
         self.input.loop = False
@@ -118,7 +118,7 @@ class RGBDSmoother(BaseGraph):
 
 
 def main():
-    pipeline = RGBDSmoother(args.input(), multi_threaded=False)
+    pipeline = RGBDSmoother(args.input())
     pipeline.configure(args)
     pipeline.open()
 

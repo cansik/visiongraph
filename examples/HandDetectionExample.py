@@ -12,8 +12,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class HandDetectionExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.network = MediaPipeHandEstimator()
 
@@ -39,7 +39,7 @@ class HandDetectionExample(BaseGraph):
 
 
 def main():
-    pipeline = HandDetectionExample(args.input(), multi_threaded=False)
+    pipeline = HandDetectionExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

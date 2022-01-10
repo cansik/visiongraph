@@ -13,8 +13,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class PoseEstimationExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, pose_network: PoseEstimator, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput, pose_network: PoseEstimator):
+        super().__init__()
         self.input = input
         self.network = pose_network
 
@@ -40,7 +40,7 @@ class PoseEstimationExample(BaseGraph):
 
 
 def main():
-    pipeline = PoseEstimationExample(args.input(),  args.pose_estimator(), multi_threaded=False)
+    pipeline = PoseEstimationExample(args.input(),  args.pose_estimator())
     pipeline.configure(args)
     pipeline.open()
 

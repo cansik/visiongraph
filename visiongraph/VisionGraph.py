@@ -16,8 +16,8 @@ from visiongraph.util.TimeUtils import FPSTracer
 class VisionGraph(BaseGraph):
 
     def __init__(self, input: Optional[BaseInput] = None,
-                 name: str = "VisionPipeline", display: bool = True, annotate: bool = True,
-                 multi_threaded: bool = True, deamon: bool = True, handle_signals: bool = True,
+                 name: str = "VisionPipeline", annotate: bool = True, display: bool = True,
+                 multi_threaded: bool = False, deamon: bool = False, handle_signals: bool = False,
                  **estimators: VisionEstimator):
         super().__init__(multi_threaded, deamon, handle_signals)
 

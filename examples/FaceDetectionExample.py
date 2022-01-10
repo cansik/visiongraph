@@ -13,8 +13,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class FaceDetectionExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.network = AdasFaceDetector.create() # OpenVinoFaceDetector.create() # MediaPipeFaceDetector(MediaPipeFaceModel.Full_Range)
 
@@ -40,7 +40,7 @@ class FaceDetectionExample(BaseGraph):
 
 
 def main():
-    pipeline = FaceDetectionExample(args.input(), multi_threaded=False)
+    pipeline = FaceDetectionExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

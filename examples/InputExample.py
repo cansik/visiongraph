@@ -11,8 +11,8 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 class InputExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, multi_threaded: bool = True, deamon: bool = True):
-        super().__init__(multi_threaded, deamon)
+    def __init__(self, input: BaseInput):
+        super().__init__()
         self.input = input
         self.add_nodes(self.input)
 
@@ -36,7 +36,7 @@ class InputExample(BaseGraph):
 
 
 def main():
-    pipeline = InputExample(args.input(), multi_threaded=False)
+    pipeline = InputExample(args.input())
     pipeline.configure(args)
     pipeline.open()
 

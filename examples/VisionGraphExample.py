@@ -15,7 +15,7 @@ def on_results_ready(results: Dict[str, BaseResult]):
 
 
 def main():
-    pipeline = VisionGraph(name="Face Detection", multi_threaded=False,
+    pipeline = VisionGraph(name="Face Detection",
                            facenet=ChainEstimator(AdasFaceDetector.create(), ObjectDetectionTracker()))
     pipeline.configure(args)
     pipeline.on_results_ready = on_results_ready

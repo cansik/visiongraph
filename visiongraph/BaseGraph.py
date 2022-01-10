@@ -10,7 +10,7 @@ from visiongraph.GraphNode import GraphNode
 
 
 class BaseGraph(ArgumentConfigurable, ABC):
-    def __init__(self, multi_threaded: bool = True, deamon: bool = True, handle_signals: bool = True):
+    def __init__(self, multi_threaded: bool = False, deamon: bool = False, handle_signals: bool = False):
         self._open = False
         self.multi_threaded = multi_threaded
         self._loop_thread = Thread(target=self._loop, daemon=deamon)
