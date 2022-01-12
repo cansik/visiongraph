@@ -37,6 +37,11 @@ class _VisionGraphBuilder:
     def build(self) -> VisionGraph:
         return self._graph
 
+    def open(self) -> VisionGraph:
+        graph = self.build()
+        graph.open()
+        return graph
+
 
 def create_graph(input_node: Optional[BaseInput] = None, name: str = "VisionGraph", multi_threaded: bool = False,
                  deamon: bool = False, handle_signals: bool = False) -> _VisionGraphBuilder:

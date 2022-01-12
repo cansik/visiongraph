@@ -1,5 +1,10 @@
 # Visiongraph
-Visiongraph is a high level computer vision pipeline that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html) and [Google MediaPipe](https://google.github.io/mediapipe/).
+Visiongraph is a high level computer vision pipeline that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html) and [Google MediaPipe](https://google.github.io/mediapipe/). Here an example on how to start a webcam capture and display the image:
+
+```python
+import visiongraph as vg
+vg.create_graph(vg.VideoCaptureInput(1)).then(vg.ImagePreview()).open()
+```
 
 The main goal is to implement a platform independent and high performance framework for day-to-day computer vision tasks.
 
@@ -69,9 +74,9 @@ There are even more examples where visiongraph is currently in use:
 
 ## Documentation
 
-### VisionGraph
-
 ### Graph
+
+#### GraphNode
 
 ### Input
 Supported are video, webcam, RealSense and Azure Kinect input types. Azure Kinect may need a [special install](https://github.com/etiennedub/pyk4a#windows) on Windows and the [Azure-Kinect-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK)
