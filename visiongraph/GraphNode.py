@@ -9,7 +9,7 @@ InputType = TypeVar('InputType')
 OutputType = TypeVar('OutputType')
 
 
-class GraphNode(ArgumentConfigurable, Processable[InputType, OutputType], ABC):
+class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC):
     @abstractmethod
     def setup(self):
         pass

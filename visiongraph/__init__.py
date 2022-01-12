@@ -4,6 +4,10 @@ from .BaseGraph import BaseGraph
 from .GraphNode import GraphNode
 from .Processable import Processable
 from .VisionGraph import VisionGraph
+from .VisionGraphBuilder import create_graph
+from .VisionGraphBuilder import custom
+from .VisionGraphBuilder import passthrough
+from .VisionGraphBuilder import sequence
 from .data.Asset import Asset
 from .data.LocalAsset import LocalAsset
 from .data.RepositoryAsset import RepositoryAsset
@@ -105,6 +109,11 @@ from .model.geometry.BoundingBox2D import BoundingBox2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
+from .node.ApplyNode import ApplyNode
+from .node.CustomNode import CustomNode
+from .node.PassThroughNode import PassThroughNode
+from .node.SequenceNode import SequenceNode
+from .output.ImagePreview import ImagePreview
 from .recorder.AsyncFrameSetRecorder import AsyncFrameSetRecorder
 from .recorder.BaseFrameRecorder import BaseFrameRecorder
 from .recorder.CV2VideoRecorder import CV2VideoRecorder
@@ -118,6 +127,8 @@ from .result.ClassificationResult import ClassificationResult
 from .result.DepthMap import DepthMap
 from .result.HeadPoseResult import HeadPoseResult
 from .result.ImageResult import ImageResult
+from .result.ResultAnnotator import ResultAnnotator
+from .result.ResultDict import ResultDict
 from .result.ResultList import ResultList
 from .result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from .result.spatial.ObjectDetectionResult import ObjectDetectionResult
@@ -161,12 +172,14 @@ from .util.MathUtils import transform_coordinates
 from .util.NetworkUtils import download_file
 from .util.NetworkUtils import prepare_data_file
 from .util.NetworkUtils import prepare_openvino_model
-from .util.ResultUtils import list_of_vector4D
 from .util.ResultUtils import non_maximum_suppression
 from .util.TimeUtils import FPSTracer
 from .util.TimeUtils import ProfileWatch
 from .util.TimeUtils import Watch
 from .util.TimeUtils import current_millis
+from .util.VectorUtils import array_to_vector
+from .util.VectorUtils import list_of_vector4D
+from .util.VectorUtils import vector_to_array
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
 except ModuleNotFoundError as ex:

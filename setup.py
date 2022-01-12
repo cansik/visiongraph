@@ -38,7 +38,8 @@ class GenerateInitPy(distutils.cmd.Command):
     }
 
     module_with_methods = {
-        "visiongraph.util"
+        "visiongraph.util",
+        "visiongraph.VisionGraphBuilder"
     }
 
     @staticmethod

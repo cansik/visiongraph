@@ -3,12 +3,13 @@ from typing import Optional, List
 
 import numpy as np
 
+from visiongraph import ResultList
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.motrackers.Tracker import Tracker
 
 
-class ObjectDetectionTracker(GraphNode[List[ObjectDetectionResult], List[ObjectDetectionResult]]):
+class ObjectDetectionTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]]):
     def __init__(self, tracker: Optional[Tracker] = None):
         self.tracker = tracker
         self.enabled = True
@@ -26,7 +27,7 @@ class ObjectDetectionTracker(GraphNode[List[ObjectDetectionResult], List[ObjectD
         bboxes, scores, ids, references = zip(*inputs) if len(detections) else ([], [], [], [])
         tracks = self.tracker.update(np.asarray(bboxes), np.asarray(scores), np.asarray(ids), np.asarray(references))
 
-        tracked_detections = []
+        tracked_detections = ResultList()
         for track in tracks:
             detection = detections[track.reference]
             detection.tracking_id = track.id

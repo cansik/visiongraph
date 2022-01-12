@@ -1,24 +1,21 @@
 import argparse
-from typing import Dict, List
+from typing import List
 
-from visiongraph.VisionGraph import VisionGraph
-from visiongraph.estimator.ChainEstimator import ChainEstimator
-from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
-from visiongraph.result.BaseResult import BaseResult
-from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult
-from visiongraph.tracker.ObjectDetectionTracker import ObjectDetectionTracker
+import visiongraph as vg
 
 
-def on_results_ready(results: Dict[str, BaseResult]):
-    faces: List[FaceDetectionResult] = results["facenet"]
+def on_results_ready(result: vg.BaseResult):
+    faces: List[vg.FaceDetectionResult] = result
     print(f"Faces detected: {len(faces)}")
 
 
 def main():
-    pipeline = VisionGraph(name="Face Detection",
-                           facenet=ChainEstimator(AdasFaceDetector.create(), ObjectDetectionTracker()))
+    pipeline = vg.create_graph(name="Face Detection", handle_signals=True) \
+        .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.ObjectDetectionTracker(), vg.custom(on_results_ready)),
+               image=vg.passthrough()) \
+        .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
+        .build()
     pipeline.configure(args)
-    pipeline.on_results_ready = on_results_ready
 
     pipeline.open()
     pipeline.close()
@@ -26,7 +23,8 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("VisionGraph Example", description="Example Pipeline")
-    VisionGraph.add_params(parser)
+    vg.VisionGraph.add_params(parser)
+    vg.ObjectDetectionTracker.add_params(parser)
     args = parser.parse_args()
 
     main()
