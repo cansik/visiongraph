@@ -2,11 +2,12 @@ from argparse import ArgumentParser, Namespace
 
 import numpy as np
 
-from visiongraph import VisionClassifier, RoiEstimator
 from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.VisionClassifier import VisionClassifier
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.result.spatial.face.RegressionFace import RegressionFace
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator):

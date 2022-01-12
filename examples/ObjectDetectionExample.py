@@ -5,7 +5,6 @@ import cv2
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector
-from visiongraph.estimator.spatial.YOLODetector import YOLODetector, YOLOConfig
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.ObjectDetectionTracker import ObjectDetectionTracker
@@ -17,7 +16,7 @@ class ObjectDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
-        self.network = SSDDetector.create() # YOLODetector.create()
+        self.network = SSDDetector.create()
         self.tracker = ObjectDetectionTracker()
 
         self.add_nodes(self.input, self.network, self.tracker)

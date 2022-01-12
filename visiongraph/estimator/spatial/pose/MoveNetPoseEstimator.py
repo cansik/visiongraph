@@ -9,7 +9,8 @@ from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInference
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import list_of_vector4D, non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MoveNetConfig(Enum):

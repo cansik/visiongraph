@@ -6,7 +6,6 @@ import cv2
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
-from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
 from visiongraph.input import add_input_step_choices

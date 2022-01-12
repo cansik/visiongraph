@@ -5,7 +5,6 @@ import cv2
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
-from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -16,8 +15,7 @@ class FaceDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
-        self.network = AdasFaceDetector.create() # OpenVinoFaceDetector.create() # MediaPipeFaceDetector(MediaPipeFaceModel.Full_Range)
-
+        self.network = AdasFaceDetector.create()
         self.add_nodes(self.input, self.network)
 
     def _process(self):

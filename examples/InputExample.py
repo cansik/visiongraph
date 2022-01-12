@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph import BaseDepthInput
+from visiongraph.input import BaseDepthInput
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput

@@ -7,6 +7,8 @@ from typing import Optional
 import numpy as np
 from time import time
 
+from visiongraph.dsp.BaseFilterNumpy import BaseFilterNumpy
+
 
 def _smoothing_factor(t_e, cutoff):
     r = 2 * np.pi * cutoff * t_e
@@ -17,7 +19,7 @@ def _exponential_smoothing(a, x, x_prev):
     return a * x + (1 - a) * x_prev
 
 
-class OneEuroFilterNumpy:
+class OneEuroFilterNumpy(BaseFilterNumpy):
     def __init__(self, x0: np.ndarray, t0: Optional[float] = None, dx0: float = 0.0,
                  min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0):
         """Initialize the one euro filter."""
@@ -32,9 +34,20 @@ class OneEuroFilterNumpy:
         self.dx_prev = np.full(x0.shape, dx0)
         self.t_prev = time() if t0 is None else t0
 
+    def re_init(self, x: np.ndarray):
+        self.data_shape = x.shape
+        self.min_cutoff = np.full(self.data_shape, self.min_cutoff.flat[0])
+        self.beta = np.full(self.data_shape, self.beta.flat[0])
+        self.d_cutoff = np.full(self.data_shape, self.d_cutoff.flat[0])
+
+        self.x_prev = x.astype(np.float)
+        self.dx_prev = np.full(self.data_shape, 0.0)  # reset dx_prev
+
     def __call__(self, x: np.ndarray, t: Optional[float] = None) -> np.ndarray:
         """Compute the filtered signal."""
-        assert x.shape == self.data_shape
+        if x.shape != self.data_shape:
+            self.re_init(x)
+            return x
 
         if t is None:
             t = time()

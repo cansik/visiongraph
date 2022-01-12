@@ -1,6 +1,6 @@
 from argparse import Namespace
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 import cv2
 import mediapipe as mp
@@ -10,7 +10,7 @@ from visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator import Ha
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
 from visiongraph.result.spatial.hand.Handedness import Handedness
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class HandModelComplexity(Enum):

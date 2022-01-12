@@ -12,7 +12,7 @@ from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.external.intel.model import Model
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):

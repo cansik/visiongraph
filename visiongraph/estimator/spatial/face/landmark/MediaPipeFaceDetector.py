@@ -1,6 +1,6 @@
 from argparse import Namespace
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
 import cv2
 import mediapipe as mp
@@ -10,7 +10,7 @@ from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import Fa
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.BlazeFace import BlazeFace
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MediaPipeFaceModel(Enum):

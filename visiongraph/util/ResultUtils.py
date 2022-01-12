@@ -1,15 +1,10 @@
-from typing import List, Tuple, TypeVar
+from typing import List, TypeVar
 
 import cv2
-import vector
 
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
 ODR = TypeVar("ODR", bound=ObjectDetectionResult)
-
-
-def list_of_vector4D(data: List[Tuple[float, float, float, float]]) -> vector.VectorNumpy4D:
-    return vector.array(data, dtype=[("x", float), ("y", float), ("z", float), ("t", float)]).view(vector.VectorNumpy4D)
 
 
 def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold: float) -> List[ODR]:

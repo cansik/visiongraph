@@ -9,7 +9,7 @@ import numpy as np
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
-from visiongraph.util.ResultUtils import list_of_vector4D
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 _mp_pose = mp.solutions.pose
 
