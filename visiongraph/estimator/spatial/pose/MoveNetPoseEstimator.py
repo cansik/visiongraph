@@ -41,7 +41,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
-        outputs = self.engine.estimate(data)
+        outputs = self.engine.process(data)
         output = outputs[self.engine.output_names[0]]
 
         key_points_with_scores = output[0]
