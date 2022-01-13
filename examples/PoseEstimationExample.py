@@ -9,6 +9,7 @@ from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
+from visiongraph.util.TimeUtils import FPSTracer
 
 
 class PoseEstimationExample(BaseGraph):
@@ -17,6 +18,7 @@ class PoseEstimationExample(BaseGraph):
         super().__init__()
         self.input = input
         self.network = pose_network
+        self.fps_tracer = FPSTracer()
 
         self.add_nodes(self.input, self.network)
 
@@ -29,6 +31,10 @@ class PoseEstimationExample(BaseGraph):
         results = self.network.process(frame)
         for result in results:
             result.annotate(frame)
+
+        self.fps_tracer.update()
+        cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
+                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2, cv2.LINE_AA)
 
         cv2.imshow("Pose Estimator", frame)
         if cv2.waitKey(15) & 0xFF == 27:
