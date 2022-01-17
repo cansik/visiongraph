@@ -9,26 +9,22 @@ from open3d.cpu.pybind.geometry import TriangleMesh
 from open3d.cpu.pybind.visualization import rendering
 from open3d.visualization import gui
 
-from visiongraph.BaseGraph import BaseGraph
+import visiongraph as vg
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
-from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.input import add_input_step_choices, RealSenseInput
-from visiongraph.input.BaseInput import BaseInput
-from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
-from visiongraph.util.LoggingUtils import add_logging_parameter
+from visiongraph.input import add_input_step_choices
 
 MIN_SCORE = 0.5
 
 
-class ProjectedPoseExample(BaseGraph):
+class ProjectedPoseExample(vg.BaseGraph):
 
-    def __init__(self, input: BaseInput, pose_network: PoseEstimator):
+    def __init__(self, input: vg.RealSenseInput, pose_network: vg.PoseEstimator):
         super().__init__(multi_threaded=True, deamon=True)
         self.input = input
         self.network = pose_network
 
         self.add_nodes(self.input, self.network)
-        self.on_result_ready: Optional[Callable[[List[PoseLandmarkResult]], None]] = None
+        self.on_result_ready: Optional[Callable[[List[vg.PoseLandmarkResult]], None]] = None
 
         self.use_projection = True
 
@@ -39,7 +35,7 @@ class ProjectedPoseExample(BaseGraph):
             return
 
         results = self.network.process(frame)
-        rs: RealSenseInput = self.input
+        rs: vg.RealSenseInput = self.input
 
         for pose in results:
             for i, lm in enumerate(pose.landmarks):
@@ -100,7 +96,7 @@ class MainWindow:
     def _on_close(self):
         gui.Application.instance.quit()
 
-    def on_result_ready(self, results: List[PoseLandmarkResult]):
+    def on_result_ready(self, results: List[vg.PoseLandmarkResult]):
         pose_detected = False
 
         if len(results) > 0:
@@ -131,11 +127,13 @@ class MainWindow:
         def update():
             if self._first_run and pose_detected:
                 self.vis.add_geometry("pose", self.pose_cloud)
-                self.vis.add_geometry("lines", self.lines)
+
+                if self.lines.has_lines():
+                    self.vis.add_geometry("lines", self.lines)
+
                 self.vis.reset_camera_to_default()
                 self._first_run = False
-
-            if pose_detected:
+            elif not self._first_run and pose_detected:
                 update_flags = (rendering.Scene.UPDATE_POINTS_FLAG |
                                 rendering.Scene.UPDATE_COLORS_FLAG)
                 # not working atm
@@ -143,8 +141,9 @@ class MainWindow:
                 self.vis.remove_geometry("pose")
                 self.vis.add_geometry("pose", self.pose_cloud)
 
-                self.vis.remove_geometry("lines")
-                self.vis.add_geometry("lines", self.lines)
+                if self.lines.has_lines():
+                    self.vis.remove_geometry("lines")
+                    self.vis.add_geometry("lines", self.lines)
 
         gui.Application.instance.post_to_main_thread(self.vis, update)
 
@@ -171,7 +170,7 @@ def main():
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Pose Estimation Example", description="Example Pipeline")
-    add_logging_parameter(parser)
+    vg.add_logging_parameter(parser)
 
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group, default=1)
@@ -181,7 +180,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.input is not RealSenseInput:
+    if args.input is not vg.RealSenseInput:
         logging.error("This example only runs with a RealSense Input")
         exit(1)
 
