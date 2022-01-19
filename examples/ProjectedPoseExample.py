@@ -87,12 +87,15 @@ class MainWindow:
         self.vis.set_on_close(self._on_close)
 
         self.camera_geometry: TriangleMesh = o3d.geometry.TriangleMesh.create_box(0.4, 0.2, 0.2)
+        self.camera_geometry.paint_uniform_color([0.1, 0.1, 0.7])
         self.camera_geometry.translate((-0.2, -0.1, -0.1))
-        self.vis.add_geometry("realsense", self.camera_geometry)
 
-        self.t_camera_geometry: TriangleMesh = o3d.geometry.TriangleMesh.create_box(0.4, 0.2, 0.2)
-        self.t_camera_geometry.paint_uniform_color([0.1, 0.1, 0.7])
-        self.t_camera_geometry.translate((-0.2, -0.1, -0.1))
+        R = self.camera_geometry.get_rotation_matrix_from_xyz((np.radians(-args.angle), 0, 0))
+        self.camera_geometry.rotate(R, center=(0, 0, 0))
+
+        self.camera_geometry.translate((0, -args.translation_y, 0))
+
+        self.vis.add_geometry("realsense", self.camera_geometry)
 
         self.pose_cloud: Optional[o3d.geometry.PointCloud] = None
         self.lines: Optional[o3d.geometry.LineSet] = None
