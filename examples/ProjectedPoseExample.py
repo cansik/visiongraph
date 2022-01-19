@@ -5,6 +5,7 @@ from typing import Optional, Callable, List
 
 import numpy as np
 import open3d as o3d
+import vector
 from open3d.cpu.pybind.geometry import TriangleMesh
 from open3d.cpu.pybind.visualization import rendering
 from open3d.visualization import gui
@@ -37,6 +38,8 @@ class ProjectedPoseExample(vg.BaseGraph):
         results = self.network.process(frame)
         rs: vg.RealSenseInput = self.input
 
+        translation_vector = vector.obj(x=0, y=-args.translation_y, z=0)
+
         for pose in results:
             for i, lm in enumerate(pose.landmarks):
                 if lm.t < MIN_SCORE:
@@ -47,6 +50,11 @@ class ProjectedPoseExample(vg.BaseGraph):
 
                 if self.use_projection:
                     p = rs.pixel_to_point(lm.x, lm.y)
+
+                    # translate & rotate points
+                    p = p.add(translation_vector)
+                    p = p.rotateX(-np.radians(args.angle))
+
                     pose.landmarks.x[i] = p.x
                     pose.landmarks.y[i] = p.y
                     pose.landmarks.z[i] = p.z
@@ -86,12 +94,6 @@ class MainWindow:
         self.t_camera_geometry.paint_uniform_color([0.1, 0.1, 0.7])
         self.t_camera_geometry.translate((-0.2, -0.1, -0.1))
 
-        R = self.t_camera_geometry.get_rotation_matrix_from_xyz((np.radians(args.angle), 0, 0))
-        self.t_camera_geometry.rotate(R, center=(0, 0, 0))
-
-        self.t_camera_geometry.translate((0, args.translation_y, 0))
-        self.vis.add_geometry("realsense_t", self.t_camera_geometry)
-
         self.pose_cloud: Optional[o3d.geometry.PointCloud] = None
         self.lines: Optional[o3d.geometry.LineSet] = None
 
@@ -122,10 +124,6 @@ class MainWindow:
                                      lm_positions.z.reshape(size, 1)),
                                     axis=1)
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
-
-            self.pose_cloud.translate((0, -args.translation_y, 0))
-            R = self.pose_cloud.get_rotation_matrix_from_xyz((np.radians(-args.angle), 0, 0))
-            self.pose_cloud.rotate(R, center=(0, 0, 0))
 
             connections = [line for line in pose.connections
                            if pose.landmarks.t[line[0]] >= MIN_SCORE and pose.landmarks.t[line[1]] >= MIN_SCORE]
