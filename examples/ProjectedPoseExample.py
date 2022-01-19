@@ -13,7 +13,7 @@ import visiongraph as vg
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.input import add_input_step_choices
 
-MIN_SCORE = 0.5
+MIN_SCORE = 0.3
 
 
 class ProjectedPoseExample(vg.BaseGraph):
@@ -80,8 +80,17 @@ class MainWindow:
 
         self.camera_geometry: TriangleMesh = o3d.geometry.TriangleMesh.create_box(0.4, 0.2, 0.2)
         self.camera_geometry.translate((-0.2, -0.1, -0.1))
-
         self.vis.add_geometry("realsense", self.camera_geometry)
+
+        self.t_camera_geometry: TriangleMesh = o3d.geometry.TriangleMesh.create_box(0.4, 0.2, 0.2)
+        self.t_camera_geometry.paint_uniform_color([0.1, 0.1, 0.7])
+        self.t_camera_geometry.translate((-0.2, -0.1, -0.1))
+
+        R = self.t_camera_geometry.get_rotation_matrix_from_xyz((np.radians(args.angle), 0, 0))
+        self.t_camera_geometry.rotate(R, center=(0, 0, 0))
+
+        self.t_camera_geometry.translate((0, args.translation_y, 0))
+        self.vis.add_geometry("realsense_t", self.t_camera_geometry)
 
         self.pose_cloud: Optional[o3d.geometry.PointCloud] = None
         self.lines: Optional[o3d.geometry.LineSet] = None
@@ -108,11 +117,15 @@ class MainWindow:
 
             lm_positions = pose.landmarks.to_xyz()
             size = len(lm_positions)
-            points = np.concatenate((lm_positions.x.reshape(size, 1) * -1,
-                                     lm_positions.y.reshape(size, 1) * -1,
+            points = np.concatenate((lm_positions.x.reshape(size, 1), #* -1, # this is used if camera is not upside down
+                                     lm_positions.y.reshape(size, 1), #* -1,
                                      lm_positions.z.reshape(size, 1)),
                                     axis=1)
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
+
+            self.pose_cloud.translate((0, -args.translation_y, 0))
+            R = self.pose_cloud.get_rotation_matrix_from_xyz((np.radians(-args.angle), 0, 0))
+            self.pose_cloud.rotate(R, center=(0, 0, 0))
 
             connections = [line for line in pose.connections
                            if pose.landmarks.t[line[0]] >= MIN_SCORE and pose.landmarks.t[line[1]] >= MIN_SCORE]
@@ -177,6 +190,12 @@ if __name__ == "__main__":
 
     pose_group = parser.add_argument_group("pose estimator")
     add_pose_estimation_step_choices(pose_group, default=3)
+
+    transform_group = parser.add_argument_group("camera transform")
+    transform_group.add_argument("--angle", default=-30, type=float,
+                                 help="Angle (degree) how much the camera is tilted.")
+    transform_group.add_argument("--translation-y", default=-1.00, type=float,
+                                 help="Distance (m) to translate the camera.")
 
     args = parser.parse_args()
 
