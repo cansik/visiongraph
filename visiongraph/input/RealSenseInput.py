@@ -21,6 +21,9 @@ class RealSenseInput(BaseDepthInput):
         self.disable_emitter = False
         self.serial: Optional[str] = None
 
+        self.input_bag_file: Optional[str] = None
+        self.output_bag_file: Optional[str] = None
+
         self._exposure: Optional[float] = None
         self._gain: Optional[float] = None
 
@@ -45,7 +48,7 @@ class RealSenseInput(BaseDepthInput):
         ctx = rs.context()
         devices = ctx.query_devices()
 
-        if len(devices) == 0:
+        if len(devices) == 0 and self.input_bag_file is None:
             raise Exception("No RealSense device found!")
 
         self.pipeline = rs.pipeline(ctx)
@@ -54,6 +57,12 @@ class RealSenseInput(BaseDepthInput):
 
         if self.serial is not None:
             config.enable_device(serial=self.serial)
+
+        if self.input_bag_file is not None:
+            rs.config.enable_device_from_file(config, self.input_bag_file)
+
+        if self.output_bag_file is not None:
+            config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
             config.enable_stream(rs.stream.infrared, self.width, self.height, rs.format.y8, self.fps)
@@ -72,10 +81,9 @@ class RealSenseInput(BaseDepthInput):
 
         # set emitter
         depth_sensor = self.device.first_depth_sensor()
-        if self.disable_emitter:
-            depth_sensor.set_option(rs.option.emitter_enabled, 0)
-        else:
-            depth_sensor.set_option(rs.option.emitter_enabled, 1)
+        if not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
+            value = 0 if self.disable_emitter else 1
+            depth_sensor.set_option(rs.option.emitter_enabled, value)
 
         # setting options
         self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
@@ -166,6 +174,9 @@ class RealSenseInput(BaseDepthInput):
         self._gain = args.gain
         self.serial = args.rs_serial
 
+        self.input_bag_file = args.rs_play_bag
+        self.output_bag_file = args.rs_record_bag
+
         self.disable_emitter = args.disable_emitter
         self.color_scheme = args.color_scheme
 
@@ -178,9 +189,13 @@ class RealSenseInput(BaseDepthInput):
 
     def set_option(self, option: rs.option, value: float):
         if self.image_sensor.supports(option):
+            if self.image_sensor.is_option_read_only(option):
+                logging.warning(f"The option {option} is read-only!")
+                return
+
             self.image_sensor.set_option(option, value)
         else:
-            logging.warning("the option {option} is not supported!")
+            logging.warning(f"The option {option} is not supported!")
 
     @property
     def gain(self) -> int:
@@ -234,6 +249,10 @@ class RealSenseInput(BaseDepthInput):
                             help="Gain value for realsense input (disables auto-exposure).")
         parser.add_argument("--rs-serial", default=None, type=str,
                             help="RealSense serial number to choose specific device.")
+        parser.add_argument("--rs-play-bag", default=None, type=str,
+                            help="Path to a pre-recorded bag file for playback.")
+        parser.add_argument("--rs-record-bag", default=None, type=str,
+                            help="Path to a bag file to store the current recording.")
         parser.add_argument("--disable-emitter", action="store_true",
                             help="Disable RealSense IR emitter.")
         parser.add_argument("--depth", action="store_true",
