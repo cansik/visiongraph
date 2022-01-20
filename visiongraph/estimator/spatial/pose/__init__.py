@@ -13,6 +13,8 @@ try:
     from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator, PoseModelComplexity
 
     PoseEstimators["mediapipe"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Normal)
+    PoseEstimators["mediapipe-light"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Light)
+    PoseEstimators["mediapipe-heavy"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Heavy)
 except ImportError as ex:
     logging.info(f"MediaPipe not installed: {ex}")
 
@@ -20,6 +22,7 @@ try:
     from visiongraph.estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator, MoveNetConfig
 
     PoseEstimators["movenet"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_256x320_FP32)
+    PoseEstimators["movenet-192"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_192x256_FP32)
 except ImportError as ex:
     logging.info(f"MoveNet not installed: {ex}")
 
@@ -28,7 +31,12 @@ try:
     from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
 
     PoseEstimators["openpose"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32)
+    PoseEstimators["openpose-int8"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_INT8)
+    PoseEstimators["openpose-fp16"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP16)
+
     PoseEstimators["aepose"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32)
+    PoseEstimators["aepose-288-fp16"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP16)
+    PoseEstimators["aepose-448-fp32"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_448_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 
