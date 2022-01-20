@@ -28,7 +28,7 @@ try:
     from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
 
     PoseEstimators["openpose"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32)
-    PoseEstimators["aepose"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32),
+    PoseEstimators["aepose"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 
