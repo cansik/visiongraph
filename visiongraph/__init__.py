@@ -23,85 +23,136 @@ from .estimator.VisionClassifier import VisionClassifier
 from .estimator.VisionEstimator import VisionEstimator
 try:
     from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import OpenVinoObjectDetector")
 try:
     from .estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import SyncInferencePipeline")
 try:
     from .estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import VisionInferenceEngine")
 from .estimator.spatial.LandmarkEstimator import LandmarkEstimator
 from .estimator.spatial.ObjectDetector import ObjectDetector
 from .estimator.spatial.RoiEstimator import RoiEstimator
-from .estimator.spatial.SSDDetector import SSDConfig
-from .estimator.spatial.SSDDetector import SSDDetector
+try:
+    from .estimator.spatial.SSDDetector import SSDConfig
+except ImportError as ex:
+    logging.debug(f"Could not import SSDConfig")
+try:
+    from .estimator.spatial.SSDDetector import SSDDetector
+except ImportError as ex:
+    logging.debug(f"Could not import SSDDetector")
 from .estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
-from .estimator.spatial.YOLODetector import YOLOArchitecture
-from .estimator.spatial.YOLODetector import YOLOConfig
-from .estimator.spatial.YOLODetector import YOLODetector
-from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
-from .estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
+try:
+    from .estimator.spatial.YOLODetector import YOLOArchitecture
+except ImportError as ex:
+    logging.debug(f"Could not import YOLOArchitecture")
+try:
+    from .estimator.spatial.YOLODetector import YOLOConfig
+except ImportError as ex:
+    logging.debug(f"Could not import YOLOConfig")
+try:
+    from .estimator.spatial.YOLODetector import YOLODetector
+except ImportError as ex:
+    logging.debug(f"Could not import YOLODetector")
+try:
+    from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
+except ImportError as ex:
+    logging.debug(f"Could not import AdasFaceConfig")
+try:
+    from .estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
+except ImportError as ex:
+    logging.debug(f"Could not import AdasFaceDetector")
 from .estimator.spatial.face.FaceDetector import FaceDetector
-from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceConfig
-from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
+try:
+    from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceConfig
+except ImportError as ex:
+    logging.debug(f"Could not import OpenVinoFaceConfig")
+try:
+    from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
+except ImportError as ex:
+    logging.debug(f"Could not import OpenVinoFaceDetector")
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetector
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MediaPipeFaceDetector")
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceModel
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MediaPipeFaceModel")
-from .estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
-from .estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
+try:
+    from .estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import RegressionLandmarkEstimator")
+try:
+    from .estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import AdasHeadPoseEstimator")
 from .estimator.spatial.face.pose.HeadPoseEstimator import HeadPoseEstimator
 from .estimator.spatial.hand.HandDetector import FaceDetector
 from .estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator
 try:
     from .estimator.spatial.hand.landmark.MediaPipeHandEstimator import HandModelComplexity
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import HandModelComplexity")
 try:
     from .estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandEstimator
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MediaPipeHandEstimator")
-from .estimator.spatial.pose.AEPoseEstimator import AEPoseConfig
-from .estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator
+try:
+    from .estimator.spatial.pose.AEPoseEstimator import AEPoseConfig
+except ImportError as ex:
+    logging.debug(f"Could not import AEPoseConfig")
+try:
+    from .estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import AEPoseEstimator")
 try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MediaPipePoseEstimator")
 try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import PoseModelComplexity
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import PoseModelComplexity")
-from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
-from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
-from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseConfig
-from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator
+try:
+    from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
+except ImportError as ex:
+    logging.debug(f"Could not import MoveNetConfig")
+try:
+    from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import MoveNetPoseEstimator")
+try:
+    from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseConfig
+except ImportError as ex:
+    logging.debug(f"Could not import OpenPoseConfig")
+try:
+    from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import OpenPoseEstimator")
 from .estimator.spatial.pose.PoseEstimator import PoseEstimator
 from .estimator.translation.DepthEstimator import DepthEstimator
 try:
     from .estimator.translation.MidasDepthEstimator import MidasConfig
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MidasConfig")
 try:
     from .estimator.translation.MidasDepthEstimator import MidasDepthEstimator
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MidasDepthEstimator")
 try:
     from .input.AzureKinectInput import AzureKinectInput
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import AzureKinectInput")
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
 try:
     from .input.RealSenseInput import RealSenseInput
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import RealSenseInput")
 from .input.VideoCaptureInput import VideoCaptureInput
 from .model.DepthBuffer import DepthBuffer
@@ -120,7 +171,7 @@ from .recorder.CV2VideoRecorder import CV2VideoRecorder
 from .recorder.FrameSetRecorder import FrameSetRecorder
 try:
     from .recorder.MoviePyVideoRecorder import MoviePyVideoRecorder
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import MoviePyVideoRecorder")
 from .result.BaseResult import BaseResult
 from .result.ClassificationResult import ClassificationResult
@@ -139,14 +190,14 @@ from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from .result.spatial.face.RegressionFace import RegressionFace
 try:
     from .result.spatial.hand.BlazeHand import BlazeHand
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import BlazeHand")
 from .result.spatial.hand.HandDetectionResult import HandDetectionResult
 from .result.spatial.hand.HandLandmarkResult import HandLandmarkResult
 from .result.spatial.hand.Handedness import Handedness
 try:
     from .result.spatial.pose.BlazePose import BlazePose
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import BlazePose")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
@@ -182,9 +233,9 @@ from .util.VectorUtils import list_of_vector4D
 from .util.VectorUtils import vector_to_array
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import OneEuroFilterNumba")
 try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
-except ModuleNotFoundError as ex:
+except ImportError as ex:
     logging.debug(f"Could not import OpenVinoPoseEstimator")

@@ -2,13 +2,26 @@ import ast
 import distutils.cmd
 import glob
 import os
+from collections import defaultdict
+from dataclasses import dataclass
 from pathlib import Path
 from sys import platform
-from typing import Set
+from typing import Set, Any, Dict
 from typing import Tuple, List
 
 from setuptools import find_packages
 from setuptools import setup
+
+
+@dataclass
+class Dependency:
+    module: str
+    name: str
+    optional: bool
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.module}.{self.name}"
 
 
 class GenerateInitPy(distutils.cmd.Command):
@@ -46,16 +59,17 @@ class GenerateInitPy(distutils.cmd.Command):
     def get_files_in_path(path: str, extensions: [str] = ["*.*"]) -> [str]:
         return sorted([f for ext in extensions for f in glob.glob(os.path.join(path, ext), recursive=True)])
 
-    def analyse_source_file(self, file_path: str) -> List[Tuple[str, str, bool]]:
+    def analyse_source_file(self, file_path: str, dependency_graph) -> List[Dependency]:
         """
         Finds all class definitions in the source files and imports them.
+        :param dependency_graph: A dictionary to store dependencies.
         :param file_path: Path to the python source file.
         :return: List of imported modules / names and if they should be optional.
         """
         with open(file_path, "r") as file:
             source = file.read()
 
-        results: List[Tuple[str, str, bool]] = []
+        results: List[Dependency] = []
 
         module = file_path.replace("/", ".").replace("\\", ".").replace(".py", "")
         optional = False
@@ -68,51 +82,71 @@ class GenerateInitPy(distutils.cmd.Command):
         for node in ast.iter_child_nodes(nodes):
             # classes
             if isinstance(node, ast.ClassDef):
-                results.append((module, node.name, optional))
+                results.append(Dependency(module, node.name, optional))
 
             # imports to check if is optional module
             elif isinstance(node, ast.Import):
                 for import_name in node.names:
+                    dependency_graph[import_name.name].append(module)
                     if any([import_name.name.startswith(e) for e in self.optional_modules]):
                         optional = True
 
             elif isinstance(node, ast.ImportFrom):
+                dependency_graph[node.module].append(module)
                 if any([node.module.startswith(e) for e in self.optional_modules]):
                     optional = True
 
             # methods for modules that should be included
             elif isinstance(node, ast.FunctionDef):
                 if any([module.startswith(e) for e in self.module_with_methods]):
-                    results.append((module, node.name, optional))
+                    results.append(Dependency(module, node.name, optional))
 
         # filter private and protected imports
-        results = [r for r in results if not r[1].startswith("_")]
+        results = [r for r in results if not r.name.startswith("_")]
 
         return results
 
     def run(self) -> None:
         # analyse source files
+        dependencies = defaultdict(list)
         source_files = self.get_files_in_path(f"{self.root_package}/**", ["*.py"])
-        imports = [self.analyse_source_file(f) for f in source_files]
+        imports = [self.analyse_source_file(f, dependencies) for f in source_files]
         imports = [i for sl in imports for i in sl]
-        imports = sorted(imports, key=lambda x: f"{x[0]}.{x[1]}")
+
+        # create module to import dict
+        imports_dict = defaultdict(list)
+        for e in imports:
+            imports_dict[e.module].append(e)
+
+        # go through dependencies to find reverse-recursive optional modules
+        optional_modules = [m for m in dependencies.keys() if any([m.startswith(e) for e in self.optional_modules])]
+        while len(optional_modules) > 0:
+            module = optional_modules.pop()
+            for element in imports_dict[module]:
+                element.optional = True
+            optional_modules += dependencies[module]
+
+        # unwrap imports dict
+        imports = [e for v in imports_dict.values() for e in v]
+        imports = sorted(imports, key=lambda x: x.full_name)
 
         # re-order-late imports
-        late_imports = [i for i in imports if any([i[0].startswith(e) for e in self.late_import_modules])]
+        # todo: maybe use dependency graph to order by tree-height
+        late_imports = [i for i in imports if any([i.module.startswith(e) for e in self.late_import_modules])]
         for li in late_imports:
             imports.remove(li)
             imports.append(li)
 
         # generate python code
         lines = []
-        for module, name, optional in imports:
+        for imp in imports:
             # relative import
-            module = module.replace(self.root_package, "")
-            import_line = f"from {module} import {name}"
+            module = imp.module.replace(self.root_package, "")
+            import_line = f"from {module} import {imp.name}"
 
-            if optional:
-                line = f"try:\n    {import_line}\nexcept ModuleNotFoundError as ex:\n    " \
-                       f"logging.debug(f\"Could not import {name}\")"
+            if imp.optional:
+                line = f"try:\n    {import_line}\nexcept ImportError as ex:\n    " \
+                       f"logging.debug(f\"Could not import {imp.name}\")"
                 lines.append(line)
             else:
                 lines.append(import_line)

@@ -1,20 +1,36 @@
 import argparse
+import logging
 from argparse import _ArgumentGroup
 from functools import partial
 from typing import Union
 
-from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator, AEPoseConfig
-from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator, PoseModelComplexity
-from visiongraph.estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator, MoveNetConfig
-from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
 from visiongraph.util.ArgUtils import add_step_choice_argument
 
-PoseEstimators = {
-    "mediapipe": partial(MediaPipePoseEstimator.create, PoseModelComplexity.Normal),
-    "movenet": partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_256x320_FP32),
-    "openpose": partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32),
-    "aepose": partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32),
-}
+PoseEstimators = {}
+
+# setup optional pose estimators
+try:
+    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator, PoseModelComplexity
+
+    PoseEstimators["mediapipe"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Normal)
+except ImportError as ex:
+    logging.info(f"MediaPipe not installed: {ex}")
+
+try:
+    from visiongraph.estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator, MoveNetConfig
+
+    PoseEstimators["movenet"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_256x320_FP32)
+except ImportError as ex:
+    logging.info(f"MoveNet not installed: {ex}")
+
+try:
+    from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator, AEPoseConfig
+    from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
+
+    PoseEstimators["openpose"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32)
+    PoseEstimators["aepose"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32),
+except ImportError as ex:
+    logging.info(f"OpenVino not installed: {ex}")
 
 
 def add_pose_estimation_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup],

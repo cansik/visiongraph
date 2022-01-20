@@ -6,7 +6,6 @@ from typing import Union
 from visiongraph.input.VideoCaptureInput import VideoCaptureInput
 from visiongraph.util.ArgUtils import add_step_choice_argument
 
-
 InputProviders = {
     "video-capture": VideoCaptureInput
 }
@@ -14,14 +13,16 @@ InputProviders = {
 # setup dependency input providers
 try:
     from visiongraph.input.RealSenseInput import RealSenseInput
+
     InputProviders["realsense"] = RealSenseInput
-except Exception as ex:
+except ImportError as ex:
     logging.info(f"RealSense not installed: {ex}")
 
 try:
     from visiongraph.input.AzureKinectInput import AzureKinectInput
+
     InputProviders["azure"] = AzureKinectInput
-except Exception as ex:
+except ImportError as ex:
     logging.info(f"Azure not installed: {ex}")
 
 
