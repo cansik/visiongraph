@@ -40,6 +40,11 @@ class RealSenseInput(BaseDepthInput):
 
         self._depth_frame: Optional[rs.depth_frame] = None
 
+        self.infrared_width: Optional[int] = None
+        self.infrared_height: Optional[int] = None
+
+        self.play_any_bag_stream = True
+
         # filter
         self.depth_filters: List[rs.filter] = []
         self._filters_to_enable: List[type(rs.filter)] = []
@@ -50,6 +55,22 @@ class RealSenseInput(BaseDepthInput):
 
         if len(devices) == 0 and self.input_bag_file is None:
             raise Exception("No RealSense device found!")
+
+        if self.input_bag_file is not None and self.play_any_bag_stream:
+            self.allow_any_stream()
+
+        # update dimension for different inputs
+        if self.depth_width is None:
+            self.depth_width = self.width
+
+        if self.depth_height is None:
+            self.depth_height = self.height
+
+        if self.infrared_width is None:
+            self.infrared_width = self.width
+
+        if self.infrared_height is None:
+            self.infrared_height = self.height
 
         self.pipeline = rs.pipeline(ctx)
 
@@ -65,15 +86,15 @@ class RealSenseInput(BaseDepthInput):
             config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
-            config.enable_stream(rs.stream.infrared, self.width, self.height, rs.format.y8, self.fps)
+            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height, rs.format.any, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
-            config.enable_stream(rs.stream.color, self.width, self.height, rs.format.bgr8, self.fps)
+            config.enable_stream(rs.stream.color, self.width, self.height, rs.format.any, self.fps)
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            config.enable_stream(rs.stream.depth, self.width, self.height, rs.format.z16, self.fps)
+            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, rs.format.any, self.fps)
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         self.profile = self.pipeline.start(config)
@@ -164,6 +185,15 @@ class RealSenseInput(BaseDepthInput):
         depth_colormap = np.asanyarray(self.colorizer.colorize(depth_frame).get_data())
         ts, transformed_depth = self._post_process(0, depth_colormap)
         return transformed_depth
+
+    def allow_any_stream(self):
+        self.width = 0
+        self.height = 0
+        self.fps = 0
+        self.infrared_width = 0
+        self.infrared_height = 0
+        self.depth_width = 0
+        self.depth_height = 0
 
     def configure(self, args: Namespace):
         super().configure(args)
