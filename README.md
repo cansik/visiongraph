@@ -1,5 +1,7 @@
 # Visiongraph
-Visiongraph is a high level computer vision pipeline that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html) and [Google MediaPipe](https://google.github.io/mediapipe/). Here an example on how to start a webcam capture and display the image:
+Visiongraph is a high level computer vision pipeline that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html) and [Google MediaPipe](https://google.github.io/mediapipe/).
+
+Here an example on how to start a webcam capture and display the image:
 
 ```python
 import visiongraph as vg
