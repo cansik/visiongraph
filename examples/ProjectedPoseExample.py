@@ -190,7 +190,7 @@ if __name__ == "__main__":
     add_input_step_choices(input_group, default=1)
 
     pose_group = parser.add_argument_group("pose estimator")
-    add_pose_estimation_step_choices(pose_group, default=3)
+    add_pose_estimation_step_choices(pose_group, default=9)
 
     transform_group = parser.add_argument_group("camera transform")
     transform_group.add_argument("--angle", default=-30, type=float,
