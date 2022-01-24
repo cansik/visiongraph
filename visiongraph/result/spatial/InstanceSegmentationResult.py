@@ -1,5 +1,6 @@
 from typing import Optional
 
+import cv2
 import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -20,5 +21,5 @@ class InstanceSegmentationResult(ObjectDetectionResult):
         h, w = image.shape[:2]
         color = self.annotation_color
 
-        # todo: annotate masks
-
+        # todo: real annotation of masks
+        image[self.mask == 1] = [255, 0, 255]
