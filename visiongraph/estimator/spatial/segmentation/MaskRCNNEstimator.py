@@ -3,29 +3,49 @@ from typing import Optional, List
 
 import cv2
 import numpy as np
-from openvino.inference_engine import IECore
 
-from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-from visiongraph.estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
-from visiongraph.external.intel.model import Model
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
-from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 
 _IS_NAME = "instance-segmentation-security"
 
 
 class MaskRCNNConfig(Enum):
-    MaskRCNN_480x480_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp32"), 480, 480, COCO_80_LABELS)
+    # 0002 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0002.html
+    ResNet50_1024x768_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16-int8"), 1024, 768, COCO_80_LABELS)
+    ResNet50_1024x768_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16"), 1024, 768, COCO_80_LABELS)
+    ResNet50_1024x768_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp32"), 1024, 768, COCO_80_LABELS)
+
+    # 0091 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0091.html
+    ResNet101_1344x800_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16-int8"), 1344, 800, COCO_80_LABELS)
+    ResNet101_1344x800_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16"), 1344, 800, COCO_80_LABELS)
+    ResNet101_1344x800_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp32"), 1344, 800, COCO_80_LABELS)
+
+    # 0228 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0228.html
+    ResNet101_608_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16-int8"), 608, 608, COCO_80_LABELS)
+    ResNet101_608_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16"), 608, 608, COCO_80_LABELS)
+    ResNet101_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp32"), 608, 608, COCO_80_LABELS)
+
+    # 1039 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_1039.html
+    EfficientNet_480_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16-int8"), 480, 480, COCO_80_LABELS)
+    EfficientNet_480_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16"), 480, 480, COCO_80_LABELS)
+    EfficientNet_480_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp32"), 480, 480, COCO_80_LABELS)
+
+    # 1040 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_1040.html
+    EfficientNet_608_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16-int8"), 608, 608, COCO_80_LABELS)
+    EfficientNet_608_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16"), 608, 608, COCO_80_LABELS)
+    EfficientNet_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp32"), 608, 608, COCO_80_LABELS)
 
 
 class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
     def __init__(self, model: Asset, weights: Asset, width: int, height: int, labels: List[str],
-                 min_score: float = 0.5, auto_adjust_aspect_ratio: bool = True, device: str = "CPU"):
+                 min_score: float = 0.5, device: str = "CPU"):
         super().__init__(min_score)
         self.model = model
         self.weights = weights
@@ -35,14 +55,12 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
 
         self.labels = labels
 
-        self.auto_adjust_aspect_ratio = auto_adjust_aspect_ratio
         self.device = device
-
         self.engine: Optional[VisionInferenceEngine] = None
 
     def setup(self):
         self.engine = VisionInferenceEngine(self.model, self.weights, 1, 3, self.width, self.height,
-                                            flip_channels=True, normalize=False)
+                                            flip_channels=True, normalize=False, device=self.device)
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[InstanceSegmentationResult]:
@@ -133,6 +151,6 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         return im_mask
 
     @staticmethod
-    def create(config: MaskRCNNConfig = MaskRCNNConfig.MaskRCNN_480x480_FP32) -> "MaskRCNNEstimator":
+    def create(config: MaskRCNNConfig = MaskRCNNConfig.EfficientNet_480_FP32) -> "MaskRCNNEstimator":
         model, weights, width, height, labels = config.value
         return MaskRCNNEstimator(model, weights, width, height, labels)
