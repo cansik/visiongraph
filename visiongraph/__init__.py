@@ -212,6 +212,8 @@ except ImportError as ex:
     logging.debug(f"Could not import BlazePose")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
+from .tracker.CentroidTracker import CentroidTracker
+from .tracker.MotpyTracker import MotpyTracker
 from .tracker.ObjectDetectionTracker import ObjectDetectionTracker
 from .util.ArgUtils import PipelineNodeFactory
 from .util.ArgUtils import add_dict_choice_argument
