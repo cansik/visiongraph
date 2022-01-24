@@ -11,7 +11,7 @@ def on_results_ready(result: vg.BaseResult):
 
 def main():
     pipeline = vg.create_graph(name="Face Detection", handle_signals=True) \
-        .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.ObjectDetectionTracker(), vg.custom(on_results_ready)),
+        .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.CentroidTracker(), vg.custom(on_results_ready)),
                image=vg.passthrough()) \
         .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
         .build()
@@ -24,7 +24,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("VisionGraph Example", description="Example Pipeline")
     vg.VisionGraph.add_params(parser)
-    vg.ObjectDetectionTracker.add_params(parser)
+    vg.CentroidTracker.add_params(parser)
     args = parser.parse_args()
 
     main()

@@ -1,5 +1,4 @@
-from typing import Tuple
-
+import numpy as np
 import vector
 
 
@@ -32,3 +31,19 @@ class BoundingBox2D:
     def size(self) -> vector.Vector2D:
         return vector.obj(x=self.width, y=self.height)
 
+    def to_array(self) -> np.ndarray:
+        return np.array([self.x_min, self.y_min, self.width, self.height])
+
+    def scale(self, width: float, height: float):
+        self.x_min *= width
+        self.y_min *= height
+        self.width *= width
+        self.height *= height
+
+    @staticmethod
+    def from_array(data: np.ndarray):
+        flat = data.flat
+        return BoundingBox2D(flat[0], flat[1], flat[2], flat[3])
+
+    def __repr__(self):
+        return f"BoundingBox2D(x={self.x_min:.4f}, y={self.y_min:.4f}, w={self.width:.4f}, h={self.height:.4f})"

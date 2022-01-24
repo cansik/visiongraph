@@ -17,7 +17,7 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("VisionGraph Example", description="Example Pipeline")
     vg.VisionGraph.add_params(parser)
-    vg.ObjectDetectionTracker.add_params(parser)
+    vg.CentroidTracker.add_params(parser)
     args = parser.parse_args()
 
     main()

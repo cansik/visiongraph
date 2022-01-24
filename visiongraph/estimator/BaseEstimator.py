@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Union
+from typing import TypeVar
 
-from visiongraph import GraphNode
+from visiongraph.GraphNode import GraphNode
 from visiongraph.result.BaseResult import BaseResult
 
 InputType = TypeVar('InputType')
