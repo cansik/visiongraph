@@ -167,7 +167,7 @@ class GenerateInitPy(distutils.cmd.Command):
 
 
 # define required packages
-required_packages = find_packages(exclude=["tests", "examples"])
+required_packages = find_packages(exclude=["tests", "examples", "tools"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
