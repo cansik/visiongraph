@@ -137,6 +137,10 @@ except ImportError as ex:
     logging.debug(f"Could not import OpenPoseEstimator")
 from .estimator.spatial.pose.PoseEstimator import PoseEstimator
 try:
+    from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNConfig
+except ImportError as ex:
+    logging.debug(f"Could not import MaskRCNNConfig")
+try:
     from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNEstimator
 except ImportError as ex:
     logging.debug(f"Could not import MaskRCNNEstimator")
