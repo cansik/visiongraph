@@ -33,6 +33,7 @@ try:
     from .estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 except ImportError as ex:
     logging.debug(f"Could not import VisionInferenceEngine")
+from .estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from .estimator.spatial.LandmarkEstimator import LandmarkEstimator
 from .estimator.spatial.ObjectDetector import ObjectDetector
 from .estimator.spatial.RoiEstimator import RoiEstimator
@@ -135,6 +136,10 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import OpenPoseEstimator")
 from .estimator.spatial.pose.PoseEstimator import PoseEstimator
+try:
+    from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import MaskRCNNEstimator")
 from .estimator.translation.DepthEstimator import DepthEstimator
 try:
     from .estimator.translation.MidasDepthEstimator import MidasConfig
@@ -181,6 +186,7 @@ from .result.ImageResult import ImageResult
 from .result.ResultAnnotator import ResultAnnotator
 from .result.ResultDict import ResultDict
 from .result.ResultList import ResultList
+from .result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 from .result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from .result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from .result.spatial.SpatialCascadeResult import SpatialCascadeResult

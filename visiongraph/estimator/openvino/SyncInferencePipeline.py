@@ -8,7 +8,6 @@ from visiongraph.external.intel.model import Model
 
 class SyncInferencePipeline:
     def __init__(self, model: Model, device: str = "CPU", ie: Optional[IECore] = None):
-
         self.device = device
         self.model = model
 
@@ -20,7 +19,8 @@ class SyncInferencePipeline:
 
     def setup(self):
         # setup inference engine
-        self.ie = IECore()
+        if self.ie is None:
+            self.ie = IECore()
         self.net = self.model.net
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 
