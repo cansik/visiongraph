@@ -70,7 +70,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         scale_y = self.height / h
 
         outputs = self.engine.process(data)
-        raw_results = self._postprocess(outputs, scale_x, scale_y, self.height, self.width, h, w, self.min_score)
+        raw_results = self._postprocess(outputs, scale_x, scale_y, h, w, self.width, self.height, self.min_score)
 
         results = ResultList()
         for i in range(len(raw_results[0])):
@@ -79,10 +79,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
             bbox = raw_results[2][i]
             mask = raw_results[3][i]
 
-            # resize to match output
-            mask = cv2.resize(mask, (w, h))
-
-            box = BoundingBox2D(bbox[0] / w, bbox[1] / h, bbox[2] / w, bbox[3] / h)
+            box = BoundingBox2D(bbox[0] / w, bbox[1] / h, (bbox[2] - bbox[0]) / w, (bbox[3] - bbox[1]) / h)
             res = InstanceSegmentationResult(class_id, self.labels[class_id], score, mask, box)
             results.append(res)
 
