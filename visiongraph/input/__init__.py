@@ -3,11 +3,13 @@ import logging
 from argparse import _ArgumentGroup
 from typing import Union
 
+from visiongraph.input.ImageInput import ImageInput
 from visiongraph.input.VideoCaptureInput import VideoCaptureInput
 from visiongraph.util.ArgUtils import add_step_choice_argument
 
 InputProviders = {
-    "video-capture": VideoCaptureInput
+    "video-capture": VideoCaptureInput,
+    "image": ImageInput
 }
 
 # setup dependency input providers

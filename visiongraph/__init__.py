@@ -159,6 +159,7 @@ except ImportError as ex:
     logging.debug(f"Could not import AzureKinectInput")
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
+from .input.ImageInput import ImageInput
 try:
     from .input.RealSenseInput import RealSenseInput
 except ImportError as ex:
