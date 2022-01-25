@@ -100,9 +100,11 @@ class RealSenseInput(BaseDepthInput):
         self.profile = self.pipeline.start(config)
         self.device = self.profile.get_device()
 
+        # todo: fix option setting for depth sensor
         # set emitter
         depth_sensor = self.device.first_depth_sensor()
-        if not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
+        if depth_sensor.supports(rs.option.emitter_enabled) \
+                and not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
             value = 0 if self.disable_emitter else 1
             depth_sensor.set_option(rs.option.emitter_enabled, value)
 
