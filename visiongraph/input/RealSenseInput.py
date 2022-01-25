@@ -217,7 +217,11 @@ class RealSenseInput(BaseDepthInput):
             self._filters_to_enable = args.rs_filter
 
     def get_option(self, option: rs.option) -> float:
-        return self.image_sensor.get_option(option)
+        if self.image_sensor.supports(option):
+            return self.image_sensor.get_option(option)
+        else:
+            logging.warning(f"The option {option} is not supported!")
+            return 0.0
 
     def set_option(self, option: rs.option, value: float):
         if self.image_sensor.supports(option):
