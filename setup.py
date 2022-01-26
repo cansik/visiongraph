@@ -6,8 +6,8 @@ from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
 from sys import platform
-from typing import Set, Any, Dict
-from typing import Tuple, List
+from typing import List
+from typing import Set
 
 from setuptools import find_packages
 from setuptools import setup
@@ -238,7 +238,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version='0.1.13',
+    version='0.1.14',
     packages=required_packages,
     url='https://github.com/cansik/visiongraph',
     license='MIT License',

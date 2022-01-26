@@ -40,13 +40,16 @@ def float_range(mini, maxi):
 
 
 def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, Any],
-                             name: str, help: str = "", default: Optional[int] = 0,
+                             name: str, help: str = "", default: Optional[Union[int, str]] = 0,
                              nargs: Optional[Union[str, int]] = None):
     items = list(source.keys())
     help_text = f"{help}"
 
     default_item = None
     if default is not None:
+        if type(default) is str:
+            default = items.index(default)
+
         default_name = items[default]
         default_item = source[items[default]]
         help_text += f", default: {default_name}."
@@ -59,7 +62,8 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
 
 
 def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, GraphNode],
-                             name: str, help: str = "", default: Optional[int] = 0, add_params: bool = True):
+                             name: str, help: str = "", default: Optional[Union[int, str]] = 0,
+                             add_params: bool = True):
     add_dict_choice_argument(parser, steps, name, help, default)
 
     if add_params:

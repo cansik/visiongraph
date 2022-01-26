@@ -42,6 +42,6 @@ except ImportError as ex:
 
 
 def add_pose_estimation_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup],
-                                     default: int = 0, add_params: bool = False):
+                                     default: Union[int, str] = 0, add_params: bool = False):
     add_step_choice_argument(parser, PoseEstimators, "--pose-estimator", help="Pose estimator",
                              default=default, add_params=add_params)
