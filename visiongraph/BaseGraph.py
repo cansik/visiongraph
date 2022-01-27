@@ -37,7 +37,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         else:
             self._loop()
 
-    def close(self):
+    def close(self, wait_time: int = 60 * 1000):
         if not self._open:
             logging.warning("is not running")
             return
@@ -46,7 +46,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self._open = False
 
         if self.multi_threaded:
-            self._loop_thread.join(5000)
+            self._loop_thread.join(wait_time)
 
         logging.info("has been closed")
 
