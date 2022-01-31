@@ -42,6 +42,7 @@ class RealSenseInput(BaseDepthInput):
 
         self.infrared_width: Optional[int] = None
         self.infrared_height: Optional[int] = None
+        self.infrared_format: rs.format = rs.format.y8
 
         self.play_any_bag_stream = True
 
@@ -86,7 +87,8 @@ class RealSenseInput(BaseDepthInput):
             config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
-            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
+                                 self.infrared_format, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
             config.enable_stream(rs.stream.color, self.width, self.height, rs.format.any, self.fps)
@@ -196,6 +198,7 @@ class RealSenseInput(BaseDepthInput):
         self.infrared_height = 0
         self.depth_width = 0
         self.depth_height = 0
+        self.infrared_format = rs.format.any
 
     def configure(self, args: Namespace):
         super().configure(args)
