@@ -40,6 +40,9 @@ class RealSenseInput(BaseDepthInput):
 
         self._depth_frame: Optional[rs.depth_frame] = None
 
+        self.color_format: rs.format = rs.format.bgr8
+        self.depth_format: rs.format = rs.format.z16
+
         self.infrared_width: Optional[int] = None
         self.infrared_height: Optional[int] = None
         self.infrared_format: rs.format = rs.format.y8
@@ -91,12 +94,12 @@ class RealSenseInput(BaseDepthInput):
                                  self.infrared_format, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
-            config.enable_stream(rs.stream.color, self.width, self.height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, self.fps)
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         self.profile = self.pipeline.start(config)
@@ -198,6 +201,8 @@ class RealSenseInput(BaseDepthInput):
         self.infrared_height = 0
         self.depth_width = 0
         self.depth_height = 0
+        self.color_format = rs.format.any
+        self.depth_format = rs.format.any
         self.infrared_format = rs.format.any
 
     def configure(self, args: Namespace):
