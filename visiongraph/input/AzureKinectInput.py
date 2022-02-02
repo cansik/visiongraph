@@ -138,6 +138,7 @@ class AzureKinectInput(BaseDepthInput):
     def configure(self, args: Namespace):
         super().configure(args)
         self.use_infrared = args.infrared
+        self.align_frames = args.k4a_align
 
     @property
     def device_count(self) -> int:
@@ -145,4 +146,5 @@ class AzureKinectInput(BaseDepthInput):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        pass
+        parser.add_argument("--k4a-align", action="store_true",
+                            help="Align azure frames to depth frame.")

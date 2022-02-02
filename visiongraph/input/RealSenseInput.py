@@ -130,7 +130,7 @@ class RealSenseInput(BaseDepthInput):
         self.frames = self.pipeline.wait_for_frames()
         time_stamp = current_millis()
 
-        if self.align:
+        if self.align is not None:
             # alignment only happens if depth is enabled!
             self.frames = self.align.process(self.frames)
 
