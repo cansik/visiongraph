@@ -15,43 +15,65 @@ from pyk4a import PyK4A, PyK4ACapture, Config
 
 
 class AzureKinectInput(BaseDepthInput):
-    HeightToResolutionMapping = default_value_dict(pyk4a.ColorResolution.RES_720P,
-                                                   {
-                                                       720: pyk4a.ColorResolution.RES_720P,
-                                                       1080: pyk4a.ColorResolution.RES_1080P,
-                                                       1440: pyk4a.ColorResolution.RES_1440P,
-                                                       1536: pyk4a.ColorResolution.RES_1536P,
-                                                       2160: pyk4a.ColorResolution.RES_2160P,
-                                                       3072: pyk4a.ColorResolution.RES_3072P,
-                                                   })
+    _HeightToResolutionMapping = default_value_dict(pyk4a.ColorResolution.RES_720P,
+                                                    {
+                                                        720: pyk4a.ColorResolution.RES_720P,
+                                                        1080: pyk4a.ColorResolution.RES_1080P,
+                                                        1440: pyk4a.ColorResolution.RES_1440P,
+                                                        1536: pyk4a.ColorResolution.RES_1536P,
+                                                        2160: pyk4a.ColorResolution.RES_2160P,
+                                                        3072: pyk4a.ColorResolution.RES_3072P,
+                                                    })
 
-    def __init__(self):
+    _FPSToK4AFPSMapping = default_value_dict(pyk4a.FPS.FPS_30,
+                                             {
+                                                 5: pyk4a.FPS.FPS_5,
+                                                 15: pyk4a.FPS.FPS_15,
+                                                 30: pyk4a.FPS.FPS_30,
+                                             })
+
+    def __init__(self, device_id: int = 0):
         super().__init__()
-        self.use_infrared = False
-        self.sync_frames = True
+        self.use_infrared: bool = False
+        self.sync_frames: bool = True
+        self.align_frames: bool = False
 
-        self.min_clipping: Optional[int] = None
-        self.max_clipping: Optional[int] = None
+        self.min_clipping: Optional[int] = 0
+        self.max_clipping: Optional[int] = 5000
         self.color_map: Optional[int] = cv2.COLORMAP_JET
 
         self.device: Optional[PyK4A] = None
         self.capture: Optional[PyK4ACapture] = None
 
-    def setup(self):
+        self.device_id: int = device_id
+        self.color_format: pyk4a.ImageFormat = pyk4a.ImageFormat.COLOR_BGRA32
+        self.depth_mode: pyk4a.DepthMode = pyk4a.DepthMode.NFOV_UNBINNED
+
+    def setup(self, config: Optional[Config] = None):
+        if self.device_count == 0:
+            raise Exception("No Azure Kinect device found!")
+
+        if config is not None:
+            self.device = PyK4A(config=config, device_id=self.device_id)
+            self.device.start()
+            return
+
         config = Config()
-        config.color_resolution = AzureKinectInput.HeightToResolutionMapping[self.height]
+        config.color_resolution = AzureKinectInput._HeightToResolutionMapping[self.height]
+        config.color_format = self.color_format
+        config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[self.fps]
         config.depth_mode = pyk4a.DepthMode.OFF
         config.synchronized_images_only = False
 
         if self.use_infrared:
-            config.depth_mode = config.depth_mode.PASSIVE_IR
+            config.depth_mode = pyk4a.DepthMode.PASSIVE_IR
             config.synchronized_images_only = self.sync_frames
 
         if self.enable_depth:
-            config.depth_mode = pyk4a.DepthMode.NFOV_UNBINNED
+            config.depth_mode = self.depth_mode
             config.synchronized_images_only = self.sync_frames
 
-        self.device = PyK4A(config)
+        self.device = PyK4A(config=config, device_id=self.device_id)
         self.device.start()
 
     def read(self) -> (int, Optional[np.ndarray]):
@@ -63,10 +85,12 @@ class AzureKinectInput(BaseDepthInput):
             image = self._colorize(depth, (self.min_clipping, self.max_clipping), self.color_map)
         else:
             if self.use_infrared:
-                image = self._colorize(self.capture.ir, (None, None), None)
+                ir_frame = self.capture.transformed_ir if self.align_frames else self.capture.ir
+                image = self._colorize(ir_frame, (None, None), None)
             else:
-                image = self.capture.color
-                image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+                image = self.capture.transformed_color if self.align_frames else self.capture.color
+                if image is not None:
+                    image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
 
         if image is None:
             logging.warning("could not read frame.")
@@ -107,9 +131,17 @@ class AzureKinectInput(BaseDepthInput):
     def depth_map(self) -> np.ndarray:
         return self._colorize(self.capture.depth, (self.min_clipping, self.max_clipping), self.color_map)
 
+    @property
+    def depth_buffer(self) -> np.ndarray:
+        return self.capture.depth
+
     def configure(self, args: Namespace):
         super().configure(args)
         self.use_infrared = args.infrared
+
+    @property
+    def device_count(self) -> int:
+        return pyk4a.connected_device_count()
 
     @staticmethod
     def add_params(parser: ArgumentParser):

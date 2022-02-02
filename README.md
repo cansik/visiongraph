@@ -60,7 +60,7 @@ To demonstrate the possibilities of visiongraph there are already implemented [e
 - [SimpleVisionGraph](examples/SimpleVisionGraph.py) - SSD object detection & tracking of live webcam input with `5` lines of code.
 - [VisionGraphExample](examples/VisionGraphExample.py) - A face detection and tracking example with custom events.
 - [InputExample](examples/InputExample.py) - A basic input example that determines the center if possible.
-- [RealSenseDepthExample](examples/RealSenseDepthExample.py) - Display the RealSense depth map.
+- [RealSenseDepthExample](examples/DepthCameraExample.py) - Display the RealSense or Azure Kinect depth map.
 - [FaceDetectionExample](examples/FaceDetectionExample.py) - A face detection pipeline example.
 - [CascadeFaceDetectionExample](examples/CascadeFaceDetectionExample.py) -  A face detection pipeline that also predicts other feature points of the face.
 - [HandDetectionExample](examples/HandDetectionExample.py) - A hand detection pipeline example.

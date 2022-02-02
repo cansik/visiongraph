@@ -17,6 +17,7 @@ from visiongraph.util.TimeUtils import current_millis
 class RealSenseInput(BaseDepthInput):
     def __init__(self):
         super().__init__()
+
         self.use_infrared = False
         self.disable_emitter = False
         self.serial: Optional[str] = None
@@ -55,9 +56,8 @@ class RealSenseInput(BaseDepthInput):
 
     def setup(self):
         ctx = rs.context()
-        devices = ctx.query_devices()
 
-        if len(devices) == 0 and self.input_bag_file is None:
+        if self.device_count == 0 and self.input_bag_file is None:
             raise Exception("No RealSense device found!")
 
         if self.input_bag_file is not None and self.play_any_bag_stream:
@@ -193,6 +193,10 @@ class RealSenseInput(BaseDepthInput):
         ts, transformed_depth = self._post_process(0, depth_colormap)
         return transformed_depth
 
+    @property
+    def depth_buffer(self) -> np.ndarray:
+        return np.asarray(self.depth_frame.data, dtype=np.float)
+
     def allow_any_stream(self):
         self.width = 0
         self.height = 0
@@ -204,6 +208,11 @@ class RealSenseInput(BaseDepthInput):
         self.color_format = rs.format.any
         self.depth_format = rs.format.any
         self.infrared_format = rs.format.any
+
+    @property
+    def device_count(self) -> int:
+        ctx = rs.context()
+        return len(ctx.query_devices())
 
     def configure(self, args: Namespace):
         super().configure(args)
