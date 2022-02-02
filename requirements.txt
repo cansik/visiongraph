@@ -11,7 +11,7 @@ scipy
 pyrealsense2; platform_system == "Windows" or platform_system == "Linux"
 pyrealsense2-macosx; platform_system == "Darwin"
 
-# extra azure win,linux
+# extra azure
 pyk4a-bundle>=1.3.0.1; platform_system == "Windows" or platform_system == "Linux"
 
 # extra openvino

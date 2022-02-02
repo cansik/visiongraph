@@ -251,3 +251,11 @@ try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 except ImportError as ex:
     logging.debug(f"Could not import OpenVinoPoseEstimator")
+
+
+def __getattr__(name):
+    from .model._ImportStub import _ImportStub
+    logging.debug(f"{name} has not been imported!")
+    stub = type(name, _ImportStub.__bases__, dict(_ImportStub.__dict__))
+    stub.name = name
+    return stub
