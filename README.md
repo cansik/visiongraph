@@ -5,13 +5,13 @@ Here an example on how to start a webcam capture and display the image:
 
 ```python
 import visiongraph as vg
-vg.create_graph(vg.VideoCaptureInput(1)).then(vg.ImagePreview()).open()
+vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 ```
 
 The main goal is to implement a platform independent and high performance framework for day-to-day computer vision tasks.
 
 ## Installation
-To install visiongraph with all dependencies (which are cross-platform) call [pip](https://pypi.org/project/pip/) like this:
+To install visiongraph with all dependencies call [pip](https://pypi.org/project/pip/) like this:
 
 ```bash
 pip install "visiongraph[all]"
@@ -22,21 +22,7 @@ pip install "visiongraph[all]"
 It is also possible to only install certain packages depending on your needs:
 
 ```bash
-pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure]"
-```
-
-#### Azure Kinect
-The Azure Kinect is only available on Linux & Windows systems and will not be installed with `all` extra identifier. To install the Azure Kinect support, specify the azure kinect as well:
-
-```bash
-pip install "visiongraph[all, azure]"
-```
-
-#### RealSense Camera on MacOS
-Because Intel does not release the Intel librealsense2 python bindings for MacOS ([#9687](https://github.com/IntelRealSense/librealsense/issues/9687)), you have first to install it from pre-built repository like [pyrealsense2-macosx](https://github.com/cansik/pyrealsense2-macosx). It is recommended to use pip with the [find-links](https://pip.pypa.io/en/stable/cli/pip_install/#finding-packages) command.
-
-```bash
-pip install pyrealsense2 --find-links https://github.com/cansik/pyrealsense2-macosx/releases
+pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba]"
 ```
 
 ### Development
@@ -73,7 +59,7 @@ To demonstrate the possibilities of visiongraph there are already implemented [e
 
 There are even more examples where visiongraph is currently in use:
 
-- [Spout RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RealSense RGB-D images over spout.
+- [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over spout or syphon.
 
 ## Documentation
 
@@ -82,7 +68,7 @@ There are even more examples where visiongraph is currently in use:
 #### GraphNode
 
 ### Input
-Supported are video, webcam, RealSense and Azure Kinect input types. Azure Kinect may need a [special install](https://github.com/etiennedub/pyk4a#windows) on Windows and the [Azure-Kinect-SDK](https://github.com/microsoft/Azure-Kinect-Sensor-SDK)
+Supported are video, webcam, RealSense and Azure Kinect input types.
 
 ### Estimator
 
