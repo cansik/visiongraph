@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph import CentroidTracker
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -19,8 +20,9 @@ class PoseEstimationExample(BaseGraph):
         self.input = input
         self.network = pose_network
         self.fps_tracer = FPSTracer()
+        self.tracker = CentroidTracker()
 
-        self.add_nodes(self.input, self.network)
+        self.add_nodes(self.input, self.network, self.tracker)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -29,6 +31,8 @@ class PoseEstimationExample(BaseGraph):
             return
 
         results = self.network.process(frame)
+        results = self.tracker.track(results)
+
         for result in results:
             result.annotate(frame)
 
@@ -65,6 +69,8 @@ if __name__ == "__main__":
 
     pose_group = parser.add_argument_group("pose estimator")
     add_pose_estimation_step_choices(pose_group)
+
+    CentroidTracker.add_params(parser)
 
     args = parser.parse_args()
 
