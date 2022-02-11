@@ -11,9 +11,9 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]]):
-    def __init__(self, delta_time: float = 1.0 / 10.0):
+    def __init__(self, delta_time: float = 1.0 / 10.0, min_steps_alive: int = 0):
         self.delta_time = delta_time
-        self.min_steps_alive = 0
+        self.min_steps_alive = min_steps_alive
 
         self.tracker: Optional[MultiObjectTracker] = None
 
@@ -28,7 +28,10 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True))
                       for i, d in enumerate(data)]
         self.tracker.step(detections)
-        active_tracks = self.tracker.active_tracks(min_steps_alive=3)
+        active_tracks = self.tracker.active_tracks(min_steps_alive=self.min_steps_alive)
+
+        # instead of object detections, update input data
+        print(self.tracker.matches)
 
         # update tracks lookup tables
         current_track_lut = {}
