@@ -46,12 +46,12 @@ class LandmarkDetectionResult(ObjectDetectionResult):
 
     @staticmethod
     def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
-        xs = landmarks["x"]
-        ys = landmarks["y"]
+        xs = np.ma.masked_equal(landmarks["x"], 0.0, copy=False)
+        ys = np.ma.masked_equal(landmarks["y"], 0.0, copy=False)
 
-        x_min = np.min(xs)
-        y_min = np.min(ys)
-        x_max = np.max(xs)
-        y_max = np.max(ys)
+        x_min = xs.min()
+        y_min = ys.min()
+        x_max = xs.max()
+        y_max = ys.max()
 
         return BoundingBox2D(x_min, y_min, x_max - x_min, y_max - y_min)
