@@ -63,9 +63,15 @@ There are even more examples where visiongraph is currently in use:
 
 ## Documentation
 
+This documentation is intended to provide an overview of the framework. A full documentation will be available later.
+
 ### Graph
 
+The core component of visiongraph is the [BaseGraph](https://github.com/cansik/visiongraph/blob/main/visiongraph/BaseGraph.py) class.
+
 #### GraphNode
+
+#### Graph Builder
 
 ### Input
 Supported are video, webcam, RealSense and Azure Kinect input types.

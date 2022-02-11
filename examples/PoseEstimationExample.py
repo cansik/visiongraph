@@ -3,12 +3,12 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph import CentroidTracker
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
 
