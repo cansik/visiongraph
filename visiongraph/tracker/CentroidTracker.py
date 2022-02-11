@@ -3,10 +3,10 @@ from typing import Optional, List
 
 import numpy as np
 
+from visiongraph.external.motrackers.Tracker import Tracker
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
-from visiongraph.tracker.motrackers.Tracker import Tracker
 
 
 class CentroidTracker(BaseObjectDetectionTracker):

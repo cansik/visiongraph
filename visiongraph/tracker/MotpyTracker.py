@@ -1,8 +1,8 @@
+import logging
 from argparse import ArgumentParser
 from typing import Optional, List, Dict
 
-import numpy as np
-from motpy import MultiObjectTracker, Detection
+from visiongraph.external.motpy import MultiObjectTracker, Detection, ModelPreset
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -11,7 +11,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]]):
-    def __init__(self, delta_time: float = 1.0 / 20.0):
+    def __init__(self, delta_time: float = 1.0 / 10.0):
         self.delta_time = delta_time
         self.min_steps_alive = 0
 
@@ -25,10 +25,10 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
             self.tracker = MultiObjectTracker(dt=self.delta_time)
 
     def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
-        detections = [Detection(box=d.bounding_box.to_array(), score=d.score, class_id=d.class_id)
+        detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True))
                       for i, d in enumerate(data)]
         self.tracker.step(detections)
-        active_tracks = self.tracker.active_tracks()
+        active_tracks = self.tracker.active_tracks(min_steps_alive=3)
 
         # update tracks lookup tables
         current_track_lut = {}
@@ -42,10 +42,11 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
 
         results = ResultList()
         for track in active_tracks:
-            results.append(ObjectDetectionResult(track.class_id, str(self._track_lut[track.id]),
-                                                 track.score, BoundingBox2D.from_array(track.box)))
+            res = ObjectDetectionResult(track.class_id, track.class_id,
+                                        track.score, BoundingBox2D.from_array(track.box, tl_br_format=True))
+            res.tracking_id = self._track_lut[track.id]
+            results.append(res)
 
-        print(f"Active: {len(results)}")
         return results
 
     def release(self):

@@ -6,6 +6,7 @@ requests
 tqdm
 vector
 scipy
+filterpy
 
 # extra realsense
 pyrealsense2; platform_system == "Windows" or platform_system == "Linux"

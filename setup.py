@@ -31,8 +31,7 @@ class GenerateInitPy(distutils.cmd.Command):
     root_package = "visiongraph"
 
     excluded_modules = {
-        "visiongraph.external",
-        "visiongraph.tracker.motrackers"
+        "visiongraph.external"
     }
 
     late_import_modules = {

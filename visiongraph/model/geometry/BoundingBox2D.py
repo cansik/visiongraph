@@ -31,18 +31,25 @@ class BoundingBox2D:
     def size(self) -> vector.Vector2D:
         return vector.obj(x=self.width, y=self.height)
 
-    def to_array(self) -> np.ndarray:
+    def to_array(self, tl_br_format: bool = False) -> np.ndarray:
+        if tl_br_format:
+            return np.array([self.x_min, self.y_min, self.x_min + self.width, self.y_min + self.height])
         return np.array([self.x_min, self.y_min, self.width, self.height])
 
-    def scale(self, width: float, height: float):
+    def scale(self, width: float, height: float) -> "BoundingBox2D":
         self.x_min *= width
         self.y_min *= height
         self.width *= width
         self.height *= height
+        return self
 
     @staticmethod
-    def from_array(data: np.ndarray):
+    def from_array(data: np.ndarray, tl_br_format: bool = False):
         flat = data.flat
+
+        if tl_br_format:
+            return BoundingBox2D(flat[0], flat[1], flat[2] - flat[0], flat[3] - flat[1])
+
         return BoundingBox2D(flat[0], flat[1], flat[2], flat[3])
 
     def __repr__(self):

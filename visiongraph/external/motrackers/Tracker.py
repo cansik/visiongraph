@@ -2,8 +2,8 @@ from collections import OrderedDict
 import numpy as np
 # todo: get rid of scipy
 from scipy.spatial import distance
-from visiongraph.tracker.motrackers.utils.misc import get_centroid
-from visiongraph.tracker.motrackers.Track import Track
+from visiongraph.external.motrackers.utils.misc import get_centroid
+from visiongraph.external.motrackers.Track import Track
 
 
 class Tracker:
