@@ -9,6 +9,7 @@ from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
+from visiongraph.tracker.MotpyTracker import MotpyTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
 
@@ -20,7 +21,7 @@ class PoseEstimationExample(BaseGraph):
         self.input = input
         self.network = pose_network
         self.fps_tracer = FPSTracer()
-        self.tracker = CentroidTracker()
+        self.tracker = MotpyTracker()
 
         self.add_nodes(self.input, self.network, self.tracker)
 
@@ -31,7 +32,7 @@ class PoseEstimationExample(BaseGraph):
             return
 
         results = self.network.process(frame)
-        results = self.tracker.track(results)
+        results = self.tracker.process(results)
 
         for result in results:
             result.annotate(frame)
