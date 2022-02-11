@@ -5,11 +5,11 @@ import numpy as np
 
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
-from visiongraph.tracker.ObjectDetectionTracker import ObjectDetectionTracker
+from visiongraph.tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
 from visiongraph.tracker.motrackers.Tracker import Tracker
 
 
-class CentroidTracker(ObjectDetectionTracker):
+class CentroidTracker(BaseObjectDetectionTracker):
     def __init__(self, tracker: Optional[Tracker] = None):
         self.tracker = tracker
         self.enabled = True

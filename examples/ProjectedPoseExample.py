@@ -104,11 +104,17 @@ class MainWindow:
 
         # hook to events
         self.pipeline.on_result_ready = self.on_result_ready
+        self.pipeline.on_exception = self.on_pipeline_exception
 
         self._first_run = True
+        self.pipeline.open()
 
     def _on_close(self):
         gui.Application.instance.quit()
+
+    def on_pipeline_exception(self, pipeline, ex):
+        gui.Application.instance.post_to_main_thread(self.vis, gui.Application.instance.quit)
+        raise ex
 
     def on_result_ready(self, results: List[vg.PoseLandmarkResult]):
         pose_detected = False
@@ -161,7 +167,8 @@ class MainWindow:
 
         gui.Application.instance.post_to_main_thread(self.vis, update)
 
-    def _make_point_cloud(self, npts, center, radius):
+    @staticmethod
+    def _make_point_cloud(npts, center, radius):
         pts = np.random.uniform(-radius, radius, size=[npts, 3]) + center
         cloud = o3d.geometry.PointCloud()
         cloud.points = o3d.utility.Vector3dVector(pts)
@@ -173,7 +180,6 @@ class MainWindow:
 def main():
     pipeline = ProjectedPoseExample(args.input(), args.pose_estimator())
     pipeline.configure(args)
-    pipeline.open()
 
     app = o3d.visualization.gui.Application.instance
     app.initialize()
@@ -187,10 +193,10 @@ if __name__ == "__main__":
     vg.add_logging_parameter(parser)
 
     input_group = parser.add_argument_group("input provider")
-    add_input_step_choices(input_group, default=1)
+    add_input_step_choices(input_group, default="realsense")
 
     pose_group = parser.add_argument_group("pose estimator")
-    add_pose_estimation_step_choices(pose_group, default=9)
+    add_pose_estimation_step_choices(pose_group, default="aepose")
 
     transform_group = parser.add_argument_group("camera transform")
     transform_group.add_argument("--angle", default=-30, type=float,

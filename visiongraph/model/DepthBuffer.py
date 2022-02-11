@@ -15,5 +15,10 @@ class DepthBuffer(ABC):
 
     @property
     @abstractmethod
+    def depth_buffer(self) -> np.ndarray:
+        pass
+
+    @property
+    @abstractmethod
     def depth_map(self) -> np.ndarray:
         pass

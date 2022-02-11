@@ -1,5 +1,3 @@
--f https://github.com/cansik/pyrealsense2-macosx/releases
-
 # base packages
 wheel
 opencv-python>=4.5.4.60
@@ -10,10 +8,11 @@ vector
 scipy
 
 # extra realsense
-pyrealsense2
+pyrealsense2; platform_system == "Windows" or platform_system == "Linux"
+pyrealsense2-macosx; platform_system == "Darwin"
 
-# extra azure win,linux
-pyk4a
+# extra azure
+pyk4a-bundle>=1.3.0.2; platform_system == "Windows" or platform_system == "Linux"
 
 # extra openvino
 openvino>=2021.4.2

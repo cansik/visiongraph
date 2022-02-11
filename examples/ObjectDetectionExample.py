@@ -8,7 +8,6 @@ from visiongraph.estimator.spatial.SSDDetector import SSDDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
-from visiongraph.tracker.MotpyTracker import MotpyTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
@@ -18,7 +17,7 @@ class ObjectDetectionExample(BaseGraph):
         super().__init__()
         self.input = input
         self.network = SSDDetector.create()
-        self.tracker = MotpyTracker()
+        self.tracker = CentroidTracker()
 
         self.add_nodes(self.input, self.network, self.tracker)
 
@@ -40,7 +39,7 @@ class ObjectDetectionExample(BaseGraph):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        MotpyTracker.add_params(parser)
+        CentroidTracker.add_params(parser)
 
 
 def main():

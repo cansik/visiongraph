@@ -212,9 +212,8 @@ except ImportError as ex:
     logging.debug(f"Could not import BlazePose")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
+from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
 from .tracker.CentroidTracker import CentroidTracker
-from .tracker.MotpyTracker import MotpyTracker
-from .tracker.ObjectDetectionTracker import ObjectDetectionTracker
 from .util.ArgUtils import PipelineNodeFactory
 from .util.ArgUtils import add_dict_choice_argument
 from .util.ArgUtils import add_enum_choice_argument
@@ -252,3 +251,11 @@ try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 except ImportError as ex:
     logging.debug(f"Could not import OpenVinoPoseEstimator")
+
+
+def __getattr__(name):
+    from .model._ImportStub import _ImportStub
+    logging.debug(f"{name} has not been imported!")
+    stub = type(name, _ImportStub.__bases__, dict(_ImportStub.__dict__))
+    stub.name = name
+    return stub

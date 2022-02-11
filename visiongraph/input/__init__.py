@@ -28,7 +28,7 @@ except ImportError as ex:
     logging.info(f"Azure not installed: {ex}")
 
 
-def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: int = 0,
+def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,
                            add_params: bool = True):
     add_step_choice_argument(parser, InputProviders, "--input", help="Image input provider",
                              default=default, add_params=add_params)

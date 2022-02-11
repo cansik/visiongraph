@@ -22,7 +22,7 @@ class MoviePyVideoRecorder(BaseFrameRecorder):
 
     def add_image(self, image: np.ndarray):
         im_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        self.add_image(im_rgb)
+        super().add_image(im_rgb)
 
     def close(self):
         clip = ImageSequenceClip(self._images, fps=self.fps)

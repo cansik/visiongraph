@@ -17,6 +17,7 @@ from visiongraph.util.TimeUtils import current_millis
 class RealSenseInput(BaseDepthInput):
     def __init__(self):
         super().__init__()
+
         self.use_infrared = False
         self.disable_emitter = False
         self.serial: Optional[str] = None
@@ -40,8 +41,12 @@ class RealSenseInput(BaseDepthInput):
 
         self._depth_frame: Optional[rs.depth_frame] = None
 
+        self.color_format: rs.format = rs.format.bgr8
+        self.depth_format: rs.format = rs.format.z16
+
         self.infrared_width: Optional[int] = None
         self.infrared_height: Optional[int] = None
+        self.infrared_format: rs.format = rs.format.y8
 
         self.play_any_bag_stream = True
 
@@ -51,9 +56,8 @@ class RealSenseInput(BaseDepthInput):
 
     def setup(self):
         ctx = rs.context()
-        devices = ctx.query_devices()
 
-        if len(devices) == 0 and self.input_bag_file is None:
+        if self.device_count == 0 and self.input_bag_file is None:
             raise Exception("No RealSense device found!")
 
         if self.input_bag_file is not None and self.play_any_bag_stream:
@@ -86,23 +90,26 @@ class RealSenseInput(BaseDepthInput):
             config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
-            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
+                                 self.infrared_format, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
-            config.enable_stream(rs.stream.color, self.width, self.height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, rs.format.any, self.fps)
+            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, self.fps)
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         self.profile = self.pipeline.start(config)
         self.device = self.profile.get_device()
 
+        # todo: fix option setting for depth sensor
         # set emitter
         depth_sensor = self.device.first_depth_sensor()
-        if not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
+        if depth_sensor.supports(rs.option.emitter_enabled) \
+                and not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
             value = 0 if self.disable_emitter else 1
             depth_sensor.set_option(rs.option.emitter_enabled, value)
 
@@ -123,7 +130,7 @@ class RealSenseInput(BaseDepthInput):
         self.frames = self.pipeline.wait_for_frames()
         time_stamp = current_millis()
 
-        if self.align:
+        if self.align is not None:
             # alignment only happens if depth is enabled!
             self.frames = self.align.process(self.frames)
 
@@ -186,6 +193,10 @@ class RealSenseInput(BaseDepthInput):
         ts, transformed_depth = self._post_process(0, depth_colormap)
         return transformed_depth
 
+    @property
+    def depth_buffer(self) -> np.ndarray:
+        return np.asarray(self.depth_frame.data, dtype=np.float)
+
     def allow_any_stream(self):
         self.width = 0
         self.height = 0
@@ -194,6 +205,14 @@ class RealSenseInput(BaseDepthInput):
         self.infrared_height = 0
         self.depth_width = 0
         self.depth_height = 0
+        self.color_format = rs.format.any
+        self.depth_format = rs.format.any
+        self.infrared_format = rs.format.any
+
+    @property
+    def device_count(self) -> int:
+        ctx = rs.context()
+        return len(ctx.query_devices())
 
     def configure(self, args: Namespace):
         super().configure(args)
@@ -215,7 +234,11 @@ class RealSenseInput(BaseDepthInput):
             self._filters_to_enable = args.rs_filter
 
     def get_option(self, option: rs.option) -> float:
-        return self.image_sensor.get_option(option)
+        if self.image_sensor.supports(option):
+            return self.image_sensor.get_option(option)
+        else:
+            logging.warning(f"The option {option} is not supported!")
+            return 0.0
 
     def set_option(self, option: rs.option, value: float):
         if self.image_sensor.supports(option):

@@ -3,7 +3,7 @@ import signal
 from abc import ABC, abstractmethod
 from argparse import Namespace
 from threading import Thread
-from typing import List
+from typing import List, Callable, Optional
 
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from visiongraph.GraphNode import GraphNode
@@ -15,6 +15,8 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self.multi_threaded = multi_threaded
         self._loop_thread = Thread(target=self._loop, daemon=deamon)
         self.nodes: List[GraphNode] = []
+
+        self.on_exception: Optional[Callable[[BaseGraph, Exception], None]] = None
 
         if handle_signals:
             signal.signal(signal.SIGINT, self._signal_handler)
@@ -35,7 +37,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         else:
             self._loop()
 
-    def close(self):
+    def close(self, wait_time: int = 60 * 1000):
         if not self._open:
             logging.warning("is not running")
             return
@@ -44,18 +46,23 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self._open = False
 
         if self.multi_threaded:
-            self._loop_thread.join(5000)
+            self._loop_thread.join(wait_time)
 
         logging.info("has been closed")
 
     def _loop(self):
-        self._init()
-        logging.info("is setup and running")
+        try:
+            self._init()
+            logging.info("is setup and running")
 
-        while self._open:
-            self._process()
+            while self._open:
+                self._process()
 
-        self._release()
+            self._release()
+        except Exception as ex:
+            if self.on_exception is None:
+                raise ex
+            self.on_exception(self, ex)
 
     def _init(self):
         """Runs before pipeline loop."""
