@@ -90,3 +90,10 @@ Supported are video, webcam, RealSense and Azure Kinect input types.
 
 ## About
 Copyright (c) 2022 Florian Bruggisser
+
+### Included Libraries
+
+Parts of these libraries are directly included and adapted to work with visiongraph.
+
+* [motpy](https://github.com/wmuron/motpy) - simple multi object tracking library (MIT License)
+* [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
