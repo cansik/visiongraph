@@ -4,6 +4,7 @@ from typing import Optional, List
 from visiongraph.GraphNode import GraphNode
 from visiongraph.external.motpy import MultiObjectTracker, Detection
 from visiongraph.external.motpy.tracker import EPS
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
@@ -14,7 +15,8 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
                  multi_match_min_iou: float = 1. + EPS,
                  min_steps_alive: int = -1,
                  max_staleness_to_positive_ratio: float = 3.0,
-                 max_staleness: int = 999):
+                 max_staleness: float = 12.0,
+                 use_predicted_bounding_box: bool = False):
 
         self.delta_time = delta_time
         self.min_steps_alive = min_steps_alive
@@ -22,6 +24,8 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         self.multi_match_min_iou = multi_match_min_iou
         self.max_staleness_to_positive_ratio = max_staleness_to_positive_ratio
         self.max_staleness = max_staleness
+
+        self.use_predicted_bounding_box = use_predicted_bounding_box
 
         self.tracker: Optional[MultiObjectTracker] = None
 
@@ -42,6 +46,10 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         for track in active_tracks:
             detection = track.reference
             detection.tracking_id = track.id
+
+            if self.use_predicted_bounding_box:
+                detection.box = BoundingBox2D.from_array(track.box, tl_br_format=True)
+
             results.append(detection)
 
         return results
