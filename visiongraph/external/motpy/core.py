@@ -2,7 +2,7 @@ import collections
 import logging
 import os
 import sys
-from typing import Optional
+from typing import Optional, Any
 
 import numpy as np
 
@@ -15,8 +15,7 @@ Box = np.ndarray
 Vector = np.ndarray
 
 # Track is meant as an output from the object tracker
-Track = collections.namedtuple('Track', 'id box score class_id')
-
+Track = collections.namedtuple('Track', 'id box score class_id, reference')
 
 # numpy/opencv image alias
 NpImage = np.ndarray
@@ -28,14 +27,17 @@ class Detection:
             box: Box,
             score: Optional[float] = None,
             class_id: Optional[int] = None,
-            feature: Optional[Vector] = None):
+            feature: Optional[Vector] = None,
+            reference: Optional[Any] = None):
         self.box = box
         self.score = score
         self.class_id = class_id
         self.feature = feature
+        self.reference = reference
 
     def __repr__(self):
-        return f'Detection(box={self.box}, score={self.score:.5f}, class_id={self.class_id}, feature={self.feature})'
+        return f'Detection(box={self.box}, score={self.score:.5f}, class_id={self.class_id}, ' \
+               f'feature={self.feature} reference={self.reference})'
 
 
 """ utils """

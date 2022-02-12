@@ -1,5 +1,4 @@
 import time
-import uuid
 from collections.abc import Iterable
 from typing import (Any, Callable, Dict, List, Optional, Sequence, Tuple, Type,
                     Union)
@@ -62,12 +61,14 @@ def exponential_moving_average_fn(gamma: float) -> Callable:
 
 class SingleObjectTracker:
     def __init__(self,
+                 tracker_id: int,
                  max_staleness: float = 12.0,
                  smooth_score_gamma: float = 0.8,
                  smooth_feature_gamma: float = 0.9,
                  score0: Optional[float] = None,
-                 class_id0: Optional[int] = None):
-        self.id: str = str(uuid.uuid4())
+                 class_id0: Optional[int] = None,
+                 reference: Optional[Any] = None):
+        self.id: int = tracker_id
         self.steps_alive: int = 1
         self.steps_positive: int = 1
         self.staleness: float = 0.0
@@ -81,6 +82,8 @@ class SingleObjectTracker:
 
         self.class_id_counts: Dict = dict()
         self.class_id: Optional[int] = self.update_class_id(class_id0)
+
+        self.reference = reference
 
         logger.debug(f'creating new tracker {self.id}')
 
@@ -121,6 +124,8 @@ class SingleObjectTracker:
         self.score = self.update_score_fn(old=self.score, new=detection.score)
         self.feature = self.update_feature_fn(old=self.feature, new=detection.feature)
 
+        self.reference = detection.reference
+
         # reduce the staleness of a tracker, faster than growth rate
         self.unstale(rate=3)
 
@@ -143,12 +148,14 @@ class KalmanTracker(SingleObjectTracker):
     """ A single object tracker using Kalman filter with specified motion model specification """
 
     def __init__(self,
+                 tracker_id: int,
                  model_kwargs: dict = DEFAULT_MODEL_SPEC,
                  x0: Optional[Vector] = None,
                  box0: Optional[Box] = None,
+                 reference: Optional[Any] = None,
                  **kwargs) -> None:
 
-        super(KalmanTracker, self).__init__(**kwargs)
+        super(KalmanTracker, self).__init__(tracker_id, reference=reference, **kwargs)
 
         self.model_kwargs: dict = model_kwargs
         self.model = Model(**self.model_kwargs)
@@ -178,14 +185,16 @@ class KalmanTracker(SingleObjectTracker):
 
 
 class SimpleTracker(SingleObjectTracker):
-    """ A simple single tracker with no motion modeling and box update using exponential moving averege """
+    """ A simple single tracker with no motion modeling and box update using exponential moving average """
 
     def __init__(self,
+                 tracker_id: int,
                  box0: Optional[Box] = None,
                  box_update_gamma: float = 0.5,
+                 reference: Optional[Any] = None,
                  **kwargs):
 
-        super(SimpleTracker, self).__init__(**kwargs)
+        super(SimpleTracker, self).__init__(tracker_id, reference=reference, **kwargs)
         self._box: Box = box0
 
         self.update_box_fn: Callable = exponential_moving_average_fn(box_update_gamma)
@@ -326,7 +335,7 @@ class MultiObjectTracker:
         """
 
         self.trackers: List[SingleObjectTracker] = []
-        self.matches: List = []
+        self.next_object_id = 0
 
         # kwargs to be passed to each single object tracker
         self.tracker_kwargs: Dict = tracker_kwargs if tracker_kwargs is not None else {}
@@ -371,7 +380,8 @@ class MultiObjectTracker:
             cond2 = tracker.staleness < max_staleness
             cond3 = tracker.steps_alive >= min_steps_alive
             if cond1 and cond2 and cond3:
-                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score, class_id=tracker.class_id))
+                tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score,
+                                    class_id=tracker.class_id, reference=tracker.reference))
 
         logger.debug('active/all tracks: %d/%d' % (len(self.trackers), len(tracks)))
         return tracks
@@ -397,26 +407,29 @@ class MultiObjectTracker:
 
         # match trackers with detections
         logger.debug('step with %d detections' % len(detections))
-        self.matches = self.matching_fn(self.trackers, detections)
-        logger.debug('matched %d pairs' % len(self.matches))
+        matches = self.matching_fn(self.trackers, detections)
+        logger.debug('matched %d pairs' % len(matches))
 
         # assigned trackers: correct
-        for match in self.matches:
+        for match in matches:
             track_idx, det_idx = match[0], match[1]
             self.trackers[track_idx].update(detection=detections[det_idx])
 
         # not assigned detections: create new trackers POF
-        assigned_det_idxs = set(self.matches[:, 1]) if len(self.matches) > 0 else []
+        assigned_det_idxs = set(matches[:, 1]) if len(matches) > 0 else []
         for det_idx in set(range(len(detections))).difference(assigned_det_idxs):
             det = detections[det_idx]
-            tracker = self.tracker_clss(box0=det.box,
+            tracker = self.tracker_clss(self.next_object_id,
+                                        box0=det.box,
                                         score0=det.score,
                                         class_id0=det.class_id,
+                                        reference=det.reference,
                                         **self.tracker_kwargs)
+            self.next_object_id += 1
             self.trackers.append(tracker)
 
         # unassigned trackers
-        assigned_track_idxs = set(self.matches[:, 0]) if len(self.matches) > 0 else []
+        assigned_track_idxs = set(matches[:, 0]) if len(matches) > 0 else []
         for track_idx in set(range(len(self.trackers))).difference(assigned_track_idxs):
             self.trackers[track_idx].stale()
 
