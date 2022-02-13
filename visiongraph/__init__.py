@@ -12,6 +12,7 @@ from .data.Asset import Asset
 from .data.LocalAsset import LocalAsset
 from .data.RepositoryAsset import RepositoryAsset
 from .dsp.BaseFilterNumpy import BaseFilterNumpy
+from .dsp.LandmarkSmoothFilter import LandmarkSmoothFilter
 from .dsp.OneEuroFilter import OneEuroFilter
 from .dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from .dsp.VectorNumpySmoothFilter import VectorNumpySmoothFilter
