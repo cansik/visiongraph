@@ -2,12 +2,15 @@
 Source: https://github.com/HoBeom/OneEuroFilter-Numpy
 MIT License
 """
+import math
 from typing import Optional
 
 import numpy as np
 from time import time
 
 from visiongraph.dsp.BaseFilterNumpy import BaseFilterNumpy
+
+EPS = 1e-7
 
 
 def _smoothing_factor(t_e, cutoff):
@@ -21,7 +24,8 @@ def _exponential_smoothing(a, x, x_prev):
 
 class OneEuroFilterNumpy(BaseFilterNumpy):
     def __init__(self, x0: np.ndarray, t0: Optional[float] = None, dx0: float = 0.0,
-                 min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0):
+                 min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0,
+                 invalid_value: Optional[float] = None):
         """Initialize the one euro filter."""
         # The parameters.
         self.data_shape = x0.shape
@@ -34,6 +38,8 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         self.dx_prev = np.full(x0.shape, dx0)
         self.t_prev = time() if t0 is None else t0
 
+        self.invalid_value = invalid_value
+
     def re_init(self, x: np.ndarray):
         self.data_shape = x.shape
         self.min_cutoff = np.full(self.data_shape, self.min_cutoff.flat[0])
@@ -42,6 +48,8 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
 
         self.x_prev = x.astype(np.float)
         self.dx_prev = np.full(self.data_shape, 0.0)  # reset dx_prev
+
+        self.t_prev = time()
 
     def __call__(self, x: np.ndarray, t: Optional[float] = None) -> np.ndarray:
         """Compute the filtered signal."""
@@ -52,7 +60,12 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         if t is None:
             t = time()
 
-        t_e = t - self.t_prev
+        # filter invalid data
+        if self.invalid_value is not None:
+            invalid_indices = np.where(x == self.invalid_value)
+            x[invalid_indices] = self.x_prev[invalid_indices]
+
+        t_e = max(t - self.t_prev, EPS)
         t_e = np.full(x.shape, t_e)
 
         # The filtered derivative of the signal.
