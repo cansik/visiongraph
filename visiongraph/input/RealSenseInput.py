@@ -258,7 +258,7 @@ class RealSenseInput(BaseDepthCamera):
                 logging.warning(f"The option {option} is read-only!")
                 return
 
-            self.image_sensor.set_option(option, value)
+            self.image_sensor.set_option(option, float(value))
         else:
             logging.warning(f"The option {option} is not supported!")
 

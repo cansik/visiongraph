@@ -45,11 +45,11 @@ class BaseDepthCamera(BaseDepthInput, ABC):
             parser.add_argument("-ir", "--infrared", action="store_true",
                                 help="Use infrared as input stream.")
 
-            parser.add_argument("--exposure", default=None, type=float,
+            parser.add_argument("--exposure", default=None, type=int,
                                 help="Exposure value (usec) for depth camera input (disables auto-exposure).")
-            parser.add_argument("--gain", default=None, type=float,
+            parser.add_argument("--gain", default=None, type=int,
                                 help="Gain value for depth input (disables auto-exposure).")
-            parser.add_argument("--white-balance", default=None, type=float,
+            parser.add_argument("--white-balance", default=None, type=int,
                                 help="White-Balance value for depth input (disables auto-white-balance).")
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):

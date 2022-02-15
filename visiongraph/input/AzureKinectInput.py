@@ -195,4 +195,5 @@ class AzureKinectInput(BaseDepthCamera):
 
     @white_balance.setter
     def white_balance(self, value: int):
+        value = value // 10 * 10
         self.device.whitebalance = value
