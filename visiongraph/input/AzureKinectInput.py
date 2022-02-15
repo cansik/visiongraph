@@ -4,17 +4,16 @@ from typing import Optional, Tuple
 
 import cv2
 import numpy as np
+import pyk4a
+from pyk4a import PyK4A, PyK4ACapture, Config
 
-from visiongraph.input.BaseDepthInput import BaseDepthInput
+from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.util.CollectionUtils import default_value_dict
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
-import pyk4a
-from pyk4a import PyK4A, PyK4ACapture, Config
 
-
-class AzureKinectInput(BaseDepthInput):
+class AzureKinectInput(BaseDepthCamera):
     _HeightToResolutionMapping = default_value_dict(pyk4a.ColorResolution.RES_720P,
                                                     {
                                                         720: pyk4a.ColorResolution.RES_720P,
@@ -34,7 +33,6 @@ class AzureKinectInput(BaseDepthInput):
 
     def __init__(self, device_id: int = 0):
         super().__init__()
-        self.use_infrared: bool = False
         self.sync_frames: bool = True
         self.align_frames: bool = False
 
@@ -48,6 +46,8 @@ class AzureKinectInput(BaseDepthInput):
         self.device_id: int = device_id
         self.color_format: pyk4a.ImageFormat = pyk4a.ImageFormat.COLOR_BGRA32
         self.depth_mode: pyk4a.DepthMode = pyk4a.DepthMode.NFOV_UNBINNED
+
+        self.config: Optional[Config] = None
 
     def setup(self, config: Optional[Config] = None):
         if self.device_count == 0:
@@ -73,8 +73,12 @@ class AzureKinectInput(BaseDepthInput):
             config.depth_mode = self.depth_mode
             config.synchronized_images_only = self.sync_frames
 
+        self.config = config
         self.device = PyK4A(config=config, device_id=self.device_id)
         self.device.start()
+
+        # set options
+        self._apply_initial_settings()
 
     def read(self) -> (int, Optional[np.ndarray]):
         self.capture = self.device.get_capture()
@@ -135,16 +139,58 @@ class AzureKinectInput(BaseDepthInput):
     def depth_buffer(self) -> np.ndarray:
         return self.capture.depth
 
-    def configure(self, args: Namespace):
-        super().configure(args)
-        self.use_infrared = args.infrared
-        self.align_frames = args.k4a_align
-
     @property
     def device_count(self) -> int:
         return pyk4a.connected_device_count()
 
+    def configure(self, args: Namespace):
+        super().configure(args)
+        self.align_frames = args.k4a_align
+        self.device_id = args.k4a_device
+
     @staticmethod
     def add_params(parser: ArgumentParser):
+        super(AzureKinectInput, AzureKinectInput).add_params(parser)
         parser.add_argument("--k4a-align", action="store_true",
                             help="Align azure frames to depth frame.")
+        parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
+
+    @property
+    def gain(self) -> int:
+        return self.device.gain
+
+    @gain.setter
+    def gain(self, value: int):
+        self.device.gain = value
+
+    @property
+    def exposure(self) -> int:
+        return self.device.exposure
+
+    @exposure.setter
+    def exposure(self, value: int):
+        self.device.exposure = value
+
+    @property
+    def enable_auto_exposure(self) -> bool:
+        return self.device.exposure_mode_auto
+
+    @enable_auto_exposure.setter
+    def enable_auto_exposure(self, value: bool):
+        self.device.exposure_mode_auto = value
+
+    @property
+    def enable_auto_white_balance(self) -> bool:
+        return self.device.whitebalance_mode_auto
+
+    @enable_auto_white_balance.setter
+    def enable_auto_white_balance(self, value: bool):
+        self.device.whitebalance_mode_auto = value
+
+    @property
+    def white_balance(self) -> int:
+        return self.device.whitebalance
+
+    @white_balance.setter
+    def white_balance(self, value: int):
+        self.device.whitebalance = value

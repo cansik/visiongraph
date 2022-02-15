@@ -1,3 +1,4 @@
+import json
 import logging
 from argparse import ArgumentParser, Namespace
 from typing import Optional, List, Tuple
@@ -6,7 +7,7 @@ import numpy as np
 import pyrealsense2 as rs
 import vector
 
-from visiongraph.input.BaseDepthInput import BaseDepthInput
+from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
@@ -14,19 +15,15 @@ from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
 
-class RealSenseInput(BaseDepthInput):
+class RealSenseInput(BaseDepthCamera):
     def __init__(self):
         super().__init__()
 
-        self.use_infrared = False
         self.disable_emitter = False
         self.serial: Optional[str] = None
 
         self.input_bag_file: Optional[str] = None
         self.output_bag_file: Optional[str] = None
-
-        self._exposure: Optional[float] = None
-        self._gain: Optional[float] = None
 
         self.colorizer: Optional[rs.colorizer] = None
         self.color_scheme = RealSenseColorScheme.WhiteToBlack
@@ -49,6 +46,8 @@ class RealSenseInput(BaseDepthInput):
         self.infrared_format: rs.format = rs.format.y8
 
         self.play_any_bag_stream = True
+
+        self.json_config_path: Optional[str] = None
 
         # filter
         self.depth_filters: List[rs.filter] = []
@@ -106,22 +105,32 @@ class RealSenseInput(BaseDepthInput):
         self.device = self.profile.get_device()
 
         # todo: fix option setting for depth sensor
-        # set emitter
+        # set emitter state
         depth_sensor = self.device.first_depth_sensor()
         if depth_sensor.supports(rs.option.emitter_enabled) \
                 and not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
             value = 0 if self.disable_emitter else 1
             depth_sensor.set_option(rs.option.emitter_enabled, value)
 
-        # setting options
+        # set image sensor
         self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
-        self.set_option(rs.option.enable_auto_exposure, int(not bool(self._exposure)))
 
-        if self._exposure:
-            self.set_option(rs.option.exposure, float(self._exposure))
+        # applying other options
+        self._apply_initial_settings()
 
-        if self._gain:
-            self.set_option(rs.option.gain, float(self._gain))
+        # apply json config
+        if self.json_config_path is not None:
+            advanced_mode = rs.rs400_advanced_mode(self.device)
+            advanced_mode.toggle_advanced_mode(True)
+            logging.info("RealSense advanced mode is", "enabled" if advanced_mode.is_enabled() else "disabled")
+
+            if advanced_mode.is_enabled():
+                json_config = json.load(open(self.json_config_path))
+                json_config = str(json_config).replace("'", '\"')
+                advanced_mode.load_json(json_config)
+            else:
+                logging.warning(f"Could not load json config because device is not in advanced mode: "
+                                f"{self.json_config_path}")
 
     def release(self):
         self.pipeline.stop()
@@ -214,25 +223,6 @@ class RealSenseInput(BaseDepthInput):
         ctx = rs.context()
         return len(ctx.query_devices())
 
-    def configure(self, args: Namespace):
-        super().configure(args)
-
-        self.use_infrared = args.infrared
-
-        self._exposure = args.exposure
-        self._gain = args.gain
-        self.serial = args.rs_serial
-
-        self.input_bag_file = args.rs_play_bag
-        self.output_bag_file = args.rs_record_bag
-
-        self.disable_emitter = args.disable_emitter
-        self.color_scheme = args.color_scheme
-
-        # filter enabler
-        if args.rs_filter is not None:
-            self._filters_to_enable = args.rs_filter
-
     def get_option(self, option: rs.option) -> float:
         if self.image_sensor.supports(option):
             return self.image_sensor.get_option(option)
@@ -291,29 +281,37 @@ class RealSenseInput(BaseDepthInput):
         value = value // 100 * 100
         self.set_option(rs.option.white_balance, value)
 
+    def configure(self, args: Namespace):
+        super().configure(args)
+        self.serial = args.rs_serial
+
+        self.input_bag_file = args.rs_play_bag
+        self.output_bag_file = args.rs_record_bag
+
+        self.disable_emitter = args.rs_disable_emitter
+        self.color_scheme = args.rs_color_scheme
+
+        self.json_config_path = args.rs_json
+
+        # filter enabler
+        if args.rs_filter is not None:
+            self._filters_to_enable = args.rs_filter
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(RealSenseInput, RealSenseInput).add_params(parser)
-        parser.add_argument("-ir", "--infrared", action="store_true",
-                            help="Use infrared as input stream (RealSense).")
-        parser.add_argument("--exposure", default=None, type=float,
-                            help="Exposure value (usec) for realsense input (disables auto-exposure).")
-        parser.add_argument("--gain", default=None, type=float,
-                            help="Gain value for realsense input (disables auto-exposure).")
         parser.add_argument("--rs-serial", default=None, type=str,
                             help="RealSense serial number to choose specific device.")
+        parser.add_argument("--rs-json", default=None, type=str,
+                            help="RealSense json configuration to apply.")
         parser.add_argument("--rs-play-bag", default=None, type=str,
                             help="Path to a pre-recorded bag file for playback.")
         parser.add_argument("--rs-record-bag", default=None, type=str,
                             help="Path to a bag file to store the current recording.")
-        parser.add_argument("--disable-emitter", action="store_true",
+        parser.add_argument("--rs-disable-emitter", action="store_true",
                             help="Disable RealSense IR emitter.")
-        parser.add_argument("--depth", action="store_true",
-                            help="Enable RealSense depth stream.")
         add_dict_choice_argument(parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter",
                                  default=None, nargs="+")
-        parser.add_argument("--depth-as-input", action="store_true",
-                            help="Use colored depth stream as input stream.")
-        add_enum_choice_argument(parser, RealSenseColorScheme, "--color-scheme",
+        add_enum_choice_argument(parser, RealSenseColorScheme, "--rs-color-scheme",
                                  default=RealSenseColorScheme.WhiteToBlack,
                                  help="Color scheme for depth map")

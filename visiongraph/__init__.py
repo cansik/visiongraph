@@ -158,6 +158,7 @@ try:
     from .input.AzureKinectInput import AzureKinectInput
 except ImportError as ex:
     logging.debug(f"Could not import AzureKinectInput")
+from .input.BaseDepthCamera import BaseDepthCamera
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
 from .input.ImageInput import ImageInput

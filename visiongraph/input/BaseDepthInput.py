@@ -1,5 +1,5 @@
 from abc import ABC
-from argparse import Namespace
+from argparse import Namespace, ArgumentParser
 from typing import Optional
 
 from visiongraph.input.BaseInput import BaseInput
@@ -23,3 +23,11 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
 
         if self.use_depth_as_input:
             self.enable_depth = True
+
+    @staticmethod
+    def add_params(parser: ArgumentParser):
+        super(BaseDepthInput, BaseDepthInput).add_params(parser)
+        parser.add_argument("--depth", action="store_true",
+                            help="Enable RealSense depth stream.")
+        parser.add_argument("--depth-as-input", action="store_true",
+                            help="Use colored depth stream as input stream.")
