@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 import cv2
 import numpy as np
 import pyk4a
-from pyk4a import PyK4A, PyK4ACapture, Config
+from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.util.CollectionUtils import default_value_dict
@@ -49,40 +49,61 @@ class AzureKinectInput(BaseDepthCamera):
 
         self.config: Optional[Config] = None
 
+        # recording / playback
+        self.input_mkv_file: Optional[str] = None
+        self.output_mkv_file: Optional[str] = None
+
+        self._record: Optional[PyK4ARecord] = None
+        self._playback: Optional[PyK4APlayback] = None
+
     def setup(self, config: Optional[Config] = None):
+        if self.input_mkv_file is not None:
+            logging.info(f"Playing mkv file from {self.input_mkv_file}")
+            self._playback = PyK4APlayback(self.input_mkv_file)
+            self._playback.open()
+            return
+
         if self.device_count == 0:
             raise Exception("No Azure Kinect device found!")
 
         if config is not None:
             self.device = PyK4A(config=config, device_id=self.device_id)
             self.device.start()
-            return
+        else:
+            config = Config()
+            config.color_resolution = AzureKinectInput._HeightToResolutionMapping[self.height]
+            config.color_format = self.color_format
+            config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[self.fps]
+            config.depth_mode = pyk4a.DepthMode.OFF
+            config.synchronized_images_only = False
 
-        config = Config()
-        config.color_resolution = AzureKinectInput._HeightToResolutionMapping[self.height]
-        config.color_format = self.color_format
-        config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[self.fps]
-        config.depth_mode = pyk4a.DepthMode.OFF
-        config.synchronized_images_only = False
+            if self.use_infrared:
+                config.depth_mode = pyk4a.DepthMode.PASSIVE_IR
+                config.synchronized_images_only = self.sync_frames
 
-        if self.use_infrared:
-            config.depth_mode = pyk4a.DepthMode.PASSIVE_IR
-            config.synchronized_images_only = self.sync_frames
+            if self.enable_depth:
+                config.depth_mode = self.depth_mode
+                config.synchronized_images_only = self.sync_frames
 
-        if self.enable_depth:
-            config.depth_mode = self.depth_mode
-            config.synchronized_images_only = self.sync_frames
-
-        self.config = config
-        self.device = PyK4A(config=config, device_id=self.device_id)
-        self.device.start()
+            self.config = config
+            self.device = PyK4A(config=config, device_id=self.device_id)
+            self.device.start()
 
         # set options
         self._apply_initial_settings()
 
+        # recording
+        if self.output_mkv_file is not None:
+            logging.info(f"Starting recording to {self.output_mkv_file}")
+            self._record = PyK4ARecord(device=self.device, config=config, path=self.output_mkv_file)
+            self._record.create()
+
     def read(self) -> (int, Optional[np.ndarray]):
-        self.capture = self.device.get_capture()
+        self._read_next_capture()
         time_stamp = current_millis()
+
+        if self._record is not None:
+            self._record.write_capture(self.capture)
 
         if self.enable_depth and self.use_depth_as_input:
             depth = self.capture.depth
@@ -103,7 +124,15 @@ class AzureKinectInput(BaseDepthCamera):
         return self._post_process(time_stamp, image)
 
     def release(self):
-        self.device.stop()
+        if self._record is not None:
+            self._record.flush()
+            self._record.close()
+            logging.info(f"Recording has been written to {self.output_mkv_file}")
+
+        if self._playback is not None:
+            self._playback.close()
+        else:
+            self.device.stop()
 
     def distance(self, x: float, y: float) -> float:
         depth_frame = self.capture.depth
@@ -116,6 +145,17 @@ class AzureKinectInput(BaseDepthCamera):
 
         # convert mm into m
         return depth_frame[iy, ix] / 1000
+
+    def _read_next_capture(self):
+        if self._playback is None:
+            self.capture = self.device.get_capture()
+            return
+
+        try:
+            self.capture = self._playback.get_next_capture()
+        except EOFError:
+            self._playback.seek(0)
+            self.capture = self._playback.get_next_capture()
 
     @staticmethod
     def _colorize(image: np.ndarray,
@@ -148,12 +188,20 @@ class AzureKinectInput(BaseDepthCamera):
         self.align_frames = args.k4a_align
         self.device_id = args.k4a_device
 
+        self.output_mkv_file = args.k4a_record_mkv
+        self.input_mkv_file = args.k4a_play_mkv
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
         parser.add_argument("--k4a-align", action="store_true",
                             help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
+
+        parser.add_argument("--k4a-play-mkv", type=str, default=None,
+                            help="Path to a pre-recorded bag file for playback.")
+        parser.add_argument("--k4a-record-mkv", type=str, default=None,
+                            help="Path to a mkv file to store the current recording.")
 
         # todo: add more azure specific options like depth mode
 
