@@ -120,17 +120,7 @@ class RealSenseInput(BaseDepthCamera):
 
         # apply json config
         if self.json_config_path is not None:
-            advanced_mode = rs.rs400_advanced_mode(self.device)
-            advanced_mode.toggle_advanced_mode(True)
-            logging.info("RealSense advanced mode is", "enabled" if advanced_mode.is_enabled() else "disabled")
-
-            if advanced_mode.is_enabled():
-                json_config = json.load(open(self.json_config_path))
-                json_config = str(json_config).replace("'", '\"')
-                advanced_mode.load_json(json_config)
-            else:
-                logging.warning(f"Could not load json config because device is not in advanced mode: "
-                                f"{self.json_config_path}")
+            self.load_json_config_from_file(self.json_config_path)
 
     def release(self):
         self.pipeline.stop()
@@ -218,6 +208,38 @@ class RealSenseInput(BaseDepthCamera):
         self.depth_format = rs.format.any
         self.infrared_format = rs.format.any
 
+    def load_json_config_from_file(self, json_path: str):
+        json_config = json.load(open(json_path, "r"))
+        self.load_json_config(json_config)
+
+    def load_json_config(self, json_config: str):
+        if self.device is None:
+            logging.warning(f"No device available to apply json config.")
+            return
+
+        if not self.device.supports(rs.camera_info.advanced_mode):
+            logging.warning(f"Device {self.device_name} does not support serialisation.")
+            return
+
+        serdev = rs.serializable_device(self.device)
+
+        json_config = str(json_config).replace("'", '\"')
+        serdev.load_json(json_config)
+
+        logging.info(f"Json config has been loaded {self.json_config_path}")
+
+    def get_json_config(self) -> str:
+        if self.device is None:
+            logging.warning(f"No device available to apply json config.")
+            return
+
+        if not self.device.supports(rs.camera_info.advanced_mode):
+            logging.warning(f"Device {self.device_name} does not support serialisation.")
+            return
+
+        serdev = rs.serializable_device(self.device)
+        return serdev.serialize_json()
+
     @property
     def device_count(self) -> int:
         ctx = rs.context()
@@ -239,6 +261,12 @@ class RealSenseInput(BaseDepthCamera):
             self.image_sensor.set_option(option, value)
         else:
             logging.warning(f"The option {option} is not supported!")
+
+    @property
+    def device_name(self) -> str:
+        if self.device is None:
+            return "NoDevice"
+        return self.device.get_info(rs.camera_info.name)
 
     @property
     def gain(self) -> int:

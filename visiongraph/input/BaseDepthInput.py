@@ -1,5 +1,5 @@
 from abc import ABC
-from argparse import Namespace, ArgumentParser
+from argparse import Namespace, ArgumentParser, ArgumentError
 from typing import Optional
 
 from visiongraph.input.BaseInput import BaseInput
@@ -27,7 +27,13 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(BaseDepthInput, BaseDepthInput).add_params(parser)
-        parser.add_argument("--depth", action="store_true",
-                            help="Enable RealSense depth stream.")
-        parser.add_argument("--depth-as-input", action="store_true",
-                            help="Use colored depth stream as input stream.")
+
+        try:
+            parser.add_argument("--depth", action="store_true",
+                                help="Enable RealSense depth stream.")
+            parser.add_argument("--depth-as-input", action="store_true",
+                                help="Use colored depth stream as input stream.")
+        except ArgumentError as ex:
+            if ex.message.startswith("conflicting"):
+                return
+            raise ex

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from argparse import ArgumentParser, Namespace
+from argparse import ArgumentParser, Namespace, ArgumentError
 from typing import Optional
 
 from visiongraph.input.BaseDepthInput import BaseDepthInput
@@ -40,15 +40,21 @@ class BaseDepthCamera(BaseDepthInput, ABC):
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(BaseDepthCamera, BaseDepthCamera).add_params(parser)
-        parser.add_argument("-ir", "--infrared", action="store_true",
-                            help="Use infrared as input stream.")
 
-        parser.add_argument("--exposure", default=None, type=float,
-                            help="Exposure value (usec) for depth camera input (disables auto-exposure).")
-        parser.add_argument("--gain", default=None, type=float,
-                            help="Gain value for depth input (disables auto-exposure).")
-        parser.add_argument("--white-balance", default=None, type=float,
-                            help="White-Balance value for depth input (disables auto-white-balance).")
+        try:
+            parser.add_argument("-ir", "--infrared", action="store_true",
+                                help="Use infrared as input stream.")
+
+            parser.add_argument("--exposure", default=None, type=float,
+                                help="Exposure value (usec) for depth camera input (disables auto-exposure).")
+            parser.add_argument("--gain", default=None, type=float,
+                                help="Gain value for depth input (disables auto-exposure).")
+            parser.add_argument("--white-balance", default=None, type=float,
+                                help="White-Balance value for depth input (disables auto-white-balance).")
+        except ArgumentError as ex:
+            if ex.message.startswith("conflicting"):
+                return
+            raise ex
 
     @property
     @abstractmethod

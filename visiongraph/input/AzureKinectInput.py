@@ -155,6 +155,8 @@ class AzureKinectInput(BaseDepthCamera):
                             help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
 
+        # todo: add more azure specific options like depth mode
+
     @property
     def gain(self) -> int:
         return self.device.gain
