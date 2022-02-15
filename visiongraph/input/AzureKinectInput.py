@@ -5,9 +5,10 @@ from typing import Optional, Tuple
 import cv2
 import numpy as np
 import pyk4a
-from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback
+from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback, ImageFormat
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
+from visiongraph.util.ArgUtils import add_enum_choice_argument
 from visiongraph.util.CollectionUtils import default_value_dict
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
@@ -44,6 +45,7 @@ class AzureKinectInput(BaseDepthCamera):
         self.capture: Optional[PyK4ACapture] = None
 
         self.device_id: int = device_id
+        self.color_resolution: Optional[pyk4a.ColorResolution] = None
         self.color_format: pyk4a.ImageFormat = pyk4a.ImageFormat.COLOR_BGRA32
         self.depth_mode: pyk4a.DepthMode = pyk4a.DepthMode.NFOV_UNBINNED
 
@@ -61,6 +63,7 @@ class AzureKinectInput(BaseDepthCamera):
             logging.info(f"Playing mkv file from {self.input_mkv_file}")
             self._playback = PyK4APlayback(self.input_mkv_file)
             self._playback.open()
+            self.color_format = self._playback.configuration["color_format"]
             return
 
         if self.device_count == 0:
@@ -71,7 +74,12 @@ class AzureKinectInput(BaseDepthCamera):
             self.device.start()
         else:
             config = Config()
-            config.color_resolution = AzureKinectInput._HeightToResolutionMapping[self.height]
+
+            if self.color_resolution is None:
+                config.color_resolution = AzureKinectInput._HeightToResolutionMapping[self.height]
+            else:
+                config.color_resolution = self.color_resolution
+
             config.color_format = self.color_format
             config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[self.fps]
             config.depth_mode = pyk4a.DepthMode.OFF
@@ -115,6 +123,7 @@ class AzureKinectInput(BaseDepthCamera):
             else:
                 image = self.capture.transformed_color if self.align_frames else self.capture.color
                 if image is not None:
+                    image = self._convert_to_bgra_if_required(self.color_format, image)
                     image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
 
         if image is None:
@@ -171,6 +180,26 @@ class AzureKinectInput(BaseDepthCamera):
             img = cv2.applyColorMap(img, colormap)
         return img
 
+    @staticmethod
+    def _convert_to_bgra_if_required(color_format: ImageFormat, color_image):
+        if color_format == ImageFormat.COLOR_BGRA32:
+            return color_image
+
+        # examples for all possible pyk4a.ColorFormats
+        if color_format == ImageFormat.COLOR_MJPG:
+            color_image = cv2.imdecode(color_image, cv2.IMREAD_COLOR)
+        elif color_format == ImageFormat.COLOR_NV12:
+            color_image = cv2.cvtColor(color_image, cv2.COLOR_YUV2BGRA_NV12)
+            # this also works and it explains how the COLOR_NV12 color color_format is stored in memory
+            # h, w = color_image.shape[0:2]
+            # h = h // 3 * 2
+            # luminance = color_image[:h]
+            # chroma = color_image[h:, :w//2]
+            # color_image = cv2.cvtColorTwoPlane(luminance, chroma, cv2.COLOR_YUV2BGRA_NV12)
+        elif color_format == ImageFormat.COLOR_YUY2:
+            color_image = cv2.cvtColor(color_image, cv2.COLOR_YUV2BGRA_YUY2)
+        return color_image
+
     @property
     def depth_map(self) -> np.ndarray:
         return self._colorize(self.capture.depth, (self.min_clipping, self.max_clipping), self.color_map)
@@ -191,6 +220,10 @@ class AzureKinectInput(BaseDepthCamera):
         self.output_mkv_file = args.k4a_record_mkv
         self.input_mkv_file = args.k4a_play_mkv
 
+        self.depth_mode = args.k4a_depth_mode
+        self.color_resolution = args.k4a_color_resolution
+        self.color_format = args.k4a_color_format
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
@@ -202,6 +235,15 @@ class AzureKinectInput(BaseDepthCamera):
                             help="Path to a pre-recorded bag file for playback.")
         parser.add_argument("--k4a-record-mkv", type=str, default=None,
                             help="Path to a mkv file to store the current recording.")
+
+        add_enum_choice_argument(parser, pyk4a.DepthMode, "--k4a-depth-mode", default=pyk4a.DepthMode.NFOV_UNBINNED,
+                                 help="Azure depth mode")
+        add_enum_choice_argument(parser, pyk4a.ColorResolution, "--k4a-color-resolution",
+                                 default=pyk4a.ColorResolution.RES_720P,
+                                 help="Azure color resolution (overwrites input-size)")
+        add_enum_choice_argument(parser, pyk4a.ImageFormat, "--k4a-color-format",
+                                 default=pyk4a.ImageFormat.COLOR_BGRA32,
+                                 help="Azure color image format")
 
         # todo: add more azure specific options like depth mode
 
