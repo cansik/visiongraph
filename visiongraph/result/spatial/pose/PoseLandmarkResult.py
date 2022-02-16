@@ -5,6 +5,9 @@ import vector
 
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 
+POSE_DETECTION_ID = 0
+POSE_DETECTION_NAME = "pose"
+
 DEFAULT_POSE_LANDMARKS = [
     "nose",
     "left_eye",
@@ -26,7 +29,7 @@ DEFAULT_POSE_LANDMARKS = [
 
 class PoseLandmarkResult(LandmarkDetectionResult, ABC):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
-        super().__init__(0, "pose", score, landmarks)
+        super().__init__(POSE_DETECTION_ID, POSE_DETECTION_NAME, score, landmarks)
 
     # todo: implement pose connections for base pose landmark
 

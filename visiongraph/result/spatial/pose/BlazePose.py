@@ -1,10 +1,11 @@
-from typing import Optional, Tuple, List, FrozenSet
+from typing import Optional, Tuple, FrozenSet
 
 import mediapipe as mp
 import numpy as np
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
+
 
 class BlazePose(PoseLandmarkResult):
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,

@@ -9,6 +9,7 @@ import numpy as np
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
+from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 _mp_pose = mp.solutions.pose
@@ -60,9 +61,15 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
 
         raw_landmarks = [(lm.x, lm.y, lm.z, lm.visibility) for lm in results.pose_landmarks.landmark]
         landmarks = list_of_vector4D(raw_landmarks)
-        score = np.average(landmarks["t"])
+        score = float(np.average(landmarks["t"]))
 
-        return ResultList([BlazePose(score, landmarks)])
+        if not self.enable_segmentation:
+            return ResultList([BlazePose(score, landmarks)])
+
+        # use segmentation
+        mask = results.segmentation_mask
+        mask_uint8 = (mask * 255).astype(np.uint8)
+        return ResultList([BlazePoseSegmentation(score, landmarks, mask_uint8)])
 
     def release(self):
         self.detector.close()

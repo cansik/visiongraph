@@ -212,6 +212,10 @@ try:
     from .result.spatial.pose.BlazePose import BlazePose
 except ImportError as ex:
     logging.debug(f"Could not import BlazePose")
+try:
+    from .result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
+except ImportError as ex:
+    logging.debug(f"Could not import BlazePoseSegmentation")
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
