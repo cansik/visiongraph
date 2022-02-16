@@ -29,3 +29,6 @@ class InstanceSegmentationResult(ObjectDetectionResult):
         colored[:, :] = color
         colored_mask = cv2.bitwise_and(colored, colored, mask=self.mask)
         cv2.addWeighted(colored_mask, 0.75, image, 1.0, 0, image)
+
+    def apply_mask(self, image: np.ndarray) -> np.ndarray:
+        return cv2.bitwise_and(image, image, mask=self.mask)

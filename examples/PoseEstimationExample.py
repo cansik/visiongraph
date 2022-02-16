@@ -35,7 +35,7 @@ class PoseEstimationExample(BaseGraph):
         results = self.tracker.process(results)
 
         for result in results:
-            result.annotate(frame)
+            result.annotate(frame, min_score=0.1)
 
         self.fps_tracer.update()
         if not args.performance:
