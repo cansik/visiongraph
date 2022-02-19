@@ -53,6 +53,8 @@ class RealSenseInput(BaseDepthCamera):
         self.depth_filters: List[rs.filter] = []
         self._filters_to_enable: List[type(rs.filter)] = []
 
+        self.config: Optional[rs.config] = None
+
     def setup(self):
         ctx = rs.context()
 
@@ -77,31 +79,31 @@ class RealSenseInput(BaseDepthCamera):
 
         self.pipeline = rs.pipeline(ctx)
 
-        config = rs.config()
+        self.config = rs.config() if self.config is None else self.config
 
         if self.serial is not None:
-            config.enable_device(serial=self.serial)
+            self.config.enable_device(serial=self.serial)
 
         if self.input_bag_file is not None:
-            rs.config.enable_device_from_file(config, self.input_bag_file)
+            rs.config.enable_device_from_file(self.config, self.input_bag_file)
 
         if self.output_bag_file is not None:
-            config.enable_record_to_file(self.output_bag_file)
+            self.config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
-            config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
+            self.config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
                                  self.infrared_format, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
-            config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
+            self.config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, self.fps)
+            self.config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, self.fps)
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
-        self.profile = self.pipeline.start(config)
+        self.profile = self.pipeline.start(self.config)
         self.device = self.profile.get_device()
 
         # todo: fix option setting for depth sensor
