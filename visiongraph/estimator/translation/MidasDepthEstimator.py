@@ -30,9 +30,6 @@ class MidasDepthEstimator(DepthEstimator):
         self.input_name: Optional[str] = None
         self.output_name: Optional[str] = None
 
-        self.prediction_bit_depth = 8
-        self._max_val = 255
-
         resize_image = Resize(
             self.net_size,
             self.net_size,
@@ -50,8 +47,6 @@ class MidasDepthEstimator(DepthEstimator):
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
 
-        self._max_val = (2 ** self.prediction_bit_depth) - 1
-
     def process(self, image: np.ndarray) -> DepthMap:
         # todo: maybe convert COLOR_BGR2RGB
         normalized_image = image / 255.0
@@ -65,21 +60,7 @@ class MidasDepthEstimator(DepthEstimator):
         prediction = np.array(output).reshape(self.net_size, self.net_size)
         depth = cv2.resize(prediction, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_CUBIC)
 
-        # normalize prediction
-        depth_min = depth.min()
-        depth_max = depth.max()
-
-        # todo: maybe init depth min and max on the first 30 frames to be consistent
-
-        if depth_max - depth_min > np.finfo("float").eps:
-            out = self._max_val * (depth - depth_min) / (depth_max - depth_min)
-        else:
-            out = 0
-
-        if self.prediction_bit_depth == 8:
-            return DepthMap(out.astype(np.uint8))
-        else:
-            return DepthMap(out.astype(np.uint16))
+        return DepthMap(depth)
 
     def release(self):
         pass
