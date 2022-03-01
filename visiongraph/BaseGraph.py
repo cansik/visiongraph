@@ -2,18 +2,22 @@ import logging
 import signal
 from abc import ABC, abstractmethod
 from argparse import Namespace
+from multiprocessing import Process
 from threading import Thread
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Union
 
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from visiongraph.GraphNode import GraphNode
 
 
 class BaseGraph(ArgumentConfigurable, ABC):
-    def __init__(self, multi_threaded: bool = False, deamon: bool = False, handle_signals: bool = False):
+    def __init__(self, multi_threaded: bool = False, daemon: bool = False,
+                 handle_signals: bool = False, new_process: bool = False):
         self._open = False
         self.multi_threaded = multi_threaded
-        self._loop_thread = Thread(target=self._loop, daemon=deamon)
+        self.new_process = new_process
+        self.daemon = daemon
+        self._loop_executor: Optional[Union[Thread, Process]] = None
         self.nodes: List[GraphNode] = []
 
         self.on_exception: Optional[Callable[[BaseGraph, Exception], None]] = None
@@ -33,7 +37,12 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self._open = True
 
         if self.multi_threaded:
-            self._loop_thread.start()
+            if self.new_process:
+                self._loop_executor = Process(target=self._loop, daemon=self.daemon)
+                self._loop_executor.start()
+            else:
+                self._loop_executor = Thread(target=self._loop, daemon=self.daemon)
+                self._loop_executor.start()
         else:
             self._loop()
 
@@ -46,7 +55,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self._open = False
 
         if self.multi_threaded:
-            self._loop_thread.join(wait_time)
+            self._loop_executor.join(wait_time)
 
         logging.info("has been closed")
 

@@ -1,12 +1,8 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Dict, Callable, List
-
-import cv2
-import numpy as np
+from typing import Optional
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.GraphNode import GraphNode
-from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.result.BaseResult import BaseResult
@@ -18,9 +14,9 @@ class VisionGraph(BaseGraph):
 
     def __init__(self, input: Optional[BaseInput] = None,
                  name: str = "VisionPipeline", annotate: bool = True, display: bool = True,
-                 multi_threaded: bool = False, deamon: bool = False, handle_signals: bool = False,
-                 *nodes: GraphNode):
-        super().__init__(multi_threaded, deamon, handle_signals)
+                 multi_threaded: bool = False, daemon: bool = False, handle_signals: bool = False,
+                 new_process: bool = False, *nodes: GraphNode):
+        super().__init__(multi_threaded, daemon, handle_signals, new_process)
 
         self.input: Optional[BaseInput] = input
         self.fps = FPSTracer()

@@ -44,6 +44,6 @@ class _VisionGraphBuilder:
 
 
 def create_graph(input_node: Optional[BaseInput] = None, name: str = "VisionGraph", multi_threaded: bool = False,
-                 deamon: bool = False, handle_signals: bool = False) -> _VisionGraphBuilder:
+                 daemon: bool = False, handle_signals: bool = False) -> _VisionGraphBuilder:
     return _VisionGraphBuilder(VisionGraph(input=input_node, name=name, multi_threaded=multi_threaded,
-                                           deamon=deamon, handle_signals=handle_signals))
+                                           daemon=daemon, handle_signals=handle_signals))

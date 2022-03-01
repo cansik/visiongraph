@@ -20,7 +20,7 @@ MIN_SCORE = 0.3
 class ProjectedPoseExample(vg.BaseGraph):
 
     def __init__(self, input: vg.RealSenseInput, pose_network: vg.PoseEstimator):
-        super().__init__(multi_threaded=True, deamon=True)
+        super().__init__(multi_threaded=True, daemon=True)
         self.input = input
         self.network = pose_network
 
