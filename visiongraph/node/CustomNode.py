@@ -20,6 +20,8 @@ class CustomNode(GraphNode[InputType, OutputType]):
         if result is None:
             return data
 
+        return result
+
     def release(self):
         pass
 
