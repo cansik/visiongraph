@@ -92,7 +92,7 @@ class RealSenseInput(BaseDepthCamera):
 
         if self.use_infrared:
             self.config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
-                                 self.infrared_format, self.fps)
+                                      self.infrared_format, self.fps)
             self.align = rs.align(rs.stream.infrared)
         else:
             self.config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
@@ -118,7 +118,10 @@ class RealSenseInput(BaseDepthCamera):
         self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
 
         # applying other options
-        self._apply_initial_settings()
+        try:
+            self._apply_initial_settings()
+        except Exception as ex:
+            logging.warning(f"Could not apply initial RealSense settings: {ex}")
 
         # apply json config
         if self.json_config_path is not None:
