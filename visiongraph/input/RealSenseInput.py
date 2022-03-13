@@ -137,8 +137,18 @@ class RealSenseInput(BaseDepthCamera):
         self.pipeline.stop()
 
     def read(self) -> (int, Optional[np.ndarray]):
-        self.frames = self.pipeline.wait_for_frames()
+        success, self.frames = self.pipeline.try_wait_for_frames(timeout_ms=1000)
         time_stamp = current_millis()
+
+        if not success:
+            if self.device.is_playback():
+                success, self.frames = self.pipeline.try_wait_for_frames()
+                if not success:
+                    raise Exception("RealSense: Bag frame could not be read from device.")
+                else:
+                    logging.warning("Skipping bag file frame")
+            else:
+                raise Exception("RealSense: Frame could not be read from device.")
 
         if self.align is not None:
             # alignment only happens if depth is enabled!
