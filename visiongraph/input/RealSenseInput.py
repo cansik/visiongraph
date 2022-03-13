@@ -46,6 +46,7 @@ class RealSenseInput(BaseDepthCamera):
         self.infrared_format: rs.format = rs.format.y8
 
         self.play_any_bag_stream = True
+        self.bag_offline_playback = True
 
         self.json_config_path: Optional[str] = None
 
@@ -126,6 +127,11 @@ class RealSenseInput(BaseDepthCamera):
         # apply json config
         if self.json_config_path is not None:
             self.load_json_config_from_file(self.json_config_path)
+
+        # set playback options
+        if self.device.is_playback():
+            playback: rs.playback = self.profile.get_device().as_playback()
+            playback.set_real_time(not self.bag_offline_playback)
 
     def release(self):
         self.pipeline.stop()
@@ -319,6 +325,7 @@ class RealSenseInput(BaseDepthCamera):
         self.serial = args.rs_serial
 
         self.input_bag_file = args.rs_play_bag
+        self.bag_offline_playback = args.rs_bag_offline
         self.output_bag_file = args.rs_record_bag
 
         self.disable_emitter = args.rs_disable_emitter
@@ -343,6 +350,8 @@ class RealSenseInput(BaseDepthCamera):
                             help="Path to a bag file to store the current recording.")
         parser.add_argument("--rs-disable-emitter", action="store_true",
                             help="Disable RealSense IR emitter.")
+        parser.add_argument("--rs-bag-offline", action="store_true",
+                            help="Disable realtime bag playback.")
         add_dict_choice_argument(parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter",
                                  default=None, nargs="+")
         add_enum_choice_argument(parser, RealSenseColorScheme, "--rs-color-scheme",
