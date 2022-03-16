@@ -248,7 +248,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version='0.1.18',
+    version='0.1.19',
     packages=required_packages,
     url='https://github.com/cansik/visiongraph',
     license='MIT License',
