@@ -24,7 +24,8 @@ def resize_and_letter_box(image, width, height):
     letter_box = np.zeros((int(height), int(width), 3))
     row_start = int((letter_box.shape[0] - image_resized.shape[0]) / 2)
     col_start = int((letter_box.shape[1] - image_resized.shape[1]) / 2)
-    letter_box[row_start:row_start + image_resized.shape[0], col_start:col_start + image_resized.shape[1]] = image_resized
+    letter_box[row_start:row_start + image_resized.shape[0],
+    col_start:col_start + image_resized.shape[1]] = image_resized
     return letter_box
 
 
@@ -54,3 +55,11 @@ def extract_roi_safe(image: np.ndarray,
         xe = constrain(round(xe + diff), upper=w - 1)
 
     return image[ys:ye, xs:xe], xs, ys
+
+
+def align_image(image: np.ndarray,
+                src_triangle: np.ndarray,
+                dest_triangle: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    warp_mat = cv2.getAffineTransform(src_triangle, dest_triangle)
+    warp_dst = cv2.warpAffine(image, warp_mat, (image.shape[1], image.shape[0]))
+    return warp_mat, warp_dst
