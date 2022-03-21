@@ -13,7 +13,7 @@ from visiongraph.util.TimeUtils import FPSTracer
 class VisionGraph(BaseGraph):
 
     def __init__(self, input: Optional[BaseInput] = None,
-                 name: str = "VisionPipeline", annotate: bool = True, display: bool = True,
+                 name: str = "VisionPipeline", skip_none_frame: bool = True,
                  multi_threaded: bool = False, daemon: bool = False, handle_signals: bool = False,
                  new_process: bool = False, *nodes: GraphNode):
         super().__init__(multi_threaded, daemon, handle_signals, new_process)
@@ -27,8 +27,7 @@ class VisionGraph(BaseGraph):
         self.nodes = self.nodes + list(nodes)
 
         self.name = name
-        self.display = display
-        self.annotate = annotate
+        self.skip_none_frame = skip_none_frame
 
     def _init(self):
         if self.input not in self.nodes:
@@ -37,13 +36,18 @@ class VisionGraph(BaseGraph):
         super()._init()
 
     def _process(self):
-        result: BaseResult = self._inference()
+        result: Optional[BaseResult] = self._inference()
         self.fps.update()
 
-    def _inference(self) -> BaseResult:
+    def _inference(self) -> Optional[BaseResult]:
         result = None
-        for node in self.nodes:
+        for i, node in enumerate(self.nodes):
             result = node.process(result)
+
+            if not self.skip_none_frame and i == 0 and result is None:
+                self._open = False
+                return None
+
         return result
 
     def configure(self, args: Namespace):
