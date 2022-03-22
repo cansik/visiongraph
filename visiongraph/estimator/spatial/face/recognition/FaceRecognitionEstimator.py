@@ -3,6 +3,7 @@ from typing import Optional, Tuple
 
 import cv2
 import numpy as np
+from scipy.spatial.distance import euclidean, pdist, cdist
 
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -48,7 +49,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
     def _align_face(self, image: np.ndarray,
                     landmarks: FaceLandmarkResult,
-                    normalized_keypoints: np.ndarray) -> np.ndarray:
+                    normalized_keypoints: np.ndarray) -> Tuple[np.ndarray, float]:
         # align face
         src_keypoints = np.array([
             [landmarks.left_eye.x, landmarks.left_eye.y],
@@ -69,8 +70,12 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         desired_landmarks = np.array(normalized_keypoints[:src_keypoints.shape[0]], dtype=np.float64) * scale
         landmarks = src_keypoints * scale
 
+        landmark_overlap = np.sqrt((np.power(desired_landmarks - landmarks, 2)).sum(axis=-1)).sum()
+
         transform = self._get_transform(desired_landmarks, landmarks)
-        return cv2.warpAffine(image, transform, tuple(scale), flags=cv2.WARP_INVERSE_MAP)
+        warped_image = cv2.warpAffine(image, transform, tuple(scale), flags=cv2.WARP_INVERSE_MAP)
+
+        return warped_image, float(landmark_overlap)
 
     @staticmethod
     def _normalize(array, axis):

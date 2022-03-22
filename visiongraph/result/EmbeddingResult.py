@@ -5,8 +5,9 @@ from scipy.spatial.distance import cosine
 
 
 class EmbeddingResult(BaseResult):
-    def __init__(self, embeddings: np.ndarray):
+    def __init__(self, embeddings: np.ndarray, landmark_overlap: float):
         self.embeddings = embeddings
+        self.landmark_overlap = landmark_overlap
 
     def annotate(self, image: np.ndarray, **kwargs):
         pass

@@ -37,13 +37,13 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
 
     def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
         image, landmarks = self._pre_process_input(image, landmarks)
-        aligned_face = self._align_face(image, landmarks, self.normalized_keypoints)
+        aligned_face, landmark_overlap = self._align_face(image, landmarks, self.normalized_keypoints)
 
         result = self.engine.process(aligned_face)
         data = result[self.engine.output_names[0]]
         flat_data = data.reshape((data.shape[1]))
 
-        return EmbeddingResult(flat_data)
+        return EmbeddingResult(flat_data, landmark_overlap)
 
     def release(self):
         self.engine.release()
