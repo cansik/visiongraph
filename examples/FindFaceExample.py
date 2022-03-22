@@ -8,7 +8,6 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cdist
 
-from visiongraph import EmbeddingResult, ResultList, SpatialCascadeResult
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
@@ -16,6 +15,9 @@ from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator imp
 from visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.result.EmbeddingResult import EmbeddingResult
+from visiongraph.result.ResultList import ResultList
+from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
