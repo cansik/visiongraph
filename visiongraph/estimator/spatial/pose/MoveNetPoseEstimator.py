@@ -14,26 +14,26 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MoveNetConfig(Enum):
-    MoveNet_MultiPose_192x192_FP32 = (*RepositoryAsset.openVino("movenet-multipose-192x192-fp32"), 192, 192)
-    MoveNet_MultiPose_192x256_FP32 = (*RepositoryAsset.openVino("movenet-multipose-192x256-fp32"), 192, 256)
-    MoveNet_MultiPose_256x256_FP32 = (*RepositoryAsset.openVino("movenet-multipose-256x256-fp32"), 256, 256)
-    MoveNet_MultiPose_256x320_FP32 = (*RepositoryAsset.openVino("movenet-multipose-256x320-fp32"), 256, 320)
-    MoveNet_MultiPose_320x320_FP32 = (*RepositoryAsset.openVino("movenet-multipose-320x320-fp32"), 320, 320)
-    MoveNet_MultiPose_480x640_FP32 = (*RepositoryAsset.openVino("movenet-multipose-480x640-fp32"), 480, 640)
-    MoveNet_MultiPose_736x1280_FP32 = (*RepositoryAsset.openVino("movenet-multipose-736x1280-fp32"), 736, 1280)
-    MoveNet_MultiPose_1280x1920_FP32 = (*RepositoryAsset.openVino("movenet-multipose-1280x1920-fp32"), 1280, 1920)
+    MoveNet_MultiPose_192x192_FP32 = RepositoryAsset.openVino("movenet-multipose-192x192-fp32")
+    MoveNet_MultiPose_192x256_FP32 = RepositoryAsset.openVino("movenet-multipose-192x256-fp32")
+    MoveNet_MultiPose_256x256_FP32 = RepositoryAsset.openVino("movenet-multipose-256x256-fp32")
+    MoveNet_MultiPose_256x320_FP32 = RepositoryAsset.openVino("movenet-multipose-256x320-fp32")
+    MoveNet_MultiPose_320x320_FP32 = RepositoryAsset.openVino("movenet-multipose-320x320-fp32")
+    MoveNet_MultiPose_480x640_FP32 = RepositoryAsset.openVino("movenet-multipose-480x640-fp32")
+    MoveNet_MultiPose_736x1280_FP32 = RepositoryAsset.openVino("movenet-multipose-736x1280-fp32")
+    MoveNet_MultiPose_1280x1920_FP32 = RepositoryAsset.openVino("movenet-multipose-1280x1920-fp32")
 
 
 MOVE_NET_KEY_POINT_COUNT = 17
 
 
 class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
-    def __init__(self, model: Asset, weights: Asset, width: int, height: int,
+    def __init__(self, model: Asset, weights: Asset,
                  min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
                  device: str = "CPU"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, 1, 3, width, height, device=device)
+        self.engine = VisionInferenceEngine(model, weights, device=device)
         self.enable_nms = enable_nms
         self.iou_threshold = iou_threshold
 
@@ -77,5 +77,5 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
 
     @staticmethod
     def create(config: MoveNetConfig = MoveNetConfig.MoveNet_MultiPose_256x320_FP32) -> "MoveNetPoseEstimator":
-        model, weights, height, width = config.value
-        return MoveNetPoseEstimator(model, weights, width, height)
+        model, weights = config.value
+        return MoveNetPoseEstimator(model, weights)

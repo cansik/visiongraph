@@ -14,7 +14,7 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
     def __init__(self, min_score: float = 0.0, device: str = "CPU"):
         super().__init__(min_score)
         model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
-        self.engine = VisionInferenceEngine(model, weights, 1, 3, 48, 48, device=device)
+        self.engine = VisionInferenceEngine(model, weights, device=device)
 
     def setup(self):
         self.engine.setup()

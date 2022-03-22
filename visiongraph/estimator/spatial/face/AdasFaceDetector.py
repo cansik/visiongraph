@@ -8,7 +8,7 @@ from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFace
 
 
 class AdasFaceConfig(Enum):
-    MobileNet_672x384_FP32 = (*RepositoryAsset.openVino("face-detection-adas-0001"), 672, 384)
+    MobileNet_672x384_FP32 = RepositoryAsset.openVino("face-detection-adas-0001")
 
 
 class AdasFaceDetector(OpenVinoFaceDetector):
@@ -31,5 +31,5 @@ class AdasFaceDetector(OpenVinoFaceDetector):
 
     @staticmethod
     def create(config: AdasFaceConfig = AdasFaceConfig.MobileNet_672x384_FP32) -> "AdasFaceDetector":
-        model, weights, width, height = config.value
-        return AdasFaceDetector(model, weights, width, height)
+        model, weights = config.value
+        return AdasFaceDetector(model, weights)
