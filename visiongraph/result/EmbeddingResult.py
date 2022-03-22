@@ -1,6 +1,7 @@
 import numpy as np
 
 from visiongraph.result.BaseResult import BaseResult
+from scipy.spatial.distance import cosine
 
 
 class EmbeddingResult(BaseResult):
@@ -9,3 +10,6 @@ class EmbeddingResult(BaseResult):
 
     def annotate(self, image: np.ndarray, **kwargs):
         pass
+
+    def cosine_dist(self, y_embeddings):
+        return cosine(self.embeddings, y_embeddings) * 0.5

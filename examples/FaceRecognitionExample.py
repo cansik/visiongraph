@@ -21,7 +21,7 @@ class FaceRecognitionExample(BaseGraph):
         self.input = input
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator())
-        self.recognition_net = FaceReidentificationEstimator()
+        self.recognition_net = FaceReidentificationEstimator.create()
 
         self.add_nodes(self.input, self.network, self.recognition_net)
 

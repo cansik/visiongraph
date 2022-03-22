@@ -9,13 +9,16 @@ from visiongraph.data.Asset import Asset
 
 class VisionInferenceEngine:
     def __init__(self, model: Asset, weights: Asset,
-                 batch_size: int, channels: int, width: int, height: int,
+                 batch_size: Optional[int] = None, channels: Optional[int] = None,
+                 width: Optional[int] = None, height: Optional[int] = None,
                  flip_channels: bool = True, normalize: bool = False,
                  device: str = "CPU"):
-        self.batch_size = batch_size
-        self.channels = channels
-        self.width = width
-        self.height = height
+
+        self.batch_size: Optional[int] = batch_size
+        self.channels: Optional[int] = channels
+        self.width: Optional[int] = width
+        self.height: Optional[int] = height
+
         self.flip_channels = flip_channels
         self.normalize = normalize
         self.device = device
@@ -33,7 +36,25 @@ class VisionInferenceEngine:
         # setup inference engine
         self.ie = IECore()
         self.net = self.ie.read_network(model=self.model.path, weights=self.weights.path)
+
         self.input_name = list(self.net.input_info.keys())[0]
+
+        # auto infer width and height from model
+        input_info = self.net.input_info[self.input_name]
+        input_shape = input_info.input_data.shape
+
+        if self.batch_size is None:
+            self.batch_size = input_shape[0]
+
+        if self.channels is None:
+            self.channels = input_shape[1]
+
+        if self.height is None:
+            self.height = input_shape[2]
+
+        if self.width is None:
+            self.width = input_shape[3]
+
         self.output_names = list(self.net.outputs.keys())
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 

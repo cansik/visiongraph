@@ -1,19 +1,27 @@
 from argparse import ArgumentParser, Namespace
+from enum import Enum
 from typing import Optional
 
-import cv2
 import numpy as np
 
+from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.face.recognition.FaceRecognitionEstimator import FaceRecognitionEstimator
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
-from visiongraph.result.spatial.face.RegressionFace import RegressionFace
-from visiongraph.util import ImageUtils
+
+
+class FaceReidentificationConfig(Enum):
+    Retail_0095_FP16_INT8 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16-int8")
+    Retail_0095_FP16 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16")
+    Retail_0095_FP32 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp32")
 
 
 class FaceReidentificationEstimator(FaceRecognitionEstimator):
-    def __init__(self):
+    def __init__(self, model: Asset, weights: Asset, device: str = "CPU"):
         super().__init__()
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
 
         # left eye, right eye, tip of nose, left lip corner, right lip corner
         # https://docs.openvino.ai/latest/omz_models_model_face_reidentification_retail_0095.html
@@ -25,16 +33,20 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
                                               ], dtype=np.float32)
 
     def setup(self):
-        pass
+        self.engine.setup()
 
     def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
         image, landmarks = self._pre_process_input(image, landmarks)
         aligned_face = self._align_face(image, landmarks, self.normalized_keypoints)
 
-        
+        result = self.engine.process(aligned_face)
+        data = result[self.engine.output_names[0]]
+        flat_data = data.reshape((data.shape[1]))
+
+        return EmbeddingResult(flat_data)
 
     def release(self):
-        pass
+        self.engine.release()
 
     def configure(self, args: Namespace):
         pass
@@ -42,3 +54,9 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
     @staticmethod
     def add_params(parser: ArgumentParser):
         pass
+
+    @staticmethod
+    def create(config: FaceReidentificationConfig = FaceReidentificationConfig.Retail_0095_FP32) -> \
+            "FaceReidentificationEstimator":
+        model, weights = config.value
+        return FaceReidentificationEstimator(model, weights)
