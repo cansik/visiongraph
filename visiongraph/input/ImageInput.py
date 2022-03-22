@@ -13,6 +13,8 @@ from visiongraph.util.TimeUtils import current_millis
 
 class ImageInput(BaseInput):
     def __init__(self, path: Optional[str] = None, delay: float = 1.0):
+        super().__init__()
+
         self.path: Optional[str] = path
         self.delay: float = delay
 
