@@ -3,11 +3,9 @@ from typing import Optional, Tuple
 
 import cv2
 import numpy as np
-from scipy.spatial.distance import euclidean, pdist, cdist
 
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-from visiongraph.result.BaseResult import BaseResult
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
@@ -60,19 +58,19 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         # use all landmarks if possible
         if isinstance(landmarks, RegressionFace):
             src_keypoints = np.vstack((src_keypoints,
-                                         np.array([
-                                             [landmarks.mouth_left.x, landmarks.mouth_left.y],
-                                             [landmarks.mouth_right.x, landmarks.mouth_right.y]
-                                         ], dtype=np.float32)
-                                         ))
+                                       np.array([
+                                           [landmarks.mouth_left.x, landmarks.mouth_left.y],
+                                           [landmarks.mouth_right.x, landmarks.mouth_right.y]
+                                       ], dtype=np.float32)
+                                       ))
 
         scale = np.array((image.shape[1], image.shape[0]))
-        desired_landmarks = np.array(normalized_keypoints[:src_keypoints.shape[0]], dtype=np.float64) * scale
-        landmarks = src_keypoints * scale
+        desired_landmarks = np.array(normalized_keypoints[:src_keypoints.shape[0]], dtype=np.float64)
+        landmarks = src_keypoints
 
         landmark_overlap = np.sqrt((np.power(desired_landmarks - landmarks, 2)).sum(axis=-1)).sum()
 
-        transform = self._get_transform(desired_landmarks, landmarks)
+        transform = self._get_transform(desired_landmarks * scale, landmarks * scale)
         warped_image = cv2.warpAffine(image, transform, tuple(scale), flags=cv2.WARP_INVERSE_MAP)
 
         return warped_image, float(landmark_overlap)
