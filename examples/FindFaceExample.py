@@ -55,6 +55,7 @@ class FindFaceExample(BaseGraph):
 
     def __init__(self, input: BaseInput):
         super().__init__()
+
         self.input = input
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator())
@@ -64,6 +65,7 @@ class FindFaceExample(BaseGraph):
         self.unique_id = 0
         self.auto_update = False
         self.threshold = 0.25
+        self.add_unknown = False
 
         self.targets: List[Target] = []
 
@@ -140,7 +142,7 @@ class FindFaceExample(BaseGraph):
 
                     info_text = f"{target.name[:10]} ({distance:0.2f}) ({target.overlap:0.2f})"
 
-            if not has_been_recognized:
+            if self.add_unknown and not has_been_recognized:
                 self.targets.append(
                     Target(f"Face{self.unique_id}", embeddings=result_embeddings[i],
                            auto_tracked=True, overlap=recognition_result.landmark_overlap)
@@ -162,6 +164,7 @@ class FindFaceExample(BaseGraph):
 
         self.auto_update = args.auto_update
         self.threshold = args.threshold
+        self.add_unknown = args.add
 
     @staticmethod
     def add_params(parser: ArgumentParser):
@@ -183,6 +186,7 @@ if __name__ == "__main__":
     parser.add_argument("--targets", required=True, type=str, nargs="+", help="Image paths of the faces to find.")
     parser.add_argument("--threshold", type=float, default=0.25, help="Face match threshold.")
     parser.add_argument("--auto-update", action="store_true", help="Enable auto updating embeddings.")
+    parser.add_argument("--add", action="store_true", help="Add unknown faces.")
 
     args = parser.parse_args()
     main()
