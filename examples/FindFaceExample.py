@@ -8,7 +8,7 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cdist
 
-from visiongraph import EmbeddingResult
+from visiongraph import EmbeddingResult, ResultList, SpatialCascadeResult
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
@@ -71,6 +71,14 @@ class FindFaceExample(BaseGraph):
 
         results = self.network.process(frame)
 
+        if len(results) > 0:
+            self.recognize(frame, results)
+
+        cv2.imshow("Face Detection", frame)
+        if cv2.waitKey(15) & 0xFF == 27:
+            self.close()
+
+    def recognize(self, frame: np.ndarray, results: ResultList[SpatialCascadeResult]):
         # estimate face embeddings for results
         recognition_results: List[EmbeddingResult] = []
         for tr, result in enumerate(results):
@@ -120,10 +128,6 @@ class FindFaceExample(BaseGraph):
                 self.unique_id += 1
 
             result.annotate(frame, color=color, info_text=info_text)
-
-        cv2.imshow("Face Detection", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
-            self.close()
 
     def configure(self, args: argparse.Namespace):
         super().configure(args)
