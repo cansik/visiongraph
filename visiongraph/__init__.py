@@ -22,6 +22,15 @@ from .estimator.ChainEstimator import ChainEstimator
 from .estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from .estimator.VisionClassifier import VisionClassifier
 from .estimator.VisionEstimator import VisionEstimator
+from .estimator.inpaint.BaseInpainter import BaseInpainter
+try:
+    from .estimator.inpaint.GMCNNInpainter import GMCNNConfig
+except ImportError as ex:
+    logging.debug(f"Could not import GMCNNConfig")
+try:
+    from .estimator.inpaint.GMCNNInpainter import GMCNNInpainter
+except ImportError as ex:
+    logging.debug(f"Could not import GMCNNInpainter")
 try:
     from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 except ImportError as ex:
