@@ -94,6 +94,15 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import AdasHeadPoseEstimator")
 from .estimator.spatial.face.pose.HeadPoseEstimator import HeadPoseEstimator
+from .estimator.spatial.face.recognition.FaceRecognitionEstimator import FaceRecognitionEstimator
+try:
+    from .estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationConfig
+except ImportError as ex:
+    logging.debug(f"Could not import FaceReidentificationConfig")
+try:
+    from .estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import FaceReidentificationEstimator")
 from .estimator.spatial.hand.HandDetector import FaceDetector
 from .estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator
 try:
@@ -197,6 +206,7 @@ except ImportError as ex:
 from .result.BaseResult import BaseResult
 from .result.ClassificationResult import ClassificationResult
 from .result.DepthMap import DepthMap
+from .result.EmbeddingResult import EmbeddingResult
 from .result.HeadPoseResult import HeadPoseResult
 from .result.ImageResult import ImageResult
 from .result.ResultAnnotator import ResultAnnotator
@@ -239,6 +249,7 @@ from .util.ArgUtils import float_range
 from .util.CollectionUtils import default_value_dict
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
+from .util.ImageUtils import align_image
 from .util.ImageUtils import extract_roi_safe
 from .util.ImageUtils import resize_and_letter_box
 from .util.LoggingUtils import add_logging_parameter

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Sequence
 
 import cv2
 import numpy as np
@@ -16,11 +16,12 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         self._tracking_id = -1
         self._bounding_box = bounding_box
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None, **kwargs):
+    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
+                 color: Optional[Sequence[int]] = None, **kwargs):
         super().annotate(image, **kwargs)
 
         h, w = image.shape[:2]
-        color = self.annotation_color
+        color = self.annotation_color if color is None else color
 
         draw_bbox(image, self.bounding_box, color=color)
 

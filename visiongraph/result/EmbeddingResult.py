@@ -11,5 +11,5 @@ class EmbeddingResult(BaseResult):
     def annotate(self, image: np.ndarray, **kwargs):
         pass
 
-    def cosine_dist(self, y_embeddings):
-        return cosine(self.embeddings, y_embeddings) * 0.5
+    def cosine_dist(self, embeddings: np.ndarray):
+        return cosine(self.embeddings, embeddings) * 0.5

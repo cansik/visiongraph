@@ -1,5 +1,5 @@
 import copy
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Sequence
 
 import cv2
 import numpy as np
@@ -19,6 +19,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         self.landmarks: vector.VectorNumpy4D = landmarks
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
+                 color: Optional[Sequence[int]] = None,
                  show_bounding_box: bool = False, min_score: float = 0,
                  connections: Optional[List[Tuple[int, int]]] = None, **kwargs):
 
@@ -26,7 +27,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
             super().annotate(image, show_info, info_text, **kwargs)
 
         h, w = image.shape[:2]
-        color = self.annotation_color
+        color = self.annotation_color if color is None else color
 
         # draw connections
         if connections is not None:

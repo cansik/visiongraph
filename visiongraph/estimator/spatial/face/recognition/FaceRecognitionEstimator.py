@@ -20,7 +20,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         self._landmarks: Optional[FaceLandmarkResult] = None
 
     def process_detection(self, image: np.ndarray,
-                          detection: SpatialCascadeResult, rectified: bool = True) -> BaseResult:
+                          detection: SpatialCascadeResult, rectified: bool = True) -> EmbeddingResult:
 
         if self.landmarks_key not in detection.results:
             raise Exception(f"Expecting landmarks in key '{self.landmarks_key}'")

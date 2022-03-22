@@ -48,6 +48,7 @@ To demonstrate the possibilities of visiongraph there are already implemented [e
 - [InputExample](examples/InputExample.py) - A basic input example that determines the center if possible.
 - [RealSenseDepthExample](examples/DepthCameraExample.py) - Display the RealSense or Azure Kinect depth map.
 - [FaceDetectionExample](examples/FaceDetectionExample.py) - A face detection pipeline example.
+- [FindFaceExample](examples/FindFaceExample.py) - A face recognition example to find a target face.
 - [CascadeFaceDetectionExample](examples/CascadeFaceDetectionExample.py) -  A face detection pipeline that also predicts other feature points of the face.
 - [HandDetectionExample](examples/HandDetectionExample.py) - A hand detection pipeline example.
 - [PoseEstimationExample](examples/PoseEstimationExample.py) - A pose estimation pipeline which annotates the generic pose keypoints.
@@ -87,6 +88,11 @@ Supported are video, webcam, RealSense and Azure Kinect input types.
 ### Assets
 
 ### Argparse
+
+##Roadmap
+Next roadmap points:
+
+- Async input and network model (run when ready)
 
 ## About
 Copyright (c) 2022 Florian Bruggisser
