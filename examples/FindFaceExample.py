@@ -20,6 +20,17 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
+import glob
+import os
+
+
+def get_images_in_path(path: str) -> [str]:
+    return get_files_in_path(path, ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.gif'])
+
+
+def get_files_in_path(path: str, extensions: [str] = ["*.*"]) -> [str]:
+    return sorted([f for ext in extensions for f in glob.glob(os.path.join(path, ext))])
+
 
 class Target:
     name: str
@@ -51,6 +62,8 @@ class FindFaceExample(BaseGraph):
         self.add_nodes(self.input, self.network, self.recognition_net)
 
         self.unique_id = 0
+        self.auto_update = False
+        self.threshold = 0.25
 
         self.targets: List[Target] = []
 
@@ -104,25 +117,30 @@ class FindFaceExample(BaseGraph):
 
             recognition_result = recognition_results[i]
 
+            has_been_recognized = False
             if i in lookup_table:
                 target_index = lookup_table[i]
                 target = self.targets[target_index]
 
                 distance = costs[i, target_index]
 
-                if target.auto_tracked:
-                    color = (0, 255, 255)
-                else:
-                    color = (0, 255, 0)
+                if distance < self.threshold:
+                    has_been_recognized = True
 
-                # update embeddings if overlap is better
-                overlap = recognition_result.landmark_overlap
-                if overlap < target.overlap:
-                    target.overlap = overlap
-                    target.embeddings = recognition_result.embeddings
+                    if target.auto_tracked:
+                        color = (0, 255, 255)
+                    else:
+                        color = (0, 255, 0)
 
-                info_text = f"{target.name[:10]} ({distance:0.2f}) ({target.overlap:0.2f})"
-            else:
+                    # update embeddings if overlap is better
+                    overlap = recognition_result.landmark_overlap
+                    if self.auto_update and overlap < target.overlap:
+                        target.overlap = overlap
+                        target.embeddings = recognition_result.embeddings
+
+                    info_text = f"{target.name[:10]} ({distance:0.2f}) ({target.overlap:0.2f})"
+
+            if not has_been_recognized:
                 self.targets.append(
                     Target(f"Face{self.unique_id}", embeddings=result_embeddings[i],
                            auto_tracked=True, overlap=recognition_result.landmark_overlap)
@@ -134,10 +152,16 @@ class FindFaceExample(BaseGraph):
     def configure(self, args: argparse.Namespace):
         super().configure(args)
 
+        if os.path.isdir(args.targets[0]):
+            args.targets = get_images_in_path(args.targets[0])
+
         for file in args.targets:
             name = os.path.splitext(os.path.basename(file))[0]
             image = cv2.imread(file)
             self.targets.append(Target(name, image))
+
+        self.auto_update = args.auto_update
+        self.threshold = args.threshold
 
     @staticmethod
     def add_params(parser: ArgumentParser):
@@ -157,6 +181,8 @@ if __name__ == "__main__":
     add_input_step_choices(input_group)
 
     parser.add_argument("--targets", required=True, type=str, nargs="+", help="Image paths of the faces to find.")
+    parser.add_argument("--threshold", type=float, default=0.25, help="Face match threshold.")
+    parser.add_argument("--auto-update", action="store_true", help="Enable auto updating embeddings.")
 
     args = parser.parse_args()
     main()
