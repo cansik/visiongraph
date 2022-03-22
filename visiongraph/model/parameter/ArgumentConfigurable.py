@@ -18,4 +18,4 @@ class ArgumentConfigurable(ABC):
         if not hasattr(args, key):
             logging.debug(f"Argument {key} has not been parsed, using default value: {default}")
             return default
-        return args.__getattr__(key)
+        return args.__getattribute__(key)
