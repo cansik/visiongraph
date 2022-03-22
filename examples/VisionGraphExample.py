@@ -1,15 +1,18 @@
 import argparse
-from typing import List
+from typing import List, Optional
 
 import visiongraph as vg
+
+pipeline: Optional[vg.VisionGraph] = None
 
 
 def on_results_ready(result: vg.BaseResult):
     faces: List[vg.FaceDetectionResult] = result
-    print(f"Faces detected: {len(faces)}")
+    print(f"Faces detected: {len(faces)} FPS: {pipeline.fps.smooth_fps:.2f}")
 
 
 def main():
+    global pipeline
     pipeline = vg.create_graph(name="Face Detection", handle_signals=True) \
         .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.CentroidTracker(), vg.custom(on_results_ready)),
                image=vg.passthrough()) \
