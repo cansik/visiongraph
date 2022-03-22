@@ -35,6 +35,10 @@ class SSDConfig(Enum):
     PersonDetection_0203_864x480_FP16 = _person_net("person-detection-0203-fp16")
     PersonDetection_0203_864x480_FP32 = _person_net("person-detection-0203-fp32")
 
+    PersonDetection_Retail_0013_FP16_INT8 = _person_net("person-detection-retail-0013-fp16-int8")
+    PersonDetection_Retail_0013_FP16 = _person_net("person-detection-retail-0013-fp16")
+    PersonDetection_Retail_0013_FP32 = _person_net("person-detection-retail-0013-fp32")
+
 
 class SSDDetector(OpenVinoObjectDetector):
     def __init__(self, model: Asset, weights: Asset, labels: List[str],
