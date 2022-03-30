@@ -10,7 +10,7 @@ from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.tracker.MotpyTracker import MotpyTracker
-from visiongraph.util.LoggingUtils import add_logging_parameter
+from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 from visiongraph.util.TimeUtils import FPSTracer
 
 
@@ -55,6 +55,8 @@ class PoseEstimationExample(BaseGraph):
 
 
 def main():
+    setup_logging(args.loglevel)
+
     pipeline = PoseEstimationExample(args.input(), args.pose_estimator())
     pipeline.configure(args)
     pipeline.open()
