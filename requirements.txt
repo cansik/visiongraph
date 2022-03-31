@@ -16,7 +16,7 @@ pyrealsense2-macosx; platform_system == "Darwin"
 pyk4a-bundle>=1.3.0.2; platform_system == "Windows" or platform_system == "Linux"
 
 # extra openvino
-openvino>=2021.4.2
+openvino>=2022.1.0
 
 # extra mediapipe
 mediapipe==0.8.9.1
