@@ -280,6 +280,10 @@ from .util.MathUtils import transform_coordinates
 from .util.NetworkUtils import download_file
 from .util.NetworkUtils import prepare_data_file
 from .util.NetworkUtils import prepare_openvino_model
+try:
+    from .util.OpenVinoUtils import get_inference_engine_device
+except ImportError as ex:
+    logging.debug(f"Could not import get_inference_engine_device")
 from .util.ResultUtils import non_maximum_suppression
 from .util.TimeUtils import FPSTracer
 from .util.TimeUtils import ProfileWatch
