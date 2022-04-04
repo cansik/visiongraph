@@ -7,12 +7,14 @@ from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
 from visiongraph.external.intel.models.detection_model import DetectionModel
-from visiongraph.external.intel.models.yolo import YOLO, YoloV4
+from visiongraph.external.intel.models.yolo import YOLO, YoloV4, YOLOX, YOLOF
 
 
 class YOLOArchitecture(Enum):
-    YOLO = 0x1
-    YOLOv4 = 0x2
+    YOLO = YOLO.__model__
+    YOLOv4 = YoloV4.__model__
+    YOLOF = YOLOF.__model__
+    YOLOX = YOLOX.__model__
 
 
 class YOLOConfig(Enum):
@@ -20,10 +22,17 @@ class YOLOConfig(Enum):
     YOLOv3_FP16 = (*RepositoryAsset.openVino("yolo-v3-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLO)
     YOLOv3_Tiny_FP32 = (*RepositoryAsset.openVino("yolo-v3-tiny-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLO)
     YOLOv3_Tiny_FP16 = (*RepositoryAsset.openVino("yolo-v3-tiny-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLO)
+
     YOLOv4_FP32 = (*RepositoryAsset.openVino("yolo-v4-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
     YOLOv4_FP16 = (*RepositoryAsset.openVino("yolo-v4-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
     YOLOv4_Tiny_FP32 = (*RepositoryAsset.openVino("yolo-v4-tiny-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
     YOLOv4_Tiny_FP16 = (*RepositoryAsset.openVino("yolo-v4-tiny-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
+
+    YOLOF_FP32 = (*RepositoryAsset.openVino("yolof-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOF)
+    YOLOF_FP16 = (*RepositoryAsset.openVino("yolof-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOF)
+
+    YOLOX_Tiny_FP32 = (*RepositoryAsset.openVino("yolox-tiny-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOX)
+    YOLOX_Tiny_FP16 = (*RepositoryAsset.openVino("yolox-tiny-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOX)
 
 
 class YOLODetector(OpenVinoObjectDetector):
@@ -48,8 +57,7 @@ class YOLODetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        model_class = YoloV4 if self.architecture == YOLOArchitecture.YOLOv4 else YOLO
-        return DetectionModel.create_model(model_class.__model__, model_adapter, config)
+        return DetectionModel.create_model(self.architecture.value, model_adapter, config)
 
     @staticmethod
     def create(config: YOLOConfig = YOLOConfig.YOLOv4_Tiny_FP16) -> "YOLODetector":
