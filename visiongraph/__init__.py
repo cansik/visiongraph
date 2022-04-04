@@ -44,6 +44,22 @@ try:
     from .estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 except ImportError as ex:
     logging.debug(f"Could not import VisionInferenceEngine")
+try:
+    from .estimator.spatial.CenterNetDetector import CenterNetConfig
+except ImportError as ex:
+    logging.debug(f"Could not import CenterNetConfig")
+try:
+    from .estimator.spatial.CenterNetDetector import CenterNetDetector
+except ImportError as ex:
+    logging.debug(f"Could not import CenterNetDetector")
+try:
+    from .estimator.spatial.DETRDetector import DETRConfig
+except ImportError as ex:
+    logging.debug(f"Could not import DETRConfig")
+try:
+    from .estimator.spatial.DETRDetector import DETRDetector
+except ImportError as ex:
+    logging.debug(f"Could not import DETRDetector")
 from .estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from .estimator.spatial.LandmarkEstimator import LandmarkEstimator
 from .estimator.spatial.ObjectDetector import ObjectDetector
