@@ -4,8 +4,9 @@ from typing import Optional
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
-from visiongraph.external.intel.model import Model
-from visiongraph.external.intel.open_pose import OpenPose
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
+from visiongraph.external.intel.models.model import Model
+from visiongraph.external.intel.models.open_pose import OpenPose
 
 
 class OpenPoseConfig(Enum):
@@ -21,8 +22,17 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
         super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
     def _create_ie_model(self) -> Model:
-        return OpenPose(self.ie, self.model.path, target_size=self.target_size,
-                        aspect_ratio=self.aspect_ratio, prob_threshold=self.min_score)
+        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
+
+        config = {
+            'target_size': self.target_size,
+            'aspect_ratio': self.aspect_ratio,
+            'confidence_threshold': self.min_score,
+            'padding_mode': None,
+            'delta': None
+        }
+
+        return OpenPose.create_model("openpose", model_adapter, config)
 
     @staticmethod
     def create(config: OpenPoseConfig = OpenPoseConfig.LightWeightOpenPose_FP16) -> "OpenPoseEstimator":

@@ -3,11 +3,11 @@ from typing import List, Optional
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.data.labels.COCO import COCO_80_LABELS, COCO_90_LABELS
+from visiongraph.data.labels.COCO import COCO_90_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
-from visiongraph.external.intel.model import Model
-from visiongraph.external.intel.ssd import SSD
-from visiongraph.external.intel.utils import InputTransform
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
+from visiongraph.external.intel.models.detection_model import DetectionModel
+from visiongraph.external.intel.models.ssd import SSD
 
 _PERSON_LABELS = ["person"]
 
@@ -52,9 +52,21 @@ class SSDDetector(OpenVinoObjectDetector):
         self.mean_values = mean_values
         self.scale_values = scale_values
 
-    def _create_ie_model(self) -> Model:
-        input_transform = InputTransform(self.reverse_input_channels, self.mean_values, self.scale_values)
-        return SSD(self.ie, self.model.path, input_transform, self.labels, self.keep_aspect_ratio)
+    def _create_ie_model(self) -> DetectionModel:
+        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
+
+        config = {
+            'resize_type': None,
+            'mean_values': self.mean_values,
+            'scale_values': self.scale_values,
+            'reverse_input_channels': self.reverse_input_channels,
+            'path_to_labels': None,
+            'confidence_threshold': self.min_score,
+            'input_size': None,  # The CTPN specific
+            'num_classes': None,  # The NanoDet and NanoDetPlus specific
+        }
+
+        return SSD.create_model("SSD", model_adapter, config)
 
     @staticmethod
     def create(config: SSDConfig = SSDConfig.SSDLiteMobileNetV2_FP32) -> "SSDDetector":

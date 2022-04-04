@@ -1,5 +1,5 @@
 """
- Copyright (C) 2020 Intel Corporation
+ Copyright (C) 2020-2022 Intel Corporation
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,94 +15,64 @@
 """
 import numpy as np
 
-from .model import Model
-from .utils import Detection, resize_image, load_labels
+from .detection_model import DetectionModel
+from .utils import Detection
 
 
-class SSD(Model):
-    def __init__(self, ie, model_path, input_transform, labels=None, keep_aspect_ratio_resize=False):
-        super().__init__(ie, model_path, input_transform)
+class SSD(DetectionModel):
+    __model__ = 'SSD'
 
-        self.keep_aspect_ratio_resize = keep_aspect_ratio_resize
-        if isinstance(labels, (list, tuple)):
-            self.labels = labels
-        else:
-            self.labels = load_labels(labels) if labels else None
+    def __init__(self, model_adapter, configuration=None, preload=False):
+        super().__init__(model_adapter, configuration, preload)
+        self.image_info_blob_name = self.image_info_blob_names[0] if len(self.image_info_blob_names) == 1 else None
+        self.output_parser = self._get_output_parser(self.image_blob_name)
 
-        self.image_blob_name, self.image_info_blob_name = self._get_inputs()
-        self.n, self.c, self.h, self.w = self.net.input_info[self.image_blob_name].input_data.shape
-
-        self.output_parser = self._get_output_parser(self.net, self.image_blob_name)
-
-    def _get_inputs(self):
-        image_blob_name = None
-        image_info_blob_name = None
-        for blob_name, blob in self.net.input_info.items():
-            if len(blob.input_data.shape) == 4:
-                image_blob_name = blob_name
-            elif len(blob.input_data.shape) == 2:
-                image_info_blob_name = blob_name
-            else:
-                raise RuntimeError('Unsupported {}D input layer "{}". Only 2D and 4D input layers are supported'
-                                   .format(len(blob.shape), blob_name))
-        if image_blob_name is None:
-            raise RuntimeError('Failed to identify the input for the image.')
-        return image_blob_name, image_info_blob_name
-
-    def _get_output_parser(self, net, image_blob_name, bboxes='bboxes', labels='labels', scores='scores'):
-        try:
-            parser = SingleOutputParser(net.outputs)
-            self.logger.info('Use SingleOutputParser')
-            return parser
-        except ValueError:
-            pass
-
-        try:
-            parser = MultipleOutputParser(net.outputs, bboxes, scores, labels)
-            self.logger.info('Use MultipleOutputParser')
-            return parser
-        except ValueError:
-            pass
-
-        try:
-            parser = BoxesLabelsParser(net.outputs, net.input_info[image_blob_name].input_data.shape[2:][::-1])
-            self.logger.info('Use BoxesLabelsParser')
-            return parser
-        except ValueError:
-            pass
-        raise RuntimeError('Unsupported model outputs')
+    @classmethod
+    def parameters(cls):
+        parameters = super().parameters()
+        parameters['resize_type'].update_default_value('standard')
+        parameters['confidence_threshold'].update_default_value(0.5)
+        return parameters
 
     def preprocess(self, inputs):
-        image = inputs
-
-        resized_image = resize_image(image, (self.w, self.h), self.keep_aspect_ratio_resize)
-        meta = {'original_shape': image.shape,
-                'resized_shape': resized_image.shape}
-
-        h, w = resized_image.shape[:2]
-        if h != self.h or w != self.w:
-            resized_image = np.pad(resized_image, ((0, self.h - h), (0, self.w - w), (0, 0)),
-                                   mode='constant', constant_values=0)
-        resized_image = self.input_transform(resized_image)
-        resized_image = resized_image.transpose((2, 0, 1))  # Change data layout from HWC to CHW
-        resized_image = resized_image.reshape((self.n, self.c, self.h, self.w))
-
-        dict_inputs = {self.image_blob_name: resized_image}
+        dict_inputs, meta = super().preprocess(inputs)
         if self.image_info_blob_name:
-            dict_inputs[self.image_info_blob_name] = [self.h, self.w, 1]
+            dict_inputs[self.image_info_blob_name] = np.array([[self.h, self.w, 1]])
         return dict_inputs, meta
 
     def postprocess(self, outputs, meta):
+        detections = self._parse_outputs(outputs, meta)
+        detections = self._resize_detections(detections, meta)
+        return detections
+
+    def _get_output_parser(self, image_blob_name, bboxes='bboxes', labels='labels', scores='scores'):
+        try:
+            parser = SingleOutputParser(self.outputs)
+            self.logger.debug('\tUsing SSD model with single output parser')
+            return parser
+        except ValueError:
+            pass
+
+        try:
+            parser = MultipleOutputParser(self.outputs, bboxes, scores, labels)
+            self.logger.debug('\tUsing SSD model with multiple output parser')
+            return parser
+        except ValueError:
+            pass
+
+        try:
+            parser = BoxesLabelsParser(self.outputs, self.inputs[image_blob_name].shape[2:][::-1])
+            self.logger.debug('\tUsing SSD model with "boxes-labels" output parser')
+            return parser
+        except ValueError:
+            pass
+        self.raise_error('Unsupported model outputs')
+
+    def _parse_outputs(self, outputs, meta):
         detections = self.output_parser(outputs)
-        orginal_image_shape = meta['original_shape']
-        resized_image_shape = meta['resized_shape']
-        scale_x = self.w / resized_image_shape[1] * orginal_image_shape[1]
-        scale_y = self.h / resized_image_shape[0] * orginal_image_shape[0]
-        for detection in detections:
-            detection.xmin *= scale_x
-            detection.xmax *= scale_x
-            detection.ymin *= scale_y
-            detection.ymax *= scale_y
+
+        detections = [d for d in detections if d.score > self.confidence_threshold]
+
         return detections
 
 
@@ -122,7 +92,7 @@ class SingleOutputParser:
         if len(all_outputs) != 1:
             raise ValueError('Network must have only one output.')
         self.output_name, output_data = next(iter(all_outputs.items()))
-        last_dim = np.shape(output_data)[-1]
+        last_dim = output_data.shape[-1]
         if last_dim != 7:
             raise ValueError('The last dimension of the output blob must be equal to 7, '
                              'got {} instead.'.format(last_dim))
@@ -158,7 +128,7 @@ class BoxesLabelsParser:
 
     @staticmethod
     def find_layer_bboxes_output(layers):
-        filter_outputs = [name for name, data in layers.items() if len(np.shape(data)) == 2 and np.shape(data)[-1] == 5]
+        filter_outputs = [name for name, data in layers.items() if len(data.shape) == 2 and data.shape[-1] == 5]
         if not filter_outputs:
             raise ValueError('Suitable output with bounding boxes is not found')
         if len(filter_outputs) > 1:

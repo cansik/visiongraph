@@ -5,8 +5,9 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
-from visiongraph.external.intel.model import Model
-from visiongraph.external.intel.yolo import YOLO, YoloV4
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
+from visiongraph.external.intel.models.detection_model import DetectionModel
+from visiongraph.external.intel.models.yolo import YOLO, YoloV4
 
 
 class YOLOArchitecture(Enum):
@@ -26,20 +27,29 @@ class YOLOConfig(Enum):
 
 
 class YOLODetector(OpenVinoObjectDetector):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], keep_aspect_ratio: bool = False,
-                 min_score: float = 0.5, nms_threshold: float = 0.5,
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5,
                  architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
                  device: str = "CPU"):
         super().__init__(model, weights, labels, min_score, device)
 
-        self.keep_aspect_ratio = keep_aspect_ratio
-        self.nms_threshold = nms_threshold
         self.architecture = architecture
 
-    def _create_ie_model(self) -> Model:
+    def _create_ie_model(self) -> DetectionModel:
+        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
+
+        config = {
+            'resize_type': None,
+            'mean_values': None,
+            'scale_values': None,
+            'reverse_input_channels': False,
+            'path_to_labels': None,
+            'confidence_threshold': self.min_score,
+            'input_size': None,  # The CTPN specific
+            'num_classes': None,  # The NanoDet and NanoDetPlus specific
+        }
+
         model_class = YoloV4 if self.architecture == YOLOArchitecture.YOLOv4 else YOLO
-        return model_class(self.ie, self.model.path, self.labels, self.keep_aspect_ratio,
-                           threshold=self.min_score, iou_threshold=self.nms_threshold)
+        return DetectionModel.create_model(model_class.__model__, model_adapter, config)
 
     @staticmethod
     def create(config: YOLOConfig = YOLOConfig.YOLOv4_Tiny_FP16) -> "YOLODetector":

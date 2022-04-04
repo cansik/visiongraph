@@ -4,12 +4,11 @@ from abc import abstractmethod, ABC
 from typing import Optional
 
 import numpy as np
-from openvino.inference_engine import IECore
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.external.intel.model import Model
+from visiongraph.external.intel.models.model import Model
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.util.VectorUtils import list_of_vector4D
@@ -28,18 +27,14 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         self.auto_adjust_aspect_ratio = auto_adjust_aspect_ratio
         self.device = device
 
-        self.ie: Optional[IECore] = None
         self.pipeline: Optional[SyncInferencePipeline] = None
         self.ie_model: Optional[Model] = None
 
     def setup(self):
         Asset.prepare_all(self.model, self.weights)
 
-        if self.ie is None:
-            self.ie = IECore()
-
         self.ie_model = self._create_ie_model()
-        self.pipeline = SyncInferencePipeline(self.ie_model, self.device, self.ie)
+        self.pipeline = SyncInferencePipeline(self.ie_model, self.device)
         self.pipeline.setup()
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
