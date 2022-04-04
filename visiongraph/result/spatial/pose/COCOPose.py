@@ -1,4 +1,4 @@
-from typing import Optional, List, Tuple, FrozenSet
+from typing import Optional, List, Tuple, FrozenSet, Sequence
 
 import numpy as np
 import vector
@@ -29,8 +29,9 @@ COCO_CONNECTIONS = frozenset([
 
 class COCOPose(PoseLandmarkResult):
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 show_bounding_box: bool = False, min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, show_bounding_box, min_score,
+                 color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
+                 min_score: float = 0, **kwargs):
+        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
                          connections=COCO_CONNECTIONS, **kwargs)
 
     @property
