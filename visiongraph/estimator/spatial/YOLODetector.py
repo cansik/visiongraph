@@ -50,7 +50,7 @@ class YOLODetector(OpenVinoObjectDetector):
             'resize_type': None,
             'mean_values': None,
             'scale_values': None,
-            'reverse_input_channels': False,
+            'reverse_input_channels': True,
             'path_to_labels': None,
             'confidence_threshold': self.min_score,
             'input_size': None,  # The CTPN specific

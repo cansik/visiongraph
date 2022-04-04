@@ -41,32 +41,24 @@ class SSDConfig(Enum):
 
 
 class SSDDetector(OpenVinoObjectDetector):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str],
-                 keep_aspect_ratio: bool = False, min_score: float = 0.5,
-                 reverse_input_channels: bool = False, mean_values: Optional[List] = None,
-                 scale_values: Optional[List] = None, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "CPU"):
         super().__init__(model, weights, labels, min_score, device)
-
-        self.keep_aspect_ratio = keep_aspect_ratio
-        self.reverse_input_channels = reverse_input_channels
-        self.mean_values = mean_values
-        self.scale_values = scale_values
 
     def _create_ie_model(self) -> DetectionModel:
         model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
 
         config = {
             'resize_type': None,
-            'mean_values': self.mean_values,
-            'scale_values': self.scale_values,
-            'reverse_input_channels': self.reverse_input_channels,
+            'mean_values': None,
+            'scale_values': None,
+            'reverse_input_channels': True,
             'path_to_labels': None,
             'confidence_threshold': self.min_score,
             'input_size': None,  # The CTPN specific
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return SSD.create_model("SSD", model_adapter, config)
+        return SSD.create_model(SSD.__model__, model_adapter, config)
 
     @staticmethod
     def create(config: SSDConfig = SSDConfig.SSDLiteMobileNetV2_FP32) -> "SSDDetector":
