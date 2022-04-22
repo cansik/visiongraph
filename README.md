@@ -123,3 +123,5 @@ Parts of these libraries are directly included and adapted to work with visiongr
 * [motpy](https://github.com/wmuron/motpy) - simple multi object tracking library (MIT License)
 * [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
 * [OneEuroFilter-Numpy](https://github.com/HoBeom/OneEuroFilter-Numpy) - (MIT License)
+
+For more information about the dependencies have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
