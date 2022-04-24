@@ -131,3 +131,4 @@ dmypy.json
 # custom
 .idea
 videos
+.DS_Store
