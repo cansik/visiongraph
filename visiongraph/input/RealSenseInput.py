@@ -261,6 +261,33 @@ class RealSenseInput(BaseDepthCamera):
         serdev = rs.serializable_device(self.device)
         return serdev.serialize_json()
 
+    def get_intrinsics(self, stream_type: Optional[rs.stream] = None, stream_index: int = -1) -> rs.intrinsics:
+        profiles = self.pipeline.get_active_profile()
+
+        # determine main stream type
+        if stream_type is None:
+            if self.use_infrared:
+                stream_type = rs.stream.infrared
+            else:
+                stream_type = rs.stream.color
+            logging.info(f"determined {stream_type} intrinsics")
+
+        stream = profiles.get_stream(stream_type, stream_index).as_video_stream_profile()
+        intrinsics: rs.intrinsics = stream.get_intrinsics()
+        return intrinsics
+
+    @property
+    def camera_matrix(self) -> np.ndarray:
+        intrinsics = self.get_intrinsics()
+        return np.array([[intrinsics.fx, 0, intrinsics.ppx],
+                         [0, intrinsics.fy, intrinsics.ppy],
+                         [0, 0, 1]])
+
+    @property
+    def fisheye_distortion(self) -> np.ndarray:
+        intrinsics = self.get_intrinsics()
+        return np.array(intrinsics.coeffs[:4])
+
     @property
     def device_count(self) -> int:
         ctx = rs.context()

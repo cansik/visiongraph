@@ -6,7 +6,7 @@ from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.result.HeadPoseResult import HeadPoseResult
 
 
-class HeadPoseEstimator(RoiEstimator):
+class HeadPoseEstimator(RoiEstimator[HeadPoseResult]):
     @abstractmethod
     def process(self, image: np.ndarray) -> HeadPoseResult:
         pass
