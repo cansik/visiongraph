@@ -85,6 +85,8 @@ try:
     from .estimator.spatial.YOLODetector import YOLODetector
 except ImportError as ex:
     logging.debug(f"Could not import YOLODetector")
+from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
+from .estimator.spatial.camera.CameraChessboardCalibrator import CameraChessboardCalibrator
 try:
     from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
 except ImportError as ex:
@@ -237,7 +239,10 @@ try:
     from .recorder.MoviePyVideoRecorder import MoviePyVideoRecorder
 except ImportError as ex:
     logging.debug(f"Could not import MoviePyVideoRecorder")
+from .result.ArUcoCameraPose import ArUcoCameraPose
+from .result.ArUcoMarkerDetection import ArUcoMarkerDetection
 from .result.BaseResult import BaseResult
+from .result.CameraIntrinsics import CameraIntrinsics
 from .result.ClassificationResult import ClassificationResult
 from .result.DepthMap import DepthMap
 from .result.EmbeddingResult import EmbeddingResult
