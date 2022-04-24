@@ -2,6 +2,7 @@ from typing import Sequence
 
 import cv2
 import numpy as np
+import vector
 from vector import Vector2D
 
 from visiongraph.result.BaseResult import BaseResult
@@ -30,3 +31,11 @@ class ArUcoMarkerDetection(BaseResult):
                              vector_to_array(self.bottom_right),
                              vector_to_array(self.bottom_left)], dtype=np.int32).reshape((-1, 1, 2))
         cv2.polylines(image, [vertices], isClosed=True, color=color, thickness=thickness)
+
+        center = self.center
+        cv2.drawMarker(image, (round(center.x), round(center.y)), color, markerType=cv2.MARKER_CROSS)
+
+    @property
+    def center(self) -> vector.Vector2D:
+        return vector.obj(x=(self.top_left.x + self.bottom_right.x) / 2.0,
+                          y=(self.top_left.y + self.bottom_right.y) / 2.0)
