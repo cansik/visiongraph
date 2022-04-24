@@ -5,7 +5,7 @@ from typing import Optional, Tuple
 import cv2
 import numpy as np
 import pyk4a
-from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback, ImageFormat
+from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback, ImageFormat, CalibrationType
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.util.ArgUtils import add_enum_choice_argument
@@ -287,3 +287,17 @@ class AzureKinectInput(BaseDepthCamera):
     def white_balance(self, value: int):
         value = value // 10 * 10
         self.device.whitebalance = value
+
+    @property
+    def camera_matrix(self) -> np.ndarray:
+        calibration = self.device.calibration
+        return calibration.get_camera_matrix(CalibrationType.DEPTH)
+
+    @property
+    def fisheye_distortion(self) -> np.ndarray:
+        calibration = self.device.calibration
+        return calibration.get_distortion_coefficients(CalibrationType.DEPTH)
+
+    @property
+    def serial(self) -> str:
+        return self.device.selected_serial

@@ -20,7 +20,7 @@ class RealSenseInput(BaseDepthCamera):
         super().__init__()
 
         self.disable_emitter = False
-        self.serial: Optional[str] = None
+        self.selected_serial: Optional[str] = None
 
         self.input_bag_file: Optional[str] = None
         self.output_bag_file: Optional[str] = None
@@ -82,8 +82,8 @@ class RealSenseInput(BaseDepthCamera):
 
         self.config = rs.config() if self.config is None else self.config
 
-        if self.serial is not None:
-            self.config.enable_device(serial=self.serial)
+        if self.selected_serial is not None:
+            self.config.enable_device(serial=self.selected_serial)
 
         if self.input_bag_file is not None:
             rs.config.enable_device_from_file(self.config, self.input_bag_file)
@@ -357,9 +357,13 @@ class RealSenseInput(BaseDepthCamera):
         value = value // 100 * 100
         self.set_option(rs.option.white_balance, value)
 
+    @property
+    def serial(self) -> str:
+        return str(self.device.get_info(rs.camera_info.serial_number))
+
     def configure(self, args: Namespace):
         super().configure(args)
-        self.serial = args.rs_serial
+        self.selected_serial = args.rs_serial
 
         self.input_bag_file = args.rs_play_bag
         self.bag_offline_playback = args.rs_bag_offline

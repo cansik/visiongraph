@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace, ArgumentError
 from typing import Optional
 
+import numpy as np
+
 from visiongraph.input.BaseDepthInput import BaseDepthInput
 
 
@@ -104,4 +106,19 @@ class BaseDepthCamera(BaseDepthInput, ABC):
     @white_balance.setter
     @abstractmethod
     def white_balance(self, value: int):
+        pass
+
+    @property
+    @abstractmethod
+    def camera_matrix(self) -> np.ndarray:
+        pass
+
+    @property
+    @abstractmethod
+    def fisheye_distortion(self) -> np.ndarray:
+        pass
+
+    @property
+    @abstractmethod
+    def serial(self) -> str:
         pass
