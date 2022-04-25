@@ -1,5 +1,6 @@
+import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional
+from typing import Optional, Tuple
 
 import cv2
 import numpy as np
@@ -9,7 +10,7 @@ from visiongraph.result.CameraIntrinsics import CameraIntrinsics
 
 
 class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
-    def __init__(self, max_samples: int = 20):
+    def __init__(self, max_samples: int = -1):
         self.max_samples = max_samples
 
         # termination criteria
@@ -20,6 +21,8 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
 
         self.objpoints = []  # 3d point in real world space
         self.imgpoints = []  # 2d points in image plane.
+
+        self.image_size: Optional[Tuple[int, int]] = None
 
         self.intrinsics: Optional[CameraIntrinsics] = None
 
@@ -40,16 +43,26 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
             corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), self.criteria)
             self.imgpoints.append(corners)
 
+            self.image_size = gray.shape[::-1]
+
+            # annotate
             cv2.drawChessboardCorners(data, (7, 6), corners2, ret)
 
-        if len(self.imgpoints) >= self.max_samples:
-            ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints,
-                                                               gray.shape[::-1], None, None)
+        if 0 < self.max_samples <= len(self.imgpoints):
+            return self.calibrate()
 
-            if ret:
-                self.intrinsics = CameraIntrinsics(mtx, dist)
-                return self.intrinsics
+        return None
 
+    def calibrate(self) -> Optional[CameraIntrinsics]:
+        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints,
+                                                           self.image_size, None, None)
+
+        if ret:
+            logging.info("Camera calibrated")
+            self.intrinsics = CameraIntrinsics(mtx, dist)
+            return self.intrinsics
+
+        logging.warning(f"Could not calibrate camera with {len(self.imgpoints)} samples.")
         return None
 
     def release(self):
