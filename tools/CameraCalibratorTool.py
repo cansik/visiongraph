@@ -30,14 +30,16 @@ class CameraCalibratorTool(BaseGraph):
         result = self.network.process(frame)
 
         if result is not None:
+            intrinsics = result.intrinsics
+
             print("Intrinsics Matrix:")
-            print(result.intrinsic_matrix)
+            print(intrinsics.intrinsic_matrix)
 
             print()
             print("Distortion Coefficients:")
-            print(result.distortion_coefficients)
+            print(intrinsics.distortion_coefficients)
 
-            result.save("media/calibration.json")
+            intrinsics.save("media/calibration.json")
 
             self.close()
 

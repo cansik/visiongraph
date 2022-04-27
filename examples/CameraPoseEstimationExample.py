@@ -7,7 +7,7 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
-from visiongraph.result.CameraIntrinsics import CameraIntrinsics
+from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 

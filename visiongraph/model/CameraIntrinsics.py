@@ -2,19 +2,14 @@ import json
 
 import numpy as np
 
-from visiongraph.result.BaseResult import BaseResult
-
 INTRINSIC_MATRIX_NAME = "intrinsic_matrix"
 DISTORTION_COEFFICIENTS_NAME = "distortion_coefficients"
 
 
-class CameraIntrinsics(BaseResult):
+class CameraIntrinsics:
     def __init__(self, intrinsic_matrix: np.ndarray, distortion_coefficients: np.ndarray):
         self.intrinsic_matrix = intrinsic_matrix
         self.distortion_coefficients = distortion_coefficients
-
-    def annotate(self, image: np.ndarray, **kwargs):
-        super().annotate(image, **kwargs)
 
     def save(self, path: str):
         data = {

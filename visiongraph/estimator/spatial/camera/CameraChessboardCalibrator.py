@@ -6,10 +6,11 @@ import cv2
 import numpy as np
 
 from visiongraph.estimator.VisionEstimator import VisionEstimator
-from visiongraph.result.CameraIntrinsics import CameraIntrinsics
+from visiongraph.model.CameraIntrinsics import CameraIntrinsics
+from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
-class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
+class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
     def __init__(self, max_samples: int = -1):
         self.max_samples = max_samples
 
@@ -24,14 +25,14 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
 
         self.image_size: Optional[Tuple[int, int]] = None
 
-        self.intrinsics: Optional[CameraIntrinsics] = None
+        self.pose_result: Optional[CameraPoseResult] = None
 
     def setup(self):
         pass
 
-    def process(self, data: np.ndarray) -> Optional[CameraIntrinsics]:
-        if self.intrinsics is not None:
-            return self.intrinsics
+    def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+        if self.pose_result is not None:
+            return self.pose_result
 
         gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
 
@@ -53,14 +54,15 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
 
         return None
 
-    def calibrate(self) -> Optional[CameraIntrinsics]:
+    def calibrate(self) -> Optional[CameraPoseResult]:
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints,
                                                            self.image_size, None, None)
 
         if ret:
             logging.info("Camera calibrated")
-            self.intrinsics = CameraIntrinsics(mtx, dist)
-            return self.intrinsics
+            intrinsics = CameraIntrinsics(mtx, dist)
+            self.pose_result = CameraPoseResult(intrinsics)
+            return self.pose_result
 
         logging.warning(f"Could not calibrate camera with {self.sample_count} samples.")
         return None

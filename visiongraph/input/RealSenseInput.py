@@ -200,7 +200,7 @@ class RealSenseInput(BaseDepthCamera):
         depth_frame: rs.depth_frame = self.depth_frame
         ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
 
-        depth_intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
+        depth_intrinsics = depth_frame.profile.as_video_stream_profile().pose_result
         distance = depth_frame.get_distance(ix, iy)
 
         point = rs.rs2_deproject_pixel_to_point(depth_intrinsics, [ix, iy], distance)
