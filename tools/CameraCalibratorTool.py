@@ -16,7 +16,8 @@ class CameraCalibratorTool(BaseGraph):
         super().__init__()
         self.input = input
 
-        self.network = CameraChessboardCalibrator(max_samples=100)
+        self.max_samples = 100
+        self.network = CameraChessboardCalibrator(max_samples=self.max_samples)
 
         self.add_nodes(self.input, self.network)
 
@@ -36,7 +37,12 @@ class CameraCalibratorTool(BaseGraph):
             print("Distortion Coefficients:")
             print(result.distortion_coefficients)
 
+            result.save("media/calibration.json")
+
             self.close()
+
+        cv2.putText(frame, f"Samples: {len(self.network.imgpoints)} / {self.max_samples}",
+                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
         cv2.imshow("Camera Pose Example", frame)
         if cv2.waitKey(15) & 0xFF == 27:

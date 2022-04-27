@@ -48,7 +48,7 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
             # annotate
             cv2.drawChessboardCorners(data, (7, 6), corners2, ret)
 
-        if 0 < self.max_samples <= len(self.imgpoints):
+        if 0 < self.max_samples <= self.sample_count:
             return self.calibrate()
 
         return None
@@ -62,7 +62,7 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
             self.intrinsics = CameraIntrinsics(mtx, dist)
             return self.intrinsics
 
-        logging.warning(f"Could not calibrate camera with {len(self.imgpoints)} samples.")
+        logging.warning(f"Could not calibrate camera with {self.sample_count} samples.")
         return None
 
     def release(self):
@@ -74,3 +74,7 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraIntrinsics]]):
     @staticmethod
     def add_params(parser: ArgumentParser):
         pass
+
+    @property
+    def sample_count(self):
+        return len(self.imgpoints)
