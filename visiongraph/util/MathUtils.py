@@ -61,4 +61,4 @@ class StreamingMovingAverage:
         return float(self.sum) / len(self.values)
 
     def average(self):
-        return float(self.sum) / len(self.values)
+        return float(self.sum) / max(len(self.values), 1)
