@@ -5,6 +5,7 @@ from typing import Optional
 import numpy as np
 
 from visiongraph.input.BaseDepthInput import BaseDepthInput
+from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 
 
 class BaseDepthCamera(BaseDepthInput, ABC):
@@ -117,6 +118,10 @@ class BaseDepthCamera(BaseDepthInput, ABC):
     @abstractmethod
     def fisheye_distortion(self) -> np.ndarray:
         pass
+
+    @property
+    def intrinsics(self) -> CameraIntrinsics:
+        return CameraIntrinsics(self.camera_matrix, self.fisheye_distortion)
 
     @property
     @abstractmethod
