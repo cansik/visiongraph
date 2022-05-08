@@ -11,7 +11,13 @@ PUBLIC_DATA_URL = "https://github.com/cansik/data-storage/releases/download/sarm
 
 
 def download_file(url: str, path: str, description: str = "download"):
-    filesize = int(requests.head(url).headers["Content-Length"])
+    head_request = requests.head(url)
+
+    if "Content-Length" in head_request.headers:
+        filesize = int(head_request.headers["Content-Length"])
+    else:
+        filesize = 0
+
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
     dl_path = path
