@@ -10,6 +10,7 @@ import vector
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
+from visiongraph.util import MathUtils
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
@@ -185,8 +186,14 @@ class RealSenseInput(BaseDepthCamera):
     def _calculate_depth_coordinates(self, x: float, y: float, depth_frame: rs.depth_frame) -> Tuple[int, int]:
         x, y = transform_coordinates(x, y, self.rotate, self.flip)
 
-        ix = round(constrain(depth_frame.width * x, upper=depth_frame.width - 1))
-        iy = round(constrain(depth_frame.height * y, upper=depth_frame.height - 1))
+        ix, iy = depth_frame.width * x, depth_frame.height * y
+
+        if self.crop is not None:
+            ix = MathUtils.map_value(ix, 0, depth_frame.width, self.crop.x_min, self.crop.width)
+            iy = MathUtils.map_value(iy, 0, depth_frame.height, self.crop.y_min, self.crop.height)
+
+        ix = round(constrain(ix, upper=depth_frame.width - 1))
+        iy = round(constrain(iy, upper=depth_frame.height - 1))
 
         return ix, iy
 
