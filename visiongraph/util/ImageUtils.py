@@ -3,6 +3,7 @@ from typing import Tuple
 import cv2
 import numpy as np
 
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.util.MathUtils import constrain
 
 
@@ -63,3 +64,7 @@ def align_image(image: np.ndarray,
     warp_mat = cv2.getAffineTransform(src_triangle, dest_triangle)
     warp_dst = cv2.warpAffine(image, warp_mat, (image.shape[1], image.shape[0]))
     return warp_mat, warp_dst
+
+
+def roi(image: np.ndarray, box: BoundingBox2D) -> np.ndarray:
+    return image[int(box.y_min):int(box.y_min + box.height), int(box.x_min):int(box.x_min + box.width)]

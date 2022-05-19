@@ -1,3 +1,5 @@
+from typing import Sequence, Union
+
 import numpy as np
 import vector
 
@@ -44,13 +46,14 @@ class BoundingBox2D:
             self.height * height)
 
     @staticmethod
-    def from_array(data: np.ndarray, tl_br_format: bool = False):
-        flat = data.flat
+    def from_array(data: Union[Sequence, np.ndarray], tl_br_format: bool = False):
+        if isinstance(data, np.ndarray):
+            data = data.flat
 
         if tl_br_format:
-            return BoundingBox2D(flat[0], flat[1], flat[2] - flat[0], flat[3] - flat[1])
+            return BoundingBox2D(data[0], data[1], data[2] - data[0], data[3] - data[1])
 
-        return BoundingBox2D(flat[0], flat[1], flat[2], flat[3])
+        return BoundingBox2D(data[0], data[1], data[2], data[3])
 
     @staticmethod
     def from_image(image: np.ndarray):
