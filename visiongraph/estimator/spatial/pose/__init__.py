@@ -27,6 +27,16 @@ except ImportError as ex:
     logging.info(f"MoveNet not installed: {ex}")
 
 try:
+    from visiongraph.estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetPoseEstimator, LiteHRNetConfig
+
+    prefix = "lite-hrnet"
+    PoseEstimators[f"{prefix}-fp16"] = partial(LiteHRNetPoseEstimator.create,
+                                               LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
+    PoseEstimators[f"{prefix}"] = partial(LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP32)
+except ImportError as ex:
+    logging.info(f"MoveNet not installed: {ex}")
+
+try:
     from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator, AEPoseConfig
     from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
 
