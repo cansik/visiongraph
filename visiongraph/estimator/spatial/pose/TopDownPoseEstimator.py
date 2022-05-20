@@ -24,7 +24,9 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         self.human_detector = human_detector
         self.human_classes: Optional[Set[int]] = None
 
+        # todo: use roi ratio for roi creation
         self.roi_ratio: Optional[float] = None
+        self.roi_rectified = True
 
     def setup(self):
         self.human_detector.setup()
@@ -42,10 +44,10 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         for detection in detections:
             # extract roi
             xmin, ymin, xmax, ymax = detection.bounding_box.to_array(tl_br_format=True)
-            roi, xs, ys = ImageUtils.extract_roi_safe(data, xmin, ymin, xmax, ymax, rectified=True)
+            roi, xs, ys = ImageUtils.extract_roi_safe(data, xmin, ymin, xmax, ymax, rectified=self.roi_rectified)
 
-            pose = self._detect_landmarks(data, roi, xs, ys)
-            results.append(pose)
+            poses = self._detect_landmarks(data, roi, xs, ys)
+            results += poses
 
         return results
 
@@ -53,7 +55,7 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         return image
 
     @abstractmethod
-    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> OutputType:
+    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[OutputType]:
         pass
 
     def release(self):
