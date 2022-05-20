@@ -32,7 +32,9 @@ try:
     prefix = "lite-hrnet"
     PoseEstimators[f"{prefix}-fp16"] = partial(LiteHRNetPoseEstimator.create,
                                                LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
-    PoseEstimators[f"{prefix}"] = partial(LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP32)
+    PoseEstimators[f"{prefix}"] = partial(LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
+    PoseEstimators[f"{prefix}-fast"] = partial(LiteHRNetPoseEstimator.create,
+                                               LiteHRNetConfig.LiteHRNet_18_COCO_256x192_FP32)
 except ImportError as ex:
     logging.info(f"MoveNet not installed: {ex}")
 

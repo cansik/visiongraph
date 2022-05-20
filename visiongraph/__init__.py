@@ -150,6 +150,14 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import AEPoseEstimator")
 try:
+    from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetConfig
+except ImportError as ex:
+    logging.debug(f"Could not import LiteHRNetConfig")
+try:
+    from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import LiteHRNetPoseEstimator")
+try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 except ImportError as ex:
     logging.debug(f"Could not import MediaPipePoseEstimator")
@@ -178,6 +186,10 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import OpenPoseEstimator")
 from .estimator.spatial.pose.PoseEstimator import PoseEstimator
+try:
+    from .estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import TopDownPoseEstimator")
 from .estimator.spatial.pose.__init__ import add_pose_estimation_step_choices
 try:
     from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNConfig

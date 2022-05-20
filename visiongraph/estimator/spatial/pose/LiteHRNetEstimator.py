@@ -8,7 +8,7 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
-from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator, OutputType
+from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.util.ResultUtils import non_maximum_suppression
@@ -16,6 +16,13 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class LiteHRNetConfig(Enum):
+    LiteHRNet_18_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp16")
+    LiteHRNet_18_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp32")
+    LiteHRNet_18_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp16")
+    LiteHRNet_18_COCO_384x288_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp32")
+
+    LiteHRNet_30_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_30_coco_256x192-fp16")
+    LiteHRNet_30_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_30_coco_256x192-fp32")
     LiteHRNet_30_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_30_coco_384x288-fp16")
     LiteHRNet_30_COCO_384x288_FP32 = RepositoryAsset.openVino("litehrnet_30_coco_384x288-fp32")
 
@@ -26,7 +33,7 @@ LITE_HRNET_KEY_POINT_COUNT = 17
 class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
     def __init__(self,
                  model: Asset, weights: Asset,
-                 human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
+                 human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
                  min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
                  device: str = "CPU"):
         super().__init__(human_detector, min_score)
