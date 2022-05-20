@@ -14,6 +14,10 @@ def main():
             xml = Path(path.replace(".bin", ".xml"))
             format = bin.parent.name.lower()
 
+            if not xml.exists():
+                pbar.update()
+                continue
+
             if not bin.name.endswith(f"-{format}.bin"):
                 bin.replace(str(bin).replace(".bin", f"-{format}.bin"))
 
