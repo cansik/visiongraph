@@ -24,7 +24,8 @@ mediapipe-silicon>=0.8.9; platform_system == "Darwin" and platform.machine == "a
 mediapipe>=0.8.9; platform_system != "Darwin" and platform.machine != "arm64"
 
 # extra onnx
-onnxruntime==1.10.0
+onnxruntime; platform_system != "Darwin" and platform.machine != "arm64"
+onnxruntime-silicon; platform_system == "Darwin" and platform.machine == "arm64"
 
 # extra media
 moviepy
