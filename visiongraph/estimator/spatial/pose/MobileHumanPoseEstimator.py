@@ -4,6 +4,7 @@ from typing import Optional, List, Tuple
 import cv2
 import numpy as np
 import onnxruntime as rt
+from scipy.special import softmax
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -13,10 +14,8 @@ from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
-from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.result.spatial.pose.MobileHumanPose import MobileHumanPose
 from visiongraph.util import ImageUtils, VectorUtils
-from scipy.special import softmax
 
 MOBILE_HUMAN_POSE_JOINT_NUM = 21
 
@@ -100,7 +99,8 @@ class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
 
         # crop detection
         xmin, ymin, xmax, ymax = box.to_array(tl_br_format=True)
-        roi, xs, ys = ImageUtils.extract_roi_safe(image, xmin, ymin, xmax, ymax, rectified=False)
+        roi, xs, ys = ImageUtils.extract_roi_safe(image, xmin, ymin, xmax, ymax, rectified=True)
+        rh, rw = roi.shape[:2]
 
         # prepare input
         img_input = cv2.resize(roi, (self.input_width, self.input_height))
@@ -120,8 +120,8 @@ class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
         max_score = 0.0
         for i, point in enumerate(raw_result.pose_3d):
             score = raw_result.scores[i]
-            x = (point[0] * (box.width * w) + xs) / w
-            y = (point[1] * (box.height * h) + ys) / h
+            x = (point[0] * rw + xs) / w
+            y = (point[1] * rh + ys) / h
             z = point[2]
             landmarks.append((x, y, z, float(score)))
 
