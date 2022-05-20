@@ -40,6 +40,13 @@ try:
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 
+try:
+    from visiongraph.estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator
+
+    PoseEstimators["mobile-human-pose"] = MobileHumanPoseEstimator
+except ImportError as ex:
+    logging.info(f"OpenVino or ONNX not installed: {ex}")
+
 
 def add_pose_estimation_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup],
                                      default: Union[int, str] = 0, add_params: bool = False):
