@@ -68,3 +68,7 @@ def align_image(image: np.ndarray,
 
 def roi(image: np.ndarray, box: BoundingBox2D) -> np.ndarray:
     return image[int(box.y_min):int(box.y_min + box.height), int(box.x_min):int(box.x_min + box.width)]
+
+
+def apply_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
+    return cv2.bitwise_and(image, image, mask=mask)

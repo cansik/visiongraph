@@ -22,6 +22,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         self.rotate: Optional[int] = None
         self.flip: Optional[int] = None
         self.crop: Optional[BoundingBox2D] = None
+        self.mask: Optional[np.ndarray] = None
 
         self.raw_input = False
 
@@ -43,6 +44,9 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         if self.flip is not None:
             image = cv2.flip(image, self.flip)
 
+        if self.mask is not None:
+            image = ImageUtils.apply_mask(image, self.mask)
+
         if self.crop is not None:
             image = ImageUtils.roi(image, self.crop)
 
@@ -60,6 +64,12 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         self.flip = args.input_flip
         self.raw_input = args.raw_input
 
+        if args.input_mask is not None:
+            self.mask = cv2.imread(args.input_mask, cv2.IMREAD_GRAYSCALE)
+
+            if self.mask.shape[0] != self.height or self.mask.shape[1] != self.width:
+                self.mask = cv2.resize(self.mask, (self.width, self.height))
+
         if args.input_crop is not None:
             self.crop = BoundingBox2D.from_array(args.input_crop)
 
@@ -73,6 +83,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
             add_dict_choice_argument(parser, RotationParameter, "--input-rotate", help="Rotate input media",
                                      default=None)
             add_dict_choice_argument(parser, FlipParameter, "--input-flip", help="Flip input media", default=None)
+            parser.add_argument("--input-mask", default=None, type=str, help="Path to the input mask.")
             parser.add_argument("--input-crop", default=None, type=int, nargs=4,
                                 metavar=("x", "y", "width", "height"), help="Crop input image.")
             parser.add_argument("--raw-input", action="store_true",
