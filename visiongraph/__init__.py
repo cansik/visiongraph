@@ -158,6 +158,10 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import PoseModelComplexity")
 try:
+    from .estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import MobileHumanPoseEstimator")
+try:
     from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
 except ImportError as ex:
     logging.debug(f"Could not import MoveNetConfig")
@@ -276,6 +280,7 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import BlazePoseSegmentation")
 from .result.spatial.pose.COCOPose import COCOPose
+from .result.spatial.pose.MobileHumanPose import MobileHumanPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
 from .tracker.CentroidTracker import CentroidTracker
@@ -290,6 +295,7 @@ from .util.CollectionUtils import default_value_dict
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
 from .util.ImageUtils import align_image
+from .util.ImageUtils import apply_mask
 from .util.ImageUtils import extract_roi_safe
 from .util.ImageUtils import resize_and_letter_box
 from .util.ImageUtils import roi
