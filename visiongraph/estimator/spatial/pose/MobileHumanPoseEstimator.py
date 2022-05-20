@@ -11,6 +11,7 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator, OutputType
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
@@ -28,16 +29,15 @@ class _RawMobileHumanPoseResult:
     person_heatmap: Optional[np.ndarray] = None
 
 
-class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
+class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
     def __init__(self,
                  human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
                  model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx"),
                  intrinsics: Optional[CameraIntrinsics] = None,
                  abs_depth: float = 1.0,
                  min_score: float = 0.5):
-        super().__init__(min_score)
+        super().__init__(human_detector, min_score)
 
-        self.human_detector = human_detector
         self.model = model
         self.intrinsics = intrinsics
         self.abs_depth = abs_depth
@@ -56,7 +56,7 @@ class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
         self.output_height: Optional[int] = None
 
     def setup(self):
-        self.human_detector.setup()
+        super().setup()
         self.session = rt.InferenceSession(self.model.path,
                                            providers=["CUDAExecutionProvider",
                                                       "OpenVINOExecutionProvider",
@@ -82,24 +82,11 @@ class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
         self.output_height = output_shape[2]
         self.output_width = output_shape[3]
 
-    def process(self, data: np.ndarray) -> ResultList[MobileHumanPose]:
-        detections = self.human_detector.process(data)
+    def _pre_landmark(self, image: np.ndarray) -> np.ndarray:
+        return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-        image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
-
-        results: ResultList[MobileHumanPose] = ResultList()
-        for detection in detections:
-            pose = self._detect_pose(image, detection.bounding_box)
-            results.append(pose)
-
-        return results
-
-    def _detect_pose(self, image: np.ndarray, box: BoundingBox2D) -> MobileHumanPose:
+    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> OutputType:
         h, w = image.shape[:2]
-
-        # crop detection
-        xmin, ymin, xmax, ymax = box.to_array(tl_br_format=True)
-        roi, xs, ys = ImageUtils.extract_roi_safe(image, xmin, ymin, xmax, ymax, rectified=True)
         rh, rw = roi.shape[:2]
 
         # prepare input
@@ -178,5 +165,5 @@ class MobileHumanPoseEstimator(PoseEstimator[MobileHumanPose]):
         return _RawMobileHumanPoseResult(pose_2d, pose_3d, scores)
 
     def release(self):
-        self.human_detector.release()
+        super().release()
         self.session = None

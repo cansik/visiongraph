@@ -32,7 +32,7 @@ def resize_and_letter_box(image, width, height):
 
 def extract_roi_safe(image: np.ndarray,
                      xmin: float, ymin: float, xmax: float, ymax: float,
-                     rectified: bool = False) -> Tuple[np.ndarray, float, float]:
+                     rectified: bool = False) -> Tuple[np.ndarray, int, int]:
     h, w = image.shape[:2]
 
     xs = constrain(round(xmin * w), upper=w - 1)
@@ -44,7 +44,7 @@ def extract_roi_safe(image: np.ndarray,
     hw = ye - ys
 
     if not rectified:
-        return image[ys:ye, xs:xe], xs, ys
+        return image[ys:ye, xs:xe], int(xs), int(ys)
 
     if rw > hw:
         diff = (rw - hw) * 0.5
@@ -55,7 +55,7 @@ def extract_roi_safe(image: np.ndarray,
         xs = constrain(round(xs - diff), upper=w - 1)
         xe = constrain(round(xe + diff), upper=w - 1)
 
-    return image[ys:ye, xs:xe], xs, ys
+    return image[ys:ye, xs:xe], int(xs), int(ys)
 
 
 def align_image(image: np.ndarray,
