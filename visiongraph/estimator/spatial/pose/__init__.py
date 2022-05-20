@@ -23,6 +23,7 @@ try:
 
     PoseEstimators["movenet"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_256x320_FP32)
     PoseEstimators["movenet-192"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_MultiPose_192x256_FP32)
+    PoseEstimators["movenet-single"] = partial(MoveNetPoseEstimator.create, MoveNetConfig.MoveNet_Single_Thunder_FP32)
 except ImportError as ex:
     logging.info(f"MoveNet not installed: {ex}")
 
