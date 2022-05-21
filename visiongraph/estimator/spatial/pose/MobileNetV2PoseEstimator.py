@@ -46,7 +46,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
 
-        h, w = self.engine.first_input_shape[2:]
+        h, w = outputs.shape[2:]
 
         detected_keypoints = []
         keypoints_list = np.zeros((0, 3))
@@ -54,8 +54,6 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
 
         for part in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
             probability_map = outputs[0, part, :, :]
-            # todo: remove unnecessary resize
-            probability_map = cv2.resize(probability_map, (w, h))
             keypoints = self._get_keypoints(probability_map, self.min_score)
             keypoints_with_id = []
 
