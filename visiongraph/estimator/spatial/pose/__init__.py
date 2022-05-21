@@ -52,6 +52,9 @@ try:
     PoseEstimators["aepose"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP32)
     PoseEstimators["aepose-288-fp16"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP16)
     PoseEstimators["aepose-448-fp32"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_448_FP32)
+
+    PoseEstimators["mobilenet"] = partial(MobileNetV2PoseEstimator.create,
+                                          MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 

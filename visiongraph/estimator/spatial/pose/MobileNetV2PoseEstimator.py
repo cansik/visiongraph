@@ -24,11 +24,18 @@ _COLORS = [[0, 100, 255], [0, 100, 255], [0, 255, 255], [0, 100, 255], [0, 255, 
 
 
 class MobileNetV2PoseEstimatorConfig(Enum):
-    MNV2PE_1_4_224_FP16 = RepositoryAsset.openVino("mobilenet-v2-pose-1.4-224-fp16")
-    MNV2PE_1_4_224_FP32 = RepositoryAsset.openVino("mobilenet-v2-pose-1.4-224-fp32")
-
-    MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet-v2-pose-0.5-224-fp16")
-    MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet-v2-pose-0.5-224-fp32")
+    MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp16")
+    MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp32")
+    MNV2PE_0_5_224_QUANT_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224_quant-fp16")
+    MNV2PE_0_5_224_QUANT_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224_quant-fp32")
+    MNV2PE_0_75_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp16")
+    MNV2PE_0_75_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp32")
+    MNV2PE_1_0_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp16")
+    MNV2PE_1_0_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp32")
+    MNV2PE_1_4_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp16")
+    MNV2PE_1_4_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp32")
+    MNV2PE_1_4_224_QUANT_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224_quant-fp16")
+    MNV2PE_1_4_224_QUANT_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224_quant-fp32")
 
 
 class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
@@ -69,30 +76,30 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
 
         poses: ResultList[COCOOpenPose] = ResultList()
         for person in personwise_keypoints:
-            total_score = person[COCO_OPEN_POSE_KEYPOINT_COUNT]
+            total_score = 0.0
             key_points: List[Tuple[float, float, float, float]] = []
-            max_score = 0.0
 
             for i in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
                 index = int(person[i])
 
                 if index == -1:
-                    key_points.append((0.0, 0.0, 0, 0.0))
+                    key_points.append((0.0, 0.0, 0.0, 0.0))
+                    continue
 
                 kp = keypoints_list[index]
                 x = kp[0] / w
                 y = kp[1] / h
                 score = kp[2]
 
+                total_score += score
                 key_points.append((x, y, 0, score))
 
-                if score > max_score:
-                    max_score = score
+            pose_score = total_score / COCO_OPEN_POSE_KEYPOINT_COUNT
 
-            if max_score < self.min_score:
+            if pose_score < self.min_score:
                 continue
 
-            poses.append(COCOOpenPose(max_score, list_of_vector4D(key_points)))
+            poses.append(COCOOpenPose(pose_score, list_of_vector4D(key_points)))
 
         return poses
 
@@ -106,12 +113,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         map_mask = np.uint8(map_smooth > threshold)
         keypoints = []
         contours = None
-        try:
-            # OpenCV4.x
-            contours, _ = cv2.findContours(map_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
-        except:
-            # OpenCV3.x
-            _, contours, _ = cv2.findContours(map_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        contours, _ = cv2.findContours(map_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
         for cnt in contours:
             blobMask = np.zeros(map_mask.shape)
