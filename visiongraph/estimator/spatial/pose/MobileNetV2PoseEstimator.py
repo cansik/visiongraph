@@ -8,7 +8,6 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.external.intel.models.open_pose import OpenPoseDecoder
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
 from visiongraph.util.VectorUtils import list_of_vector4D
@@ -34,10 +33,11 @@ class MobileNetV2PoseEstimatorConfig(Enum):
 
 class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
     def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.1, device: str = "CPU"):
+                 min_score: float = 0.5, device: str = "CPU"):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights, flip_channels=True, normalize=False, device=device)
+        self.threshold = 0.1
 
     def setup(self):
         self.engine.setup()
@@ -54,7 +54,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
 
         for part in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
             probability_map = outputs[0, part, :, :]
-            keypoints = self._get_keypoints(probability_map, self.min_score)
+            keypoints = self._get_keypoints(probability_map, self.threshold)
             keypoints_with_id = []
 
             for i in range(len(keypoints)):
