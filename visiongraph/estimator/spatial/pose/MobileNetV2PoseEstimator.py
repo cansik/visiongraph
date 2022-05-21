@@ -1,0 +1,218 @@
+from enum import Enum
+from typing import List, Tuple
+
+import cv2
+import numpy as np
+
+from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.external.intel.models.open_pose import OpenPoseDecoder
+from visiongraph.result.ResultList import ResultList
+from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
+from visiongraph.util.VectorUtils import list_of_vector4D
+
+_MAP_INDEX = [[31, 32], [39, 40], [33, 34], [35, 36], [41, 42], [43, 44], [19, 20], [21, 22], [23, 24], [25, 26],
+              [27, 28], [29, 30], [47, 48], [49, 50], [53, 54], [51, 52], [55, 56], [37, 38], [45, 46]]
+
+_POSE_PAIRS = [[1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [6, 7], [1, 8], [8, 9], [9, 10], [1, 11], [11, 12], [12, 13],
+               [1, 0], [0, 14], [14, 16], [0, 15], [15, 17], [2, 17], [5, 16]]
+
+_COLORS = [[0, 100, 255], [0, 100, 255], [0, 255, 255], [0, 100, 255], [0, 255, 255], [0, 100, 255], [0, 255, 0],
+           [255, 200, 100], [255, 0, 255], [0, 255, 0], [255, 200, 100], [255, 0, 255], [0, 0, 255], [255, 0, 0],
+           [200, 200, 0], [255, 0, 0], [200, 200, 0], [0, 0, 0]]
+
+
+class MobileNetV2PoseEstimatorConfig(Enum):
+    MNV2PE_1_4_224_FP16 = RepositoryAsset.openVino("mobilenet-v2-pose-1.4-224-fp16")
+    MNV2PE_1_4_224_FP32 = RepositoryAsset.openVino("mobilenet-v2-pose-1.4-224-fp32")
+
+    MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet-v2-pose-0.5-224-fp16")
+    MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet-v2-pose-0.5-224-fp32")
+
+
+class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
+    def __init__(self, model: Asset, weights: Asset,
+                 min_score: float = 0.1, device: str = "CPU"):
+        super().__init__(min_score)
+
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, normalize=False, device=device)
+
+    def setup(self):
+        self.engine.setup()
+
+    def process(self, data: np.ndarray) -> ResultList[COCOOpenPose]:
+        output_dict = self.engine.process(data)
+        outputs = output_dict[self.engine.output_names[0]]
+
+        h, w = self.engine.first_input_shape[2:]
+
+        detected_keypoints = []
+        keypoints_list = np.zeros((0, 3))
+        keypoint_id = 0
+
+        for part in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
+            probability_map = outputs[0, part, :, :]
+            # todo: remove unnecessary resize
+            probability_map = cv2.resize(probability_map, (w, h))
+            keypoints = self._get_keypoints(probability_map, self.min_score)
+            keypoints_with_id = []
+
+            for i in range(len(keypoints)):
+                keypoints_with_id.append(keypoints[i] + (keypoint_id,))
+                keypoints_list = np.vstack([keypoints_list, keypoints[i]])
+                keypoint_id += 1
+
+            detected_keypoints.append(keypoints_with_id)
+
+        valid_pairs, invalid_pairs = self._get_valid_pairs(outputs, w, h, detected_keypoints)
+        personwise_keypoints = self._get_personwise_keypoints(valid_pairs, invalid_pairs, keypoints_list)
+
+        poses: ResultList[COCOOpenPose] = ResultList()
+        for person in personwise_keypoints:
+            total_score = person[COCO_OPEN_POSE_KEYPOINT_COUNT]
+            key_points: List[Tuple[float, float, float, float]] = []
+            max_score = 0.0
+
+            for i in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
+                index = int(person[i])
+
+                if index == -1:
+                    key_points.append((0.0, 0.0, 0, 0.0))
+
+                kp = keypoints_list[index]
+                x = kp[0] / w
+                y = kp[1] / h
+                score = kp[2]
+
+                key_points.append((x, y, 0, score))
+
+                if score > max_score:
+                    max_score = score
+
+            if max_score < self.min_score:
+                continue
+
+            poses.append(COCOOpenPose(max_score, list_of_vector4D(key_points)))
+
+        return poses
+
+    def release(self):
+        self.engine.release()
+
+    @staticmethod
+    def _get_keypoints(probability_map: np.ndarray, threshold: float = 0.1):
+
+        map_smooth = cv2.GaussianBlur(probability_map, (3, 3), 0, 0)
+        map_mask = np.uint8(map_smooth > threshold)
+        keypoints = []
+        contours = None
+        try:
+            # OpenCV4.x
+            contours, _ = cv2.findContours(map_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+        except:
+            # OpenCV3.x
+            _, contours, _ = cv2.findContours(map_mask, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        for cnt in contours:
+            blobMask = np.zeros(map_mask.shape)
+            blobMask = cv2.fillConvexPoly(blobMask, cnt, 1)
+            maskedProbMap = map_smooth * blobMask
+            _, maxVal, _, maxLoc = cv2.minMaxLoc(maskedProbMap)
+            keypoints.append(maxLoc + (probability_map[maxLoc[1], maxLoc[0]],))
+
+        return keypoints
+
+    @staticmethod
+    def _get_valid_pairs(outputs, w, h, detected_keypoints):
+        valid_pairs = []
+        invalid_pairs = []
+        n_interp_samples = 10
+        paf_score_th = 0.1
+        conf_th = 0.7
+
+        for k in range(len(_MAP_INDEX)):
+            pafA = outputs[0, _MAP_INDEX[k][0], :, :]
+            pafB = outputs[0, _MAP_INDEX[k][1], :, :]
+            pafA = cv2.resize(pafA, (w, h))
+            pafB = cv2.resize(pafB, (w, h))
+
+            candA = detected_keypoints[_POSE_PAIRS[k][0]]
+            candB = detected_keypoints[_POSE_PAIRS[k][1]]
+            nA = len(candA)
+            nB = len(candB)
+
+            if nA != 0 and nB != 0:
+                valid_pair = np.zeros((0, 3))
+                for i in range(nA):
+                    max_j = -1
+                    maxScore = -1
+                    found = 0
+                    for j in range(nB):
+                        d_ij = np.subtract(candB[j][:2], candA[i][:2])
+                        norm = np.linalg.norm(d_ij)
+                        if norm:
+                            d_ij = d_ij / norm
+                        else:
+                            continue
+                        interp_coord = list(zip(np.linspace(candA[i][0], candB[j][0], num=n_interp_samples),
+                                                np.linspace(candA[i][1], candB[j][1], num=n_interp_samples)))
+                        paf_interp = []
+                        for k in range(len(interp_coord)):
+                            paf_interp.append([pafA[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))],
+                                               pafB[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))]])
+                        paf_scores = np.dot(paf_interp, d_ij)
+                        avg_paf_score = sum(paf_scores) / len(paf_scores)
+
+                        if (len(np.where(paf_scores > paf_score_th)[0]) / n_interp_samples) > conf_th:
+                            if avg_paf_score > maxScore:
+                                max_j = j
+                                maxScore = avg_paf_score
+                                found = 1
+                    if found:
+                        valid_pair = np.append(valid_pair, [[candA[i][3], candB[max_j][3], maxScore]], axis=0)
+
+                valid_pairs.append(valid_pair)
+            else:
+                invalid_pairs.append(k)
+                valid_pairs.append([])
+        return valid_pairs, invalid_pairs
+
+    @staticmethod
+    def _get_personwise_keypoints(valid_pairs, invalid_pairs, keypoints_list):
+        personwiseKeypoints = -1 * np.ones((0, 19))
+
+        for k in range(len(_MAP_INDEX)):
+            if k not in invalid_pairs:
+                partAs = valid_pairs[k][:, 0]
+                partBs = valid_pairs[k][:, 1]
+                indexA, indexB = np.array(_POSE_PAIRS[k])
+
+                for i in range(len(valid_pairs[k])):
+                    found = 0
+                    person_idx = -1
+                    for j in range(len(personwiseKeypoints)):
+                        if personwiseKeypoints[j][indexA] == partAs[i]:
+                            person_idx = j
+                            found = 1
+                            break
+
+                    if found:
+                        personwiseKeypoints[person_idx][indexB] = partBs[i]
+                        personwiseKeypoints[person_idx][-1] += keypoints_list[partBs[i].astype(int), 2] + \
+                                                               valid_pairs[k][i][2]
+
+                    elif not found and k < 17:
+                        row = -1 * np.ones(19)
+                        row[indexA] = partAs[i]
+                        row[indexB] = partBs[i]
+                        row[-1] = sum(keypoints_list[valid_pairs[k][i, :2].astype(int), 2]) + valid_pairs[k][i][2]
+                        personwiseKeypoints = np.vstack([personwiseKeypoints, row])
+        return personwiseKeypoints
+
+    @staticmethod
+    def create(config: MobileNetV2PoseEstimatorConfig
+               = MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32) -> "MobileNetV2PoseEstimator":
+        model, weights = config.value
+        return MobileNetV2PoseEstimator(model, weights)

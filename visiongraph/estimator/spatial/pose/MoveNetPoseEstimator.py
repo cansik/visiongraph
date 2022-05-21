@@ -89,7 +89,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         return poses
 
     def release(self):
-        pass
+        self.engine.release()
 
     @staticmethod
     def create(config: MoveNetConfig = MoveNetConfig.MoveNet_MultiPose_256x320_FP32) -> "MoveNetPoseEstimator":
