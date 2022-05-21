@@ -170,6 +170,14 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import MobileHumanPoseEstimator")
 try:
+    from .estimator.spatial.pose.MobileNetV2PoseEstimator import MobileNetV2PoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import MobileNetV2PoseEstimator")
+try:
+    from .estimator.spatial.pose.MobileNetV2PoseEstimator import MobileNetV2PoseEstimatorConfig
+except ImportError as ex:
+    logging.debug(f"Could not import MobileNetV2PoseEstimatorConfig")
+try:
     from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
 except ImportError as ex:
     logging.debug(f"Could not import MoveNetConfig")
@@ -291,6 +299,7 @@ try:
     from .result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
 except ImportError as ex:
     logging.debug(f"Could not import BlazePoseSegmentation")
+from .result.spatial.pose.COCOOpenPose import COCOOpenPose
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.MobileHumanPose import MobileHumanPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
