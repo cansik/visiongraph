@@ -29,3 +29,12 @@ def array_to_vector(data: np.ndarray) -> vector.VectorNumpy:
                                          ("z", float), ("t", float)]).view(vector.VectorNumpy4D)
     else:
         raise Exception(f"Shape ({h}, {w}) is not a valid vector numpy shape.")
+
+
+def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vector.VectorNumpy4D:
+    return vector.obj(
+        x=(a.x * (1.0 - amt)) + (b.x * amt),
+        y=(a.y * (1.0 - amt)) + (b.y * amt),
+        z=(a.z * (1.0 - amt)) + (b.z * amt),
+        t=(a.t * (1.0 - amt)) + (b.t * amt),
+    )

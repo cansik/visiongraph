@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, FrozenSet
+from typing import List, Tuple, FrozenSet, Optional, Sequence
 
+import numpy as np
 import vector
 
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
@@ -31,7 +32,11 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(POSE_DETECTION_ID, POSE_DETECTION_NAME, score, landmarks)
 
-    # todo: implement pose connections for base pose landmark
+    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
+                 color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
+                 min_score: float = 0, **kwargs):
+        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
+                         connections=self.connections, **kwargs)
 
     @property
     def default_landmarks(self) -> List[vector.Vector4D]:
