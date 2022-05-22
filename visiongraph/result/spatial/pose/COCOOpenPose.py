@@ -9,7 +9,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 COCO_OPEN_POSE_PAIRS = frozenset([
     (1, 2), (1, 5), (2, 3), (3, 4), (5, 6), (6, 7), (1, 8), (8, 9), (9, 10), (1, 11), (11, 12), (12, 13), (1, 0),
-    (0, 14), (14, 16), (0, 15), (15, 17), (2, 17), (5, 16)
+    (0, 14), (14, 16), (0, 15), (15, 17)
 ])
 
 COCO_REORDER_MAP = [0, -1, 6, 8, 10, 5, 7, 9, 12, 14, 16, 11, 13, 15, 2, 1, 4, 3]
@@ -18,12 +18,6 @@ COCO_OPEN_POSE_KEYPOINT_COUNT = 18
 
 
 class COCOOpenPose(PoseLandmarkResult):
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
-                 min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
-                         connections=COCO_OPEN_POSE_PAIRS, **kwargs)
-
     @property
     def connections(self) -> FrozenSet[Tuple[int, int]]:
         return COCO_OPEN_POSE_PAIRS

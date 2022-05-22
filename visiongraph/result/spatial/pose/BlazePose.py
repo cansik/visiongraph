@@ -8,12 +8,6 @@ from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResul
 
 
 class BlazePose(PoseLandmarkResult):
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None,
-                 show_bounding_box: bool = False, min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
-                         connections=mp.solutions.pose.POSE_CONNECTIONS, **kwargs)
-
     @property
     def connections(self) -> FrozenSet[Tuple[int, int]]:
         return mp.solutions.pose.POSE_CONNECTIONS

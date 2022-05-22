@@ -12,12 +12,6 @@ MOBILE_HUMAN_POSE_CONNECTIONS = frozenset([
 
 
 class MobileHumanPose(PoseLandmarkResult):
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
-                 min_score: float = 0, **kwargs):
-        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
-                         connections=MOBILE_HUMAN_POSE_CONNECTIONS, **kwargs)
-
     @property
     def connections(self) -> FrozenSet[Tuple[int, int]]:
         return MOBILE_HUMAN_POSE_CONNECTIONS
