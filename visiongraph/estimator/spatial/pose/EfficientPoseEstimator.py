@@ -42,6 +42,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
+        # todo: implement padding for squared input
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
 

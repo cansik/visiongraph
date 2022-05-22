@@ -93,6 +93,8 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         input_tensor = img_input.astype(np.float32)
 
         # process
+        # todo: check for mean subtraction and scaling
+        # https://github.com/djmv/MobilNet_SSD_opencv/blob/master/mobilenet_ssd_python.py#L49
         output_tensor = self.session.run(self.output_names, {self.input_name: input_tensor})[0]
         output = np.squeeze(output_tensor)
 
