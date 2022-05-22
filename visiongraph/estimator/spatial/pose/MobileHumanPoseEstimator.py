@@ -12,6 +12,7 @@ from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator, OutputType
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.MobileHumanPose import MobileHumanPose
 from visiongraph.util import VectorUtils
 
@@ -82,7 +83,7 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
     def _pre_landmark(self, image: np.ndarray) -> np.ndarray:
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[OutputType]:
+    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> ResultList[OutputType]:
         h, w = image.shape[:2]
         rh, rw = roi.shape[:2]
 
@@ -114,7 +115,7 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
             if max_score < score:
                 max_score = float(score)
 
-        return [MobileHumanPose(max_score, VectorUtils.list_of_vector4D(landmarks))]
+        return ResultList([MobileHumanPose(max_score, VectorUtils.list_of_vector4D(landmarks))])
 
     def _post_process(self, output: np.ndarray) -> _RawMobileHumanPoseResult:
         heatmaps = output.reshape((-1, MOBILE_HUMAN_POSE_JOINT_NUM,

@@ -7,11 +7,12 @@ from scipy.ndimage import gaussian_filter
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine, PADDING_BOX_OUTPUT_NAME
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.EfficientPose import EfficientPose
-from visiongraph.util import VectorUtils
+from visiongraph.util import VectorUtils, MathUtils
 
 _BODY_PARTS = ['head_top', 'upper_neck', 'right_shoulder', 'right_elbow', 'right_wrist', 'thorax',
                'left_shoulder', 'left_elbow', 'left_wrist', 'pelvis', 'right_hip', 'right_knee', 'right_ankle',
@@ -43,27 +44,32 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
                  min_score: float = 0.1, device: str = "CPU"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
+        self.engine = VisionInferenceEngine(model, weights,
+                                            flip_channels=True, padding=False,
+                                            device=device)
 
     def setup(self):
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
-        # todo: implement padding for squared input
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
+        padding_box: BoundingBox2D = output_dict[PADDING_BOX_OUTPUT_NAME]
 
         body_parts = self._extract_coordinates(outputs)
 
         landmarks: List[Tuple[float, float, float, float]] = []
         max_score = 0.0
         for name, x, y, score in body_parts:
-            landmarks.append((x, y, 0.0, float(score)))
+            landmarks.append((
+                MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
+                MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
+                0.0, float(score)))
 
             if max_score < score:
                 max_score = float(score)
 
-        return [EfficientPose(max_score, VectorUtils.list_of_vector4D(landmarks))]
+        return ResultList([EfficientPose(max_score, VectorUtils.list_of_vector4D(landmarks))])
 
     def release(self):
         self.engine.release()
