@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from typing import Tuple
@@ -58,5 +59,17 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
         os.remove(temp_file)
 
     download_file(url, temp_file, f"Downloading {file_name}")
+
+    # check if file has been downloaded correctly
+    head = ""
+    try:
+        with open(temp_file, 'rb') as f:
+            head = f.read(9).decode()
+    except Exception as ex:
+        logging.debug(ex)
+
+    if head == "Not Found":
+        raise Exception(f"Could not find file in repository: {file_name}")
+
     os.rename(temp_file, file_path)
     return file_path

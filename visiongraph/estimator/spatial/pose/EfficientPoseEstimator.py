@@ -19,22 +19,31 @@ _BODY_PARTS = ['head_top', 'upper_neck', 'right_shoulder', 'right_elbow', 'right
 
 
 class EfficientPoseEstimatorConfig(Enum):
-    EfficientPose_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32")
+    EFFICIENT_POSE_I_FP16 = RepositoryAsset.openVino("EfficientPoseI-fp16")
+    EFFICIENT_POSE_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32")
+    EFFICIENT_POSE_II_FP16 = RepositoryAsset.openVino("EfficientPoseII-fp16")
+    EFFICIENT_POSE_II_FP32 = RepositoryAsset.openVino("EfficientPoseII-fp32")
+    EFFICIENT_POSE_III_FP16 = RepositoryAsset.openVino("EfficientPoseIII-fp16")
+    EFFICIENT_POSE_III_FP32 = RepositoryAsset.openVino("EfficientPoseIII-fp32")
+    EFFICIENT_POSE_IV_FP16 = RepositoryAsset.openVino("EfficientPoseIV-fp16")
+    EFFICIENT_POSE_IV_FP32 = RepositoryAsset.openVino("EfficientPoseIV-fp32")
+    EFFICIENT_POSE_RT_FP16 = RepositoryAsset.openVino("EfficientPoseRT-fp16")
+    EFFICIENT_POSE_RT_FP32 = RepositoryAsset.openVino("EfficientPoseRT-fp32")
 
 
 class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.3, device: str = "CPU"):
+                 min_score: float = 0.1, device: str = "CPU"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, normalize=True, device=device)
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
 
     def setup(self):
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
         output_dict = self.engine.process(data)
-        outputs = output_dict[self.engine.output_names[-1]]
+        outputs = output_dict[self.engine.output_names[0]]
 
         body_parts = self._extract_coordinates(outputs)
 
@@ -94,6 +103,6 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
 
     @staticmethod
     def create(config: EfficientPoseEstimatorConfig
-               = EfficientPoseEstimatorConfig.EfficientPose_I_FP32) -> "EfficientPoseEstimator":
+               = EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32) -> "EfficientPoseEstimator":
         model, weights = config.value
         return EfficientPoseEstimator(model, weights)
