@@ -1,6 +1,6 @@
 # base packages
 wheel
-opencv-python
+opencv-contrib-python
 numpy
 requests
 tqdm
