@@ -30,6 +30,13 @@ class EfficientPoseEstimatorConfig(Enum):
     EFFICIENT_POSE_RT_FP16 = RepositoryAsset.openVino("EfficientPoseRT-fp16")
     EFFICIENT_POSE_RT_FP32 = RepositoryAsset.openVino("EfficientPoseRT-fp32")
 
+    EFFICIENT_POSE_II_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp16")
+    EFFICIENT_POSE_II_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp32")
+    EFFICIENT_POSE_I_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp16")
+    EFFICIENT_POSE_I_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp32")
+    EFFICIENT_POSE_RT_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp16")
+    EFFICIENT_POSE_RT_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp32")
+
 
 class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     def __init__(self, model: Asset, weights: Asset,
