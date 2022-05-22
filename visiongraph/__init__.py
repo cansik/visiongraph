@@ -150,6 +150,14 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import AEPoseEstimator")
 try:
+    from .estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import EfficientPoseEstimator")
+try:
+    from .estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimatorConfig
+except ImportError as ex:
+    logging.debug(f"Could not import EfficientPoseEstimatorConfig")
+try:
     from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetConfig
 except ImportError as ex:
     logging.debug(f"Could not import LiteHRNetConfig")
@@ -301,6 +309,7 @@ except ImportError as ex:
     logging.debug(f"Could not import BlazePoseSegmentation")
 from .result.spatial.pose.COCOOpenPose import COCOOpenPose
 from .result.spatial.pose.COCOPose import COCOPose
+from .result.spatial.pose.EfficientPose import EfficientPose
 from .result.spatial.pose.MobileHumanPose import MobileHumanPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
@@ -340,6 +349,7 @@ from .util.TimeUtils import ProfileWatch
 from .util.TimeUtils import Watch
 from .util.TimeUtils import current_millis
 from .util.VectorUtils import array_to_vector
+from .util.VectorUtils import lerp4d
 from .util.VectorUtils import list_of_vector4D
 from .util.VectorUtils import vector_to_array
 try:

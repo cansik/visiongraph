@@ -60,9 +60,10 @@ try:
 
     PoseEstimators["efficient-pose"] = partial(EfficientPoseEstimator.create,
                                                EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32)
-
     PoseEstimators["efficient-pose-lite"] = partial(EfficientPoseEstimator.create,
                                                     EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_LITE_FP32)
+    PoseEstimators["efficient-pose-rt"] = partial(EfficientPoseEstimator.create,
+                                                  EfficientPoseEstimatorConfig.EFFICIENT_POSE_RT_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 

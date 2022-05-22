@@ -45,7 +45,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights,
-                                            flip_channels=True, padding=False,
+                                            flip_channels=True, padding=True,
                                             device=device)
 
     def setup(self):
