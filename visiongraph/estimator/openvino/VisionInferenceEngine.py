@@ -99,6 +99,8 @@ class VisionInferenceEngine:
         # get final image size
         size = h if h > w else w
 
+        # todo: check if width and height are different (non-square padding)
+
         #  create base image with background color
         background = np.zeros([size, size, 3], dtype=np.uint8)
 
