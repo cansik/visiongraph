@@ -186,11 +186,12 @@ class RealSenseInput(BaseDepthCamera):
     def _calculate_depth_coordinates(self, x: float, y: float, depth_frame: rs.depth_frame) -> Tuple[int, int]:
         x, y = transform_coordinates(x, y, self.rotate, self.flip)
 
-        ix, iy = depth_frame.width * x, depth_frame.height * y
-
         if self.crop is not None:
-            ix = MathUtils.map_value(ix, 0, depth_frame.width, self.crop.x_min, self.crop.width)
-            iy = MathUtils.map_value(iy, 0, depth_frame.height, self.crop.y_min, self.crop.height)
+            norm_crop = self.crop.scale(1.0 / self.depth_frame.width, 1.0 / self.depth_frame.height)
+            x = MathUtils.map_value(x, 0.0, 1.0, norm_crop.x_min, norm_crop.x_max)
+            y = MathUtils.map_value(y, 0.0, 1.0, norm_crop.y_min, norm_crop.y_max)
+
+        ix, iy = depth_frame.width * x, depth_frame.height * y
 
         ix = round(constrain(ix, upper=depth_frame.width - 1))
         iy = round(constrain(iy, upper=depth_frame.height - 1))
