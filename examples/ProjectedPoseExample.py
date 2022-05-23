@@ -128,8 +128,8 @@ class MainWindow:
 
             lm_positions = pose.landmarks.to_xyz()
             size = len(lm_positions)
-            points = np.concatenate((lm_positions.x.reshape(size, 1), #* -1, # this is used if camera is not upside down
-                                     lm_positions.y.reshape(size, 1), #* -1,
+            points = np.concatenate((lm_positions.x.reshape(size, 1) * -1,  # this is used if camera is not upside down
+                                     lm_positions.y.reshape(size, 1) * -1,
                                      lm_positions.z.reshape(size, 1)),
                                     axis=1)
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
