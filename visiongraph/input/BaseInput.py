@@ -50,6 +50,9 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         if self.crop is not None:
             image = ImageUtils.roi(image, self.crop)
 
+            if 0 in image.shape[:2]:
+                return ts, None
+
         # prepare image to be 3 channel
         if not self.raw_input and (len(image.shape) < 3 or image.shape[2] == 1):
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
