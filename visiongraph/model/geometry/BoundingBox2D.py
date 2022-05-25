@@ -68,5 +68,10 @@ class BoundingBox2D:
         h, w = image.shape[:2]
         return BoundingBox2D(0, 0, float(w), float(h))
 
+    @staticmethod
+    def from_kernel(x: int, y: int, kernel_size: int):
+        shift = kernel_size // 2
+        return BoundingBox2D(x - shift, y - shift, kernel_size, kernel_size)
+
     def __repr__(self):
         return f"BoundingBox2D(x={self.x_min:.4f}, y={self.y_min:.4f}, w={self.width:.4f}, h={self.height:.4f})"

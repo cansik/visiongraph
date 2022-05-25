@@ -8,9 +8,10 @@ import pyrealsense2 as rs
 import vector
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
-from visiongraph.util import MathUtils
+from visiongraph.util import MathUtils, ImageUtils
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
@@ -204,12 +205,18 @@ class RealSenseInput(BaseDepthCamera):
 
         return depth_frame.get_distance(ix, iy)
 
-    def pixel_to_point(self, x: float, y: float) -> vector.Vector3D:
+    def pixel_to_point(self, x: float, y: float, depth_kernel_size: int = 1) -> vector.Vector3D:
         depth_frame: rs.depth_frame = self.depth_frame
         ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
 
         depth_intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
-        distance = depth_frame.get_distance(ix, iy)
+
+        if depth_kernel_size == 1:
+            distance = depth_frame.get_distance(ix, iy)
+        else:
+            depth_data = np.asarray(self.depth_frame.data, dtype=np.float) * depth_frame.get_units()
+            roi = ImageUtils.roi(depth_data, BoundingBox2D.from_kernel(ix, iy, depth_kernel_size))
+            distance = np.median(roi)
 
         point = rs.rs2_deproject_pixel_to_point(depth_intrinsics, [ix, iy], distance)
         return vector.obj(x=point[0], y=point[1], z=point[2])
