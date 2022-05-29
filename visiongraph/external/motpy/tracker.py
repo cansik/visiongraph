@@ -227,7 +227,6 @@ def cost_matrix_iou_feature(trackers: Sequence[SingleObjectTracker],
                             detections: Sequence[Detection],
                             feature_similarity_fn=angular_similarity,
                             feature_similarity_beta: float = None) -> Tuple[np.ndarray, np.ndarray]:
-
     # boxes
     b1 = np.array([t.box() for t in trackers])
     b2 = np.array([d.box for d in detections])
@@ -381,7 +380,8 @@ class MultiObjectTracker:
             cond3 = tracker.steps_alive >= min_steps_alive
             if cond1 and cond2 and cond3:
                 tracks.append(Track(id=tracker.id, box=tracker.box(), score=tracker.score,
-                                    class_id=tracker.class_id, reference=tracker.reference))
+                                    class_id=tracker.class_id, reference=tracker.reference,
+                                    staleness=tracker.staleness))
 
         logger.debug('active/all tracks: %d/%d' % (len(self.trackers), len(tracks)))
         return tracks
