@@ -44,8 +44,9 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
 
         results = ResultList()
         for track in active_tracks:
-            detection = track.reference
+            detection: ObjectDetectionResult = track.reference
             detection.tracking_id = track.id
+            detection.staleness = track.staleness
 
             if self.use_predicted_bounding_box:
                 detection.box = BoundingBox2D.from_array(track.box, tl_br_format=True)
@@ -55,7 +56,7 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         return results
 
     def release(self):
-        pass
+        self.tracker = None
 
     def configure(self, args):
         pass

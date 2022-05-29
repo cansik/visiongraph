@@ -39,7 +39,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
         return self.track(data)
 
     def release(self):
-        pass
+        self.tracker = None
 
     def configure(self, args):
         self.max_lost = self._get_param(args, "tracker_max_lost", self.max_lost)

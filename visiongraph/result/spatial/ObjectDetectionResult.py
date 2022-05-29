@@ -14,6 +14,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         super().__init__(class_id, class_name, score)
 
         self._tracking_id = -1
+        self._staleness = 0
         self._bounding_box = bounding_box
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
@@ -58,4 +59,14 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     def tracking_id(self, value: int):
         self._tracking_id = value
 
+    @property
+    def staleness(self) -> int:
+        return self._staleness
 
+    @staleness.setter
+    def staleness(self, value: int):
+        self._staleness = value
+
+    @property
+    def is_stale(self) -> bool:
+        return self._staleness > 0
