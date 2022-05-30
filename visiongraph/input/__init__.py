@@ -9,7 +9,7 @@ from visiongraph.util.ArgUtils import add_step_choice_argument
 
 InputProviders = {
     "video-capture": VideoCaptureInput,
-    "image": ImageInput
+    "image": ImageInput,
 }
 
 # setup dependency input providers
@@ -26,6 +26,13 @@ try:
     InputProviders["azure"] = AzureKinectInput
 except ImportError as ex:
     logging.info(f"Azure not installed: {ex}")
+
+try:
+    from visiongraph.input.CamGearInput import CamGearInput
+
+    InputProviders["camgear"] = CamGearInput
+except ImportError as ex:
+    logging.info(f"VidGear not installed: {ex}")
 
 
 def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,

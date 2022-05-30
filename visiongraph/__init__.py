@@ -247,6 +247,10 @@ except ImportError as ex:
 from .input.BaseDepthCamera import BaseDepthCamera
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
+try:
+    from .input.CamGearInput import CamGearInput
+except ImportError as ex:
+    logging.debug(f"Could not import CamGearInput")
 from .input.ImageInput import ImageInput
 try:
     from .input.RealSenseInput import RealSenseInput
