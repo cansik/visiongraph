@@ -25,13 +25,6 @@ It is also possible to only install certain packages depending on your needs:
 pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba]"
 ```
 
-### Apple Silicon (arm64)
-On Apple silicon Macs (`arm64` e.g. M1) only the following packages are currently supported.
-
-```
-realsense, openvino, mediapipe
-```
-
 ### Development
 To develop visiograph itself it is recommended to clone this repository and install the dependencies like this:
 
