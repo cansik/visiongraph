@@ -272,6 +272,10 @@ try:
     from .recorder.MoviePyVideoRecorder import MoviePyVideoRecorder
 except ImportError as ex:
     logging.debug(f"Could not import MoviePyVideoRecorder")
+try:
+    from .recorder.VidGearVideoRecorder import VidGearVideoRecorder
+except ImportError as ex:
+    logging.debug(f"Could not import VidGearVideoRecorder")
 from .result.ArUcoCameraPose import ArUcoCameraPose
 from .result.ArUcoMarkerDetection import ArUcoMarkerDetection
 from .result.BaseResult import BaseResult

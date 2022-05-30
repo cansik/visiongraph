@@ -29,6 +29,7 @@ onnxruntime-silicon; platform_system == "Darwin" and platform.machine == "arm64"
 
 # extra media
 moviepy
+vidgear[core]
 
 # extra numba
 numba

@@ -8,7 +8,7 @@ from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 
 class MoviePyVideoRecorder(BaseFrameRecorder):
-    def __init__(self, width: int, height: int, output_path: str = "video.mp4", fps: int = 30):
+    def __init__(self, width: int, height: int, output_path: str = "video.mp4", fps: float = 30):
         super().__init__()
         self.output_path = output_path
         self.fps = fps

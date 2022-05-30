@@ -16,7 +16,7 @@ def main():
     pipeline = vg.create_graph(name="Face Detection", handle_signals=True) \
         .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.CentroidTracker(), vg.custom(on_results_ready)),
                image=vg.passthrough()) \
-        .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
+        .then(vg.ResultAnnotator(image="image"), vg.VidGearVideoRecorder("media/video.mp4"), vg.ImagePreview()) \
         .build()
     pipeline.configure(args)
 

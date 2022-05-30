@@ -1,19 +1,29 @@
 from typing import Optional
 
-import cv2
 import numpy as np
+from vidgear.gears import WriteGear
 
 from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
 
 
-class CV2VideoRecorder(BaseFrameRecorder):
-    def __init__(self, width: Optional[int], height: Optional[int], output_path: str = "video.mp4", fps: float = 30):
+class VidGearVideoRecorder(BaseFrameRecorder):
+    def __init__(self, output_path: str = "video.mp4",
+                 width: Optional[int] = None, height: Optional[int] = None, fps: float = 30):
         super().__init__()
         self.output_path = output_path
         self.fps = fps
         self.width = width
         self.height = height
-        self._writer: Optional[cv2.VideoWriter] = None
+        self._writer: Optional[WriteGear] = None
+
+        self.output_params = {
+            "-vcodec": "libx264",
+            "-pix_fmt": "yuv420p",
+            "-crf": 23,
+            "-tune": "zerolatency",
+            "-input_framerate": self.fps,
+            "-disable_force_termination": True
+        }
 
     def open(self):
         if self.width is not None or self.height is not None:
@@ -30,9 +40,8 @@ class CV2VideoRecorder(BaseFrameRecorder):
         self._writer.write(image)
 
     def close(self):
-        self._writer.release()
+        self._writer.close()
         super().close()
 
     def _init_writer(self):
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-        self._writer = cv2.VideoWriter(self.output_path, fourcc, self.fps, (self.width, self.height))
+        self._writer = WriteGear(self.output_path, **self.output_params)
