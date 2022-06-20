@@ -46,6 +46,7 @@ try:
         MobileNetV2PoseEstimatorConfig
     from visiongraph.estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimator, \
         EfficientPoseEstimatorConfig
+    from visiongraph.estimator.spatial.pose.LitePoseEstimator import LitePoseEstimator, LitePoseEstimatorConfig
 
     PoseEstimators["openpose"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32)
     PoseEstimators["openpose-int8"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_INT8)
@@ -64,6 +65,9 @@ try:
                                                     EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_LITE_FP32)
     PoseEstimators["efficient-pose-rt"] = partial(EfficientPoseEstimator.create,
                                                   EfficientPoseEstimatorConfig.EFFICIENT_POSE_RT_FP32)
+
+    PoseEstimators["litepose"] = partial(LitePoseEstimator.create,
+                                                  LitePoseEstimatorConfig.LitePose_S_COCO_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 

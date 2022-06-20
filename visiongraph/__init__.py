@@ -166,6 +166,14 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import LiteHRNetPoseEstimator")
 try:
+    from .estimator.spatial.pose.LitePoseEstimator import LitePoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import LitePoseEstimator")
+try:
+    from .estimator.spatial.pose.LitePoseEstimator import LitePoseEstimatorConfig
+except ImportError as ex:
+    logging.debug(f"Could not import LitePoseEstimatorConfig")
+try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 except ImportError as ex:
     logging.debug(f"Could not import MediaPipePoseEstimator")

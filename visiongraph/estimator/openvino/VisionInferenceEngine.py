@@ -9,6 +9,7 @@ from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 
 PADDING_BOX_OUTPUT_NAME = "padding-box"
 
+
 class VisionInferenceEngine:
     def __init__(self, model: Asset, weights: Asset,
                  flip_channels: bool = True, normalize: bool = False, padding: bool = False,
