@@ -65,7 +65,7 @@ class FPSTracer:
     def update(self):
         # update fps
         current_time = time.time()
-        self.fps = 1 / max(1, (current_time - self.prev_frame_time))
+        self.fps = 1 / max(0.0001, (current_time - self.prev_frame_time))
         self.prev_frame_time = current_time
 
         # update smooth
