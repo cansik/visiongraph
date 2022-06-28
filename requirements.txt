@@ -20,8 +20,9 @@ openvino-arm>=2022.1.0; platform_system == "Darwin" and platform.machine == "arm
 openvino>=2022.1.0; platform_system != "Darwin" and platform.machine != "arm64"
 
 # extra mediapipe
-mediapipe-silicon>=0.8.9; platform_system == "Darwin" and platform.machine == "arm64"
-mediapipe>=0.8.9; platform_system != "Darwin" and platform.machine != "arm64"
+mediapipe-silicon>=0.8.10; platform_system == "Darwin" and platform.machine == "arm64"
+mediapipe>=0.8.10; platform_system != "Darwin" and platform.machine != "arm64"
+protobuf<=3.20.1
 
 # extra onnx
 onnxruntime; platform_system != "Darwin" and platform.machine != "arm64"
@@ -33,3 +34,4 @@ vidgear[core]
 
 # extra numba
 numba
+numpy<=1.22.4
