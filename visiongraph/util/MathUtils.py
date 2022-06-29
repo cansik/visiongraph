@@ -7,12 +7,12 @@ import cv2
 def transform_coordinates(x: float, y: float, rotate: Optional[int], flip: Optional[int]) -> Tuple[float, float]:
     nx, ny = x, y
 
-    if rotate == cv2.ROTATE_90_CLOCKWISE:
-        nx = y if flip != 1 else 1.0 - y
-        ny = 1.0 - x if flip != 1 else x
-    elif rotate == cv2.ROTATE_90_COUNTERCLOCKWISE:
-        nx = 1.0 - y if flip != 1 else y
-        ny = x if flip != 1 else 1.0 - x
+    if rotate == cv2.ROTATE_90_CLOCKWISE or (rotate == cv2.ROTATE_90_COUNTERCLOCKWISE and flip == 1):
+        nx = y
+        ny = 1.0 - x
+    elif rotate == cv2.ROTATE_90_COUNTERCLOCKWISE or (rotate == cv2.ROTATE_90_CLOCKWISE and flip == 1):
+        nx = 1.0 - y
+        ny = x
     elif rotate == cv2.ROTATE_180:
         nx = 1.0 - x
         ny = 1.0 - y
