@@ -25,8 +25,8 @@ mediapipe>=0.8.10; platform_system != "Darwin" and platform.machine != "arm64"
 protobuf<=3.20.1
 
 # extra onnx
-onnxruntime; platform_system != "Darwin" and platform.machine != "arm64"
-onnxruntime-silicon; platform_system == "Darwin" and platform.machine == "arm64"
+# extra onnx
+onnxruntime>=1.12.0
 
 # extra media
 moviepy
