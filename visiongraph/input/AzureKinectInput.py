@@ -37,9 +37,13 @@ class AzureKinectInput(BaseDepthCamera):
         self.sync_frames: bool = True
         self.align_frames: bool = False
 
-        self.min_clipping: Optional[int] = 0
-        self.max_clipping: Optional[int] = 5000
-        self.color_map: Optional[int] = cv2.COLORMAP_JET
+        self.depth_min_clipping: Optional[int] = 0
+        self.depth_max_clipping: Optional[int] = 5000
+        self.depth_color_map: Optional[int] = cv2.COLORMAP_JET
+
+        self.ir_min_clipping: Optional[int] = 0
+        self.ir_max_clipping: Optional[int] = 5000
+        self.ir_color_map: Optional[int] = None
 
         self.device: Optional[PyK4A] = None
         self.capture: Optional[PyK4ACapture] = None
@@ -115,11 +119,11 @@ class AzureKinectInput(BaseDepthCamera):
 
         if self.enable_depth and self.use_depth_as_input:
             depth = self.capture.depth
-            image = self._colorize(depth, (self.min_clipping, self.max_clipping), self.color_map)
+            image = self._colorize(depth, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
         else:
             if self.use_infrared:
                 ir_frame = self.capture.transformed_ir if self.align_frames else self.capture.ir
-                image = self._colorize(ir_frame, (None, None), None)
+                image = self._colorize(ir_frame, (self.ir_min_clipping, self.ir_max_clipping), self.ir_color_map)
             else:
                 image = self.capture.transformed_color if self.align_frames else self.capture.color
                 if image is not None:
@@ -202,7 +206,7 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def depth_map(self) -> np.ndarray:
-        return self._colorize(self.capture.depth, (self.min_clipping, self.max_clipping), self.color_map)
+        return self._colorize(self.capture.depth, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
 
     @property
     def depth_buffer(self) -> np.ndarray:
