@@ -58,6 +58,8 @@ class RealSenseInput(BaseDepthCamera):
 
         self.config: Optional[rs.config] = None
 
+        self.frame_read_timeout: int = 5000
+
     def setup(self):
         ctx = rs.context()
 
@@ -139,12 +141,12 @@ class RealSenseInput(BaseDepthCamera):
         self.pipeline.stop()
 
     def read(self) -> (int, Optional[np.ndarray]):
-        success, self.frames = self.pipeline.try_wait_for_frames(timeout_ms=1000)
+        success, self.frames = self.pipeline.try_wait_for_frames(timeout_ms=self.frame_read_timeout)
         time_stamp = current_millis()
 
         if not success:
             if self.device.is_playback():
-                success, self.frames = self.pipeline.try_wait_for_frames()
+                success, self.frames = self.pipeline.try_wait_for_frames(timeout_ms=self.frame_read_timeout)
                 if not success:
                     raise Exception("RealSense: Bag frame could not be read from device.")
                 else:
