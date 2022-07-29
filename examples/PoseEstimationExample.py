@@ -40,7 +40,7 @@ class PoseEstimationExample(BaseGraph):
         self.fps_tracer.update()
         if not args.performance:
             cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
-                        (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2, cv2.LINE_AA)
+                        (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
 
             cv2.imshow("Pose Estimator", frame)
             if cv2.waitKey(15) & 0xFF == 27:
