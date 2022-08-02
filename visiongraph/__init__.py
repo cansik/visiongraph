@@ -237,6 +237,14 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import SelfieSegmentationModel")
 try:
+    from .estimator.spatial.segmentation.YolactEstimator import YolactConfig
+except ImportError as ex:
+    logging.debug(f"Could not import YolactConfig")
+try:
+    from .estimator.spatial.segmentation.YolactEstimator import YolcatEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import YolcatEstimator")
+try:
     from .estimator.translation.DeblurGANv2 import DeblurGANv2
 except ImportError as ex:
     logging.debug(f"Could not import DeblurGANv2")

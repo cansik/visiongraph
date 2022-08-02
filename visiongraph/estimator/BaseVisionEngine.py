@@ -64,10 +64,10 @@ class BaseVisionEngine(ABC):
         if input_channels == 3 and flip_channels:
             in_frame = in_frame.transpose((2, 0, 1))
 
-        in_frame = in_frame.reshape((1, channels, height, width))
+        in_frame = in_frame.reshape((1, channels, height, width)).astype(np.float32)
 
         if normalize:
-            in_frame = in_frame.astype(np.float32) / 255.0
+            in_frame = in_frame / 255.0
 
         return in_frame, bbox.scale(1.0 / width, 1.0 / height)
 

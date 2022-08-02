@@ -4,7 +4,7 @@ import visiongraph as vg
 
 def main():
     pipeline = vg.create_graph(name="Instance Segmentation", handle_signals=True) \
-        .apply(ssd=vg.sequence(vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8)),
+        .apply(ssd=vg.sequence(vg.YolcatEstimator.create()),
                image=vg.passthrough()) \
         .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
         .build()
