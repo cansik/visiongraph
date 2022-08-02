@@ -19,6 +19,7 @@ from .dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from .dsp.VectorNumpySmoothFilter import VectorNumpySmoothFilter
 from .estimator.BaseClassifier import BaseClassifier
 from .estimator.BaseEstimator import BaseEstimator
+from .estimator.BaseVisionEngine import BaseVisionEngine
 from .estimator.ChainEstimator import ChainEstimator
 from .estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from .estimator.VisionClassifier import VisionClassifier
@@ -32,6 +33,10 @@ try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNInpainter
 except ImportError as ex:
     logging.debug(f"Could not import GMCNNInpainter")
+try:
+    from .estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
+except ImportError as ex:
+    logging.debug(f"Could not import ONNXVisionEngine")
 try:
     from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 except ImportError as ex:
