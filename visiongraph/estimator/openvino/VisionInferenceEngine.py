@@ -1,14 +1,10 @@
-from typing import Dict, Optional, List, Any, Sequence, Tuple
+from typing import Dict, Optional, Any, Sequence
 
-import cv2
 import numpy as np
 from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
-from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-
-PADDING_BOX_OUTPUT_NAME = "padding-box"
 
 
 class VisionInferenceEngine(BaseVisionEngine):
