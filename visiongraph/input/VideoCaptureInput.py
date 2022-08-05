@@ -1,19 +1,18 @@
+import logging
 import time
 from argparse import ArgumentParser, Namespace, ArgumentError
 from typing import Optional, Union, Tuple
 
+import cv2
 import numpy as np
 
 from visiongraph.input.BaseInput import BaseInput
-import cv2
-import logging
-
 from visiongraph.util.TimeUtils import current_millis
 
 
 class VideoCaptureInput(BaseInput):
     def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
-                 loop: bool = True, fps_lock: bool = True):
+                 loop: bool = True, fps_lock: bool = False):
         super().__init__()
         self.channel = channel
         self.input_skip = input_skip
@@ -26,6 +25,9 @@ class VideoCaptureInput(BaseInput):
         self._no_frame_max = 3
 
     def setup(self):
+        if not str(self.channel).isnumeric():
+            self.fps_lock = True
+
         self._setup_cap()
 
     def release(self):

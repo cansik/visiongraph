@@ -10,7 +10,7 @@ from visiongraph.input.VideoCaptureInput import VideoCaptureInput
 
 class CamGearInput(VideoCaptureInput):
     def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
-                 loop: bool = True, fps_lock: bool = True, stream_mode: bool = False):
+                 loop: bool = True, fps_lock: bool = False, stream_mode: bool = False):
         super().__init__(channel, input_skip, loop, fps_lock)
 
         self.stream_mode: bool = stream_mode

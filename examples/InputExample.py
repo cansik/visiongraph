@@ -8,6 +8,7 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
+from visiongraph.util.TimeUtils import FPSTracer
 
 
 class InputExample(BaseGraph):
@@ -16,6 +17,8 @@ class InputExample(BaseGraph):
         super().__init__()
         self.input = input
         self.add_nodes(self.input)
+
+        self.fps_tracer = FPSTracer()
 
     def _process(self):
         ts, frame = self.input.read()
@@ -27,8 +30,12 @@ class InputExample(BaseGraph):
             depth = self.input.distance(0.5, 0.5)
             print(f"{depth:.2f}m")
 
+        self.fps_tracer.update()
+        cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
+                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
+
         cv2.imshow("Input Example", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
     @staticmethod
