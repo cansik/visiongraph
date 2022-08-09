@@ -85,7 +85,7 @@ class AzureKinectInput(BaseDepthCamera):
                 config.color_resolution = self.color_resolution
 
             config.color_format = self.color_format
-            config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[self.fps]
+            config.camera_fps = AzureKinectInput._FPSToK4AFPSMapping[int(self.fps)]
             config.depth_mode = pyk4a.DepthMode.OFF
             config.synchronized_images_only = False
 

@@ -97,15 +97,16 @@ class RealSenseInput(BaseDepthCamera):
 
         if self.use_infrared:
             self.config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
-                                      self.infrared_format, self.fps)
+                                      self.infrared_format, int(self.fps))
             self.align = rs.align(rs.stream.infrared)
         else:
-            self.config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, self.fps)
+            self.config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, int(self.fps))
             self.align = rs.align(rs.stream.color)
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            self.config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, self.fps)
+            self.config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height,
+                                      self.depth_format, int(self.fps))
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         self.profile = self.pipeline.start(self.config)
