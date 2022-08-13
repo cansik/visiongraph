@@ -1,7 +1,7 @@
 import json
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Any
 
 import numpy as np
 import pyrealsense2 as rs
@@ -51,6 +51,9 @@ class RealSenseInput(BaseDepthCamera):
         self.bag_offline_playback = True
 
         self.json_config_path: Optional[str] = None
+
+        self.auto_exposure_limit: Optional[int] = None
+        self.auto_gain_limit: Optional[int] = None
 
         # filter
         self.depth_filters: List[rs.filter] = []
@@ -109,18 +112,32 @@ class RealSenseInput(BaseDepthCamera):
                                       self.depth_format, int(self.fps))
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
+        # set options before startup
+        device = self._find_current_device(ctx, self.selected_serial)
+        depth_sensor: rs.depth_stereo_sensor = device.first_depth_sensor()
+
+        if depth_sensor is not None:
+            def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
+                if value is not None:
+                    return float(value)
+
+                option_range: rs.option_range = depth_sensor.get_option_range(option)
+                return option_range.max
+
+            self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
+                            value=get_option_max_or_value(rs.option.auto_exposure_limit, self.auto_exposure_limit))
+            self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
+                            value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
+
+        # start up device
         self.profile = self.pipeline.start(self.config)
         self.device = self.profile.get_device()
-
-        # todo: fix option setting for depth sensor
-        # set emitter state
         depth_sensor = self.device.first_depth_sensor()
-        if depth_sensor.supports(rs.option.emitter_enabled) \
-                and not depth_sensor.is_option_read_only(rs.option.emitter_enabled):
-            value = 0 if self.disable_emitter else 1
-            depth_sensor.set_option(rs.option.emitter_enabled, value)
 
-        # set image sensor
+        # set emitter state
+        self.set_option(rs.option.emitter_enabled, 0 if self.disable_emitter else 1, depth_sensor)
+
+        # set default image sensor
         self.image_sensor = self.device.first_depth_sensor() if self.use_infrared else self.device.first_color_sensor()
 
         # applying other options
@@ -201,6 +218,22 @@ class RealSenseInput(BaseDepthCamera):
         iy = round(constrain(iy, upper=depth_frame.height - 1))
 
         return ix, iy
+
+    def _find_current_device(self, ctx: rs.context, serial: Optional[str] = None) -> rs.device:
+        devices: List[rs.device] = ctx.devices
+
+        if len(devices) == 0:
+            raise Exception("No RealSense device is connected.")
+
+        for device in devices:
+            if serial is None:
+                return device
+
+            device_serial = device.get_info(rs.camera_info.serial_number)
+            if device_serial == serial:
+                return device
+
+        raise Exception(f"Device with serial {serial} could not be found!")
 
     def distance(self, x: float, y: float) -> float:
         depth_frame = self.depth_frame
@@ -311,20 +344,26 @@ class RealSenseInput(BaseDepthCamera):
         ctx = rs.context()
         return len(ctx.query_devices())
 
-    def get_option(self, option: rs.option) -> float:
-        if self.image_sensor.supports(option):
-            return self.image_sensor.get_option(option)
+    def get_option(self, option: rs.option, sensor: Optional[rs.sensor] = None) -> float:
+        if sensor is None:
+            sensor = self.image_sensor
+
+        if sensor.supports(option):
+            return sensor.get_option(option)
         else:
             logging.warning(f"The option {option} is not supported!")
             return 0.0
 
-    def set_option(self, option: rs.option, value: float):
-        if self.image_sensor.supports(option):
-            if self.image_sensor.is_option_read_only(option):
+    def set_option(self, option: rs.option, value: float, sensor: Optional[rs.sensor] = None):
+        if sensor is None:
+            sensor = self.image_sensor
+
+        if sensor.supports(option):
+            if sensor.is_option_read_only(option):
                 logging.warning(f"The option {option} is read-only!")
                 return
 
-            self.image_sensor.set_option(option, float(value))
+            sensor.set_option(option, float(value))
         else:
             logging.warning(f"The option {option} is not supported!")
 
@@ -392,6 +431,12 @@ class RealSenseInput(BaseDepthCamera):
 
         self.json_config_path = args.rs_json
 
+        if args.rs_auto_exposure_limit is not None:
+            self.auto_exposure_limit = int(args.rs_auto_exposure_limit)
+
+        if args.rs_auto_gain_limit is not None:
+            self.auto_gain_limit = int(args.rs_auto_gain_limit)
+
         # filter enabler
         if args.rs_filter is not None:
             self._filters_to_enable = args.rs_filter
@@ -411,6 +456,8 @@ class RealSenseInput(BaseDepthCamera):
                             help="Disable RealSense IR emitter.")
         parser.add_argument("--rs-bag-offline", action="store_true",
                             help="Disable realtime bag playback.")
+        parser.add_argument("--rs-auto-exposure-limit", default=None, type=int, help="Auto exposure limit (ms).")
+        parser.add_argument("--rs-auto-gain-limit", default=None, type=int, help="Auto gain limit (16-248).")
         add_dict_choice_argument(parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter",
                                  default=None, nargs="+")
         add_enum_choice_argument(parser, RealSenseColorScheme, "--rs-color-scheme",
