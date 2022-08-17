@@ -1,0 +1,37 @@
+import cv2
+
+# https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gga023786be1ee68a9105bf2e48c700294dacf10e9692c4166f74de62b7d00c377d0
+VideoCaptureBackend = {
+    "any": cv2.CAP_ANY,
+    "vfw": cv2.CAP_VFW,
+    "v4l": cv2.CAP_V4L,
+    "v4l2": cv2.CAP_V4L2,
+    "firewire": cv2.CAP_FIREWIRE,
+    "fireware": cv2.CAP_FIREWARE,
+    "ieee1394": cv2.CAP_IEEE1394,
+    "dc1394": cv2.CAP_DC1394,
+    "cmu1394": cv2.CAP_CMU1394,
+    "qt": cv2.CAP_QT,
+    "unicap": cv2.CAP_UNICAP,
+    "dshow": cv2.CAP_DSHOW,
+    "pvapi": cv2.CAP_PVAPI,
+    "openni": cv2.CAP_OPENNI,
+    "openni_asus": cv2.CAP_OPENNI_ASUS,
+    "android": cv2.CAP_ANDROID,
+    "xiapi": cv2.CAP_XIAPI,
+    "avfoundation": cv2.CAP_AVFOUNDATION,
+    "giganetix": cv2.CAP_GIGANETIX,
+    "msmf": cv2.CAP_MSMF,
+    "winrt": cv2.CAP_WINRT,
+    "intelperc": cv2.CAP_INTELPERC,
+    "openni2": cv2.CAP_OPENNI2,
+    "openni2_asus": cv2.CAP_OPENNI2_ASUS,
+    "gphoto2": cv2.CAP_GPHOTO2,
+    "gstreamer": cv2.CAP_GSTREAMER,
+    "ffmpeg": cv2.CAP_FFMPEG,
+    "images": cv2.CAP_IMAGES,
+    "aravis": cv2.CAP_ARAVIS,
+    "opencv_mjpeg": cv2.CAP_OPENCV_MJPEG,
+    "intel_mfx": cv2.CAP_INTEL_MFX,
+    "xine": cv2.CAP_XINE
+}

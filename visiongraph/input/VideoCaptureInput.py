@@ -7,6 +7,8 @@ import cv2
 import numpy as np
 
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.model.types.VideoCaptureBackend import VideoCaptureBackend
+from visiongraph.util.ArgUtils import add_dict_choice_argument
 from visiongraph.util.TimeUtils import current_millis
 
 
@@ -19,6 +21,7 @@ class VideoCaptureInput(BaseInput):
         self.loop = loop
         self.fps_lock = fps_lock
         self._cap: Optional[cv2.VideoCapture] = None
+        self.capture_backend: VideoCaptureBackend = cv2.CAP_ANY
 
         self._last_read_time = 0
         self._no_frame_count = 0
@@ -79,6 +82,7 @@ class VideoCaptureInput(BaseInput):
             self.channel = args.channel
 
         self.input_skip = args.input_skip
+        self.capture_backend = args.input_backend
 
     @staticmethod
     def add_params(parser: ArgumentParser):
@@ -89,13 +93,15 @@ class VideoCaptureInput(BaseInput):
                                 help="Input device channel (camera id, video path, image sequence).")
             parser.add_argument("--input-skip", type=int, default=-1,
                                 help="If set the input will be skipped to the value in milliseconds.")
+            add_dict_choice_argument(parser, VideoCaptureBackend, "--input-backend",
+                                     help="VideoCapture API backends identifier.", default="any")
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return
             raise ex
 
     def _setup_cap(self):
-        self._cap = cv2.VideoCapture(self.channel)
+        self._cap = cv2.VideoCapture(self.channel, self.capture_backend)
 
         if not self._is_cap_open():
             logging.warning("Could not open VideoCapture, please check if channel is correct.")
