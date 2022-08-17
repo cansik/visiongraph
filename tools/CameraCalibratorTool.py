@@ -16,7 +16,7 @@ class CameraCalibratorTool(BaseGraph):
         super().__init__()
         self.input = input
 
-        self.max_samples = 100
+        self.max_samples = 30
         self.network = CameraChessboardCalibrator(max_samples=self.max_samples)
 
         self.add_nodes(self.input, self.network)
@@ -62,7 +62,7 @@ def main():
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Camera Pose Example", description="Example Pipeline")
+    parser = argparse.ArgumentParser("Camera Calibrator Tool", description="Example Pipeline")
     add_logging_parameter(parser)
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group)

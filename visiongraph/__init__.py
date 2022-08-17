@@ -24,6 +24,7 @@ from .estimator.ChainEstimator import ChainEstimator
 from .estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from .estimator.VisionClassifier import VisionClassifier
 from .estimator.VisionEstimator import VisionEstimator
+from .estimator.calculator.UndistortionCalculator import UndistortionCalculator
 from .estimator.inpaint.BaseInpainter import BaseInpainter
 try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNConfig
