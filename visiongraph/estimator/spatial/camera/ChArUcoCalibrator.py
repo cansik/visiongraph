@@ -90,6 +90,10 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         if ret:
             intrinsics = CameraIntrinsics(camera_matrix, distortion_coefficients.flatten())
             self.pose_result = CameraPoseResult(intrinsics)
+
+            error = float(sum(per_view_errors) / len(per_view_errors))
+            print(f"Error: {error:.4f}")
+
             return self.pose_result
 
         logging.warning(f"Could not calibrate camera with {self.sample_count} samples.")

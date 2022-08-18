@@ -2,6 +2,7 @@ import argparse
 from argparse import ArgumentParser
 
 import cv2
+import numpy as np
 
 from visiongraph.estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
 from visiongraph.estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
@@ -51,12 +52,16 @@ class CameraCalibratorTool(BaseGraph):
             if result is not None:
                 intrinsics = result.intrinsics
 
+                np.set_printoptions(suppress=True)
+
                 print("Intrinsics Matrix:")
                 print(intrinsics.intrinsic_matrix)
 
                 print()
                 print("Distortion Coefficients:")
                 print(intrinsics.distortion_coefficients)
+
+                np.set_printoptions(suppress=False)
 
                 intrinsics.save(self.output_path)
 
