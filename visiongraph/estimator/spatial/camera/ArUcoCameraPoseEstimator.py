@@ -23,7 +23,7 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         self.aruco_config: int = aruco_config
 
         self.marker_size_in_m: float = marker_length_in_m
-        self.marker_height_in_m: float = marker_height_in_m
+        # self.marker_height_in_m: float = marker_height_in_m
 
         self.aruco_dict: Optional[Any] = None
         self.aruco_params: Optional[Any] = None
@@ -54,7 +54,8 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
                                       vector.obj(x=bottomLeft[0], y=bottomLeft[1]))
 
         # estimate pose
-        rotation_vector, translation_vector, _ = cv2.aruco.estimatePoseSingleMarkers([marker_corner], 0.05,
+        rotation_vector, translation_vector, _ = cv2.aruco.estimatePoseSingleMarkers([marker_corner],
+                                                                                     self.marker_size_in_m,
                                                                                      self.camera_matrix,
                                                                                      self.fisheye_distortion)
 
