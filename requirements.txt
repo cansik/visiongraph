@@ -1,6 +1,6 @@
 # base packages
 wheel
-opencv-contrib-python
+opencv-python
 numpy<=1.22.4
 requests
 tqdm
@@ -33,3 +33,6 @@ vidgear[core]
 
 # extra numba
 numba
+
+# extra opencv-contrib
+opencv-contrib-python

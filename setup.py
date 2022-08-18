@@ -47,7 +47,8 @@ class GenerateInitPy(distutils.cmd.Command):
         "onnxruntime",
         "moviepy",
         "vidgear",
-        "numba"
+        "numba",
+        "aruco"
     }
 
     module_with_methods = {
