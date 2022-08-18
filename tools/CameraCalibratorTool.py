@@ -85,7 +85,7 @@ class CameraCalibratorTool(BaseGraph):
         self.calibrator.columns = c
         self.calibrator.max_samples = args.max_samples
         self.wait_time = int(args.wait_time)
-        self.output_path = args.output_path
+        self.output_path = args.calibration
 
     @staticmethod
     def add_params(parser: ArgumentParser):
@@ -93,7 +93,7 @@ class CameraCalibratorTool(BaseGraph):
                             metavar=("rows", "columns"), help="Calibration board size.")
         parser.add_argument("--max-samples", type=int, default=30, help="How many calibration samples are gathered.")
         parser.add_argument("--wait-time", type=int, default=1000, help="How long to wait between capture (ms).")
-        parser.add_argument("--output-path", type=str, default="calibration.json",
+        parser.add_argument("--calibration", type=str, default="calibration.json",
                             help="Path where the calibration is stored.")
 
 
