@@ -92,7 +92,9 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import YOLODetector")
 from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
-from .estimator.spatial.camera.CameraChessboardCalibrator import CameraChessboardCalibrator
+from .estimator.spatial.camera.BoardCameraCalibrator import BoardCameraCalibrator
+from .estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
+from .estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
 try:
     from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
 except ImportError as ex:

@@ -1,9 +1,10 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Any
+from typing import Optional
 
 import cv2
 import numpy as np
 import vector
+from cv2 import aruco
 
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.ArUcoCameraPose import ArUcoCameraPose
@@ -14,27 +15,25 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
     def __init__(self,
                  camera_matrix: np.ndarray,
                  fisheye_distortion: np.ndarray,
-                 aruco_config: int = cv2.aruco.DICT_6X6_50,
-                 marker_length_in_m: float = 0.1,
-                 marker_height_in_m: float = 1.5):
+                 aruco_config: int = aruco.DICT_6X6_50,
+                 marker_length_in_m: float = 0.1):
         self.camera_matrix = camera_matrix
         self.fisheye_distortion = fisheye_distortion
 
         self.aruco_config: int = aruco_config
 
         self.marker_size_in_m: float = marker_length_in_m
-        # self.marker_height_in_m: float = marker_height_in_m
 
-        self.aruco_dict: Optional[Any] = None
-        self.aruco_params: Optional[Any] = None
+        self.aruco_dict: Optional[int] = None
+        self.aruco_params: Optional[aruco.DetectorParameters] = None
 
     def setup(self):
-        self.aruco_dict = cv2.aruco.Dictionary_get(self.aruco_config)
-        self.aruco_params = cv2.aruco.DetectorParameters_create()
+        self.aruco_dict = aruco.Dictionary_get(self.aruco_config)
+        self.aruco_params = aruco.DetectorParameters_create()
 
     def process(self, data: np.ndarray) -> Optional[ArUcoCameraPose]:
         # find ArUco markers
-        (corners, ids, rejected) = cv2.aruco.detectMarkers(data, self.aruco_dict, parameters=self.aruco_params)
+        (corners, ids, rejected) = aruco.detectMarkers(data, self.aruco_dict, parameters=self.aruco_params)
 
         if len(corners) == 0:
             return None
@@ -54,14 +53,14 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
                                       vector.obj(x=bottomLeft[0], y=bottomLeft[1]))
 
         # estimate pose
-        rotation_vector, translation_vector, _ = cv2.aruco.estimatePoseSingleMarkers([marker_corner],
-                                                                                     self.marker_size_in_m,
-                                                                                     self.camera_matrix,
-                                                                                     self.fisheye_distortion)
+        rotation_vector, translation_vector, _ = aruco.estimatePoseSingleMarkers([marker_corner],
+                                                                                 self.marker_size_in_m,
+                                                                                 self.camera_matrix,
+                                                                                 self.fisheye_distortion)
 
         cv2.drawFrameAxes(data, self.camera_matrix, self.fisheye_distortion, rotation_vector, translation_vector, 0.1)
 
-        # todo: maybe flip the position parameter
+        #
         return ArUcoCameraPose(position=vector.obj(x=translation_vector[0, 0, 0],
                                                    y=translation_vector[0, 0, 1],
                                                    z=translation_vector[0, 0, 2]),

@@ -5,7 +5,7 @@ import cv2
 
 from visiongraph import current_millis
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.camera.CameraChessboardCalibrator import CameraChessboardCalibrator
+from visiongraph.estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -18,7 +18,7 @@ class CameraCalibratorTool(BaseGraph):
         self.input = input
 
         self.max_samples = 30
-        self.network = CameraChessboardCalibrator(max_samples=self.max_samples)
+        self.network = ChessboardCalibrator(6, 7, max_samples=self.max_samples)
 
         self.wait_time = 1000
         self.last_ts = 0

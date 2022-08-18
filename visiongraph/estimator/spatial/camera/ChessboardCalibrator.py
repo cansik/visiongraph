@@ -5,20 +5,17 @@ from typing import Optional, Tuple
 import cv2
 import numpy as np
 
-from visiongraph.estimator.VisionEstimator import VisionEstimator
+from visiongraph.estimator.spatial.camera.BoardCameraCalibrator import BoardCameraCalibrator
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
-class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
-    def __init__(self, max_samples: int = -1):
-        self.max_samples = max_samples
+class ChessboardCalibrator(BoardCameraCalibrator):
+    def __init__(self, rows: int, columns: int, max_samples: int = -1):
+        super().__init__(rows, columns, max_samples)
 
         # termination criteria
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
-
-        self.rows = 5
-        self.columns = 6
 
         self.objp = np.zeros((self.rows * self.columns, 3), np.float32)
         self.objp[:, :2] = np.mgrid[0:self.rows, 0:self.columns].T.reshape(-1, 2)
