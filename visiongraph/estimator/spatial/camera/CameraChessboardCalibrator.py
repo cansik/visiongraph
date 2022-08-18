@@ -17,8 +17,11 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
         # termination criteria
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
-        self.objp = np.zeros((6 * 7, 3), np.float32)
-        self.objp[:, :2] = np.mgrid[0:7, 0:6].T.reshape(-1, 2)
+        self.rows = 5
+        self.columns = 6
+
+        self.objp = np.zeros((self.rows * self.columns, 3), np.float32)
+        self.objp[:, :2] = np.mgrid[0:self.rows, 0:self.columns].T.reshape(-1, 2)
 
         self.objpoints = []  # 3d point in real world space
         self.imgpoints = []  # 2d points in image plane.
@@ -37,7 +40,7 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
         gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
 
         # Find the chess board corners
-        ret, corners = cv2.findChessboardCorners(gray, (7, 6), None)
+        ret, corners = cv2.findChessboardCorners(gray, (self.rows, self.columns), None)
 
         if ret:
             self.objpoints.append(self.objp)
@@ -47,7 +50,7 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
             self.image_size = gray.shape[::-1]
 
             # annotate
-            cv2.drawChessboardCorners(data, (7, 6), corners2, ret)
+            cv2.drawChessboardCorners(data, (self.rows, self.columns), corners2, ret)
 
         if 0 < self.max_samples <= self.sample_count:
             return self.calibrate()
@@ -62,6 +65,14 @@ class CameraChessboardCalibrator(VisionEstimator[Optional[CameraPoseResult]]):
             logging.info("Camera calibrated")
             intrinsics = CameraIntrinsics(mtx, dist)
             self.pose_result = CameraPoseResult(intrinsics)
+
+            mean_error = 0
+            for i in range(len(self.objpoints)):
+                imgpoints2, _ = cv2.projectPoints(self.objpoints[i], rvecs[i], tvecs[i], mtx, dist)
+                error = cv2.norm(self.imgpoints[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
+                mean_error += error
+            print(f"Total error: {mean_error / len(self.objpoints)}")
+
             return self.pose_result
 
         logging.warning(f"Could not calibrate camera with {self.sample_count} samples.")
