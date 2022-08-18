@@ -11,7 +11,7 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class ChessboardCalibrator(BoardCameraCalibrator):
-    def __init__(self, rows: int, columns: int, max_samples: int = -1):
+    def __init__(self, columns: int, rows: int, max_samples: int = -1):
         super().__init__(rows, columns, max_samples)
 
         # termination criteria

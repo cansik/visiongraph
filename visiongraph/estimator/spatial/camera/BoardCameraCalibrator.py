@@ -8,7 +8,7 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
-    def __init__(self, rows: int, columns: int, max_samples: int = -1):
+    def __init__(self, columns: int, rows: int, max_samples: int = -1):
         self.max_samples = max_samples
 
         self.rows = rows

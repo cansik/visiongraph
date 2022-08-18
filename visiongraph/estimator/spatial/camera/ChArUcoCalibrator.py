@@ -12,7 +12,7 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class ChArUcoCalibrator(BoardCameraCalibrator):
-    def __init__(self, rows: int, columns: int,
+    def __init__(self, columns: int, rows: int,
                  marker_length_in_m: float = 0.23,
                  square_length_in_m: float = 0.3,
                  aruco_config: int = aruco.DICT_4X4_50,
