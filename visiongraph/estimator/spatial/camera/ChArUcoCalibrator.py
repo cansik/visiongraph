@@ -13,13 +13,13 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 class ChArUcoCalibrator(BoardCameraCalibrator):
     def __init__(self, rows: int, columns: int,
-                 marker_length_in_m: float,
-                 square_length_in_m: float,
+                 marker_length_in_m: float = 0.23,
+                 square_length_in_m: float = 0.3,
                  aruco_config: int = aruco.DICT_4X4_50,
-                 max_samples: int = -1, ):
+                 max_samples: int = -1):
         super().__init__(rows, columns, max_samples)
 
-        self.marker_length_in_m = marker_length_in_m
+        self.marker_length_in_m: float = marker_length_in_m
         self.square_length_in_m = square_length_in_m
         self.aruco_config = aruco_config
 
@@ -35,12 +35,10 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.pose_result: Optional[CameraPoseResult] = None
 
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.00001)
-        self._sample_count = 0
 
     def setup(self):
         self.corners = []
         self.ids = []
-        self._sample_count = 0
 
         self.aruco_dict = aruco.Dictionary_get(self.aruco_config)
         self.aruco_params = aruco.DetectorParameters_create()
@@ -61,16 +59,19 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
             self.image_size = gray.shape[::-1]
 
             for corner in corners:
+                # todo: check if this does a refinement at all
                 cv2.cornerSubPix(gray, corner,
                                  winSize=(3, 3),
                                  zeroZone=(-1, -1),
                                  criteria=self.criteria)
+
             res2 = aruco.interpolateCornersCharuco(corners, ids, gray, self.board)
+
             if res2[1] is not None and res2[2] is not None and len(res2[1]) > 3:
                 self.corners.append(res2[1])
                 self.ids.append(res2[2])
 
-            self._sample_count += 1
+                aruco.drawDetectedMarkers(data, corners, ids)
 
         if 0 < self.max_samples <= self.sample_count:
             return self.calibrate()
@@ -109,12 +110,14 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         pass
 
     def configure(self, args: Namespace):
-        pass
+        self.marker_length_in_m = float(args.marker_length)
+        self.square_length_in_m = float(args.square_length)
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        pass
+        parser.add_argument("--marker-length", type=float, default=0.23, help="Marker length in m.")
+        parser.add_argument("--square-length", type=float, default=0.3, help="Square length in m.")
 
     @property
     def sample_count(self):
-        return self._sample_count
+        return len(self.ids)

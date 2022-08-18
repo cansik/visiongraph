@@ -20,8 +20,8 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         self.objp = np.zeros((self.rows * self.columns, 3), np.float32)
         self.objp[:, :2] = np.mgrid[0:self.rows, 0:self.columns].T.reshape(-1, 2)
 
-        self.objpoints = []  # 3d point in real world space
-        self.imgpoints = []  # 2d points in image plane.
+        self.obj_points = []  # 3d point in real world space
+        self.img_points = []  # 2d points in image plane.
 
         self.image_size: Optional[Tuple[int, int]] = None
 
@@ -40,9 +40,9 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         ret, corners = cv2.findChessboardCorners(gray, (self.rows, self.columns), None)
 
         if ret:
-            self.objpoints.append(self.objp)
+            self.obj_points.append(self.objp)
             corners2 = cv2.cornerSubPix(gray, corners, (11, 11), (-1, -1), self.criteria)
-            self.imgpoints.append(corners)
+            self.img_points.append(corners)
 
             self.image_size = gray.shape[::-1]
 
@@ -55,7 +55,7 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         return None
 
     def calibrate(self) -> Optional[CameraPoseResult]:
-        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.objpoints, self.imgpoints,
+        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.obj_points, self.img_points,
                                                            self.image_size, None, None)
 
         if ret:
@@ -64,11 +64,11 @@ class ChessboardCalibrator(BoardCameraCalibrator):
             self.pose_result = CameraPoseResult(intrinsics)
 
             mean_error = 0
-            for i in range(len(self.objpoints)):
-                imgpoints2, _ = cv2.projectPoints(self.objpoints[i], rvecs[i], tvecs[i], mtx, dist)
-                error = cv2.norm(self.imgpoints[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
+            for i in range(len(self.obj_points)):
+                imgpoints2, _ = cv2.projectPoints(self.obj_points[i], rvecs[i], tvecs[i], mtx, dist)
+                error = cv2.norm(self.img_points[i], imgpoints2, cv2.NORM_L2) / len(imgpoints2)
                 mean_error += error
-            print(f"Total error: {mean_error / len(self.objpoints)}")
+            print(f"Total error: {mean_error / len(self.obj_points)}")
 
             return self.pose_result
 
@@ -87,4 +87,4 @@ class ChessboardCalibrator(BoardCameraCalibrator):
 
     @property
     def sample_count(self):
-        return len(self.imgpoints)
+        return len(self.img_points)

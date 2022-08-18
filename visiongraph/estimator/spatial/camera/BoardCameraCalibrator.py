@@ -3,7 +3,8 @@ from typing import Optional
 
 import numpy as np
 
-from visiongraph import VisionEstimator, CameraPoseResult
+from visiongraph.estimator.VisionEstimator import VisionEstimator
+from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):

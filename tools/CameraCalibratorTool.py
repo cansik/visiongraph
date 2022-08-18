@@ -3,27 +3,35 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph import current_millis
-from visiongraph.BaseGraph import BaseGraph
+from visiongraph.estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
 from visiongraph.estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
+from visiongraph.util.ArgUtils import add_step_choice_argument
+from visiongraph.util.TimeUtils import current_millis
+from visiongraph.BaseGraph import BaseGraph
+from visiongraph.estimator.spatial.camera.BoardCameraCalibrator import BoardCameraCalibrator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
+BOARD_CALIBRATORS = {
+    "chessboard": ChessboardCalibrator,
+    "charuco": ChArUcoCalibrator
+}
+
 
 class CameraCalibratorTool(BaseGraph):
 
-    def __init__(self, input: BaseInput):
+    def __init__(self, input: BaseInput, calibrator: BoardCameraCalibrator):
         super().__init__()
         self.input = input
 
-        self.max_samples = 30
-        self.network = ChessboardCalibrator(6, 7, max_samples=self.max_samples)
+        self.calibrator = calibrator
+        self.output_path = "media/calibration.json"
 
         self.wait_time = 1000
         self.last_ts = 0
 
-        self.add_nodes(self.input, self.network)
+        self.add_nodes(self.input, self.calibrator)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -33,7 +41,7 @@ class CameraCalibratorTool(BaseGraph):
 
         if current_millis() - self.last_ts > self.wait_time:
             self.last_ts = current_millis()
-            result = self.network.process(frame)
+            result = self.calibrator.process(frame)
 
             if result is not None:
                 intrinsics = result.intrinsics
@@ -45,35 +53,54 @@ class CameraCalibratorTool(BaseGraph):
                 print("Distortion Coefficients:")
                 print(intrinsics.distortion_coefficients)
 
-                intrinsics.save("media/calibration.json")
+                intrinsics.save(self.output_path)
 
                 self.close()
 
         frame = cv2.flip(frame, 1)
-        cv2.putText(frame, f"Samples: {len(self.network.imgpoints)} / {self.max_samples}",
+        cv2.putText(frame, f"Samples: {self.calibrator.sample_count} / {self.calibrator.max_samples}",
                     (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
-        cv2.imshow("Camera Pose Example", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        cv2.imshow("Camera Calibrator", frame)
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
+
+    def configure(self, args: argparse.Namespace):
+        super().configure(args)
+
+        r, c = args.board_size
+        self.calibrator.rows = r
+        self.calibrator.columns = c
+        self.calibrator.max_samples = args.max_samples
+        self.wait_time = int(args.wait_time)
+        self.output_path = args.output_path
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        pass
+        parser.add_argument("--board-size", type=int, nargs=2, default=[6, 7],
+                            metavar=("rows", "columns"), help="Calibration board size.")
+        parser.add_argument("--max-samples", type=int, default=30, help="How many calibration samples are gathered.")
+        parser.add_argument("--wait-time", type=int, default=1000, help="How long to wait between capture (ms).")
+        parser.add_argument("--output-path", type=str, default="calibration.json",
+                            help="Path where the calibration is stored.")
 
 
 def main():
-    pipeline = CameraCalibratorTool(args.input())
+    parser = argparse.ArgumentParser("Camera Calibrator Tool", description="Calibrate cameras with boards.")
+    add_logging_parameter(parser)
+    input_group = parser.add_argument_group("input provider")
+    add_input_step_choices(input_group)
+
+    add_step_choice_argument(parser, BOARD_CALIBRATORS, "--calibrator", help="Board calibrator system.",
+                             default="charuco", add_params=True)
+    CameraCalibratorTool.add_params(parser)
+
+    args = parser.parse_args()
+
+    pipeline = CameraCalibratorTool(args.input(), args.calibrator(6, 7))
     pipeline.configure(args)
     pipeline.open()
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser("Camera Calibrator Tool", description="Example Pipeline")
-    add_logging_parameter(parser)
-    input_group = parser.add_argument_group("input provider")
-    add_input_step_choices(input_group)
-
-    args = parser.parse_args()
-
     main()
