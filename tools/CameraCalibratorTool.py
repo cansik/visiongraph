@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph import current_millis
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.camera.CameraChessboardCalibrator import CameraChessboardCalibrator
 from visiongraph.input import add_input_step_choices
@@ -19,6 +20,9 @@ class CameraCalibratorTool(BaseGraph):
         self.max_samples = 30
         self.network = CameraChessboardCalibrator(max_samples=self.max_samples)
 
+        self.wait_time = 1000
+        self.last_ts = 0
+
         self.add_nodes(self.input, self.network)
 
     def _process(self):
@@ -27,22 +31,25 @@ class CameraCalibratorTool(BaseGraph):
         if frame is None:
             return
 
-        result = self.network.process(frame)
+        if current_millis() - self.last_ts > self.wait_time:
+            self.last_ts = current_millis()
+            result = self.network.process(frame)
 
-        if result is not None:
-            intrinsics = result.intrinsics
+            if result is not None:
+                intrinsics = result.intrinsics
 
-            print("Intrinsics Matrix:")
-            print(intrinsics.intrinsic_matrix)
+                print("Intrinsics Matrix:")
+                print(intrinsics.intrinsic_matrix)
 
-            print()
-            print("Distortion Coefficients:")
-            print(intrinsics.distortion_coefficients)
+                print()
+                print("Distortion Coefficients:")
+                print(intrinsics.distortion_coefficients)
 
-            intrinsics.save("media/calibration.json")
+                intrinsics.save("media/calibration.json")
 
-            self.close()
+                self.close()
 
+        frame = cv2.flip(frame, 1)
         cv2.putText(frame, f"Samples: {len(self.network.imgpoints)} / {self.max_samples}",
                     (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
