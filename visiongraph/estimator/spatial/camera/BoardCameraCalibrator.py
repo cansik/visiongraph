@@ -14,6 +14,8 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         self.rows = rows
         self.columns = columns
 
+        self.board_detected: bool = False
+
     def setup(self):
         pass
 

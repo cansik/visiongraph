@@ -31,6 +31,8 @@ class CameraCalibratorTool(BaseGraph):
         self.wait_time = 1000
         self.last_ts = 0
 
+        self._success_border_counter = 0
+
         self.add_nodes(self.input, self.calibrator)
 
     def _process(self):
@@ -42,6 +44,9 @@ class CameraCalibratorTool(BaseGraph):
         if current_millis() - self.last_ts > self.wait_time:
             self.last_ts = current_millis()
             result = self.calibrator.process(frame)
+
+            if self.calibrator.board_detected:
+                self._success_border_counter = 5
 
             if result is not None:
                 intrinsics = result.intrinsics
@@ -58,8 +63,15 @@ class CameraCalibratorTool(BaseGraph):
                 self.close()
 
         frame = cv2.flip(frame, 1)
+
+        if self._success_border_counter > 0:
+            self._success_border_counter -= 1
+
+            h, w = frame.shape[:2]
+            frame = cv2.rectangle(frame, (0, 0), (w - 1, h - 1), [0, 255, 0], 8)
+
         cv2.putText(frame, f"Samples: {self.calibrator.sample_count} / {self.calibrator.max_samples}",
-                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+                    (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
 
         cv2.imshow("Camera Calibrator", frame)
         if cv2.waitKey(1) & 0xFF == 27:

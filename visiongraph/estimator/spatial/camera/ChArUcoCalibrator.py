@@ -47,6 +47,8 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
                                                self.aruco_dict)
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+        self.board_detected = False
+
         if self.pose_result is not None:
             return self.pose_result
 
@@ -72,6 +74,7 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
                 self.ids.append(res2[2])
 
                 aruco.drawDetectedMarkers(data, corners, ids)
+                self.board_detected = True
 
         if 0 < self.max_samples <= self.sample_count:
             return self.calibrate()

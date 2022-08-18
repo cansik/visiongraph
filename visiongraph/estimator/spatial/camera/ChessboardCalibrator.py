@@ -31,6 +31,8 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         pass
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+        self.board_detected = False
+
         if self.pose_result is not None:
             return self.pose_result
 
@@ -48,6 +50,8 @@ class ChessboardCalibrator(BoardCameraCalibrator):
 
             # annotate
             cv2.drawChessboardCorners(data, (self.rows, self.columns), corners2, ret)
+
+            self.board_detected = True
 
         if 0 < self.max_samples <= self.sample_count:
             return self.calibrate()
