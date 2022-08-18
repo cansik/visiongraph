@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Any
 
 import cv2
 import numpy as np
@@ -18,6 +18,9 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         self.new_camera_matrix: Optional[np.ndarray] = None
         self.roi: Optional[Tuple[int, int, int, int]] = None
 
+        self.rectify_map_x: Optional[Any] = None
+        self.rectify_map_y: Optional[Any] = None
+
     def setup(self):
         if self.width > 0 and self.height > 0:
             self.calculate_optimal_camera_matrix()
@@ -30,11 +33,14 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
             self.height = h
             self.calculate_optimal_camera_matrix()
 
-        dst = cv2.undistort(data,
-                            self.intrinsics.intrinsic_matrix,
-                            self.intrinsics.distortion_coefficients,
-                            None,
-                            self.new_camera_matrix)
+        dst = cv2.remap(data, self.rectify_map_x, self.rectify_map_y, cv2.INTER_LINEAR)
+
+        # dst = cv2.undistort(data,
+        #                     self.intrinsics.intrinsic_matrix,
+        #                     self.intrinsics.distortion_coefficients,
+        #                     None,
+        #                     self.new_camera_matrix)
+
         # crop the image
         x, y, w, h = self.roi
         dst = dst[y:y + h, x:x + w]
@@ -51,6 +57,10 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
                                                  (w, h), 1, (w, h))
         self.new_camera_matrix = mat
         self.roi = roi
+
+        self.rectify_map_x, self.rectify_map_y = cv2.initUndistortRectifyMap(self.intrinsics.intrinsic_matrix,
+                                                                             self.intrinsics.distortion_coefficients,
+                                                                             None, self.new_camera_matrix, (w, h), 5)
 
     def configure(self, args: Namespace):
         pass
