@@ -94,7 +94,7 @@ class CameraCalibratorTool(BaseGraph):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        parser.add_argument("--board-size", type=int, nargs=2, default=[6, 6],
+        parser.add_argument("--board-size", type=int, nargs=2, required=True,
                             metavar=("columns", "rows"), help="Calibration board size.")
         parser.add_argument("--max-samples", type=int, default=30, help="How many calibration samples are gathered.")
         parser.add_argument("--wait-time", type=int, default=1000, help="How long to wait between capture (ms).")

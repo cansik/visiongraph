@@ -108,8 +108,8 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        parser.add_argument("--marker-length", type=float, default=0.23, help="Marker length in m.")
-        parser.add_argument("--square-length", type=float, default=0.3, help="Square length in m.")
+        parser.add_argument("--marker-length", type=float, required=True, help="Marker length in m.")
+        parser.add_argument("--square-length", type=float, required=True, help="Square length in m.")
 
     @property
     def sample_count(self):
