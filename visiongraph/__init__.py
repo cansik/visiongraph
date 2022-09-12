@@ -91,9 +91,15 @@ try:
     from .estimator.spatial.YOLODetector import YOLODetector
 except ImportError as ex:
     logging.debug(f"Could not import YOLODetector")
-from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
+try:
+    from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import ArUcoCameraPoseEstimator")
 from .estimator.spatial.camera.BoardCameraCalibrator import BoardCameraCalibrator
-from .estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
+try:
+    from .estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
+except ImportError as ex:
+    logging.debug(f"Could not import ChArUcoCalibrator")
 from .estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
 try:
     from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig

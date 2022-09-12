@@ -98,6 +98,11 @@ class GenerateInitPy(distutils.cmd.Command):
                 if any([node.module.startswith(e) for e in self.optional_modules]):
                     optional = True
 
+                for import_name in node.names:
+                    dependency_graph[import_name.name].append(module)
+                    if any([import_name.name.startswith(e) for e in self.optional_modules]):
+                        optional = True
+
             # methods for modules that should be included
             elif isinstance(node, ast.FunctionDef):
                 if any([module.startswith(e) for e in self.module_with_methods]):
