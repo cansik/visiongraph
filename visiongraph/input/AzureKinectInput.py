@@ -44,6 +44,7 @@ class AzureKinectInput(BaseDepthCamera):
         self.ir_min_clipping: Optional[int] = 0
         self.ir_max_clipping: Optional[int] = 5000
         self.ir_color_map: Optional[int] = None
+        self.passive_ir: bool = False
 
         self.device: Optional[PyK4A] = None
         self.capture: Optional[PyK4ACapture] = None
@@ -90,7 +91,10 @@ class AzureKinectInput(BaseDepthCamera):
             config.synchronized_images_only = False
 
             if self.use_infrared:
-                config.depth_mode = pyk4a.DepthMode.PASSIVE_IR
+                if self.passive_ir:
+                    config.depth_mode = pyk4a.DepthMode.PASSIVE_IR
+                else:
+                    config.depth_mode = self.depth_mode
                 config.synchronized_images_only = self.sync_frames
 
             if self.enable_depth:
@@ -206,10 +210,13 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def depth_map(self) -> np.ndarray:
-        return self._colorize(self.capture.depth, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
+        return self._colorize(self.depth_buffer, (self.depth_min_clipping, self.depth_max_clipping),
+                              self.depth_color_map)
 
     @property
     def depth_buffer(self) -> np.ndarray:
+        if self.align_frames:
+            return self.capture.transformed_depth
         return self.capture.depth
 
     @property
@@ -218,6 +225,7 @@ class AzureKinectInput(BaseDepthCamera):
 
     def configure(self, args: Namespace):
         super().configure(args)
+
         self.align_frames = args.k4a_align
         self.device_id = args.k4a_device
 
@@ -228,12 +236,22 @@ class AzureKinectInput(BaseDepthCamera):
         self.color_resolution = args.k4a_color_resolution
         self.color_format = args.k4a_color_format
 
+        self.depth_min_clipping, self.depth_max_clipping = args.k4a_depth_clipping
+        self.ir_min_clipping, self.ir_max_clipping = args.k4a_ir_clipping
+
+        self.passive_ir = args.k4a_passive_ir
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
         parser.add_argument("--k4a-align", action="store_true",
                             help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
+
+        parser.add_argument("--k4a-depth-clipping", default=[0, 5000], type=int, nargs=2,
+                            metavar=("min", "max"), help="Depth input clipping.")
+        parser.add_argument("--k4a-ir-clipping", default=[0, 5000], type=int, nargs=2,
+                            metavar=("min", "max"), help="Infrared input clipping.")
 
         parser.add_argument("--k4a-play-mkv", type=str, default=None,
                             help="Path to a pre-recorded bag file for playback.")
@@ -242,14 +260,14 @@ class AzureKinectInput(BaseDepthCamera):
 
         add_enum_choice_argument(parser, pyk4a.DepthMode, "--k4a-depth-mode", default=pyk4a.DepthMode.NFOV_UNBINNED,
                                  help="Azure depth mode")
+        parser.add_argument("--k4a-passive-ir", action="store_true",
+                            help="Use passive IR input.")
         add_enum_choice_argument(parser, pyk4a.ColorResolution, "--k4a-color-resolution",
                                  default=pyk4a.ColorResolution.RES_720P,
                                  help="Azure color resolution (overwrites input-size)")
         add_enum_choice_argument(parser, pyk4a.ImageFormat, "--k4a-color-format",
                                  default=pyk4a.ImageFormat.COLOR_BGRA32,
                                  help="Azure color image format")
-
-        # todo: add more azure specific options like depth mode
 
     @property
     def gain(self) -> int:
