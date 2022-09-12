@@ -22,7 +22,7 @@ pip install "visiongraph[all]"
 It is also possible to only install certain packages depending on your needs:
 
 ```bash
-pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba]"
+pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba, opencv-contrib]"
 ```
 
 ### Development
