@@ -60,7 +60,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
 
     def setup(self):
         self.engine = VisionInferenceEngine(self.model, self.weights,
-                                            flip_channels=True, normalize=False, device=self.device)
+                                            flip_channels=True, device=self.device)
         self.engine.setup()
         _, _, self.height, self.width = self.engine.first_input_shape
 

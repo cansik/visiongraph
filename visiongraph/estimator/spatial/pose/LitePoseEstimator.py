@@ -27,9 +27,7 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
                  min_score: float = 0.2, device: str = "CPU"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights,
-                                            flip_channels=True, normalize=False,
-                                            padding=True, device=device)
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, padding=True, device=device)
 
     def setup(self):
         self.engine.setup()

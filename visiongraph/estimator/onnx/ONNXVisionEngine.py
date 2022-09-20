@@ -1,4 +1,4 @@
-from typing import Sequence, Optional, Dict, Any, List
+from typing import Sequence, Optional, Dict, Any, List, Union
 
 import numpy as np
 
@@ -10,8 +10,11 @@ from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
 
 class ONNXVisionEngine(BaseVisionEngine):
     def __init__(self, model: Asset, execution_providers: Optional[List[str]] = None,
-                 flip_channels: bool = True, normalize: bool = False, padding: bool = False):
-        super().__init__(flip_channels, normalize, padding)
+                 flip_channels: bool = True,
+                 scale: Optional[Union[float, Sequence[float]]] = None,
+                 mean: Optional[Union[float, Sequence[float]]] = None,
+                 padding: bool = False):
+        super().__init__(flip_channels, scale, mean, padding)
 
         self.model = model
         self.execution_providers = execution_providers

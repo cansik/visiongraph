@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import Dict, Optional, List, Any, Sequence, Tuple
+from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
 
 import cv2
 import numpy as np
@@ -10,11 +10,14 @@ PADDING_BOX_OUTPUT_NAME = "padding-box"
 
 
 class BaseVisionEngine(ABC):
-    def __init__(self, flip_channels: bool = True, normalize: bool = False, padding: bool = False):
+    def __init__(self, flip_channels: bool = True,
+                 scale: Optional[Union[float, Sequence[float]]] = None,
+                 mean: Optional[Union[float, Sequence[float]]] = None,
+                 padding: bool = False):
 
-        # default params for first input
         self.flip_channels = flip_channels
-        self.normalize = normalize
+        self.scale = scale
+        self.mean = mean
         self.padding = padding
         self.padding_color: Optional[Sequence[int]] = None
 
@@ -27,7 +30,7 @@ class BaseVisionEngine(ABC):
 
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
         in_frame, bbox = self.pre_process_image(image, self.first_input_name,
-                                                self.flip_channels, self.normalize, self.padding)
+                                                self.flip_channels, self.scale, self.mean, self.padding)
 
         if inputs is None:
             inputs = {}
@@ -44,8 +47,9 @@ class BaseVisionEngine(ABC):
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
         pass
 
-    def pre_process_image(self, image: np.ndarray, input_name: str,
-                          flip_channels: bool = True, normalize: bool = False,
+    def pre_process_image(self, image: np.ndarray, input_name: str, flip_channels: bool = True,
+                          scale: Optional[Union[float, Sequence[float]]] = None,
+                          mean: Optional[Union[float, Sequence[float]]] = None,
                           padding: bool = False) -> Tuple[np.ndarray, BoundingBox2D]:
         input_channels = image.shape[-1] if image.ndim == 3 else 1
         batch_size, channels, height, width = self.get_input_shape(input_name)
@@ -61,13 +65,21 @@ class BaseVisionEngine(ABC):
         elif input_channels == 1 and channels == 3:
             in_frame = cv2.cvtColor(in_frame, cv2.COLOR_GRAY2RGB)
 
+        # convert to float32
+        in_frame = in_frame.astype(np.float32)
+
+        if mean is not None:
+            in_frame -= mean
+
+        if scale is not None:
+            in_frame /= scale
+
+        # flip rgb
         if input_channels == 3 and flip_channels:
             in_frame = in_frame.transpose((2, 0, 1))
 
-        in_frame = in_frame.reshape((1, channels, height, width)).astype(np.float32)
-
-        if normalize:
-            in_frame = in_frame / 255.0
+        # make ncwh
+        in_frame = in_frame.reshape((1, channels, height, width))
 
         return in_frame, bbox.scale(1.0 / width, 1.0 / height)
 

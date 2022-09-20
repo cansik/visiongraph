@@ -43,7 +43,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
                  min_score: float = 0.2, device: str = "CPU"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, normalize=False, device=device)
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
         self.threshold = 0.1
 
     def setup(self):

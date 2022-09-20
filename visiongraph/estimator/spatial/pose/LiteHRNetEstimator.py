@@ -38,7 +38,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
                  device: str = "CPU"):
         super().__init__(human_detector, min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, normalize=True, device=device)
+        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, scale=255, device=device)
         self.enable_nms = enable_nms
         self.iou_threshold = iou_threshold
 

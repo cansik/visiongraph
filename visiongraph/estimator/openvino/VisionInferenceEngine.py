@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Any, Sequence
+from typing import Dict, Optional, Any, Sequence, Union
 
 import numpy as np
 from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
@@ -9,9 +9,11 @@ from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
 
 class VisionInferenceEngine(BaseVisionEngine):
 
-    def __init__(self, model: Asset, weights: Asset, flip_channels: bool = True, normalize: bool = False,
+    def __init__(self, model: Asset, weights: Asset, flip_channels: bool = True,
+                 scale: Optional[Union[float, Sequence[float]]] = None,
+                 mean: Optional[Union[float, Sequence[float]]] = None,
                  padding: bool = False, device: str = "CPU"):
-        super().__init__(flip_channels, normalize, padding)
+        super().__init__(flip_channels, scale, mean, padding)
 
         self.device = device
 
