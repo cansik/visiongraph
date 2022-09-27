@@ -323,3 +323,16 @@ class AzureKinectInput(BaseDepthCamera):
     @property
     def serial(self) -> str:
         return self.device.selected_serial
+
+    @property
+    def transformed_color_safe(self) -> np.ndarray:
+        if self._playback is None:
+            return self.capture.transformed_color
+
+        color = self._convert_to_bgra_if_required(self._playback.configuration["color_format"], self.capture.color)
+        color = cv2.cvtColor(color, cv2.COLOR_RGB2RGBA)
+        depth = self.capture.depth
+        transformed = pyk4a.color_image_to_depth_camera(color, depth,
+                                                        self._playback.calibration, self._playback.thread_safe)
+        transformed = transformed[:, :, :3]
+        return transformed
