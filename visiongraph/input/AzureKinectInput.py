@@ -63,6 +63,8 @@ class AzureKinectInput(BaseDepthCamera):
         self._record: Optional[PyK4ARecord] = None
         self._playback: Optional[PyK4APlayback] = None
 
+        self.loop: bool = True
+
     def setup(self, config: Optional[Config] = None):
         if self.input_mkv_file is not None:
             logging.info(f"Playing mkv file from {self.input_mkv_file}")
@@ -170,9 +172,12 @@ class AzureKinectInput(BaseDepthCamera):
 
         try:
             self.capture = self._playback.get_next_capture()
-        except EOFError:
-            self._playback.seek(0)
-            self.capture = self._playback.get_next_capture()
+        except EOFError as error:
+            if self.loop:
+                self._playback.seek(0)
+                self.capture = self._playback.get_next_capture()
+                return
+            raise error
 
     @staticmethod
     def _colorize(image: np.ndarray,
