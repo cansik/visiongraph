@@ -178,11 +178,15 @@ class AzureKinectInput(BaseDepthCamera):
     def _colorize(image: np.ndarray,
                   clipping_range: Tuple[Optional[int], Optional[int]] = (None, None),
                   colormap: Optional[int] = None) -> np.ndarray:
-        if clipping_range[0] or clipping_range[1]:
-            img = image.clip(clipping_range[0], clipping_range[1])
+        if clipping_range[0] is not None and clipping_range[1] is not None:
+            low, high = clipping_range
+            delta = high - low
+
+            img = image.clip(low, high)
+            img = (((img - low) / delta) * 255).astype(np.uint8)
         else:
-            img = image.copy()
-        img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+            img = image
+            img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
 
         if colormap is not None:
             img = cv2.applyColorMap(img, colormap)
@@ -336,3 +340,18 @@ class AzureKinectInput(BaseDepthCamera):
                                                         self._playback.calibration, self._playback.thread_safe)
         transformed = transformed[:, :, :3]
         return transformed
+
+    @property
+    def record_length_ms(self) -> float:
+        if self._playback is None:
+            logging.warning("Azure Kinect is not a playback device.")
+            return -1
+
+        return self._playback.length / 1000
+
+    def seek(self, time_ms: float):
+        if self._playback is None:
+            logging.warning("Azure Kinect is not a playback device.")
+            return
+
+        self._playback.seek(int(time_ms * 1000))
