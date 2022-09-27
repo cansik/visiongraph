@@ -329,7 +329,15 @@ class AzureKinectInput(BaseDepthCamera):
         return self.device.selected_serial
 
     @property
-    def transformed_color_safe(self) -> np.ndarray:
+    def color(self):
+        if self._playback is None:
+            return self.capture.color
+
+        color = self._convert_to_bgra_if_required(self._playback.configuration["color_format"], self.capture.color)
+        return color
+
+    @property
+    def transformed_color(self) -> np.ndarray:
         if self._playback is None:
             return self.capture.transformed_color
 
