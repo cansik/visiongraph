@@ -355,6 +355,14 @@ class AzureKinectInput(BaseDepthCamera):
         return transformed
 
     @property
+    def is_playback(self):
+        return self._playback is not None
+
+    @property
+    def playback(self) -> Optional[PyK4APlayback]:
+        return self._playback
+
+    @property
     def record_length_ms(self) -> float:
         if self._playback is None:
             logging.warning("Azure Kinect is not a playback device.")
