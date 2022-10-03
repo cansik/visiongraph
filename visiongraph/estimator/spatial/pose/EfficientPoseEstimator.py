@@ -7,7 +7,8 @@ from scipy.ndimage import gaussian_filter
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine, PADDING_BOX_OUTPUT_NAME
+from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.BaseVisionEngine import PADDING_BOX_OUTPUT_NAME
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
