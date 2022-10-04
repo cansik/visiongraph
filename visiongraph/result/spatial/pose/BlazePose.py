@@ -1,7 +1,6 @@
-from typing import Optional, Tuple, FrozenSet, Sequence
+from typing import Tuple, FrozenSet
 
 import mediapipe as mp
-import numpy as np
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult

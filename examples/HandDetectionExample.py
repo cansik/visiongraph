@@ -5,6 +5,7 @@ import cv2
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandEstimator
+from visiongraph.estimator.spatial.hand.landmark.OpenPoseHandEstimator import OpenPoseHandEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -15,7 +16,7 @@ class HandDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
-        self.network = MediaPipeHandEstimator()
+        self.network = OpenPoseHandEstimator()
 
         self.add_nodes(self.input, self.network)
 
@@ -30,7 +31,7 @@ class HandDetectionExample(BaseGraph):
             result.annotate(frame)
 
         cv2.imshow("Hand Detection", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
     @staticmethod
