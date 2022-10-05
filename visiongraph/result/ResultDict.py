@@ -13,4 +13,5 @@ class ResultDict(Dict[str, ResultType], BaseResult):
 
     def annotate(self, image: np.ndarray, **kwargs):
         for result in self.values():
-            result.annotate(image, **kwargs)
+            if isinstance(result, BaseResult):
+                result.annotate(image, **kwargs)

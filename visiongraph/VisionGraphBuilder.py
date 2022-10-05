@@ -5,6 +5,7 @@ from visiongraph.VisionGraph import VisionGraph
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.node.ApplyNode import ApplyNode
 from visiongraph.node.CustomNode import CustomNode
+from visiongraph.node.ExtractNode import ExtractNode
 from visiongraph.node.PassThroughNode import PassThroughNode
 from visiongraph.node.SequenceNode import SequenceNode
 
@@ -17,8 +18,12 @@ def passthrough() -> PassThroughNode:
     return PassThroughNode()
 
 
-def custom(method: Callable) -> CustomNode:
-    return CustomNode(method)
+def custom(method: Callable, *args, **kwargs) -> CustomNode:
+    return CustomNode(method, *args, **kwargs)
+
+
+def extract(key: str, drop: bool = False) -> ExtractNode:
+    return ExtractNode(key, drop)
 
 
 class _VisionGraphBuilder:
