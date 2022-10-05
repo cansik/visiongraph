@@ -70,3 +70,13 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     @property
     def is_stale(self) -> bool:
         return self._staleness > 0
+
+    def map_to_image_space(self, roi_x: float, roi_y: float, roi_w: float, roi_h: float,
+                           img_w: float, img_h: float):
+        bbox = self._bounding_box
+
+        bbox.x_min = ((bbox.x_min * roi_w) + roi_x) / img_w
+        bbox.y_min = ((bbox.y_min * roi_h) + roi_y) / img_h
+
+        bbox.width = (bbox.width * roi_w / img_w)
+        bbox.height = (bbox.height * roi_h / img_h)
