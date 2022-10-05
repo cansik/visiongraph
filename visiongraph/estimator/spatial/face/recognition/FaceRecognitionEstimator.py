@@ -27,8 +27,11 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         landmark_result: FaceLandmarkResult = detection.results["landmarks"]
 
         image_box = BoundingBox2D.from_image(image)
-        self._landmarks = landmark_result.map(image_box,
-                                              detection.bounding_box.scale(image_box.width, image_box.height))
+        landmark_result.map_coordinates(image_box,
+                                        detection.bounding_box.scale(image_box.width,
+                                                                     image_box.height))
+
+        self._landmarks = landmark_result
 
         return super().process_detection(image, detection, rectified)
 

@@ -18,14 +18,6 @@ class BoundingBox2D:
         yield self.height
 
     @property
-    def x(self):
-        return self.x_min
-
-    @property
-    def y(self):
-        return self.y_min
-
-    @property
     def center(self) -> vector.Vector2D:
         return vector.obj(x=self.x_min + self.width * 0.5, y=self.y_min + self.height * 0.5)
 

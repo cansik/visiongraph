@@ -4,7 +4,8 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.SSDDetector import SSDDetector
+from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
+from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
@@ -14,10 +15,16 @@ from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 
 class ObjectDetectionExample(BaseGraph):
 
-    def __init__(self, input: BaseInput):
+    def __init__(self, input: BaseInput, sliding_window=False):
         super().__init__()
         self.input = input
         self.network = SSDDetector.create()
+
+        if sliding_window:
+            self.network = SlidingWindowEstimator(
+                SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32), 128, (256, 256), 0.8
+            )
+
         self.tracker = MotpyTracker()
 
         self.add_nodes(self.input, self.network, self.tracker)
@@ -35,16 +42,17 @@ class ObjectDetectionExample(BaseGraph):
             result.annotate(frame)
 
         cv2.imshow("Object Detection", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
     @staticmethod
     def add_params(parser: ArgumentParser):
         CentroidTracker.add_params(parser)
+        parser.add_argument("--sliding-window", action="store_true", help="Use a sliding window for detection.")
 
 
 def main():
-    pipeline = ObjectDetectionExample(args.input())
+    pipeline = ObjectDetectionExample(args.input(), sliding_window=args.sliding_window)
     pipeline.configure(args)
     pipeline.open()
 

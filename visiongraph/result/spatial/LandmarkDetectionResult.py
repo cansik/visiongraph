@@ -46,16 +46,14 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                 continue
             cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 3, (0, 0, 255), -1)
 
-    def map(self, src_box: BoundingBox2D, dest_box: BoundingBox2D) -> "LandmarkDetectionResult":
-        result = copy.deepcopy(self)
+    def map_coordinates(self, src_box: BoundingBox2D, dst_box: BoundingBox2D):
+        super().map_coordinates(src_box, dst_box)
 
-        for i, lm in enumerate(result.landmarks):
-            x = (((lm.x * src_box.width) - src_box.x_min) - dest_box.x_min) / dest_box.width
-            y = (((lm.y * src_box.height) - src_box.y_min) - dest_box.y_min) / dest_box.height
-            result.landmarks.x[i] = x
-            result.landmarks.y[i] = y
-
-        return result
+        for i, lm in enumerate(self.landmarks):
+            x = (((lm.x * src_box.width) - src_box.x_min) - dst_box.x_min) / dst_box.width
+            y = (((lm.y * src_box.height) - src_box.y_min) - dst_box.y_min) / dst_box.height
+            self.landmarks.x[i] = x
+            self.landmarks.y[i] = y
 
     @staticmethod
     def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:

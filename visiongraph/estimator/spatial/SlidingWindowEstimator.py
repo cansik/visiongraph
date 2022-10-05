@@ -1,10 +1,10 @@
 from argparse import Namespace
 from typing import TypeVar, Tuple, List
 
-import cv2
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
+from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.util import ResultUtils
@@ -36,7 +36,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
 
             h, w = roi.shape[:2]
             for result in results:
-                result.map_to_image_space(x, y, w, h, iw, ih)
+                result.map_coordinates(BoundingBox2D(x, y, w, h), BoundingBox2D(0, 0, iw, ih))
                 detections.append(result)
 
         # perform nms on detections
