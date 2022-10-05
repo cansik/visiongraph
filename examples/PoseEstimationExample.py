@@ -23,7 +23,7 @@ class PoseEstimationExample(BaseGraph):
 
         if sliding_window:
             self.network = SlidingWindowEstimator(
-                pose_network, 128, (256, 256), 0.8
+                pose_network, 128, (256, 256), 0.5
             )
         else:
             self.network = pose_network
@@ -50,7 +50,7 @@ class PoseEstimationExample(BaseGraph):
                         (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
 
             cv2.imshow("Pose Estimator", frame)
-            if cv2.waitKey(15) & 0xFF == 27:
+            if cv2.waitKey(1) & 0xFF == 27:
                 self.close()
         else:
             print("\033[K", end='')

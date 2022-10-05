@@ -1,7 +1,6 @@
 from argparse import Namespace
 from typing import TypeVar, Tuple, List
 
-import cv2
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
