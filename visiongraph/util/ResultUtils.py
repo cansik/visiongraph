@@ -11,4 +11,4 @@ def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold:
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
     indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold)
-    return [results[i] for i in list(indices)]
+    return [results[int(i)] for i in list(indices)]
