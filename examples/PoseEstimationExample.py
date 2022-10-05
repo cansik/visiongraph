@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -16,10 +17,16 @@ from visiongraph.util.TimeUtils import FPSTracer
 
 class PoseEstimationExample(BaseGraph):
 
-    def __init__(self, input: BaseInput, pose_network: PoseEstimator):
+    def __init__(self, input: BaseInput, pose_network: PoseEstimator, sliding_window: bool = False):
         super().__init__()
         self.input = input
-        self.network = pose_network
+
+        if sliding_window:
+            self.network = SlidingWindowEstimator(
+                pose_network, 128, (256, 256), 0.8
+            )
+        else:
+            self.network = pose_network
         self.fps_tracer = FPSTracer()
         self.tracker = MotpyTracker()
 
@@ -51,13 +58,14 @@ class PoseEstimationExample(BaseGraph):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        pass
+        CentroidTracker.add_params(parser)
+        parser.add_argument("--sliding-window", action="store_true", help="Use a sliding window for detection.")
 
 
 def main():
     setup_logging(args.loglevel)
 
-    pipeline = PoseEstimationExample(args.input(), args.pose_estimator())
+    pipeline = PoseEstimationExample(args.input(), args.pose_estimator(), sliding_window=args.sliding_window)
     pipeline.configure(args)
     pipeline.open()
 
@@ -73,7 +81,7 @@ if __name__ == "__main__":
     pose_group = parser.add_argument_group("pose estimator")
     add_pose_estimation_step_choices(pose_group)
 
-    CentroidTracker.add_params(parser)
+    PoseEstimationExample.add_params(parser)
 
     args = parser.parse_args()
 
