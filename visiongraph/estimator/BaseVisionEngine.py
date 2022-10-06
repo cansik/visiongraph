@@ -55,7 +55,8 @@ class BaseVisionEngine(ABC):
         batch_size, channels, height, width = self.get_input_shape(input_name)
 
         if padding:
-            in_frame, bbox = self._resize_and_pad(image, width, height)
+            pc = self.padding_color if self.padding_color is not None else (0, 0, 0)
+            in_frame, bbox = self._resize_and_pad(image, (width, height), pc)
         else:
             in_frame = cv2.resize(image, (width, height))
             bbox = BoundingBox2D(0, 0, width, height)
@@ -83,37 +84,21 @@ class BaseVisionEngine(ABC):
 
         return in_frame, bbox.scale(1.0 / width, 1.0 / height)
 
-    def _resize_and_pad(self, image: np.ndarray, width: int, height: int) -> Tuple[np.ndarray, BoundingBox2D]:
-        # resize input image
-        h, w = image.shape[:2]
-
-        if w > h:
-            nh = int(width / w * h)
-            image = cv2.resize(image, (width, nh))
-        else:
-            nw = int(height / h * w)
-            image = cv2.resize(image, (nw, height))
-
-        h, w = image.shape[:2]
-
-        # get final image size
-        size = h if h > w else w
-
-        # todo: check if width and height are different (non-square padding)
-
-        #  create base image with background color
-        background = np.zeros([size, size, 3], dtype=np.uint8)
-
-        if self.padding_color is not None:
-            background[:] = self.padding_color
-
-        # add image into center
-        xs = round((size - w) * 0.5)
-        ys = round((size - h) * 0.5)
-
-        background[ys:ys + h, xs:xs + w] = image
-
-        return background, BoundingBox2D(xs, ys, w, h)
+    @staticmethod
+    def _resize_and_pad(image: np.ndarray, new_size: Tuple[int, int],
+                        color: Tuple[int, int, int] = (125, 125, 125)) -> Tuple[np.ndarray, BoundingBox2D]:
+        in_h, in_w = image.shape[:2]
+        new_w, new_h = new_size
+        scale = min(new_w / in_w, new_h / in_h)
+        scale_new_w, scale_new_h = int(in_w * scale), int(in_h * scale)
+        resized_img = cv2.resize(image, (scale_new_w, scale_new_h))
+        d_w = max(new_w - scale_new_w, 0)
+        d_h = max(new_h - scale_new_h, 0)
+        top, bottom = d_h // 2, d_h - (d_h // 2)
+        left, right = d_w // 2, d_w - (d_w // 2)
+        result = cv2.copyMakeBorder(resized_img, top, bottom, left, right,
+                                    cv2.BORDER_CONSTANT, value=color)
+        return result, BoundingBox2D(left, top, new_w, new_h)
 
     @property
     def first_input_name(self) -> str:
