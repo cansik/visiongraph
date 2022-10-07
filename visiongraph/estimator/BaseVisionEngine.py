@@ -13,13 +13,15 @@ class BaseVisionEngine(ABC):
     def __init__(self, flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
-                 padding: bool = False):
+                 padding: bool = False,
+                 transpose: bool = True):
 
         self.flip_channels = flip_channels
         self.scale = scale
         self.mean = mean
         self.padding = padding
         self.padding_color: Optional[Sequence[int]] = None
+        self.transpose = transpose
 
         self.input_names: List[str] = []
         self.output_names: List[str] = []
@@ -30,7 +32,8 @@ class BaseVisionEngine(ABC):
 
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
         in_frame, bbox = self.pre_process_image(image, self.first_input_name,
-                                                self.flip_channels, self.scale, self.mean, self.padding)
+                                                self.flip_channels, self.scale, self.mean,
+                                                self.padding, self.transpose)
 
         if inputs is None:
             inputs = {}
@@ -50,7 +53,8 @@ class BaseVisionEngine(ABC):
     def pre_process_image(self, image: np.ndarray, input_name: str, flip_channels: bool = True,
                           scale: Optional[Union[float, Sequence[float]]] = None,
                           mean: Optional[Union[float, Sequence[float]]] = None,
-                          padding: bool = False) -> Tuple[np.ndarray, BoundingBox2D]:
+                          padding: bool = False,
+                          transpose: bool = True) -> Tuple[np.ndarray, BoundingBox2D]:
         input_channels = image.shape[-1] if image.ndim == 3 else 1
         batch_size, channels, height, width = self.get_input_shape(input_name)
 
@@ -77,6 +81,10 @@ class BaseVisionEngine(ABC):
 
         # flip rgb
         if input_channels == 3 and flip_channels:
+            in_frame = cv2.cvtColor(in_frame, cv2.COLOR_RGB2BGR)
+
+        # transform to blob
+        if transpose:
             in_frame = in_frame.transpose((2, 0, 1))
 
         # make ncwh
