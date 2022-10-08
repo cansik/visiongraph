@@ -53,6 +53,18 @@ class BoundingBox2D:
             self.width * width,
             self.height * height)
 
+    def scale_centered(self, width: float, height: float) -> "BoundingBox2D":
+        dx = self.width * width
+        dy = self.height * height
+        return self.add_border(dx, dy)
+
+    def add_border(self, dx: float, dy: float) -> "BoundingBox2D":
+        return BoundingBox2D(
+            self.x_min - (dx * 0.5),
+            self.y_min - (dy * 0.5),
+            self.width + dx,
+            self.height + dy)
+
     @staticmethod
     def from_array(data: Union[Sequence, np.ndarray], tl_br_format: bool = False):
         if isinstance(data, np.ndarray):
