@@ -30,6 +30,22 @@ def resize_and_letter_box(image, width, height):
     return letter_box
 
 
+def resize_and_pad(image: np.ndarray, new_size: Tuple[int, int],
+                   color: Tuple[int, int, int] = (125, 125, 125)) -> Tuple[np.ndarray, BoundingBox2D]:
+    in_h, in_w = image.shape[:2]
+    new_w, new_h = new_size
+    scale = min(new_w / in_w, new_h / in_h)
+    scale_new_w, scale_new_h = int(in_w * scale), int(in_h * scale)
+    resized_img = cv2.resize(image, (scale_new_w, scale_new_h))
+    d_w = max(new_w - scale_new_w, 0)
+    d_h = max(new_h - scale_new_h, 0)
+    top, bottom = d_h // 2, d_h - (d_h // 2)
+    left, right = d_w // 2, d_w - (d_w // 2)
+    result = cv2.copyMakeBorder(resized_img, top, bottom, left, right,
+                                cv2.BORDER_CONSTANT, value=color)
+    return result, BoundingBox2D(left, top, scale_new_w, scale_new_h)
+
+
 def extract_roi_safe(image: np.ndarray,
                      xmin: float, ymin: float, xmax: float, ymax: float,
                      rectified: bool = False) -> Tuple[np.ndarray, int, int]:

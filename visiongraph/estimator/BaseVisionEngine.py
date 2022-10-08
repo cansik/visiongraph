@@ -6,6 +6,7 @@ import numpy as np
 
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.util import ImageUtils
 
 
 class BaseVisionEngine(ABC):
@@ -59,10 +60,12 @@ class BaseVisionEngine(ABC):
 
         if padding:
             pc = self.padding_color if self.padding_color is not None else (0, 0, 0)
-            in_frame, bbox = self._resize_and_pad(image, (width, height), pc)
+            in_frame, bbox = ImageUtils.resize_and_pad(image, (width, height), pc)
         else:
             in_frame = cv2.resize(image, (width, height))
             bbox = BoundingBox2D(0, 0, width, height)
+
+        bbox = bbox.scale(1.0 / width, 1.0 / height)
 
         if input_channels == 3 and channels == 1:
             in_frame = cv2.cvtColor(in_frame, cv2.COLOR_RGB2GRAY)
@@ -89,23 +92,7 @@ class BaseVisionEngine(ABC):
         # make ncwh
         in_frame = in_frame.reshape((1, channels, height, width))
 
-        return in_frame, bbox.scale(1.0 / width, 1.0 / height)
-
-    @staticmethod
-    def _resize_and_pad(image: np.ndarray, new_size: Tuple[int, int],
-                        color: Tuple[int, int, int] = (125, 125, 125)) -> Tuple[np.ndarray, BoundingBox2D]:
-        in_h, in_w = image.shape[:2]
-        new_w, new_h = new_size
-        scale = min(new_w / in_w, new_h / in_h)
-        scale_new_w, scale_new_h = int(in_w * scale), int(in_h * scale)
-        resized_img = cv2.resize(image, (scale_new_w, scale_new_h))
-        d_w = max(new_w - scale_new_w, 0)
-        d_h = max(new_h - scale_new_h, 0)
-        top, bottom = d_h // 2, d_h - (d_h // 2)
-        left, right = d_w // 2, d_w - (d_w // 2)
-        result = cv2.copyMakeBorder(resized_img, top, bottom, left, right,
-                                    cv2.BORDER_CONSTANT, value=color)
-        return result, BoundingBox2D(left, top, new_w, new_h)
+        return in_frame, bbox
 
     @property
     def first_input_name(self) -> str:
