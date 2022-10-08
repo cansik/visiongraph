@@ -31,9 +31,9 @@ class BaseVisionEngine(ABC):
         pass
 
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
-        in_frame, bbox = self.pre_process_image(image, self.first_input_name,
-                                                self.flip_channels, self.scale, self.mean,
-                                                self.padding, self.transpose)
+        in_frame, padding_box, image_box = self.pre_process_image(image, self.first_input_name,
+                                                                  self.flip_channels, self.scale, self.mean,
+                                                                  self.padding, self.transpose)
 
         if inputs is None:
             inputs = {}
@@ -42,7 +42,8 @@ class BaseVisionEngine(ABC):
         outputs = self._inference(image, inputs)
 
         # add padding box
-        outputs.padding_box = bbox
+        outputs.padding_box = padding_box
+        outputs.image_box = image_box
 
         return outputs
 
@@ -54,18 +55,18 @@ class BaseVisionEngine(ABC):
                           scale: Optional[Union[float, Sequence[float]]] = None,
                           mean: Optional[Union[float, Sequence[float]]] = None,
                           padding: bool = False,
-                          transpose: bool = True) -> Tuple[np.ndarray, BoundingBox2D]:
+                          transpose: bool = True) -> Tuple[np.ndarray, BoundingBox2D, BoundingBox2D]:
         input_channels = image.shape[-1] if image.ndim == 3 else 1
         batch_size, channels, height, width = self.get_input_shape(input_name)
 
         if padding:
             pc = self.padding_color if self.padding_color is not None else (0, 0, 0)
-            in_frame, bbox = ImageUtils.resize_and_pad(image, (width, height), pc)
+            in_frame, pad_bbox = ImageUtils.resize_and_pad(image, (width, height), pc)
         else:
             in_frame = cv2.resize(image, (width, height))
-            bbox = BoundingBox2D(0, 0, width, height)
+            pad_bbox = BoundingBox2D(0, 0, width, height)
 
-        bbox = bbox.scale(1.0 / width, 1.0 / height)
+        image_box = BoundingBox2D.from_image(in_frame)
 
         if input_channels == 3 and channels == 1:
             in_frame = cv2.cvtColor(in_frame, cv2.COLOR_RGB2GRAY)
@@ -92,7 +93,7 @@ class BaseVisionEngine(ABC):
         # make ncwh
         in_frame = in_frame.reshape((1, channels, height, width))
 
-        return in_frame, bbox
+        return in_frame, pad_bbox, image_box
 
     @property
     def first_input_name(self) -> str:

@@ -12,7 +12,7 @@ from visiongraph.estimator.spatial.InstanceSegmentationEstimator import Instance
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
-from visiongraph.util import MathUtils
+from visiongraph.util import ImageUtils
 
 
 class YolactConfig(Enum):
@@ -24,8 +24,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         super().__init__(min_score)
 
         self.labels = labels
-        # todo: enable padding for better results (not implemented yet)
-        self.engine = ONNXVisionEngine(model, flip_channels=True, padding=False)
+        self.engine = ONNXVisionEngine(model, flip_channels=True, padding=True)
 
     def setup(self):
         self.engine.setup()
@@ -36,7 +35,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
 
         x1y1x2y2_score_class = outputs["x1y1x2y2_score_class"]
         final_masks = outputs["final_masks"]
-        padding_box: BoundingBox2D = outputs.padding_box
+        padding_box = outputs.padding_box.scale(1 / outputs.image_box.width, 1 / outputs.image_box.height)
 
         results = ResultList()
 
@@ -54,6 +53,9 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
             cropped = np.zeros(mask.shape, dtype=np.uint8)
             cropped[region] = mask[region]
 
+            mask_box = padding_box.scale(mask.shape[1], mask.shape[0])
+            cropped = ImageUtils.roi(cropped, mask_box)
+
             cropped = cv2.resize(cropped, (iw, ih))
 
             x = bbox[0]
@@ -61,13 +63,12 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
             w = bbox[2] - bbox[0]
             h = bbox[3] - bbox[1]
 
-            box = BoundingBox2D(
-                MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
-                MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
-                w, h)
+            box = BoundingBox2D(x, y, w, h)
 
             results.append(InstanceSegmentationResult(class_id, self.labels[class_id], score, cropped, box))
 
+        for result in results:
+            result.map_coordinates(outputs.image_box, outputs.padding_box)
         return results
 
     def release(self):

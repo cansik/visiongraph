@@ -36,7 +36,7 @@ class VisionInferenceEngine(BaseVisionEngine):
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
-        return self.infer_network.infer(inputs=inputs)
+        return VisionEngineOutput(self.infer_network.infer(inputs=inputs))
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
         return self.net.input_info[input_name].input_data.shape

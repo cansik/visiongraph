@@ -378,6 +378,7 @@ from .util.ImageUtils import align_image
 from .util.ImageUtils import apply_mask
 from .util.ImageUtils import extract_roi_safe
 from .util.ImageUtils import resize_and_letter_box
+from .util.ImageUtils import resize_and_pad
 from .util.ImageUtils import roi
 from .util.LoggingUtils import add_logging_parameter
 from .util.LoggingUtils import setup_logging

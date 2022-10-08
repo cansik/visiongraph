@@ -50,8 +50,8 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         super().map_coordinates(src_box, dst_box)
 
         for i, lm in enumerate(self.landmarks):
-            x = (((lm.x * src_box.width) + src_box.x_min) - dst_box.x_min) / dst_box.width
-            y = (((lm.y * src_box.height) + src_box.y_min) - dst_box.y_min) / dst_box.height
+            x = ((lm.x * src_box.width) - dst_box.x_min) / dst_box.width
+            y = ((lm.y * src_box.height) - dst_box.y_min) / dst_box.height
             self.landmarks.x[i] = x
             self.landmarks.y[i] = y
 

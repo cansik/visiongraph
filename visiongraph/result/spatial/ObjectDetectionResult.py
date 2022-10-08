@@ -74,8 +74,8 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     def map_coordinates(self, src_box: BoundingBox2D, dst_box: BoundingBox2D):
         bbox = self._bounding_box
 
-        bbox.x_min = ((bbox.x_min * src_box.width) + src_box.x_min) / dst_box.width
-        bbox.y_min = ((bbox.y_min * src_box.height) + src_box.y_min) / dst_box.height
+        bbox.x_min = ((bbox.x_min * src_box.width) - dst_box.x_min) / dst_box.width
+        bbox.y_min = ((bbox.y_min * src_box.height) - dst_box.y_min) / dst_box.height
 
         bbox.width = (bbox.width * src_box.width / dst_box.width)
         bbox.height = (bbox.height * src_box.height / dst_box.height)

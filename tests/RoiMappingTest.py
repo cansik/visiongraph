@@ -2,6 +2,7 @@ from typing import Tuple
 
 import cv2
 import numpy as np
+import vector
 
 import visiongraph as vg
 from visiongraph import BoundingBox2D
@@ -38,6 +39,7 @@ def _resize_and_pad(image: np.ndarray, width: int, height: int) -> Tuple[np.ndar
 
     return background, vg.BoundingBox2D(xs, ys, w, h)
 
+
 iw, ih = 224, 224
 image = cv2.imread("media/pose_slim.png")
 h, w = image.shape[:2]
@@ -46,20 +48,29 @@ input, padding_box = ImageUtils.resize_and_pad(image, (iw, ih))
 input2, padding_box2 = _resize_and_pad(image, iw, ih)
 # padding_box = padding_box.scale(1.0 / iw, 1.0 / ih)
 
-result = vg.ObjectDetectionResult(0, "face", 1.0, vg.BoundingBox2D(105 / iw, 31 / ih, 18 / iw, 20 / ih))
+result = vg.LandmarkDetectionResult(0, "face", 1.0, vector.array(
+    {
+        "x": [114 / iw],
+        "y": [43 / ih],
+        "z": [0.0],
+        "t": [1.0],
+    }
+), vg.BoundingBox2D(105 / iw, 31 / ih, 18 / iw, 20 / ih))
 result.tracking_id = 2
 
-result.annotate(input)
+result.annotate(input, show_bounding_box=True)
 cv2.imshow("Input", input)
 
 # map result
-bbox = result.bounding_box
-bbox.x_min = (bbox.x_min * iw - padding_box.x_min) / padding_box.width
-bbox.y_min = (bbox.y_min * ih - padding_box.y_min) / padding_box.height
-bbox.width = bbox.width * iw / padding_box.width
-bbox.height = bbox.height * ih / padding_box.height
+# bbox = result.bounding_box
+# bbox.x_min = (bbox.x_min * iw - padding_box.x_min) / padding_box.width
+# bbox.y_min = (bbox.y_min * ih - padding_box.y_min) / padding_box.height
+# bbox.width = bbox.width * iw / padding_box.width
+# bbox.height = bbox.height * ih / padding_box.height
 
-result.annotate(image)
+result.map_coordinates(vg.BoundingBox2D(0, 0, iw, ih), padding_box)
+
+result.annotate(image, show_bounding_box=True)
 cv2.imshow("Result", image)
 
 cv2.waitKey(0)
