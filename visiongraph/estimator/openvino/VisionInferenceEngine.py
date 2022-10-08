@@ -5,6 +5,7 @@ from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
+from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class VisionInferenceEngine(BaseVisionEngine):
@@ -34,7 +35,7 @@ class VisionInferenceEngine(BaseVisionEngine):
 
         self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
 
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
+    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         return self.infer_network.infer(inputs=inputs)
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:

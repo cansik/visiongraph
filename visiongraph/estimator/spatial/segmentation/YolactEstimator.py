@@ -4,12 +4,11 @@ from typing import List
 import cv2
 import numpy as np
 
-from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
-from visiongraph.estimator.BaseVisionEngine import PADDING_BOX_OUTPUT_NAME
 from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
-from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator, OutputType
+from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
@@ -37,7 +36,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
 
         x1y1x2y2_score_class = outputs["x1y1x2y2_score_class"]
         final_masks = outputs["final_masks"]
-        padding_box: BoundingBox2D = outputs[PADDING_BOX_OUTPUT_NAME]
+        padding_box: BoundingBox2D = outputs.padding_box
 
         results = ResultList()
 

@@ -4,9 +4,8 @@ from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
 import cv2
 import numpy as np
 
+from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
-
-PADDING_BOX_OUTPUT_NAME = "padding-box"
 
 
 class BaseVisionEngine(ABC):
@@ -30,7 +29,7 @@ class BaseVisionEngine(ABC):
     def setup(self):
         pass
 
-    def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
+    def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         in_frame, bbox = self.pre_process_image(image, self.first_input_name,
                                                 self.flip_channels, self.scale, self.mean,
                                                 self.padding, self.transpose)
@@ -42,12 +41,12 @@ class BaseVisionEngine(ABC):
         outputs = self._inference(image, inputs)
 
         # add padding box
-        outputs[PADDING_BOX_OUTPUT_NAME] = bbox
+        outputs.padding_box = bbox
 
         return outputs
 
     @abstractmethod
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
+    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         pass
 
     def pre_process_image(self, image: np.ndarray, input_name: str, flip_channels: bool = True,

@@ -6,7 +6,6 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.BaseVisionEngine import PADDING_BOX_OUTPUT_NAME
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -34,7 +33,7 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
         output_dict = self.engine.process(data)
-        padding_box: BoundingBox2D = output_dict[PADDING_BOX_OUTPUT_NAME]
+        padding_box: BoundingBox2D = output_dict.padding_box
         keypoints = output_dict[self.engine.output_names[1]]
         # pafs = output_dict[self.engine.output_names[0]]
 

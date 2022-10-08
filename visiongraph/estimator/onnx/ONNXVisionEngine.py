@@ -6,6 +6,7 @@ import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
+from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class ONNXVisionEngine(BaseVisionEngine):
@@ -36,9 +37,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.input_names = [e.name for e in self.session.get_inputs()]
         self.output_names = [e.name for e in self.session.get_outputs()]
 
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> Dict[str, np.ndarray]:
+    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         results = self.session.run(self.output_names, inputs)
-        result_dict = {n: r for n, r in zip(self.output_names, results)}
+        result_dict = VisionEngineOutput({n: r for n, r in zip(self.output_names, results)})
         return result_dict
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:

@@ -295,6 +295,7 @@ except ImportError as ex:
 from .input.VideoCaptureInput import VideoCaptureInput
 from .model.CameraIntrinsics import CameraIntrinsics
 from .model.DepthBuffer import DepthBuffer
+from .model.VisionEngineOutput import VisionEngineOutput
 from .model.geometry.BoundingBox2D import BoundingBox2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable

@@ -8,7 +8,6 @@ from scipy.ndimage import gaussian_filter
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-from visiongraph.estimator.BaseVisionEngine import PADDING_BOX_OUTPUT_NAME
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
@@ -55,7 +54,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
-        padding_box: BoundingBox2D = output_dict[PADDING_BOX_OUTPUT_NAME]
+        padding_box: BoundingBox2D = output_dict.padding_box
 
         body_parts = self._extract_coordinates(outputs)
 
