@@ -3,6 +3,8 @@ from typing import Sequence, Union
 import numpy as np
 import vector
 
+from visiongraph.model.geometry.Size2D import Size2D
+
 
 class BoundingBox2D:
     def __init__(self, x_min: float, y_min: float, width: float, height: float):
@@ -38,8 +40,8 @@ class BoundingBox2D:
         return self.y_min + self.height
 
     @property
-    def size(self) -> vector.Vector2D:
-        return vector.obj(x=self.width, y=self.height)
+    def size(self) -> Size2D:
+        return Size2D(self.width, self.height)
 
     def to_array(self, tl_br_format: bool = False) -> np.ndarray:
         if tl_br_format:
@@ -53,6 +55,9 @@ class BoundingBox2D:
             self.width * width,
             self.height * height)
 
+    def scale_with(self, size: Size2D) -> "BoundingBox2D":
+        return self.scale(size.width, size.height)
+
     def scale_centered(self, width: float, height: float) -> "BoundingBox2D":
         dx = self.width * width
         dy = self.height * height
@@ -64,6 +69,9 @@ class BoundingBox2D:
             self.y_min - (dy * 0.5),
             self.width + dx,
             self.height + dy)
+
+    def add_border_with(self, size: Size2D) -> "BoundingBox2D":
+        return self.add_border(size.width, size.height)
 
     @staticmethod
     def from_array(data: Union[Sequence, np.ndarray], tl_br_format: bool = False):

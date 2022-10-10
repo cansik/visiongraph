@@ -10,6 +10,7 @@ from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 from visiongraph.util import ImageUtils
@@ -35,7 +36,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
 
         x1y1x2y2_score_class = outputs["x1y1x2y2_score_class"]
         final_masks = outputs["final_masks"]
-        padding_box = outputs.padding_box.scale(1 / outputs.image_box.width, 1 / outputs.image_box.height)
+        padding_box = outputs.padding_box.scale(1 / outputs.image_size.width, 1 / outputs.image_size.height)
 
         results = ResultList()
 
@@ -65,10 +66,10 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
 
             box = BoundingBox2D(x, y, w, h)
 
-            results.append(InstanceSegmentationResult(class_id, self.labels[class_id], score, cropped, box))
+            result = InstanceSegmentationResult(class_id, self.labels[class_id], score, cropped, box)
+            result.map_coordinates(Size2D.from_image(mask), (iw, ih), src_roi=mask_box)
+            results.append(result)
 
-        for result in results:
-            result.map_coordinates(outputs.image_box, outputs.padding_box)
         return results
 
     def release(self):

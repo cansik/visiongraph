@@ -1,9 +1,10 @@
-from typing import Optional, Sequence
+from typing import Optional, Sequence, Union
 
 import cv2
 import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ClassificationResult import ClassificationResult
 from visiongraph.model.tracker.Trackable import Trackable
 from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox
@@ -71,11 +72,31 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     def is_stale(self) -> bool:
         return self._staleness > 0
 
-    def map_coordinates(self, src_box: BoundingBox2D, dst_box: BoundingBox2D):
+    def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
+                        src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
         bbox = self._bounding_box
 
-        bbox.x_min = ((bbox.x_min * src_box.width) - dst_box.x_min) / dst_box.width
-        bbox.y_min = ((bbox.y_min * src_box.height) - dst_box.y_min) / dst_box.height
+        src_width, src_height = src_size
+        dest_width, dest_height = dest_size
 
-        bbox.width = (bbox.width * src_box.width / dst_box.width)
-        bbox.height = (bbox.height * src_box.height / dst_box.height)
+        if src_roi is None:
+            src_roi = BoundingBox2D(0, 0, src_width, src_height)
+
+        if dest_roi is None:
+            dest_roi = BoundingBox2D(0, 0, dest_width, dest_height)
+
+        x = bbox.x_min * src_width
+        x = (x - src_roi.x_min) / src_roi.width
+        x = x * dest_roi.width + dest_roi.x_min
+        x = x / dest_width
+
+        y = bbox.y_min * src_height
+        y = (y - src_roi.y_min) / src_roi.height
+        y = y * dest_roi.height + dest_roi.y_min
+        y = y / dest_height
+
+        bbox.x_min = x
+        bbox.y_min = y
+
+        bbox.width = ((bbox.width * src_width) / src_roi.width) * dest_roi.width / dest_width
+        bbox.height = (bbox.height * src_height / src_roi.height) * dest_roi.height / dest_height

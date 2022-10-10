@@ -36,7 +36,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
 
             h, w = roi.shape[:2]
             for result in results:
-                result.map_coordinates(BoundingBox2D(x, y, w, h), BoundingBox2D(0, 0, iw, ih))
+                result.map_coordinates(self.window_size, (iw, ih), dest_roi=BoundingBox2D(x, y, w, h))
                 detections.append(result)
 
         # perform nms on detections

@@ -1,11 +1,12 @@
 import copy
-from typing import Optional, List, Tuple, Sequence
+from typing import Optional, List, Tuple, Sequence, Union
 
 import cv2
 import numpy as np
 import vector
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
 
@@ -46,12 +47,30 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                 continue
             cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 3, (0, 0, 255), -1)
 
-    def map_coordinates(self, src_box: BoundingBox2D, dst_box: BoundingBox2D):
-        super().map_coordinates(src_box, dst_box)
+    def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
+                        src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
+        src_width, src_height = src_size
+        dest_width, dest_height = dest_size
+
+        if src_roi is None:
+            src_roi = BoundingBox2D(0, 0, src_width, src_height)
+
+        if dest_roi is None:
+            dest_roi = BoundingBox2D(0, 0, dest_width, dest_height)
+
+        super().map_coordinates(src_size, dest_size, src_roi, dest_roi)
 
         for i, lm in enumerate(self.landmarks):
-            x = ((lm.x * src_box.width) - dst_box.x_min) / dst_box.width
-            y = ((lm.y * src_box.height) - dst_box.y_min) / dst_box.height
+            x = lm.x * src_width
+            x = (x - src_roi.x_min) / src_roi.width
+            x = x * dest_roi.width + dest_roi.x_min
+            x = x / dest_width
+
+            y = lm.y * src_height
+            y = (y - src_roi.y_min) / src_roi.height
+            y = y * dest_roi.height + dest_roi.y_min
+            y = y / dest_height
+
             self.landmarks.x[i] = x
             self.landmarks.y[i] = y
 
