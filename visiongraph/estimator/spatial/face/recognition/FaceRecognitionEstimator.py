@@ -1,3 +1,4 @@
+import copy
 from abc import abstractmethod, ABC
 from typing import Optional, Tuple
 
@@ -6,6 +7,7 @@ import numpy as np
 
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
@@ -24,12 +26,11 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         if self.landmarks_key not in detection.results:
             raise Exception(f"Expecting landmarks in key '{self.landmarks_key}'")
 
-        landmark_result: FaceLandmarkResult = detection.results["landmarks"]
+        landmark_result: FaceLandmarkResult = copy.deepcopy(detection.results["landmarks"])
 
-        image_box = BoundingBox2D.from_image(image)
-        landmark_result.map_coordinates(image_box,
-                                        detection.bounding_box.scale(image_box.width,
-                                                                     image_box.height))
+        image_size = Size2D.from_image(image)
+        detection_box = detection.bounding_box.scale_with(image_size)
+        landmark_result.map_coordinates(image_size, detection_box.size, src_roi=detection_box)
 
         self._landmarks = landmark_result
 
