@@ -27,10 +27,12 @@ class Watch:
             return current_millis() - self.start_time
         return self.end_time - self.start_time
 
-    def print(self):
+    def time_str(self, time_format: str = "%Hh %Mm %Ss {}ms") -> str:
         delta = self.elapsed()
-        time_info = time.strftime('%Hh %Mm %Ss {}ms'.format(delta % 1000), time.gmtime(delta / 1000.0))
-        print(f"{self.name}: {time_info}")
+        return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
+
+    def print(self):
+        print(f"{self.name}: {self.time_str()}")
 
     def __enter__(self):
         self.start()
@@ -42,8 +44,8 @@ class Watch:
 
 
 class ProfileWatch(Watch):
-    def __init__(self, window_size: int = 10):
-        super().__init__()
+    def __init__(self, name: str = "Watch", window_size: int = 10):
+        super().__init__(name)
         self._moving_average = StreamingMovingAverage(window_size)
 
     def stop(self):
@@ -52,6 +54,10 @@ class ProfileWatch(Watch):
 
     def average(self):
         return self._moving_average.average()
+
+    def time_str(self, time_format: str = "%Hh %Mm %Ss {}ms") -> str:
+        delta = self.elapsed()
+        return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
 
 
 class FPSTracer:
