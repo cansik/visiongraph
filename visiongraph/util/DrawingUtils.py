@@ -140,3 +140,19 @@ def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thic
     cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
                   (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
                   color, thickness=thickness)
+
+
+def draw_landmark(image: np.ndarray, landmark: vector.Vector4D,
+                  color: Sequence[int] = (0, 0, 255),
+                  size: int = 5,
+                  thickness: int = 1,
+                  draw_marker: bool = True,
+                  marker_type: int = cv2.MARKER_CROSS):
+    h, w = image.shape[:2]
+    x = int(round(landmark.x * w))
+    y = int(round(landmark.y * h))
+
+    if draw_marker:
+        cv2.drawMarker(image, (x, y), color, marker_type, size, thickness)
+    else:
+        cv2.circle(image, (x, y), size, color, thickness)

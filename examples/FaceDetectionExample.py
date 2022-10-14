@@ -29,7 +29,7 @@ class FaceDetectionExample(BaseGraph):
             result.annotate(frame)
 
         cv2.imshow("Face Detection", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
     @staticmethod

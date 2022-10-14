@@ -50,7 +50,7 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
             relative_key_points = detection.location_data.relative_keypoints
 
             box = BoundingBox2D(rbb.xmin, rbb.ymin, rbb.width, rbb.height)
-            landmarks = [(rkp.x, rkp.y, 0, 0) for rkp in relative_key_points]
+            landmarks = [(rkp.x, rkp.y, 0, 1.0) for rkp in relative_key_points]
 
             faces.append(BlazeFace(detection.score[0], list_of_vector4D(landmarks), box))
 

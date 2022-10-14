@@ -22,7 +22,8 @@ class LandmarkDetectionResult(ObjectDetectionResult):
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  color: Optional[Sequence[int]] = None,
                  show_bounding_box: bool = False, min_score: float = 0,
-                 connections: Optional[List[Tuple[int, int]]] = None, **kwargs):
+                 connections: Optional[List[Tuple[int, int]]] = None,
+                 marker_size: int = 3, stroke_width: int = 2, **kwargs):
 
         if show_bounding_box:
             super().annotate(image, show_info, info_text, **kwargs)
@@ -39,13 +40,13 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                 if a.t > min_score and b.t > min_score:
                     point01 = (round(a.x * w), round(a.y * h))
                     point02 = (round(b.x * w), round(b.y * h))
-                    cv2.line(image, point01, point02, color, 2)
+                    cv2.line(image, point01, point02, color, stroke_width)
 
         # mark landmark joints
         for lm in self.landmarks:
             if lm.t < min_score:
                 continue
-            cv2.circle(image, (round(lm.x * w), round(lm.y * h)), 3, (0, 0, 255), -1)
+            cv2.circle(image, (round(lm.x * w), round(lm.y * h)), marker_size, (0, 0, 255), -1)
 
     def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
                         src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):

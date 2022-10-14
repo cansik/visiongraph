@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Sequence
 
 import numpy as np
 import vector
@@ -38,3 +38,11 @@ def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vect
         z=(a.z * (1.0 - amt)) + (b.z * amt),
         t=(a.t * (1.0 - amt)) + (b.t * amt),
     )
+
+
+def landmarks_center_by_indices(landmarks: vector.VectorNumpy4D, indices: Sequence[int]) -> vector.Vector4D:
+    x = np.average(landmarks.x[indices])
+    y = np.average(landmarks.y[indices])
+    z = np.average(landmarks.z[indices])
+    t = np.average(landmarks.t[indices])
+    return vector.obj(x=x, y=y, z=z, t=t)
