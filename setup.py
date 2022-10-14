@@ -36,7 +36,8 @@ class GenerateInitPy(distutils.cmd.Command):
 
     late_import_modules = {
         "visiongraph.estimator.openvino.OpenVinoPoseEstimator",
-        "visiongraph.dsp.OneEuroFilterNumba"
+        "visiongraph.dsp.OneEuroFilterNumba",
+        "visiongraph.estimator.spatial.face.landmark.MediaPipeFaceMeshEstimator",
     }
 
     optional_modules = {
@@ -255,35 +256,35 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version='0.1.30.3',
+    version="0.1.30.4",
     packages=required_packages,
-    url='https://github.com/cansik/visiongraph',
-    license='MIT License',
-    author='Florian Bruggisser',
-    author_email='github@broox.ch',
-    description='Visiongraph is a high level computer vision pipeline.',
+    url="https://github.com/cansik/visiongraph",
+    license="MIT License",
+    author="Florian Bruggisser",
+    author_email="github@broox.ch",
+    description="Visiongraph is a high level computer vision pipeline.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,
     extras_require=extras_required,
     classifiers=[
-        'Development Status :: 3 - Alpha',
-        'Intended Audience :: Developers',
-        'Intended Audience :: Education',
-        'Intended Audience :: Science/Research',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: MacOS :: MacOS X',
-        'Operating System :: Microsoft :: Windows',
-        'Operating System :: POSIX :: Linux',
-        'Programming Language :: Python :: 3 :: Only',
-        'Topic :: Scientific/Engineering',
-        'Topic :: Scientific/Engineering :: Image Processing',
-        'Topic :: Scientific/Engineering :: Artificial Intelligence',
-        'Topic :: Software Development',
-        'Topic :: Software Development :: Libraries',
-        'Topic :: Software Development :: Libraries :: Python Modules',
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Intended Audience :: Education",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: MacOS :: MacOS X",
+        "Operating System :: Microsoft :: Windows",
+        "Operating System :: POSIX :: Linux",
+        "Programming Language :: Python :: 3 :: Only",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Image Processing",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Software Development",
+        "Topic :: Software Development :: Libraries",
+        "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     cmdclass={
-        'generate_init': GenerateInitPy,
+        "generate_init": GenerateInitPy,
     },
 )

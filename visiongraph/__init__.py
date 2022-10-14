@@ -297,6 +297,7 @@ from .model.CameraIntrinsics import CameraIntrinsics
 from .model.DepthBuffer import DepthBuffer
 from .model.VisionEngineOutput import VisionEngineOutput
 from .model.geometry.BoundingBox2D import BoundingBox2D
+from .model.geometry.Size2D import Size2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
@@ -335,6 +336,10 @@ from .result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from .result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from .result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from .result.spatial.face.BlazeFace import BlazeFace
+try:
+    from .result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
+except ImportError as ex:
+    logging.debug(f"Could not import BlazeFaceMesh")
 from .result.spatial.face.FaceDetectionResult import FaceDetectionResult
 from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from .result.spatial.face.RegressionFace import RegressionFace
@@ -374,6 +379,7 @@ from .util.ArgUtils import float_range
 from .util.CollectionUtils import default_value_dict
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
+from .util.DrawingUtils import draw_landmark
 from .util.ImageUtils import align_image
 from .util.ImageUtils import apply_mask
 from .util.ImageUtils import extract_roi_safe
@@ -400,6 +406,7 @@ from .util.TimeUtils import ProfileWatch
 from .util.TimeUtils import Watch
 from .util.TimeUtils import current_millis
 from .util.VectorUtils import array_to_vector
+from .util.VectorUtils import landmarks_center_by_indices
 from .util.VectorUtils import lerp4d
 from .util.VectorUtils import list_of_vector4D
 from .util.VectorUtils import vector_to_array
@@ -411,6 +418,10 @@ try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 except ImportError as ex:
     logging.debug(f"Could not import OpenVinoPoseEstimator")
+try:
+    from .estimator.spatial.face.landmark.MediaPipeFaceMeshEstimator import MediaPipeFaceMeshEstimator
+except ImportError as ex:
+    logging.debug(f"Could not import MediaPipeFaceMeshEstimator")
 
 
 def __getattr__(name):
