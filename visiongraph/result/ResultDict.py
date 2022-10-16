@@ -1,8 +1,10 @@
-from typing import TypeVar, List, Optional, Sequence, Dict
+from typing import TypeVar, Dict
 
 import numpy as np
 
 from visiongraph.result.BaseResult import BaseResult
+
+DEFAULT_IMAGE_KEY = "image"
 
 ResultType = TypeVar('ResultType', bound=BaseResult)
 

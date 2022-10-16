@@ -4,7 +4,7 @@ opencv-python
 numpy<=1.22.4
 requests
 tqdm
-vector>=0.8.5
+vector>=0.10.0
 scipy
 filterpy
 
@@ -16,7 +16,7 @@ pyrealsense2; platform_system != "Darwin"
 pyk4a-bundle>=1.3.0.2; platform_system == "Windows" or platform_system == "Linux"
 
 # extra openvino
-openvino-arm==2022.1.0; platform_system == "Darwin" and platform.machine == "arm64"
+openvino-arm==2022.1.0.1; platform_system == "Darwin" and platform.machine == "arm64"
 openvino==2022.1.0; platform_system != "Darwin" and platform.machine != "arm64"
 
 # extra mediapipe

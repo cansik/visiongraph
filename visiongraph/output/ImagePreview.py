@@ -1,24 +1,31 @@
 import signal
 from argparse import ArgumentParser, Namespace
-from typing import Callable, Optional
+from typing import Callable, Optional, Union
 
 import cv2
 import numpy as np
 
 from visiongraph.GraphNode import GraphNode
+from visiongraph.result.ResultDict import ResultDict, DEFAULT_IMAGE_KEY
 
 
 class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
-    def __init__(self, title: str = "Image", wait_time: int = 15,
+    def __init__(self, title: str = "Image",
+                 image_key: str = DEFAULT_IMAGE_KEY,
+                 wait_time: int = 1,
                  handle_key_callback: Optional[Callable[[int], None]] = None):
         self.title = title
+        self.image_key = image_key
         self.wait_time = wait_time
         self.handle_key_callback = handle_key_callback
 
     def setup(self):
-        pass
+        cv2.namedWindow(self.title, cv2.WINDOW_NORMAL or cv2.WINDOW_KEEPRATIO)
 
-    def process(self, data: np.ndarray) -> np.ndarray:
+    def process(self, data: Union[np.ndarray, ResultDict]) -> np.ndarray:
+        if isinstance(data, ResultDict):
+            data = data[self.image_key]
+
         cv2.imshow(self.title, data)
         key = cv2.waitKey(self.wait_time)
 
@@ -31,7 +38,7 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         return data
 
     def release(self):
-        pass
+        cv2.destroyWindow(self.title)
 
     def configure(self, args: Namespace):
         pass
