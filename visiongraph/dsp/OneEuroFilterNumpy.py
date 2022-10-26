@@ -34,7 +34,7 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         self.d_cutoff = np.full(x0.shape, d_cutoff)
 
         # Previous values.
-        self.x_prev = x0.astype(np.float)
+        self.x_prev = x0.astype(float)
         self.dx_prev = np.full(x0.shape, dx0)
         self.t_prev = time() if t0 is None else t0
 
@@ -46,7 +46,7 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         self.beta = np.full(self.data_shape, self.beta.flat[0])
         self.d_cutoff = np.full(self.data_shape, self.d_cutoff.flat[0])
 
-        self.x_prev = x.astype(np.float)
+        self.x_prev = x.astype(float)
         self.dx_prev = np.full(self.data_shape, 0.0)  # reset dx_prev
 
         self.t_prev = time()

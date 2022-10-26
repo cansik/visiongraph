@@ -250,7 +250,7 @@ class RealSenseInput(BaseDepthCamera):
         if depth_kernel_size == 1:
             distance = depth_frame.get_distance(ix, iy)
         else:
-            depth_data = np.asarray(self.depth_frame.data, dtype=np.float) * depth_frame.get_units()
+            depth_data = np.asarray(self.depth_frame.data, dtype=float) * depth_frame.get_units()
             roi = ImageUtils.roi(depth_data, BoundingBox2D.from_kernel(ix, iy, depth_kernel_size))
             distance = np.median(roi)
 
@@ -266,7 +266,7 @@ class RealSenseInput(BaseDepthCamera):
 
     @property
     def depth_buffer(self) -> np.ndarray:
-        return np.asarray(self.depth_frame.data, dtype=np.float)
+        return np.asarray(self.depth_frame.data, dtype=float)
 
     def allow_any_stream(self):
         self.width = 0
