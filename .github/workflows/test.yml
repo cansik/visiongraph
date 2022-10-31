@@ -28,4 +28,4 @@ jobs:
       - name: Test visiongraph
         run: |
           cd $GITHUB_WORKSPACE
-          python test/ImportTest.py
+          python tests/ImportTest.py
