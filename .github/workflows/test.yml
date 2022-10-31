@@ -8,7 +8,7 @@ jobs:
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
-        python-version: [ '3.6', '3.7', '3.8', '3.9' ]
+        python-version: [ '3.7', '3.8', '3.9' ]
 
     runs-on: ${{ matrix.os }}
 
@@ -22,7 +22,7 @@ jobs:
 
       # install pip packages
       - name: Install visiongraph
-        run: pip install visiongraph[all]
+        run: pip install visiongraph[all] --use-deprecated=legacy-resolver
 
       # run test
       - name: Test visiongraph
