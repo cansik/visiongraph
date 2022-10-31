@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  test:
+    fail-fast: false
     strategy:
       matrix:
         os: [ 'ubuntu-latest' ]
