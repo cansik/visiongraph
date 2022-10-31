@@ -61,19 +61,10 @@ class LandmarkDetectionResult(ObjectDetectionResult):
 
         super().map_coordinates(src_size, dest_size, src_roi, dest_roi)
 
-        for i, lm in enumerate(self.landmarks):
-            x = lm.x * src_width
-            x = (x - src_roi.x_min) / src_roi.width
-            x = x * dest_roi.width + dest_roi.x_min
-            x = x / dest_width
-
-            y = lm.y * src_height
-            y = (y - src_roi.y_min) / src_roi.height
-            y = y * dest_roi.height + dest_roi.y_min
-            y = y / dest_height
-
-            self.landmarks.x[i] = x
-            self.landmarks.y[i] = y
+        self.landmarks.x[:] = ((((self.landmarks.x * src_width) - src_roi.x_min) / src_roi.width)
+                               * dest_roi.width + dest_roi.x_min) / dest_width
+        self.landmarks.y[:] = ((((self.landmarks.y * src_height) - src_roi.y_min) / src_roi.height)
+                               * dest_roi.height + dest_roi.y_min) / dest_height
 
     @staticmethod
     def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
