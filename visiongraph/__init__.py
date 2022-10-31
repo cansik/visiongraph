@@ -376,6 +376,7 @@ from .util.ArgUtils import add_enum_choice_argument
 from .util.ArgUtils import add_step_choice_argument
 from .util.ArgUtils import dict_choice
 from .util.ArgUtils import float_range
+from .util.CodeUtils import deprecated
 from .util.CollectionUtils import default_value_dict
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
