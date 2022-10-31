@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -12,8 +12,8 @@ from visiongraph.external.intel.models.ssd import SSD
 _PERSON_LABELS = ["person"]
 
 
-def _person_net(name: str):
-    return *RepositoryAsset.openVino(name), _PERSON_LABELS
+def _person_net(name: str) -> Tuple:
+    return (*RepositoryAsset.openVino(name), _PERSON_LABELS)
 
 
 class SSDConfig(Enum):
