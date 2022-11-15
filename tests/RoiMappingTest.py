@@ -5,7 +5,7 @@ import visiongraph as vg
 from visiongraph.util import ImageUtils
 
 iw, ih = 224, 224
-image = cv2.imread("media/pose_slim.png")
+image = cv2.imread("media/hand.jpg")
 h, w = image.shape[:2]
 
 input, padding_box = ImageUtils.resize_and_pad(image, (iw, ih))
