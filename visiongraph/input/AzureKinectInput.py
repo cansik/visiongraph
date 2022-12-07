@@ -334,7 +334,7 @@ class AzureKinectInput(BaseDepthCamera):
         return self.device.selected_serial
 
     @property
-    def color(self):
+    def color(self) -> np.ndarray:
         if self._playback is None:
             return self.capture.color
 
@@ -353,6 +353,22 @@ class AzureKinectInput(BaseDepthCamera):
                                                         self._playback.calibration, self._playback.thread_safe)
         transformed = transformed[:, :, :3]
         return transformed
+
+    @property
+    def infrared(self) -> np.ndarray:
+        return self.capture.ir
+
+    @property
+    def transformed_infrared(self) -> np.ndarray:
+        return self.capture.transformed_ir
+
+    @property
+    def depth(self) -> np.ndarray:
+        return self.capture.depth
+
+    @property
+    def transformed_depth(self) -> np.ndarray:
+        return self.capture.transformed_depth
 
     @property
     def is_playback(self):
