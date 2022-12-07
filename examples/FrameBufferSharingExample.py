@@ -13,6 +13,14 @@ pipeline: Optional[vg.VisionGraph] = None
 output_size = vg.Size2D(400, 400)
 blank_image = np.zeros((output_size.height, output_size.width, 3), dtype=np.uint8)
 
+normalized_keypoints = np.array([
+    [0.621875, 0.489453125],  # right eye
+    [0.35703125, 0.489453125],  # left eye
+    [0.489453125, 0.6603515625],  # tip of nose
+    [0.4103515625, 0.568359375],  # right lip corner
+    [0.4103515625, 0.7603515625],  # left lip corner
+], dtype=np.float32)
+
 
 def extract_face_texture(result: vg.ResultDict, recognizer: vg.FaceReidentificationEstimator) -> vg.ResultDict:
     image: np.ndarray = result["image"]
@@ -23,7 +31,7 @@ def extract_face_texture(result: vg.ResultDict, recognizer: vg.FaceReidentificat
         return result
 
     roi, detection = vg.extract_object_detection_roi(image, faces[0])
-    aligned_face, landmark_overlap = recognizer._align_face(roi, detection, recognizer.normalized_keypoints)
+    aligned_face, landmark_overlap = recognizer._align_face(roi, detection, normalized_keypoints)
     aligned_face = cv2.resize(aligned_face, (output_size.width, output_size.height))
     result[FACE_KEY] = aligned_face
     return result
