@@ -4,6 +4,7 @@ from visiongraph.GraphNode import GraphNode
 from visiongraph.VisionGraph import VisionGraph
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.node.ApplyNode import ApplyNode
+from visiongraph.node.BreakpointNode import BreakpointNode
 from visiongraph.node.CustomNode import CustomNode
 from visiongraph.node.ExtractNode import ExtractNode
 from visiongraph.node.PassThroughNode import PassThroughNode
@@ -24,6 +25,10 @@ def custom(method: Callable, *args, **kwargs) -> CustomNode:
 
 def extract(key: str, drop: bool = False) -> ExtractNode:
     return ExtractNode(key, drop)
+
+
+def add_breakpoint() -> BreakpointNode:
+    return BreakpointNode()
 
 
 class _VisionGraphBuilder:

@@ -40,3 +40,9 @@ numba
 
 # extra opencv-contrib
 opencv-contrib-python
+
+# extra fbs
+pyopengl; platform_system == "Darwin" or platform_system == "Windows"
+syphonpy; platform_system == "Darwin"
+glfw; platform_system == "Darwin"
+SpoutGL>=0.0.4; platform_system == "Windows"

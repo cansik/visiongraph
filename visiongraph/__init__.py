@@ -5,6 +5,7 @@ from .BaseGraph import BaseGraph
 from .GraphNode import GraphNode
 from .Processable import Processable
 from .VisionGraph import VisionGraph
+from .VisionGraphBuilder import add_breakpoint
 from .VisionGraphBuilder import create_graph
 from .VisionGraphBuilder import custom
 from .VisionGraphBuilder import extract
@@ -302,11 +303,21 @@ from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
 from .node.ApplyNode import ApplyNode
+from .node.BreakpointNode import BreakpointNode
 from .node.CustomNode import CustomNode
 from .node.ExtractNode import ExtractNode
 from .node.PassThroughNode import PassThroughNode
 from .node.SequenceNode import SequenceNode
 from .output.ImagePreview import ImagePreview
+from .output.fbs.FrameBufferSharingServer import FrameBufferSharingServer
+try:
+    from .output.fbs.SpoutServer import SpoutServer
+except ImportError as ex:
+    logging.debug(f"Could not import SpoutServer")
+try:
+    from .output.fbs.SyphonServer import SyphonServer
+except ImportError as ex:
+    logging.debug(f"Could not import SyphonServer")
 from .recorder.AsyncFrameSetRecorder import AsyncFrameSetRecorder
 from .recorder.BaseFrameRecorder import BaseFrameRecorder
 from .recorder.CV2VideoRecorder import CV2VideoRecorder
@@ -401,6 +412,7 @@ try:
     from .util.OpenVinoUtils import get_inference_engine_device
 except ImportError as ex:
     logging.debug(f"Could not import get_inference_engine_device")
+from .util.ResultUtils import extract_object_detection_roi
 from .util.ResultUtils import non_maximum_suppression
 from .util.TimeUtils import FPSTracer
 from .util.TimeUtils import ProfileWatch

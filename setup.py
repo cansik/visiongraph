@@ -49,7 +49,13 @@ class GenerateInitPy(distutils.cmd.Command):
         "moviepy",
         "vidgear",
         "numba",
-        "aruco"
+        "aruco",
+
+        # frame buffer sharing
+        "glfw",
+        "OpenGL",
+        "syphonpy",
+        "SpoutGL"
     }
 
     module_with_methods = {
@@ -256,7 +262,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version="0.1.31.2",
+    version="0.1.32",
     packages=required_packages,
     url="https://github.com/cansik/visiongraph",
     license="MIT License",

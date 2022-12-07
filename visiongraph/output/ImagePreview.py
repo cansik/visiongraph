@@ -22,11 +22,13 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
     def setup(self):
         cv2.namedWindow(self.title, cv2.WINDOW_NORMAL or cv2.WINDOW_KEEPRATIO)
 
-    def process(self, data: Union[np.ndarray, ResultDict]) -> np.ndarray:
-        if isinstance(data, ResultDict):
-            data = data[self.image_key]
+    def process(self, data: Union[np.ndarray, ResultDict]) -> Union[np.ndarray, ResultDict]:
+        image = data
 
-        cv2.imshow(self.title, data)
+        if isinstance(image, ResultDict):
+            image = data[self.image_key]
+
+        cv2.imshow(self.title, image)
         key = cv2.waitKey(self.wait_time)
 
         if self.handle_key_callback is not None and key != 255 and key != -1:
