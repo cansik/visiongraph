@@ -48,6 +48,10 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     def bounding_box(self) -> BoundingBox2D:
         return self._bounding_box
 
+    @bounding_box.setter
+    def bounding_box(self, box: BoundingBox2D):
+        self._bounding_box = box
+
     @property
     def annotation_color(self):
         return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]

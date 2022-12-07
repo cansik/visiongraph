@@ -21,7 +21,7 @@ def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold:
 
 def extract_object_detection_roi(image: np.ndarray,
                                  detection: ODR) -> Tuple[np.ndarray, ODR]:
-    box = detection.bounding_box.scale_with(Size2D.from_image(image))
+    box: BoundingBox2D = detection.bounding_box.scale_with(Size2D.from_image(image))
     roi = ImageUtils.roi(image, box)
 
     result = copy.deepcopy(detection)

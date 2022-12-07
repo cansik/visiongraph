@@ -60,7 +60,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         ], dtype=np.float32)
 
         # use all landmarks if possible
-        if isinstance(landmarks, RegressionFace):
+        if hasattr(landmarks, "mouth_left") and hasattr(landmarks, "mouth_right"):
             src_keypoints = np.vstack((src_keypoints,
                                        np.array([
                                            [landmarks.mouth_left.x, landmarks.mouth_left.y],
