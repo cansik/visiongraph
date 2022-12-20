@@ -21,7 +21,8 @@ result = vg.LandmarkDetectionResult(0, "face", 1.0, vector.array(
 result.tracking_id = 2
 
 output = input.copy()
-result.annotate(input, show_bounding_box=True)
+result.annotate(input, show_bounding_box=True, landmark_colors=[(255, 0, 0)],
+                marker_type=cv2.MARKER_CROSS, marker_size=5)
 cv2.imshow("Input", input)
 
 result.map_coordinates((iw, ih), (w, h), src_roi=padding_box)

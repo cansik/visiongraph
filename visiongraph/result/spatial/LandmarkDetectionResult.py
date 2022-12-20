@@ -1,4 +1,5 @@
 import copy
+import numbers
 from typing import Optional, List, Tuple, Sequence, Union
 
 import cv2
@@ -23,10 +24,11 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                  color: Optional[Sequence[int]] = None,
                  show_bounding_box: bool = False, min_score: float = 0,
                  connections: Optional[List[Tuple[int, int]]] = None,
-                 marker_size: int = 3, stroke_width: int = 2, **kwargs):
+                 marker_size: int = 3, marker_type: Optional[int] = None, stroke_width: int = 2,
+                 landmark_colors: Optional[Union[Sequence[int], Sequence[Sequence[int]]]] = None, **kwargs):
 
         if show_bounding_box:
-            super().annotate(image, show_info, info_text, **kwargs)
+            super().annotate(image, show_info, info_text, color, **kwargs)
 
         h, w = image.shape[:2]
         color = self.annotation_color if color is None else color
@@ -43,10 +45,26 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                     cv2.line(image, point01, point02, color, stroke_width)
 
         # mark landmark joints
-        for lm in self.landmarks:
+        if landmark_colors is None:
+            landmark_colors = [(0, 0, 255)]
+
+        if isinstance(landmark_colors, Sequence):
+            if len(landmark_colors) == 0:
+                raise Exception("Landmark colors can not be empty!")
+
+            if isinstance(landmark_colors[0], numbers.Real):
+                landmark_colors = [landmark_colors]
+
+        for i, lm in enumerate(self.landmarks):
             if lm.t < min_score:
                 continue
-            cv2.circle(image, (round(lm.x * w), round(lm.y * h)), marker_size, (0, 0, 255), -1)
+            lm_color = landmark_colors[i % len(landmark_colors)]
+            position = (round(lm.x * w), round(lm.y * h))
+
+            if marker_type is None:
+                cv2.circle(image, position, marker_size, lm_color, -1)
+            else:
+                cv2.drawMarker(image, position, lm_color, markerType=marker_type, markerSize=marker_size)
 
     def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
                         src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
