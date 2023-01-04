@@ -64,7 +64,8 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
 
     def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
         results = []
-        output = outputs[self.engine.output_names[1]]
+        output: np.ndarray = outputs[self.engine.output_names[0]]
+        output = output.squeeze()
 
         for obj in output:
             score = float(obj[4])

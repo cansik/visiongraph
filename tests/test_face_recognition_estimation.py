@@ -1,21 +1,27 @@
 import unittest
 
 import cv2
+
 import visiongraph as vg
 
 
 class FaceRecognitionEstimationTests(unittest.TestCase):
 
-    @staticmethod
-    def _test_model(model: vg.FaceRecognitionEstimator):
-        image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
+    def setUp(self) -> None:
+        self.network = vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(),
+                                                  landmarks=vg.RegressionLandmarkEstimator())
+        self.network.setup()
+
+    def doCleanups(self) -> None:
+        self.network.release()
+
+    def _test_model(self, model: vg.FaceRecognitionEstimator):
+        image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
+        result = self.network.process(image)[0]
 
         model.setup()
-        model.process(image)
+        model.process_detection(image, result)
         model.release()
-
-    def test_face_recognition_estimator(self):
-        self._test_model(vg.FaceRecognitionEstimator())
 
     def test_face_reidentification_estimator_int8(self):
         self._test_model(vg.FaceReidentificationEstimator.create(vg.FaceReidentificationConfig.Retail_0095_FP16_INT8))
