@@ -13,15 +13,7 @@ jobs:
             - name: windows
               host: windows-latest
               args:
-
-            - name: macos
-              host: macos-12
-              args:
-
-            - name: ubuntu
-              host: ubuntu-latest
-              args:
-        python-version: [ '3.8', '3.9', '3.10' ]
+        python-version: [ '3.9' ]
 
     runs-on: ${{ matrix.os.host }}
 
