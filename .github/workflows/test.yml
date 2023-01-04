@@ -8,11 +8,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        matrix:
-          os:
-            - name: windows
-              host: windows-latest
-              args:
+        os:
+          - name: windows
+            host: windows-latest
+            args:
         python-version: [ '3.9' ]
 
     runs-on: ${{ matrix.os.host }}
