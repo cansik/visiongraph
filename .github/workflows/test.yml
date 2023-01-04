@@ -8,8 +8,20 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ 'ubuntu-latest' ]
-        python-version: [ '3.7', '3.8', '3.9' ]
+        matrix:
+          os:
+            - name: windows
+              host: windows-latest
+              args:
+
+            - name: macos
+              host: macos-12
+              args:
+
+            - name: ubuntu
+              host: ubuntu-latest
+              args:
+        python-version: [ '3.8', '3.9', '3.10' ]
 
     runs-on: ${{ matrix.os }}
 
@@ -23,10 +35,10 @@ jobs:
 
       # install pip packages
       - name: Install visiongraph
-        run: pip install visiongraph[all] --use-deprecated=legacy-resolver
+        run: pip install visiongraph[all]
 
       # run test
       - name: Test visiongraph
         run: |
           cd $GITHUB_WORKSPACE
-          python tests/ImportTest.py
+          python -m unittest discover -s ./tests -t ./
