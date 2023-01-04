@@ -23,9 +23,9 @@ jobs:
               args:
         python-version: [ '3.8', '3.9', '3.10' ]
 
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os.host }}
 
-    name: python ${{ matrix.python-version }} on ${{ matrix.os }}
+    name: python ${{ matrix.python-version }} on ${{ matrix.os.host }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE
       - uses: actions/checkout@v2
@@ -35,7 +35,9 @@ jobs:
 
       # install pip packages
       - name: Install visiongraph
-        run: pip install visiongraph[all]
+        run: |
+          cd $GITHUB_WORKSPACE
+          pip install ".[all]"
 
       # run test
       - name: Test visiongraph
