@@ -4,7 +4,7 @@ import cv2
 import visiongraph as vg
 
 
-class FaceLandmarkEstimatorTests(unittest.TestCase):
+class FaceLandmarkEstimationTests(unittest.TestCase):
 
     @staticmethod
     def _test_model(model: vg.FaceLandmarkEstimator):

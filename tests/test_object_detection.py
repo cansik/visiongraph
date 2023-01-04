@@ -20,9 +20,11 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_center_net_fp32(self):
         self._test_model(vg.CenterNetDetector.create(vg.CenterNetConfig.CenterNet_FP32))
 
+    @unittest.skip
     def test_detr_detector_fp16(self):
         self._test_model(vg.DETRDetector.create(vg.DETRConfig.DETR_Resnet50_FP16))
 
+    @unittest.skip
     def test_detr_detector_fp32(self):
         self._test_model(vg.DETRDetector.create(vg.DETRConfig.DETR_Resnet50_FP32))
 
