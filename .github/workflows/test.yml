@@ -26,12 +26,14 @@ jobs:
 
       # install pip packages
       - name: Install visiongraph
+        shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          pip install ".[all]"
+          pip install .[all]
 
       # run test
       - name: Test visiongraph
+        shell: bash
         run: |
           cd $GITHUB_WORKSPACE
           python -m unittest discover -s ./tests -t ./
