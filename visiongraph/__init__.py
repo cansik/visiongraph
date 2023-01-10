@@ -41,6 +41,10 @@ try:
 except ImportError as ex:
     logging.debug(f"Could not import ONNXVisionEngine")
 try:
+    from .estimator.openvino.OpenVinoEngine import OpenVinoEngine
+except ImportError as ex:
+    logging.debug(f"Could not import OpenVinoEngine")
+try:
     from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 except ImportError as ex:
     logging.debug(f"Could not import OpenVinoObjectDetector")
