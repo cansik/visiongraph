@@ -8,6 +8,7 @@ import pyk4a
 from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback, ImageFormat, CalibrationType
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
+from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.util.ArgUtils import add_enum_choice_argument
 from visiongraph.util.CollectionUtils import default_value_dict
 from visiongraph.util.MathUtils import transform_coordinates, constrain
@@ -319,15 +320,24 @@ class AzureKinectInput(BaseDepthCamera):
         value = value // 10 * 10
         self.device.whitebalance = value
 
-    @property
-    def camera_matrix(self) -> np.ndarray:
-        calibration = self.device.calibration
-        return calibration.get_camera_matrix(CalibrationType.DEPTH)
+    @staticmethod
+    def _to_k4a_calibration_type(stream: CameraStreamType) -> CalibrationType:
+        if stream == CameraStreamType.Color:
+            return CalibrationType.COLOR
+        elif stream == CameraStreamType.Depth:
+            return CalibrationType.DEPTH
+        elif stream == CameraStreamType.Infrared:
+            return CalibrationType.DEPTH
 
-    @property
-    def fisheye_distortion(self) -> np.ndarray:
+        raise Exception(f"Azure Kinect calibration type {stream} not available.")
+
+    def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         calibration = self.device.calibration
-        return calibration.get_distortion_coefficients(CalibrationType.DEPTH)
+        return calibration.get_camera_matrix(self._to_k4a_calibration_type(stream_type))
+
+    def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        calibration = self.device.calibration
+        return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
 
     @property
     def serial(self) -> str:

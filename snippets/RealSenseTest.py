@@ -18,7 +18,7 @@ pipe.start(cfg)
 
 profiles = pipe.get_active_profile()
 stream = profiles.get_stream(rs.stream.depth).as_video_stream_profile()
-intrinsics = stream.get_intrinsics()
+intrinsics = stream.get_realsense_intrinsics()
 
 print(f"Depth Intrinsics: {intrinsics}")
 

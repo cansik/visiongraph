@@ -6,6 +6,7 @@ import numpy as np
 
 from visiongraph.input.BaseDepthInput import BaseDepthInput
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
+from visiongraph.model.CameraStreamType import CameraStreamType
 
 
 class BaseDepthCamera(BaseDepthInput, ABC):
@@ -110,18 +111,27 @@ class BaseDepthCamera(BaseDepthInput, ABC):
         pass
 
     @property
-    @abstractmethod
     def camera_matrix(self) -> np.ndarray:
-        pass
+        return self.get_camera_matrix()
 
     @property
-    @abstractmethod
     def fisheye_distortion(self) -> np.ndarray:
-        pass
+        return self.fisheye_distortion
 
     @property
     def intrinsics(self) -> CameraIntrinsics:
-        return CameraIntrinsics(self.camera_matrix, self.fisheye_distortion)
+        return self.get_intrinsics()
+
+    @abstractmethod
+    def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        pass
+
+    @abstractmethod
+    def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        pass
+
+    def get_intrinsics(self, stream_type: CameraStreamType = CameraStreamType.Color) -> CameraIntrinsics:
+        return CameraIntrinsics(self.get_camera_matrix(stream_type), self.get_fisheye_distortion(stream_type))
 
     @property
     @abstractmethod

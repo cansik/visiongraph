@@ -8,6 +8,7 @@ import pyrealsense2 as rs
 import vector
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
+from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
@@ -305,19 +306,19 @@ class RealSenseInput(BaseDepthCamera):
     def get_json_config(self) -> str:
         if self.device is None:
             logging.warning(f"No device available to apply json config.")
-            return
+            return ""
 
         if not self.device.supports(rs.camera_info.advanced_mode):
             logging.warning(f"Device {self.device_name} does not support serialisation.")
-            return
+            return ""
 
         serdev = rs.serializable_device(self.device)
         return serdev.serialize_json()
 
-    def get_intrinsics(self, stream_type: Optional[rs.stream] = None, stream_index: int = -1) -> rs.intrinsics:
+    def get_realsense_intrinsics(self, stream_type: Optional[rs.stream] = None, stream_index: int = -1) -> rs.intrinsics:
         profiles = self.pipeline.get_active_profile()
 
-        # determine main stream type
+        # determine main stream_type type
         if stream_type is None:
             if self.use_infrared:
                 stream_type = rs.stream.infrared
@@ -329,16 +330,25 @@ class RealSenseInput(BaseDepthCamera):
         intrinsics: rs.intrinsics = stream.get_intrinsics()
         return intrinsics
 
-    @property
-    def camera_matrix(self) -> np.ndarray:
-        intrinsics = self.get_intrinsics()
+    @staticmethod
+    def _to_rs2_stream_type(stream: CameraStreamType) -> rs.stream:
+        if stream == CameraStreamType.Color:
+            return rs.stream.color
+        elif stream == CameraStreamType.Depth:
+            return rs.stream.depth
+        elif stream == CameraStreamType.Infrared:
+            return rs.stream.infrared
+
+        raise Exception(f"RealSense stream type {stream} not available.")
+
+    def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array([[intrinsics.fx, 0, intrinsics.ppx],
                          [0, intrinsics.fy, intrinsics.ppy],
                          [0, 0, 1]])
 
-    @property
-    def fisheye_distortion(self) -> np.ndarray:
-        intrinsics = self.get_intrinsics()
+    def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array(intrinsics.coeffs[:4])
 
     @property

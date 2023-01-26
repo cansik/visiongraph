@@ -299,6 +299,7 @@ except ImportError as ex:
     logging.debug(f"Could not import RealSenseInput")
 from .input.VideoCaptureInput import VideoCaptureInput
 from .model.CameraIntrinsics import CameraIntrinsics
+from .model.CameraStreamType import CameraStreamType
 from .model.DepthBuffer import DepthBuffer
 from .model.VisionEngineOutput import VisionEngineOutput
 from .model.geometry.BoundingBox2D import BoundingBox2D
