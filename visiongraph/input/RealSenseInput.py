@@ -94,6 +94,7 @@ class RealSenseInput(BaseDepthCamera):
 
         if self.input_bag_file is not None:
             rs.config.enable_device_from_file(self.config, self.input_bag_file)
+            rs.config.enable_all_streams(self.config)
 
         if self.output_bag_file is not None:
             self.config.enable_record_to_file(self.output_bag_file)
@@ -112,22 +113,23 @@ class RealSenseInput(BaseDepthCamera):
                                       self.depth_format, int(self.fps))
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
-        # set options before startup
-        device = self._find_current_device(ctx, self.selected_serial)
-        depth_sensor: rs.depth_stereo_sensor = device.first_depth_sensor()
+        # set options before startup (only for live-camera feed)
+        if self.input_bag_file is None:
+            device = self._find_current_device(ctx, self.selected_serial)
+            depth_sensor: rs.depth_stereo_sensor = device.first_depth_sensor()
 
-        if depth_sensor is not None:
-            def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
-                if value is not None:
-                    return float(value)
+            if depth_sensor is not None:
+                def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
+                    if value is not None:
+                        return float(value)
 
-                option_range: rs.option_range = depth_sensor.get_option_range(option)
-                return option_range.max
+                    option_range: rs.option_range = depth_sensor.get_option_range(option)
+                    return option_range.max
 
-            self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
-                            value=get_option_max_or_value(rs.option.auto_exposure_limit, self.auto_exposure_limit))
-            self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
-                            value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
+                self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
+                                value=get_option_max_or_value(rs.option.auto_exposure_limit, self.auto_exposure_limit))
+                self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
+                                value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
 
         # start up device
         self.profile = self.pipeline.start(self.config)
