@@ -8,6 +8,7 @@ import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 from visiongraph.estimator.translation.DepthEstimator import DepthEstimator
 from visiongraph.external.midas.transforms import Resize, PrepareForNet
 from visiongraph.result.DepthMap import DepthMap
@@ -18,10 +19,8 @@ class MidasConfig(Enum):
 
 
 class MidasDepthEstimator(DepthEstimator):
-    def __init__(self, model: Asset, net_size: int = 256, cuda: bool = False, gpu_id: int = 0):
+    def __init__(self, model: Asset, net_size: int = 256):
         super().__init__()
-
-        self.device = f"CUDA:{gpu_id}" if cuda else "CPU"
 
         self.model_asset = model
         self.net_size = net_size
@@ -43,7 +42,9 @@ class MidasDepthEstimator(DepthEstimator):
         self.transform = self.compose2(resize_image, PrepareForNet())
 
     def setup(self):
-        self.model = rt.InferenceSession(self.model_asset.path)
+        self.model = rt.InferenceSession(self.model_asset.path, providers=["CUDAExecutionProvider",
+                                                                           "OpenVINOExecutionProvider",
+                                                                           "CPUExecutionProvider"])
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
 
