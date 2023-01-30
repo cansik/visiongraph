@@ -15,7 +15,7 @@ CostFunctionType = Callable[[List[ObjectDetectionResult], List[ObjectDetectionRe
 
 
 @dataclass
-class FlateTrack:
+class _FlateTrack:
     id: int
     reference: ObjectDetectionResult
     age: int = 0
@@ -40,7 +40,7 @@ class FlateTracker(BaseObjectDetectionTracker):
 
         self.cost_function: Optional[CostFunctionType] = self._l2_cost_function
 
-        self._tracks: List[FlateTrack] = []
+        self._tracks: List[_FlateTrack] = []
         self._unique_id: int = 0
 
     def setup(self):
@@ -89,7 +89,7 @@ class FlateTracker(BaseObjectDetectionTracker):
         for di, detection in enumerate(detections):
             if di not in matched_detections:
                 # new detection found
-                track = FlateTrack(self._new_id(), detection)
+                track = _FlateTrack(self._new_id(), detection)
                 track.update_reference()
                 self._tracks.append(track)
 

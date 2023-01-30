@@ -385,6 +385,7 @@ from .result.spatial.pose.MobileHumanPose import MobileHumanPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
 from .tracker.CentroidTracker import CentroidTracker
+from .tracker.FlateTracker import FlateTracker
 from .tracker.MotpyTracker import MotpyTracker
 from .util.ArgUtils import PipelineNodeFactory
 from .util.ArgUtils import add_dict_choice_argument
@@ -430,7 +431,10 @@ from .util.TimeUtils import current_millis
 from .util.VectorUtils import array_to_vector
 from .util.VectorUtils import landmarks_center_by_indices
 from .util.VectorUtils import lerp4d
+from .util.VectorUtils import list_of_vector2D
+from .util.VectorUtils import list_of_vector3D
 from .util.VectorUtils import list_of_vector4D
+from .util.VectorUtils import vector_as_list
 from .util.VectorUtils import vector_to_array
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
