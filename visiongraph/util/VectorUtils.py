@@ -5,6 +5,18 @@ import vector
 from numpy.lib.recfunctions import structured_to_unstructured, unstructured_to_structured
 
 
+def list_of_vector2D(data: List[Tuple[float, float]]) -> vector.VectorNumpy2D:
+    return vector.array(
+        data, dtype=[("x", float), ("y", float)]
+    ).view(vector.VectorNumpy2D)
+
+
+def list_of_vector3D(data: List[Tuple[float, float, float]]) -> vector.VectorNumpy3D:
+    return vector.array(
+        data, dtype=[("x", float), ("y", float), ("z", float)]
+    ).view(vector.VectorNumpy3D)
+
+
 def list_of_vector4D(data: List[Tuple[float, float, float, float]]) -> vector.VectorNumpy4D:
     return vector.array(
         data, dtype=[("x", float), ("y", float), ("z", float), ("t", float)]
@@ -29,6 +41,17 @@ def array_to_vector(data: np.ndarray) -> vector.VectorNumpy:
                                          ("z", float), ("t", float)]).view(vector.VectorNumpy4D)
     else:
         raise Exception(f"Shape ({h}, {w}) is not a valid vector numpy shape.")
+
+
+def vector_as_list(v: vector.Vector) -> List[float]:
+    if isinstance(v, vector.Vector2D):
+        return [v.x, v.y]
+    elif isinstance(v, vector.Vector3D):
+        return [v.x, v.y, v.z]
+    elif isinstance(v, vector.Vector4D):
+        return [v.x, v.y, v.z, v.t]
+
+    raise Exception(f"Vector {v} can not be converted to list.")
 
 
 def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vector.VectorNumpy4D:

@@ -9,6 +9,7 @@ from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEs
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
+from visiongraph.tracker.FlateTracker import FlateTracker
 from visiongraph.tracker.MotpyTracker import MotpyTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 
@@ -25,7 +26,7 @@ class ObjectDetectionExample(BaseGraph):
                 SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32), 128, (256, 256), 0.8
             )
 
-        self.tracker = MotpyTracker()
+        self.tracker = FlateTracker()
 
         self.add_nodes(self.input, self.network, self.tracker)
 
