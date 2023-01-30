@@ -90,7 +90,10 @@ class BaseVisionEngine(ABC):
 
         # transform to blob
         if transpose:
-            in_frame = in_frame.transpose((2, 0, 1))
+            if channels == 3:
+                in_frame = in_frame.transpose((2, 0, 1))
+            else:
+                in_frame = in_frame.transpose((1, 0))
 
         # make ncwh
         in_frame = in_frame.reshape((1, channels, height, width))

@@ -19,7 +19,7 @@ class GMCNNConfig(Enum):
 class GMCNNInpainter(BaseInpainter):
     def __init__(self, model: Asset, weights: Asset, device: str = "CPU"):
         super().__init__()
-        self.engine = VisionInferenceEngine(model, weights, device=device)
+        self.engine = VisionInferenceEngine(model, weights, device=device, flip_channels=False)
 
     def setup(self):
         self.engine.setup()
@@ -30,7 +30,7 @@ class GMCNNInpainter(BaseInpainter):
 
         mask_input_name = self.engine.input_names[1]
         mask_input, padding_box, image_box = self.engine.pre_process_image(binary_mask, mask_input_name,
-                                                                           flip_channels=False)
+                                                                           flip_channels=False, transpose=False)
         inputs = {mask_input_name: mask_input}
 
         outputs = self.engine.process(image, inputs)
