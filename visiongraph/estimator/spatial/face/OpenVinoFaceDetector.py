@@ -11,6 +11,7 @@ from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult
 
+BOXES_NAME = "boxes"
 
 class OpenVinoFaceConfig(Enum):
     MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8")
@@ -64,7 +65,9 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
 
     def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
         results = []
-        output: np.ndarray = outputs[self.engine.output_names[0]]
+
+        output_name = BOXES_NAME if BOXES_NAME in self.engine.output_names else self.engine.output_names[0]
+        output: np.ndarray = outputs[output_name]
         output = output.squeeze()
 
         for obj in output:
