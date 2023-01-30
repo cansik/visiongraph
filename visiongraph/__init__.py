@@ -403,6 +403,10 @@ from .util.ImageUtils import extract_roi_safe
 from .util.ImageUtils import resize_and_letter_box
 from .util.ImageUtils import resize_and_pad
 from .util.ImageUtils import roi
+from .util.LinalgUtils import project_pixel_to_point
+from .util.LinalgUtils import project_pixels_to_points
+from .util.LinalgUtils import project_point_to_pixel
+from .util.LinalgUtils import project_points_to_pixels
 from .util.LoggingUtils import add_logging_parameter
 from .util.LoggingUtils import setup_logging
 from .util.MathUtils import StreamingMovingAverage
