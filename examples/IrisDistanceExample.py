@@ -3,6 +3,7 @@ from typing import Sequence
 
 import cv2
 import numpy as np
+import vector
 
 import visiongraph as vg
 
@@ -13,14 +14,23 @@ class Face3D(vg.BaseResult):
         self.distance = distance
 
     def annotate(self, image: np.ndarray, **kwargs):
-        self.face.annotate(image, **kwargs)
-
         h, w = image.shape[:2]
+
+        def mark_point(point: vector.Vector2D):
+            x = int(point.x * w)
+            y = int(point.y * h)
+
+            cv2.circle(image, (x, y), 5, (0, 255, 255), 1)
+
+        # self.face.annotate(image, **kwargs)
+        mark_point(self.face.left_iris.to_xy())
+        mark_point(self.face.right_iris.to_xy())
+
         br = self.face.bounding_box.bottom_right
         x = int(br.x * w) + 5
         y = int(br.y * h)
 
-        cv2.putText(image, f"{self.distance:.2f}m", (x, y), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255))
+        cv2.putText(image, f"{self.distance:.2f}m", (x, y), cv2.FONT_HERSHEY_DUPLEX, 0.9, (255, 255, 255))
 
 
 class IrisDistanceApp:
