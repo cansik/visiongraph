@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph import AffectNetEmotionClassifier
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
@@ -20,7 +21,8 @@ class CascadeFaceDetectionExample(BaseGraph):
         self.input = input
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator(),
-                                               head_pose=AdasHeadPoseEstimator())
+                                               head_pose=AdasHeadPoseEstimator(),
+                                               emotion=AffectNetEmotionClassifier())
 
         self.add_nodes(self.input, self.network)
 

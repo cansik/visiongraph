@@ -125,6 +125,11 @@ try:
     from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 except ImportError as ex:
     logging.debug(f"Could not import OpenVinoFaceDetector")
+try:
+    from .estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
+except ImportError as ex:
+    logging.debug(f"Could not import AffectNetEmotionClassifier")
+from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetector
@@ -306,6 +311,7 @@ from .model.geometry.BoundingBox2D import BoundingBox2D
 from .model.geometry.Size2D import Size2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
+from .model.types.ModelPrecision import ModelPrecision
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
 from .node.ApplyNode import ApplyNode
 from .node.BreakpointNode import BreakpointNode
@@ -356,6 +362,7 @@ try:
     from .result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 except ImportError as ex:
     logging.debug(f"Could not import BlazeFaceMesh")
+from .result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
 from .result.spatial.face.FaceDetectionResult import FaceDetectionResult
 from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from .result.spatial.face.RegressionFace import RegressionFace
