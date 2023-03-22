@@ -36,47 +36,47 @@ from .estimator.inpaint.BaseInpainter import BaseInpainter
 try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import GMCNNConfig because it was not found")
+    logging.info(f"Module GMCNNConfig not found")
 try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNInpainter
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import GMCNNInpainter because it was not found")
+    logging.info(f"Module GMCNNInpainter not found")
 try:
     from .estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import ONNXVisionEngine because it was not found")
+    logging.info(f"Module ONNXVisionEngine not found")
 try:
     from .estimator.openvino.OpenVinoEngine import OpenVinoEngine
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenVinoEngine because it was not found")
+    logging.info(f"Module OpenVinoEngine not found")
 try:
     from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenVinoObjectDetector because it was not found")
+    logging.info(f"Module OpenVinoObjectDetector not found")
 try:
     from .estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SyncInferencePipeline because it was not found")
+    logging.info(f"Module SyncInferencePipeline not found")
 try:
     from .estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import VisionInferenceEngine because it was not found")
+    logging.info(f"Module VisionInferenceEngine not found")
 try:
     from .estimator.spatial.CenterNetDetector import CenterNetConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import CenterNetConfig because it was not found")
+    logging.info(f"Module CenterNetConfig not found")
 try:
     from .estimator.spatial.CenterNetDetector import CenterNetDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import CenterNetDetector because it was not found")
+    logging.info(f"Module CenterNetDetector not found")
 try:
     from .estimator.spatial.DETRDetector import DETRConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import DETRConfig because it was not found")
+    logging.info(f"Module DETRConfig not found")
 try:
     from .estimator.spatial.DETRDetector import DETRDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import DETRDetector because it was not found")
+    logging.info(f"Module DETRDetector not found")
 from .estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from .estimator.spatial.LandmarkEstimator import LandmarkEstimator
 from .estimator.spatial.ObjectDetector import ObjectDetector
@@ -84,229 +84,229 @@ from .estimator.spatial.RoiEstimator import RoiEstimator
 try:
     from .estimator.spatial.SSDDetector import SSDConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SSDConfig because it was not found")
+    logging.info(f"Module SSDConfig not found")
 try:
     from .estimator.spatial.SSDDetector import SSDDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SSDDetector because it was not found")
+    logging.info(f"Module SSDDetector not found")
 from .estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from .estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 try:
     from .estimator.spatial.YOLODetector import YOLOArchitecture
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import YOLOArchitecture because it was not found")
+    logging.info(f"Module YOLOArchitecture not found")
 try:
     from .estimator.spatial.YOLODetector import YOLOConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import YOLOConfig because it was not found")
+    logging.info(f"Module YOLOConfig not found")
 try:
     from .estimator.spatial.YOLODetector import YOLODetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import YOLODetector because it was not found")
+    logging.info(f"Module YOLODetector not found")
 try:
     from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import ArUcoCameraPoseEstimator because it was not found")
+    logging.info(f"Module ArUcoCameraPoseEstimator not found")
 from .estimator.spatial.camera.BoardCameraCalibrator import BoardCameraCalibrator
 try:
     from .estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import ChArUcoCalibrator because it was not found")
+    logging.info(f"Module ChArUcoCalibrator not found")
 from .estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
 try:
     from .estimator.spatial.face.AdasFaceDetector import AdasFaceConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AdasFaceConfig because it was not found")
+    logging.info(f"Module AdasFaceConfig not found")
 try:
     from .estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AdasFaceDetector because it was not found")
+    logging.info(f"Module AdasFaceDetector not found")
 from .estimator.spatial.face.FaceDetector import FaceDetector
 try:
     from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenVinoFaceConfig because it was not found")
+    logging.info(f"Module OpenVinoFaceConfig not found")
 try:
     from .estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenVinoFaceDetector because it was not found")
+    logging.info(f"Module OpenVinoFaceDetector not found")
 try:
     from .estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AffectNetEmotionClassifier because it was not found")
+    logging.info(f"Module AffectNetEmotionClassifier not found")
 from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetector
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipeFaceDetector because it was not found")
+    logging.info(f"Module MediaPipeFaceDetector not found")
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceModel
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipeFaceModel because it was not found")
+    logging.info(f"Module MediaPipeFaceModel not found")
 try:
     from .estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import RegressionLandmarkEstimator because it was not found")
+    logging.info(f"Module RegressionLandmarkEstimator not found")
 try:
     from .estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AdasHeadPoseEstimator because it was not found")
+    logging.info(f"Module AdasHeadPoseEstimator not found")
 from .estimator.spatial.face.pose.HeadPoseEstimator import HeadPoseEstimator
 from .estimator.spatial.face.recognition.FaceRecognitionEstimator import FaceRecognitionEstimator
 try:
     from .estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import FaceReidentificationConfig because it was not found")
+    logging.info(f"Module FaceReidentificationConfig not found")
 try:
     from .estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import FaceReidentificationEstimator because it was not found")
+    logging.info(f"Module FaceReidentificationEstimator not found")
 from .estimator.spatial.hand.HandDetector import FaceDetector
 from .estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator
 try:
     from .estimator.spatial.hand.landmark.MediaPipeHandEstimator import HandModelComplexity
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import HandModelComplexity because it was not found")
+    logging.info(f"Module HandModelComplexity not found")
 try:
     from .estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipeHandEstimator because it was not found")
+    logging.info(f"Module MediaPipeHandEstimator not found")
 try:
     from .estimator.spatial.hand.landmark.OpenPoseHandEstimator import OpenPoseHandEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenPoseHandEstimator because it was not found")
+    logging.info(f"Module OpenPoseHandEstimator not found")
 try:
     from .estimator.spatial.pose.AEPoseEstimator import AEPoseConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AEPoseConfig because it was not found")
+    logging.info(f"Module AEPoseConfig not found")
 try:
     from .estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AEPoseEstimator because it was not found")
+    logging.info(f"Module AEPoseEstimator not found")
 try:
     from .estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import EfficientPoseEstimator because it was not found")
+    logging.info(f"Module EfficientPoseEstimator not found")
 try:
     from .estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimatorConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import EfficientPoseEstimatorConfig because it was not found")
+    logging.info(f"Module EfficientPoseEstimatorConfig not found")
 try:
     from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import LiteHRNetConfig because it was not found")
+    logging.info(f"Module LiteHRNetConfig not found")
 try:
     from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import LiteHRNetPoseEstimator because it was not found")
+    logging.info(f"Module LiteHRNetPoseEstimator not found")
 try:
     from .estimator.spatial.pose.LitePoseEstimator import LitePoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import LitePoseEstimator because it was not found")
+    logging.info(f"Module LitePoseEstimator not found")
 try:
     from .estimator.spatial.pose.LitePoseEstimator import LitePoseEstimatorConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import LitePoseEstimatorConfig because it was not found")
+    logging.info(f"Module LitePoseEstimatorConfig not found")
 try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipePoseEstimator because it was not found")
+    logging.info(f"Module MediaPipePoseEstimator not found")
 try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import PoseModelComplexity
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import PoseModelComplexity because it was not found")
+    logging.info(f"Module PoseModelComplexity not found")
 try:
     from .estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MobileHumanPoseEstimator because it was not found")
+    logging.info(f"Module MobileHumanPoseEstimator not found")
 try:
     from .estimator.spatial.pose.MobileNetV2PoseEstimator import MobileNetV2PoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MobileNetV2PoseEstimator because it was not found")
+    logging.info(f"Module MobileNetV2PoseEstimator not found")
 try:
     from .estimator.spatial.pose.MobileNetV2PoseEstimator import MobileNetV2PoseEstimatorConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MobileNetV2PoseEstimatorConfig because it was not found")
+    logging.info(f"Module MobileNetV2PoseEstimatorConfig not found")
 try:
     from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MoveNetConfig because it was not found")
+    logging.info(f"Module MoveNetConfig not found")
 try:
     from .estimator.spatial.pose.MoveNetPoseEstimator import MoveNetPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MoveNetPoseEstimator because it was not found")
+    logging.info(f"Module MoveNetPoseEstimator not found")
 try:
     from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenPoseConfig because it was not found")
+    logging.info(f"Module OpenPoseConfig not found")
 try:
     from .estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenPoseEstimator because it was not found")
+    logging.info(f"Module OpenPoseEstimator not found")
 from .estimator.spatial.pose.PoseEstimator import PoseEstimator
 try:
     from .estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import TopDownPoseEstimator because it was not found")
+    logging.info(f"Module TopDownPoseEstimator not found")
 from .estimator.spatial.pose.__init__ import add_pose_estimation_step_choices
 try:
     from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MaskRCNNConfig because it was not found")
+    logging.info(f"Module MaskRCNNConfig not found")
 try:
     from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MaskRCNNEstimator because it was not found")
+    logging.info(f"Module MaskRCNNEstimator not found")
 try:
     from .estimator.spatial.segmentation.MediaPipeSelfieSegmentation import MediaPipeSelfieSegmentation
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipeSelfieSegmentation because it was not found")
+    logging.info(f"Module MediaPipeSelfieSegmentation not found")
 try:
     from .estimator.spatial.segmentation.MediaPipeSelfieSegmentation import SelfieSegmentationModel
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SelfieSegmentationModel because it was not found")
+    logging.info(f"Module SelfieSegmentationModel not found")
 try:
     from .estimator.spatial.segmentation.YolactEstimator import YolactConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import YolactConfig because it was not found")
+    logging.info(f"Module YolactConfig not found")
 try:
     from .estimator.spatial.segmentation.YolactEstimator import YolcatEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import YolcatEstimator because it was not found")
+    logging.info(f"Module YolcatEstimator not found")
 try:
     from .estimator.translation.DeblurGANv2 import DeblurGANv2
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import DeblurGANv2 because it was not found")
+    logging.info(f"Module DeblurGANv2 not found")
 try:
     from .estimator.translation.DeblurGANv2 import DeblurGANv2Config
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import DeblurGANv2Config because it was not found")
+    logging.info(f"Module DeblurGANv2Config not found")
 from .estimator.translation.DepthEstimator import DepthEstimator
 try:
     from .estimator.translation.MidasDepthEstimator import MidasConfig
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MidasConfig because it was not found")
+    logging.info(f"Module MidasConfig not found")
 try:
     from .estimator.translation.MidasDepthEstimator import MidasDepthEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MidasDepthEstimator because it was not found")
+    logging.info(f"Module MidasDepthEstimator not found")
 try:
     from .input.AzureKinectInput import AzureKinectInput
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import AzureKinectInput because it was not found")
+    logging.info(f"Module AzureKinectInput not found")
 from .input.BaseDepthCamera import BaseDepthCamera
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
 try:
     from .input.CamGearInput import CamGearInput
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import CamGearInput because it was not found")
+    logging.info(f"Module CamGearInput not found")
 from .input.ImageInput import ImageInput
 try:
     from .input.RealSenseInput import RealSenseInput
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import RealSenseInput because it was not found")
+    logging.info(f"Module RealSenseInput not found")
 from .input.VideoCaptureInput import VideoCaptureInput
 from .model.CameraIntrinsics import CameraIntrinsics
 from .model.CameraStreamType import CameraStreamType
@@ -329,11 +329,11 @@ from .output.fbs.FrameBufferSharingServer import FrameBufferSharingServer
 try:
     from .output.fbs.SpoutServer import SpoutServer
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SpoutServer because it was not found")
+    logging.info(f"Module SpoutServer not found")
 try:
     from .output.fbs.SyphonServer import SyphonServer
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import SyphonServer because it was not found")
+    logging.info(f"Module SyphonServer not found")
 from .recorder.AsyncFrameSetRecorder import AsyncFrameSetRecorder
 from .recorder.BaseFrameRecorder import BaseFrameRecorder
 from .recorder.CV2VideoRecorder import CV2VideoRecorder
@@ -341,11 +341,11 @@ from .recorder.FrameSetRecorder import FrameSetRecorder
 try:
     from .recorder.MoviePyVideoRecorder import MoviePyVideoRecorder
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MoviePyVideoRecorder because it was not found")
+    logging.info(f"Module MoviePyVideoRecorder not found")
 try:
     from .recorder.VidGearVideoRecorder import VidGearVideoRecorder
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import VidGearVideoRecorder because it was not found")
+    logging.info(f"Module VidGearVideoRecorder not found")
 from .result.ArUcoCameraPose import ArUcoCameraPose
 from .result.ArUcoMarkerDetection import ArUcoMarkerDetection
 from .result.BaseResult import BaseResult
@@ -366,7 +366,7 @@ from .result.spatial.face.BlazeFace import BlazeFace
 try:
     from .result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import BlazeFaceMesh because it was not found")
+    logging.info(f"Module BlazeFaceMesh not found")
 from .result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
 from .result.spatial.face.FaceDetectionResult import FaceDetectionResult
 from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
@@ -374,22 +374,22 @@ from .result.spatial.face.RegressionFace import RegressionFace
 try:
     from .result.spatial.hand.BlazeHand import BlazeHand
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import BlazeHand because it was not found")
+    logging.info(f"Module BlazeHand not found")
 from .result.spatial.hand.HandDetectionResult import HandDetectionResult
 from .result.spatial.hand.HandLandmarkResult import HandLandmarkResult
 from .result.spatial.hand.Handedness import Handedness
 try:
     from .result.spatial.hand.OpenPoseHand import OpenPoseHand
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenPoseHand because it was not found")
+    logging.info(f"Module OpenPoseHand not found")
 try:
     from .result.spatial.pose.BlazePose import BlazePose
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import BlazePose because it was not found")
+    logging.info(f"Module BlazePose not found")
 try:
     from .result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import BlazePoseSegmentation because it was not found")
+    logging.info(f"Module BlazePoseSegmentation not found")
 from .result.spatial.pose.COCOOpenPose import COCOOpenPose
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.EfficientPose import EfficientPose
@@ -433,7 +433,7 @@ from .util.NetworkUtils import prepare_openvino_model
 try:
     from .util.OpenVinoUtils import get_inference_engine_device
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import get_inference_engine_device because it was not found")
+    logging.info(f"Module get_inference_engine_device not found")
 from .util.ResultUtils import extract_object_detection_roi
 from .util.ResultUtils import non_maximum_suppression
 from .util.TimeUtils import FPSTracer
@@ -451,15 +451,15 @@ from .util.VectorUtils import vector_to_array
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OneEuroFilterNumba because it was not found")
+    logging.info(f"Module OneEuroFilterNumba not found")
 try:
     from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import OpenVinoPoseEstimator because it was not found")
+    logging.info(f"Module OpenVinoPoseEstimator not found")
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceMeshEstimator import MediaPipeFaceMeshEstimator
 except ModuleNotFoundError as ex:
-    logging.info(f"Could not import MediaPipeFaceMeshEstimator because it was not found")
+    logging.info(f"Module MediaPipeFaceMeshEstimator not found")
 
 
 def __getattr__(name):

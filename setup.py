@@ -160,7 +160,7 @@ class GenerateInitPy(distutils.cmd.Command):
 
             if imp.optional:
                 line = f"try:\n    {import_line}\nexcept ModuleNotFoundError as ex:\n" \
-                       f"    logging.info(f\"Could not import {imp.name} because it was not found\")"
+                       f"    logging.info(f\"Module {imp.name} not found\")"
                 lines.append(line)
             else:
                 lines.append(import_line)
