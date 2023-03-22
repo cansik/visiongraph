@@ -3,14 +3,15 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph import AffectNetEmotionClassifier
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
+from visiongraph.estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.model.types.ModelPrecision import ModelPrecision
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
@@ -22,7 +23,7 @@ class CascadeFaceDetectionExample(BaseGraph):
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator(),
                                                head_pose=AdasHeadPoseEstimator(),
-                                               emotion=AffectNetEmotionClassifier())
+                                               emotion=AffectNetEmotionClassifier(ModelPrecision.INT8))
 
         self.add_nodes(self.input, self.network)
 
@@ -37,7 +38,7 @@ class CascadeFaceDetectionExample(BaseGraph):
             result.annotate(frame)
 
         cv2.imshow("Face Detection", frame)
-        if cv2.waitKey(15) & 0xFF == 27:
+        if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
     @staticmethod

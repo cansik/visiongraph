@@ -4,7 +4,7 @@ import numpy as np
 import vector
 import mediapipe as mp
 
-from visiongraph import FaceLandmarkResult
+from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from visiongraph.util.VectorUtils import landmarks_center_by_indices
 
 _mp_face_mesh = mp.solutions.face_mesh

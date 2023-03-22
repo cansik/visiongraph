@@ -109,6 +109,20 @@ Most estimators use big model and weight descriptions for their neural networks.
 ### Argparse
 To support rapid prototyping many graph and estimator options are already provided to add to the argparse parser.
 
+### Logging
+To enable logging for visiongraph imports please set the following environment variable:
+
+```bash
+# zsh / bash
+export VISIONGRAPH_LOGLEVEL=INFO
+
+# cmd
+set VISIONGRAPH_LOGLEVEL=INFO
+
+# powershell
+$env:VISIONGRAPH_LOGLEVEL="INFO"
+```
+
 ## Roadmap
 Next roadmap points:
 
