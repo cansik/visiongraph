@@ -9,6 +9,7 @@ from pyk4a import PyK4A, PyK4ACapture, Config, PyK4ARecord, PyK4APlayback, Image
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.model.CameraStreamType import CameraStreamType
+from visiongraph.util import CommonArgs
 from visiongraph.util.ArgUtils import add_enum_choice_argument
 from visiongraph.util.CollectionUtils import default_value_dict
 from visiongraph.util.MathUtils import transform_coordinates, constrain
@@ -236,6 +237,9 @@ class AzureKinectInput(BaseDepthCamera):
     def configure(self, args: Namespace):
         super().configure(args)
 
+        if args.source is not None:
+            args.k4a_play_mkv = args.source
+
         self.align_frames = args.k4a_align
         self.device_id = args.k4a_device
 
@@ -254,6 +258,8 @@ class AzureKinectInput(BaseDepthCamera):
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
+        CommonArgs.add_source_argument(parser)
+
         parser.add_argument("--k4a-align", action="store_true",
                             help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")

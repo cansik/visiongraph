@@ -12,7 +12,7 @@ from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
-from visiongraph.util import MathUtils, ImageUtils
+from visiongraph.util import MathUtils, ImageUtils, CommonArgs
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
 from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
@@ -432,6 +432,10 @@ class RealSenseInput(BaseDepthCamera):
 
     def configure(self, args: Namespace):
         super().configure(args)
+
+        if args.source is not None:
+            args.rs_play_bag = args.source
+
         self.selected_serial = args.rs_serial
 
         self.input_bag_file = args.rs_play_bag
@@ -456,6 +460,9 @@ class RealSenseInput(BaseDepthCamera):
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(RealSenseInput, RealSenseInput).add_params(parser)
+
+        CommonArgs.add_source_argument(parser)
+
         parser.add_argument("--rs-serial", default=None, type=str,
                             help="RealSense serial number to choose specific device.")
         parser.add_argument("--rs-json", default=None, type=str,

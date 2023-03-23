@@ -8,6 +8,7 @@ import numpy as np
 
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.types.VideoCaptureBackend import VideoCaptureBackend
+from visiongraph.util import CommonArgs
 from visiongraph.util.ArgUtils import add_dict_choice_argument
 from visiongraph.util.TimeUtils import current_millis
 
@@ -76,6 +77,9 @@ class VideoCaptureInput(BaseInput):
     def configure(self, args: Namespace):
         super().configure(args)
 
+        if args.source is not None:
+            args.channel = args.source
+
         if str(args.channel).isnumeric():
             self.channel = int(args.channel)
         else:
@@ -99,6 +103,8 @@ class VideoCaptureInput(BaseInput):
             if ex.message.startswith("conflicting"):
                 return
             raise ex
+
+        CommonArgs.add_source_argument(parser)
 
     def _setup_cap(self):
         self._cap = cv2.VideoCapture(self.channel, self.capture_backend)

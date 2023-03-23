@@ -407,6 +407,7 @@ from .util.ArgUtils import dict_choice
 from .util.ArgUtils import float_range
 from .util.CodeUtils import deprecated
 from .util.CollectionUtils import default_value_dict
+from .util.CommonArgs import add_source_argument
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
 from .util.DrawingUtils import draw_landmark

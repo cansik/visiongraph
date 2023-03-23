@@ -7,6 +7,7 @@ import cv2
 import numpy as np
 
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.util import CommonArgs
 from visiongraph.util.TimeUtils import current_millis
 
 
@@ -38,10 +39,15 @@ class ImageInput(BaseInput):
         pass
 
     def configure(self, args: Namespace):
+        if args.source is not None:
+            args.input_path = args.source
+
         self.path = args.input_path
         self.delay = args.input_delay
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        CommonArgs.add_source_argument(parser)
+
         parser.add_argument("--input-path", type=str, help="Path to the input image.")
         parser.add_argument("--input-delay", type=float, default=1.0, help="Input delay time (s).")
