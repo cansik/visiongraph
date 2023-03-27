@@ -17,7 +17,7 @@ class GMCNNConfig(Enum):
 
 
 class GMCNNInpainter(BaseInpainter):
-    def __init__(self, model: Asset, weights: Asset, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
         super().__init__()
         self.engine = VisionInferenceEngine(model, weights, device=device, flip_channels=False)
 

@@ -10,7 +10,7 @@ from visiongraph.result.HeadPoseResult import HeadPoseResult
 
 
 class AdasHeadPoseEstimator(HeadPoseEstimator):
-    def __init__(self, device: str = "CPU"):
+    def __init__(self, device: str = "AUTO"):
         model, weights = RepositoryAsset.openVino("head-pose-estimation-adas-0001")
         self.engine = VisionInferenceEngine(model, weights, device=device)
 

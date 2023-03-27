@@ -13,7 +13,7 @@ class VisionInferenceEngine(BaseVisionEngine):
     def __init__(self, model: Asset, weights: Asset, flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
-                 padding: bool = False, device: str = "CPU"):
+                 padding: bool = False, device: str = "AUTO"):
         super().__init__(flip_channels, scale, mean, padding)
 
         self.device = device

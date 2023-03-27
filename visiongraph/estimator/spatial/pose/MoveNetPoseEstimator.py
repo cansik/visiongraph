@@ -36,7 +36,7 @@ MOVE_NET_KEY_POINT_COUNT = 17
 class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
     def __init__(self, model: Asset, weights: Asset, multi_pose: bool = False,
                  min_score: float = 0.3, enable_nms: bool = False, iou_threshold: float = 0.4,
-                 device: str = "CPU"):
+                 device: str = "AUTO"):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)

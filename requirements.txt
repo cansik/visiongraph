@@ -38,7 +38,7 @@ vidgear[core]
 numba
 
 # extra opencv-contrib
-opencv-contrib-python~=4.7.0.72
+# opencv-contrib-python~=4.7.0.72
 
 # extra fbs
 pyopengl; platform_system == "Darwin" or platform_system == "Windows"

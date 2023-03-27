@@ -32,7 +32,7 @@ class OpenVinoFaceConfig(Enum):
 
 
 class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
-    def __init__(self, model: Asset, weights: Asset, min_score: float = 0.5, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, min_score: float = 0.5, device: str = "AUTO"):
         super().__init__(min_score)
 
         self.width: Optional[int] = None

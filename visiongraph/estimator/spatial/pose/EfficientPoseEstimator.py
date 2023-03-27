@@ -41,7 +41,7 @@ class EfficientPoseEstimatorConfig(Enum):
 
 class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.1, device: str = "CPU"):
+                 min_score: float = 0.1, device: str = "AUTO"):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights,

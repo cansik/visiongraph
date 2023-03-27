@@ -23,7 +23,7 @@ class LitePoseEstimatorConfig(Enum):
 
 class LitePoseEstimator(PoseEstimator[COCOPose]):
     def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.2, device: str = "CPU"):
+                 min_score: float = 0.2, device: str = "AUTO"):
         super().__init__(min_score)
 
         self.engine = VisionInferenceEngine(model, weights, flip_channels=True, padding=True, device=device)

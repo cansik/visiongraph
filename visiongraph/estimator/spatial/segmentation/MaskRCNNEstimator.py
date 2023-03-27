@@ -45,7 +45,7 @@ class MaskRCNNConfig(Enum):
 
 class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
     def __init__(self, model: Asset, weights: Asset, labels: List[str],
-                 min_score: float = 0.5, device: str = "CPU"):
+                 min_score: float = 0.5, device: str = "AUTO"):
         super().__init__(min_score)
         self.model = model
         self.weights = weights

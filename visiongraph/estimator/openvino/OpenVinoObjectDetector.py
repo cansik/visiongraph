@@ -15,7 +15,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float, device: str = "AUTO"):
         super().__init__(min_score)
         self.model = model
         self.weights = weights

@@ -11,7 +11,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator):
-    def __init__(self, min_score: float = 0.0, device: str = "CPU"):
+    def __init__(self, min_score: float = 0.0, device: str = "AUTO"):
         super().__init__(min_score)
         model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
         self.engine = VisionInferenceEngine(model, weights, device=device)

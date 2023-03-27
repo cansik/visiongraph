@@ -20,7 +20,7 @@ class FaceReidentificationConfig(Enum):
 
 
 class FaceReidentificationEstimator(FaceRecognitionEstimator):
-    def __init__(self, model: Asset, weights: Asset, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
         super().__init__()
         self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
 

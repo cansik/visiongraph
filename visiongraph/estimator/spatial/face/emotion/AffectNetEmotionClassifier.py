@@ -10,7 +10,7 @@ from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionC
 
 
 class AffectNetEmotionClassifier(FaceEmotionEstimator):
-    def __init__(self, model_precision: ModelPrecision = ModelPrecision.FP32, device: str = "CPU"):
+    def __init__(self, model_precision: ModelPrecision = ModelPrecision.FP32, device: str = "AUTO"):
         super().__init__(min_score=0.5)
 
         model_name = f"emotions-recognition-retail-0003-{model_precision.open_vino_model_suffix}"

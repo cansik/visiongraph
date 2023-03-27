@@ -7,7 +7,7 @@ from visiongraph.external.intel.models.model import Model
 
 
 class SyncInferencePipeline:
-    def __init__(self, model: Model, device: str = "CPU"):
+    def __init__(self, model: Model, device: str = "AUTO"):
         self.device = device
         self.model = model
 
