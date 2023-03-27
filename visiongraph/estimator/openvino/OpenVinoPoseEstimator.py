@@ -1,5 +1,6 @@
 import logging
 import math
+import time
 from abc import abstractmethod, ABC
 from typing import Optional
 
@@ -17,7 +18,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.5,
-                 auto_adjust_aspect_ratio: bool = True, device: str = "CPU"):
+                 auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
         super().__init__(min_score)
         self.model = model
         self.weights = weights
@@ -42,13 +43,8 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
 
         # auto-adjust aspect ratio
         ratio = w / h
-        if not math.isclose(ratio, self.aspect_ratio, rel_tol=0, abs_tol=0.001) and self.auto_adjust_aspect_ratio:
-            logging.warning(f"auto-adjusting aspect ratio to {ratio:.2f}")
-            self.aspect_ratio = ratio
-
-            # restart network
-            self.release()
-            self.setup()
+        if self.auto_adjust_aspect_ratio and not math.isclose(ratio, self.aspect_ratio, rel_tol=0, abs_tol=0.001):
+            self.adjust_aspect_ratio(ratio)
 
         # estimate on image
         key_points, scores = self.pipeline.process(data)
@@ -68,6 +64,21 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
 
     def release(self):
         self.pipeline.release()
+
+    def adjust_aspect_ratio(self, ratio: float, timeout: float = 5.0):
+        logging.warning(f"auto-adjusting aspect ratio to {ratio:.2f}")
+        self.aspect_ratio = ratio
+
+        # restart network
+        self.release()
+        self.setup()
+
+        start = time.time()
+        while not self.ie_model.is_ready() and time.time() - start < timeout:
+            time.sleep(0.1)
+
+        if not self.ie_model.is_ready():
+            raise Exception("Adjusting aspect ratio did not work - Model is not ready!")
 
     @abstractmethod
     def _create_ie_model(self) -> Model:
