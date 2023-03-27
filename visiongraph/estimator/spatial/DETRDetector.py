@@ -16,12 +16,10 @@ class DETRConfig(Enum):
 
 
 class DETRDetector(OpenVinoObjectDetector):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
         super().__init__(model, weights, labels, min_score, device)
 
     def _create_ie_model(self) -> DetectionModel:
-        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
-
         config = {
             'resize_type': None,
             'mean_values': None,
@@ -33,7 +31,7 @@ class DETRDetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return DETR.create_model(DETR.__model__, model_adapter, config)
+        return DETR.create_model(self.model.path, DETR.__model__, config, device=self.device)
 
     @staticmethod
     def create(config: DETRConfig = DETRConfig.DETR_Resnet50_FP32) -> "DETRDetector":
