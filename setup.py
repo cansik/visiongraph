@@ -273,7 +273,7 @@ setup(
     license="MIT License",
     author="Florian Bruggisser",
     author_email="github@broox.ch",
-    description="Visiongraph is a high level computer vision pipeline.",
+    description="Visiongraph is a high level computer vision framework.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     install_requires=install_required,
