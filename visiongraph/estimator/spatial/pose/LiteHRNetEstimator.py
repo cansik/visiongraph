@@ -35,7 +35,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
                  model: Asset, weights: Asset,
                  human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
                  min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
-                 device: str = "CPU"):
+                 device: str = "AUTO"):
         super().__init__(human_detector, min_score)
 
         self.engine = VisionInferenceEngine(model, weights, flip_channels=True, scale=255, device=device)

@@ -1,5 +1,5 @@
 """
- Copyright (c) 2021 Intel Corporation
+ Copyright (c) 2021-2023 Intel Corporation
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,33 +20,42 @@ from .utils import Detection, softmax
 
 
 class DETR(DetectionModel):
-    __model__ = 'DETR'
+    __model__ = "DETR"
 
-    def __init__(self, model_adapter, configuration=None, preload=False):
-        super().__init__(model_adapter, configuration, preload)
+    def __init__(self, inference_adapter, configuration=None, preload=False):
+        super().__init__(inference_adapter, configuration, preload)
         self._check_io_number(1, 2)
         self.bboxes_blob_name, self.scores_blob_name = self._get_outputs()
 
     def _get_outputs(self):
-        (bboxes_blob_name, bboxes_layer), (scores_blob_name, scores_layer) = self.outputs.items()
+        (bboxes_blob_name, bboxes_layer), (
+            scores_blob_name,
+            scores_layer,
+        ) = self.outputs.items()
 
         if bboxes_layer.shape[1] != scores_layer.shape[1]:
-            self.raise_error("Expected the same second dimension for boxes and scores, but got {} and {}".format(
-                bboxes_layer.shape, scores_layer.shape))
+            self.raise_error(
+                "Expected the same second dimension for boxes and scores, but got {} and {}".format(
+                    bboxes_layer.shape, scores_layer.shape
+                )
+            )
 
         if bboxes_layer.shape[2] == 4:
             return bboxes_blob_name, scores_blob_name
         elif scores_layer.shape[2] == 4:
             return scores_blob_name, bboxes_blob_name
         else:
-            self.raise_error("Expected shape [:,:,4] for bboxes output, but got {} and {}".format(
-                bboxes_layer.shape, scores_layer.shape))
+            self.raise_error(
+                "Expected shape [:,:,4] for bboxes output, but got {} and {}".format(
+                    bboxes_layer.shape, scores_layer.shape
+                )
+            )
 
     @classmethod
     def parameters(cls):
         parameters = super().parameters()
-        parameters['resize_type'].update_default_value('standard')
-        parameters['confidence_threshold'].update_default_value(0.5)
+        parameters["resize_type"].update_default_value("standard")
+        parameters["confidence_threshold"].update_default_value(0.5)
         return parameters
 
     def postprocess(self, outputs, meta):
@@ -66,13 +75,21 @@ class DETR(DetectionModel):
 
         keep = det_scores > self.confidence_threshold
 
-        detections = [Detection(*det) for det in zip(x_mins[keep], y_mins[keep], x_maxs[keep], y_maxs[keep],
-                                                     det_scores[keep], labels[keep])]
+        detections = [
+            Detection(*det)
+            for det in zip(
+                x_mins[keep],
+                y_mins[keep],
+                x_maxs[keep],
+                y_maxs[keep],
+                det_scores[keep],
+                labels[keep],
+            )
+        ]
         return detections
 
     @staticmethod
     def box_cxcywh_to_xyxy(box):
         x_c, y_c, w, h = box.T
-        b = [(x_c - 0.5 * w), (y_c - 0.5 * h),
-             (x_c + 0.5 * w), (y_c + 0.5 * h)]
+        b = [(x_c - 0.5 * w), (y_c - 0.5 * h), (x_c + 0.5 * w), (y_c + 0.5 * h)]
         return b

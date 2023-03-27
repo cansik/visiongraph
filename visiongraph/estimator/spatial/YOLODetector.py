@@ -38,14 +38,12 @@ class YOLOConfig(Enum):
 class YOLODetector(OpenVinoObjectDetector):
     def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5,
                  architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
-                 device: str = "CPU"):
+                 device: str = "AUTO"):
         super().__init__(model, weights, labels, min_score, device)
 
         self.architecture = architecture
 
     def _create_ie_model(self) -> DetectionModel:
-        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
-
         config = {
             'resize_type': None,
             'mean_values': None,
@@ -57,7 +55,7 @@ class YOLODetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return DetectionModel.create_model(self.architecture.value, model_adapter, config)
+        return DetectionModel.create_model(self.model.path, self.architecture.value, config, device=self.device)
 
     @staticmethod
     def create(config: YOLOConfig = YOLOConfig.YOLOv4_Tiny_FP16) -> "YOLODetector":

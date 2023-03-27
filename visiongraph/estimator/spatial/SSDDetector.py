@@ -41,12 +41,10 @@ class SSDConfig(Enum):
 
 
 class SSDDetector(OpenVinoObjectDetector):
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "CPU"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
         super().__init__(model, weights, labels, min_score, device)
 
     def _create_ie_model(self) -> DetectionModel:
-        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
-
         config = {
             'resize_type': None,
             'mean_values': None,
@@ -58,7 +56,7 @@ class SSDDetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return SSD.create_model(SSD.__model__, model_adapter, config)
+        return SSD.create_model(self.model.path, SSD.__model__, config, device=self.device)
 
     @staticmethod
     def create(config: SSDConfig = SSDConfig.SSDLiteMobileNetV2_FP32) -> "SSDDetector":

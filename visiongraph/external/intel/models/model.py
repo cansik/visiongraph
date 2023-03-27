@@ -1,5 +1,5 @@
 """
- Copyright (C) 2020-2022 Intel Corporation
+ Copyright (C) 2020-2023 Intel Corporation
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,19 +15,29 @@
 """
 
 import logging as log
+import re
+
+from ..adapters.inference_adapter import InferenceAdapter
+from ..adapters.openvino_adapter import (
+    OpenvinoAdapter,
+    create_core,
+    get_user_config,
+)
+from ..adapters.ovms_adapter import OVMSAdapter
 
 
 class WrapperError(RuntimeError):
-    '''Special class for errors occurred in Model API wrappers'''
+    """Special class for errors occurred in Model API wrappers"""
+
     def __init__(self, wrapper_name, message):
         super().__init__(f"{wrapper_name}: {message}")
 
 
 class Model:
-    '''An abstract model wrapper
+    """An abstract model wrapper
 
     The abstract model wrapper is free from any executor dependencies.
-    It sets the `ModelAdapter` instance with the provided model
+    It sets the `InferenceAdapter` instance with the provided model
     and defines model inputs/outputs.
 
     Next, it loads the provided configuration variables and sets it as wrapper attributes.
@@ -43,19 +53,19 @@ class Model:
 
     Attributes:
         logger (Logger): instance of the Logger
-        model_adapter (ModelAdapter): allows working with the specified executor
+        inference_adapter (InferenceAdapter): allows working with the specified executor
         inputs (dict): keeps the model inputs names and `Metadata` structure for each one
         outputs (dict): keeps the model outputs names and `Metadata` structure for each one
         model_loaded (bool): a flag whether the model is loaded to device
-    '''
+    """
 
-    __model__ = None # Abstract wrapper has no name
+    __model__ = None  # Abstract wrapper has no name
 
-    def __init__(self, model_adapter, configuration=None, preload=False):
-        '''Model constructor
+    def __init__(self, inference_adapter, configuration=None, preload=False):
+        """Model constructor
 
         Args:
-            model_adapter (ModelAdapter): allows working with the specified executor
+            inference_adapter (InferenceAdapter): allows working with the specified executor
             configuration (dict, optional): it contains values for parameters accepted by specific
               wrapper (`confidence_threshold`, `labels` etc.) which are set as data attributes
             preload (bool, optional): a flag whether the model is loaded to device while
@@ -63,11 +73,11 @@ class Model:
 
         Raises:
             WrapperError: if the wrapper configuration is incorrect
-        '''
+        """
         self.logger = log.getLogger()
-        self.model_adapter = model_adapter
-        self.inputs = self.model_adapter.get_input_layers()
-        self.outputs = self.model_adapter.get_output_layers()
+        self.inference_adapter = inference_adapter
+        self.inputs = self.inference_adapter.get_input_layers()
+        self.outputs = self.inference_adapter.get_output_layers()
         for name, parameter in self.parameters().items():
             self.__setattr__(name, parameter.default_value)
         self._load_config(configuration)
@@ -75,21 +85,103 @@ class Model:
         if preload:
             self.load()
 
+    def get_model(self):
+        """Returns the ov.Model object stored in the InferenceAdapter.
+
+        Note: valid only for local inference
+
+        Returns:
+            ov.Model object
+        Raises:
+            RuntimeError: in case of remote inference (serving)
+        """
+        if isinstance(self.inference_adapter, OpenvinoAdapter):
+            return self.inference_adapter.get_model()
+
+        raise RuntimeError("get_model() is not supported for remote inference")
+
     @classmethod
-    def get_model(cls, name):
-        subclasses = [subclass for subclass in cls.get_subclasses() if subclass.__model__]
+    def _get_model_class(cls, name):
+        subclasses = [
+            subclass for subclass in cls.get_subclasses() if subclass.__model__
+        ]
         if cls.__model__:
             subclasses.append(cls)
         for subclass in subclasses:
             if name.lower() == subclass.__model__.lower():
                 return subclass
-        cls.raise_error('There is no model with name "{}" in list: {}'.format(
-            name, ', '.join([subclass.__model__ for subclass in subclasses])))
+        cls.raise_error(
+            'There is no model with name "{}" in list: {}'.format(
+                name, ", ".join([subclass.__model__ for subclass in subclasses])
+            )
+        )
 
     @classmethod
-    def create_model(cls, name, model_adapter, configuration=None, preload=False):
-        Model = cls.get_model(name)
-        return Model(model_adapter, configuration, preload)
+    def create_model(
+        cls,
+        model,
+        model_type=None,
+        configuration={},
+        preload=True,
+        core=None,
+        weights_path="",
+        adaptor_parameters={},
+        device="AUTO",
+        nstreams="1",
+        nthreads=None,
+        max_num_requests=0,
+        precision="FP16",
+        download_dir=None,
+        cache_dir=None,
+    ):
+        """
+        Create an instance of the Model API model
+
+        Args:
+            model (str): model name from OpenVINO Model Zoo, path to model, OVMS URL
+            configuration (:obj:`dict`, optional): dictionary of model config with model properties, for example confidence_threshold, labels
+            model_type (:obj:`str`, optional): name of model wrapper to create (e.g. "ssd")
+            preload (:obj:`bool`, optional): whether to call load_model(). Can be set to false to reshape model before loading
+            core (optional): openvino.runtime.Core instance, passed to OpenvinoAdapter
+            weights_path (:obj:`str`, optional): path to .bin file with model weights
+            adaptor_parameters (:obj:`dict`, optional): parameters of ModelAdaptor
+            device (:obj:`str`, optional): name of OpenVINO device (e.g. "CPU, GPU")
+            nstreams (:obj:`int`, optional): number of inference streams
+            nthreads (:obj:`int`, optional): number of threads to use for inference on CPU
+            max_num_requests (:obj:`int`, optional): number of infer requests for asynchronous inference
+            precision (:obj:`str`, optional): inference precision (e.g. "FP16")
+            download_dir (:obj:`str`, optional): directory where to store downloaded models
+            cache_dir (:obj:`str`, optional): directory where to store compiled models to reduce the load time before the inference
+
+        Returns:
+            Model objcet
+        """
+        if isinstance(model, InferenceAdapter):
+            inference_adapter = model
+        elif isinstance(model, str) and re.compile(
+            r"(\w+\.*\-*)*\w+:\d+\/models\/[a-zA-Z0-9_-]+(\:\d+)*"
+        ).fullmatch(model):
+            inference_adapter = OVMSAdapter(model)
+        else:
+            if core is None:
+                core = create_core()
+                plugin_config = get_user_config(device, nstreams, nthreads)
+            inference_adapter = OpenvinoAdapter(
+                core=core,
+                model=model,
+                weights_path=weights_path,
+                model_parameters=adaptor_parameters,
+                device=device,
+                plugin_config=plugin_config,
+                max_num_requests=max_num_requests,
+                precision=precision,
+                download_dir=download_dir,
+                cache_dir=cache_dir,
+            )
+        if model_type is None:
+            model_type = inference_adapter.get_rt_info(["model_info", "model_type"])
+        Model = cls._get_model_class(model_type)
+        return Model(inference_adapter, configuration, preload)
 
     @classmethod
     def get_subclasses(cls):
@@ -103,11 +195,13 @@ class Model:
     def available_wrappers(cls):
         available_classes = [cls] if cls.__model__ else []
         available_classes.extend(cls.get_subclasses())
-        return [subclass.__model__ for subclass in available_classes if subclass.__model__]
+        return [
+            subclass.__model__ for subclass in available_classes if subclass.__model__
+        ]
 
     @classmethod
     def parameters(cls):
-        '''Defines the description and type of configurable data parameters for the wrapper.
+        """Defines the description and type of configurable data parameters for the wrapper.
 
         See `types.py` to find available types of the data parameter. For each parameter
         the type, default value and description must be provided.
@@ -121,12 +215,12 @@ class Model:
 
         Returns:
             - the dictionary with defined wrapper data parameters
-        '''
+        """
         parameters = {}
         return parameters
 
     def _load_config(self, config):
-        '''Reads the configuration and creates data attributes
+        """Reads the configuration and creates data attributes
            by setting the wrapper parameters with values from configuration.
 
         Args:
@@ -144,33 +238,52 @@ class Model:
 
          Raises:
             WrapperError: if the configuration is incorrect
-        '''
-        if config is None: return
+        """
         parameters = self.parameters()
+        for name, param in parameters.items():
+            try:
+                str_val = self.inference_adapter.get_rt_info(["model_info", name])
+                value = param.from_str(str_val)
+                self.__setattr__(name, value)
+            except (
+                RuntimeError
+            ) as error:  # inference_adapter is not openvino adapter or IR doesn't contain requested rt_info
+                if (
+                    str(error)
+                    != "Cannot get runtime attribute. Path to runtime attribute is incorrect."
+                    and str(error) != "OVMSAdapter does not support RT info getting"
+                ):
+                    raise
+
         for name, value in config.items():
+            if value is None:
+                continue
             if name in parameters:
                 errors = parameters[name].validate(value)
                 if errors:
                     self.logger.error(f'Error with "{name}" parameter:')
                     for error in errors:
                         self.logger.error(f"\t{error}")
-                    self.raise_error('Incorrect user configuration')
+                    self.raise_error("Incorrect user configuration")
                 value = parameters[name].get_value(value)
                 self.__setattr__(name, value)
             else:
-                self.logger.warning(f'The parameter "{name}" not found in {self.__model__} wrapper, will be omitted')
+                self.logger.warning(
+                    f'The parameter "{name}" not found in {self.__model__} wrapper, will be omitted'
+                )
 
-    def raise_error(self, message):
-        '''Raises the WrapperError.
+    @classmethod
+    def raise_error(cls, message):
+        """Raises the WrapperError.
 
         Args:
             message (str): error message to be shown in the following format:
               "WrapperName: message"
-        '''
-        raise WrapperError(self.__model__, message)
+        """
+        raise WrapperError(cls.__model__, message)
 
     def preprocess(self, inputs):
-        '''Interface for preprocess method.
+        """Interface for preprocess method.
 
         Args:
             inputs: raw input data, the data type is defined by wrapper
@@ -184,11 +297,11 @@ class Model:
                     ...
                 }
             - the input metadata, which might be used in `postprocess` method
-        '''
+        """
         raise NotImplementedError
 
     def postprocess(self, outputs, meta):
-        '''Interface for postprocess method.
+        """Interface for postprocess method.
 
         Args:
             outputs (dict): model raw output in the following format:
@@ -201,11 +314,11 @@ class Model:
 
         Returns:
             - postprocessed data in the format defined by wrapper
-        '''
+        """
         raise NotImplementedError
 
     def _check_io_number(self, number_of_inputs, number_of_outputs):
-        '''Checks whether the number of model inputs/outputs is supported.
+        """Checks whether the number of model inputs/outputs is supported.
 
         Args:
             number_of_inputs (int, Tuple(int)): number of inputs supported by wrapper.
@@ -215,35 +328,51 @@ class Model:
 
         Raises:
             WrapperError: if the model has unsupported number of inputs/outputs
-        '''
+        """
         if not isinstance(number_of_inputs, tuple):
             if len(self.inputs) != number_of_inputs and number_of_inputs != -1:
-                self.raise_error("Expected {} input blob{}, but {} found: {}".format(
-                    number_of_inputs, 's' if number_of_inputs !=1 else '',
-                    len(self.inputs), ', '.join(self.inputs)
-                ))
+                self.raise_error(
+                    "Expected {} input blob{}, but {} found: {}".format(
+                        number_of_inputs,
+                        "s" if number_of_inputs != 1 else "",
+                        len(self.inputs),
+                        ", ".join(self.inputs),
+                    )
+                )
         else:
             if not len(self.inputs) in number_of_inputs:
-                self.raise_error("Expected {} or {} input blobs, but {} found: {}".format(
-                    ', '.join(str(n) for n in number_of_inputs[:-1]), int(number_of_inputs[-1]),
-                    len(self.inputs), ', '.join(self.inputs)
-                ))
+                self.raise_error(
+                    "Expected {} or {} input blobs, but {} found: {}".format(
+                        ", ".join(str(n) for n in number_of_inputs[:-1]),
+                        int(number_of_inputs[-1]),
+                        len(self.inputs),
+                        ", ".join(self.inputs),
+                    )
+                )
 
         if not isinstance(number_of_outputs, tuple):
             if len(self.outputs) != number_of_outputs and number_of_outputs != -1:
-                self.raise_error("Expected {} output blob{}, but {} found: {}".format(
-                    number_of_outputs, 's' if number_of_outputs !=1 else '',
-                    len(self.outputs), ', '.join(self.outputs)
-                ))
+                self.raise_error(
+                    "Expected {} output blob{}, but {} found: {}".format(
+                        number_of_outputs,
+                        "s" if number_of_outputs != 1 else "",
+                        len(self.outputs),
+                        ", ".join(self.outputs),
+                    )
+                )
         else:
             if not len(self.outputs) in number_of_outputs:
-                self.raise_error("Expected {} or {} output blobs, but {} found: {}".format(
-                    ', '.join(str(n) for n in number_of_outputs[:-1]), int(number_of_outputs[-1]),
-                    len(self.outputs), ', '.join(self.outputs)
-                ))
+                self.raise_error(
+                    "Expected {} or {} output blobs, but {} found: {}".format(
+                        ", ".join(str(n) for n in number_of_outputs[:-1]),
+                        int(number_of_outputs[-1]),
+                        len(self.outputs),
+                        ", ".join(self.outputs),
+                    )
+                )
 
     def __call__(self, inputs):
-        '''
+        """
         Applies preprocessing, synchronous inference, postprocessing routines while one call.
 
         Args:
@@ -251,53 +380,109 @@ class Model:
 
         Returns:
             - postprocessed data in the format defined by wrapper
-            - the input metadata obtained from `preprocess` method
-        '''
+        """
         dict_data, input_meta = self.preprocess(inputs)
         raw_result = self.infer_sync(dict_data)
-        return self.postprocess(raw_result, input_meta), input_meta
+        return self.postprocess(raw_result, input_meta)
 
     def load(self, force=False):
         if not self.model_loaded or force:
             self.model_loaded = True
-            self.model_adapter.load_model()
+            self.inference_adapter.load_model()
 
     def reshape(self, new_shape):
         if self.model_loaded:
-            self.logger.warning(f'{self.__model__}: the model already loaded to device, ',
-                                'should be reloaded after reshaping.')
+            self.logger.warning(
+                f"{self.__model__}: the model already loaded to device, ",
+                "should be reloaded after reshaping.",
+            )
             self.model_loaded = False
-        self.model_adapter.reshape_model(new_shape)
-        self.inputs = self.model_adapter.get_input_layers()
-        self.outputs = self.model_adapter.get_output_layers()
+        self.inference_adapter.reshape_model(new_shape)
+        self.inputs = self.inference_adapter.get_input_layers()
+        self.outputs = self.inference_adapter.get_output_layers()
 
     def infer_sync(self, dict_data):
         if not self.model_loaded:
-            self.raise_error("The model is not loaded to the device. Please, create the wrapper "
-                "with preload=True option or call load() method before infer_sync()")
-        return self.model_adapter.infer_sync(dict_data)
+            self.raise_error(
+                "The model is not loaded to the device. Please, create the wrapper "
+                "with preload=True option or call load() method before infer_sync()"
+            )
+        return self.inference_adapter.infer_sync(dict_data)
 
-    def infer_async(self, dict_data, callback_data):
+    def infer_async_raw(self, dict_data, callback_data):
         if not self.model_loaded:
-            self.raise_error("The model is not loaded to the device. Please, create the wrapper "
-                "with preload=True option or call load() method before infer_async()")
-        self.model_adapter.infer_async(dict_data, callback_data)
+            self.raise_error(
+                "The model is not loaded to the device. Please, create the wrapper "
+                "with preload=True option or call load() method before infer_async()"
+            )
+        self.inference_adapter.infer_async(dict_data, callback_data)
+
+    def infer_async(self, input_data, user_data):
+        if not self.model_loaded:
+            self.raise_error(
+                "The model is not loaded to the device. Please, create the wrapper "
+                "with preload=True option or call load() method before infer_async()"
+            )
+        dict_data, meta = self.preprocess(input_data)
+        self.inference_adapter.infer_async(
+            dict_data,
+            (
+                meta,
+                self.inference_adapter.get_raw_result,
+                self.postprocess,
+                self.callback_fn,
+                user_data,
+            ),
+        )
+
+    @staticmethod
+    def process_callback(request, callback_data):
+        meta, get_result_fn, postprocess_fn, callback_fn, user_data = callback_data
+        raw_result = get_result_fn(request)
+        result = postprocess_fn(raw_result, meta)
+        callback_fn(result, user_data)
+
+    def set_callback(self, callback_fn):
+        self.callback_fn = callback_fn
+        self.inference_adapter.set_callback(Model.process_callback)
 
     def is_ready(self):
-        return self.model_adapter.is_ready()
+        return self.inference_adapter.is_ready()
 
     def await_all(self):
-        self.model_adapter.await_all()
+        self.inference_adapter.await_all()
 
     def await_any(self):
-        self.model_adapter.await_any()
+        self.inference_adapter.await_any()
 
     def log_layers_info(self):
-        '''Prints the shape, precision and layout for all model inputs/outputs.
-        '''
+        """Prints the shape, precision and layout for all model inputs/outputs."""
         for name, metadata in self.inputs.items():
-            self.logger.info('\tInput layer: {}, shape: {}, precision: {}, layout: {}'.format(
-                name, metadata.shape, metadata.precision, metadata.layout))
+            self.logger.info(
+                "\tInput layer: {}, shape: {}, precision: {}, layout: {}".format(
+                    name, metadata.shape, metadata.precision, metadata.layout
+                )
+            )
         for name, metadata in self.outputs.items():
-            self.logger.info('\tOutput layer: {}, shape: {}, precision: {}, layout: {}'.format(
-                name, metadata.shape, metadata.precision, metadata.layout))
+            self.logger.info(
+                "\tOutput layer: {}, shape: {}, precision: {}, layout: {}".format(
+                    name, metadata.shape, metadata.precision, metadata.layout
+                )
+            )
+
+    def get_model(self):
+        model = self.inference_adapter.get_model()
+        model.set_rt_info(self.__model__, ["model_info", "model_type"])
+        for name in self.parameters():
+            if [] == getattr(self, name):
+                # ov cant serialize empty list. Replace it with ""
+                # TODO: remove once OpenVINO supports serializing empty lists
+                model.set_rt_info("", ["model_info", name])
+            else:
+                model.set_rt_info(getattr(self, name), ["model_info", name])
+        return model
+
+    def save(self, xml_path, bin_path="", version="UNSPECIFIED"):
+        import openvino.runtime as ov
+
+        ov.serialize(self.get_model(), xml_path, bin_path, version)

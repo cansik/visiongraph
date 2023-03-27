@@ -18,12 +18,10 @@ class OpenPoseConfig(Enum):
 class OpenPoseEstimator(OpenVinoPoseEstimator):
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.1,
-                 auto_adjust_aspect_ratio: bool = True, device: str = "CPU"):
+                 auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
         super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
     def _create_ie_model(self) -> Model:
-        model_adapter = OpenvinoAdapter(create_core(), self.model.path, device=self.device)
-
         config = {
             'target_size': self.target_size,
             'aspect_ratio': self.aspect_ratio,
@@ -32,7 +30,7 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
             'delta': None
         }
 
-        return OpenPose.create_model("openpose", model_adapter, config)
+        return OpenPose.create_model(self.model.path, "OpenPose", config, device=self.device)
 
     @staticmethod
     def create(config: OpenPoseConfig = OpenPoseConfig.LightWeightOpenPose_FP16) -> "OpenPoseEstimator":
