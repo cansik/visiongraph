@@ -24,8 +24,9 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.aruco_config = aruco_config
 
         self.board: Optional[aruco.CharucoBoard] = None
+        self.detector: Optional[aruco.CharucoDetector] = None
+        self.aruco_params: Optional[aruco.CharucoParameters] = None
         self.aruco_dict: Optional[int] = None
-        self.aruco_params: Optional[aruco.DetectorParameters] = None
 
         self.corners = []
         self.ids = []
@@ -40,11 +41,12 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.corners = []
         self.ids = []
 
-        self.aruco_dict = aruco.Dictionary_get(self.aruco_config)
-        self.aruco_params = aruco.DetectorParameters_create()
-        self.board = aruco.CharucoBoard_create(self.rows, self.columns,
-                                               self.square_length_in_m, self.marker_length_in_m,
-                                               self.aruco_dict)
+        self.aruco_dict = aruco.getPredefinedDictionary(self.aruco_config)
+        self.aruco_params = aruco.CharucoParameters()
+        self.board = aruco.CharucoBoard((self.rows, self.columns),
+                                        self.square_length_in_m, self.marker_length_in_m,
+                                        self.aruco_dict)
+        self.detector = aruco.CharucoDetector(self.board)
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
         self.board_detected = False
@@ -55,18 +57,16 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         gray = cv2.cvtColor(data, cv2.COLOR_BGR2GRAY)
 
         # find markers
-        corners, ids, rejected_points = aruco.detectMarkers(gray, self.aruco_dict)
+        charuco_corners, charuco_ids, marker_corners, marker_ids = self.detector.detectBoard(gray)
 
-        if len(corners) > 0:
+        if charuco_corners is not None and len(charuco_corners) > 0:
             self.image_size = gray.shape[::-1]
 
-            ret, charuco_corners, charuco_ids = aruco.interpolateCornersCharuco(corners, ids, gray, self.board)
-
-            if ret and len(charuco_corners) > 3:
+            if len(charuco_corners) > 3:
                 self.corners.append(charuco_corners)
                 self.ids.append(charuco_ids)
 
-                aruco.drawDetectedMarkers(data, corners, ids)
+                aruco.drawDetectedMarkers(data, marker_corners, marker_ids)
                 self.board_detected = True
 
         if 0 < self.max_samples <= self.sample_count:
@@ -75,6 +75,8 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         return None
 
     def calibrate(self) -> Optional[CameraPoseResult]:
+        raise Exception("Currently not supported! - Waiting for fix by opencv!")
+
         (ret, camera_matrix, distortion_coefficients,
          rotation_vectors, translation_vectors,
          std_deviations_intrinsics, std_deviations_extrinsics,

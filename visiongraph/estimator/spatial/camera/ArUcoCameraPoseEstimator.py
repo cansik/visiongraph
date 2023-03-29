@@ -26,14 +26,16 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
 
         self.aruco_dict: Optional[int] = None
         self.aruco_params: Optional[aruco.DetectorParameters] = None
+        self.aruco_detector: Optional[aruco.ArucoDetector] = None
 
     def setup(self):
-        self.aruco_dict = aruco.Dictionary_get(self.aruco_config)
-        self.aruco_params = aruco.DetectorParameters_create()
+        self.aruco_dict = aruco.getPredefinedDictionary(self.aruco_config)
+        self.aruco_params = aruco.DetectorParameters()
+        self.aruco_detector = aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
 
     def process(self, data: np.ndarray) -> Optional[ArUcoCameraPose]:
         # find ArUco markers
-        (corners, ids, rejected) = aruco.detectMarkers(data, self.aruco_dict, parameters=self.aruco_params)
+        (corners, ids, rejected) = self.aruco_detector.detectMarkers(data)
 
         if len(corners) == 0:
             return None

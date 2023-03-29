@@ -196,7 +196,7 @@ class GenerateInitPy(distutils.cmd.Command):
 
 
 # define required packages
-required_packages = find_packages(exclude=["tests", "examples", "tools", "snippets", "assets"])
+required_packages = find_packages(exclude=["tests", "examples", "snippets", "assets"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
@@ -297,5 +297,10 @@ setup(
     ],
     cmdclass={
         "generate_init": GenerateInitPy,
+    },
+    entry_points={
+        "console_scripts": [
+            "vg-calibrate = tools.CameraCalibratorTool:main",
+        ],
     },
 )

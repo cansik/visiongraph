@@ -1,4 +1,5 @@
 import argparse
+import faulthandler
 from argparse import ArgumentParser
 
 import cv2
@@ -120,4 +121,5 @@ def main():
 
 
 if __name__ == "__main__":
+    faulthandler.enable()
     main()
