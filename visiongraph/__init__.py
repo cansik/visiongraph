@@ -137,6 +137,10 @@ except ModuleNotFoundError as ex:
 from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
+    from .estimator.spatial.face.landmark.IrisDistanceCalculator import IrisDistanceCalculator
+except ModuleNotFoundError as ex:
+    logging.info(f"Module IrisDistanceCalculator not found")
+try:
     from .estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetector
 except ModuleNotFoundError as ex:
     logging.info(f"Module MediaPipeFaceDetector not found")
@@ -370,6 +374,8 @@ except ModuleNotFoundError as ex:
 from .result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
 from .result.spatial.face.FaceDetectionResult import FaceDetectionResult
 from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
+from .result.spatial.face.IrisDistanceResult import IrisDistanceResult
+from .result.spatial.face.IrisDistanceResult import IrisParameter
 from .result.spatial.face.RegressionFace import RegressionFace
 try:
     from .result.spatial.hand.BlazeHand import BlazeHand

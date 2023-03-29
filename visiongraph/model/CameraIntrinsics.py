@@ -45,3 +45,6 @@ class CameraIntrinsics:
     @property
     def fy(self) -> float:
         return self.intrinsic_matrix[1, 1]
+
+    def __repr__(self):
+        return f"{CameraIntrinsics.__name__} (fx: {self.fx:.3f}, fy: {self.fy:.3f} px: {self.px:.3f}, py: {self.py:.3f})"
