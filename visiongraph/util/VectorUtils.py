@@ -4,6 +4,8 @@ import numpy as np
 import vector
 from numpy.lib.recfunctions import structured_to_unstructured, unstructured_to_structured
 
+from visiongraph.util.CodeUtils import deprecated
+
 
 def list_of_vector2D(data: List[Tuple[float, float]]) -> vector.VectorNumpy2D:
     return vector.array(
@@ -54,12 +56,32 @@ def vector_as_list(v: vector.Vector) -> List[float]:
     raise Exception(f"Vector {v} can not be converted to list.")
 
 
+@deprecated("Please use lerp_vector_4d() instead.")
 def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vector.VectorNumpy4D:
+    return lerp_vector_4d(a, b, amt)
+
+
+def lerp_vector_2d(a: vector.Vector2D, b: vector.Vector2D, amt: float) -> vector.Vector2D:
+    return vector.obj(
+        x=(a.x * (1.0 - amt)) + (b.x * amt),
+        y=(a.y * (1.0 - amt)) + (b.y * amt)
+    )
+
+
+def lerp_vector_3d(a: vector.Vector3D, b: vector.Vector3D, amt: float) -> vector.Vector3D:
+    return vector.obj(
+        x=(a.x * (1.0 - amt)) + (b.x * amt),
+        y=(a.y * (1.0 - amt)) + (b.y * amt),
+        z=(a.z * (1.0 - amt)) + (b.z * amt)
+    )
+
+
+def lerp_vector_4d(a: vector.Vector4D, b: vector.Vector4D, amt: float) -> vector.Vector4D:
     return vector.obj(
         x=(a.x * (1.0 - amt)) + (b.x * amt),
         y=(a.y * (1.0 - amt)) + (b.y * amt),
         z=(a.z * (1.0 - amt)) + (b.z * amt),
-        t=(a.t * (1.0 - amt)) + (b.t * amt),
+        t=(a.t * (1.0 - amt)) + (b.t * amt)
     )
 
 

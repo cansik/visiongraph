@@ -22,7 +22,7 @@ class EfficientPose(PoseLandmarkResult):
 
     @property
     def nose(self) -> vector.Vector4D:
-        return VectorUtils.lerp4d(self.head_top, self.neck, 0.5)
+        return VectorUtils.lerp_vector_4d(self.head_top, self.neck, 0.5)
 
     @property
     def neck(self) -> vector.Vector4D:

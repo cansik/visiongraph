@@ -450,6 +450,9 @@ from .util.TimeUtils import current_millis
 from .util.VectorUtils import array_to_vector
 from .util.VectorUtils import landmarks_center_by_indices
 from .util.VectorUtils import lerp4d
+from .util.VectorUtils import lerp_vector_2d
+from .util.VectorUtils import lerp_vector_3d
+from .util.VectorUtils import lerp_vector_4d
 from .util.VectorUtils import list_of_vector2D
 from .util.VectorUtils import list_of_vector3D
 from .util.VectorUtils import list_of_vector4D

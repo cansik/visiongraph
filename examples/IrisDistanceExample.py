@@ -2,14 +2,15 @@ import argparse
 
 import cv2
 import numpy as np
+import vector
 
 import visiongraph as vg
 
 
 class IrisDistanceApp:
     def __init__(self, args):
-        intrinsics = vg.CameraIntrinsics.load(args.intrinsics)
-        self.iris_distance_calculator = vg.IrisDistanceCalculator(-1, -1, intrinsics)
+        self.intrinsics = vg.CameraIntrinsics.load(args.intrinsics)
+        self.iris_distance_calculator = vg.IrisDistanceCalculator(-1, -1, self.intrinsics)
 
         # define graph
         self.graph = (
@@ -52,8 +53,13 @@ class IrisDistanceApp:
 
         iris_result = iris_results[0]
 
-        cv2.putText(image, f"{iris_result.average_iris_distance():.2f}m", (20, 50),
-                    cv2.FONT_HERSHEY_DUPLEX, 0.9, (255, 0, 255))
+        # calculate projected point
+        head_center = iris_result.head_center()
+        point = vg.project_pixel_to_point(head_center.to_xy(), iris_result.average_iris_distance(), self.intrinsics)
+
+        cv2.putText(image, f"{iris_result.average_iris_distance():.2f}m"
+                           f" (x={point.x:.1f}, y={point.y:.1f}, z={point.x:.1f})",
+                    (20, 50), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 0, 255))
 
 
 def main():

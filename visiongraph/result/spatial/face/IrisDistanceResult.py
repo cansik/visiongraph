@@ -3,8 +3,10 @@ from dataclasses import dataclass
 import cv2
 import numpy as np
 import vector
+from vector import Vector4D
 
 from visiongraph.result.BaseResult import BaseResult
+from visiongraph.util.VectorUtils import lerp_vector_2d, lerp_vector_4d
 
 
 @dataclass
@@ -22,6 +24,9 @@ class IrisDistanceResult(BaseResult):
 
     def average_iris_distance(self) -> float:
         return float(np.mean([self.right_iris.distance, self.left_iris.distance]))
+
+    def head_center(self) -> Vector4D:
+        return lerp_vector_4d(self.left_iris.position, self.right_iris.position, 0.5)
 
     @staticmethod
     def _mark_point(image: np.ndarray, point: vector.Vector2D, radius: float, w: float, h: float):
