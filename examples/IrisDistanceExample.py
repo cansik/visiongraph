@@ -46,6 +46,7 @@ class IrisDistanceApp:
 
     def _annotate_distance(self, results: vg.ResultDict):
         image: np.ndarray = results["image"]
+        h, w = image.shape[:2]
         iris_results: vg.ResultList[vg.IrisDistanceResult] = results["iris"]
 
         if len(iris_results) == 0:
@@ -55,10 +56,12 @@ class IrisDistanceApp:
 
         # calculate projected point
         head_center = iris_result.head_center()
-        point = vg.project_pixel_to_point(head_center.to_xy(), iris_result.average_iris_distance(), self.intrinsics)
+        head_center_location = vector.obj(x=head_center.x * w, y=head_center.y * h)
+
+        point = vg.project_pixel_to_point(head_center_location, iris_result.average_iris_distance(), self.intrinsics)
 
         cv2.putText(image, f"{iris_result.average_iris_distance():.2f}m"
-                           f" (x={point.x:.1f}, y={point.y:.1f}, z={point.x:.1f})",
+                           f" (x={point.x:.2f}, y={point.y:.2f}, z={point.z:.2f})",
                     (20, 50), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 0, 255))
 
 
