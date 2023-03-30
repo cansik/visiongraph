@@ -1,5 +1,6 @@
 import json
 
+import cv2
 import numpy as np
 
 INTRINSIC_MATRIX_NAME = "intrinsic_matrix"
@@ -27,6 +28,15 @@ class CameraIntrinsics:
 
         intrinsic_mat = np.array(data[INTRINSIC_MATRIX_NAME], dtype=float)
         distortion_coeff = np.array(data[DISTORTION_COEFFICIENTS_NAME], dtype=float)
+
+        return CameraIntrinsics(intrinsic_mat, distortion_coeff)
+
+    @staticmethod
+    def load_from_file_storage(path: str):
+        storage = cv2.FileStorage(path, cv2.FILE_STORAGE_READ)
+        intrinsic_mat = storage.getNode('Camera_Matrix').mat()
+        distortion_coeff = storage.getNode('Distortion_Coefficients').mat()
+        storage.release()
 
         return CameraIntrinsics(intrinsic_mat, distortion_coeff)
 
