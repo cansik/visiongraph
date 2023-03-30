@@ -17,7 +17,7 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 BOARD_CALIBRATORS = {
     "chessboard": ChessboardCalibrator,
-    "charuco": ChArUcoCalibrator
+    # "charuco": ChArUcoCalibrator
 }
 
 
@@ -110,7 +110,7 @@ def main():
     add_input_step_choices(input_group)
 
     add_step_choice_argument(parser, BOARD_CALIBRATORS, "--calibrator", help="Board calibrator system.",
-                             default="charuco", add_params=True)
+                             default="chessboard", add_params=True)
     CameraCalibratorTool.add_params(parser)
 
     args = parser.parse_args()
