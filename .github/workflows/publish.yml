@@ -36,6 +36,7 @@ jobs:
 
     - name: Build
       run: |
+          pip install --upgrade pip
           pip install -r dev-requirements.txt
           python setup.py generate_init
           python setup.py bdist_wheel
