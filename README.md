@@ -129,7 +129,7 @@ Next roadmap points:
 - Async input and network model (run when ready)
 
 ## About
-Copyright (c) 2022 Florian Bruggisser
+Copyright (c) 2023 Florian Bruggisser
 
 ### Included Libraries
 

@@ -2,6 +2,7 @@ import unittest
 
 import cv2
 import visiongraph as vg
+from visiongraph.util import OSUtils
 
 
 class ObjectDetectionTests(unittest.TestCase):
@@ -20,9 +21,11 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_center_net_fp32(self):
         self._test_model(vg.CenterNetDetector.create(vg.CenterNetConfig.CenterNet_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_detr_detector_fp16(self):
         self._test_model(vg.DETRDetector.create(vg.DETRConfig.DETR_Resnet50_FP16))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_detr_detector_fp32(self):
         self._test_model(vg.DETRDetector.create(vg.DETRConfig.DETR_Resnet50_FP32))
 
@@ -53,9 +56,11 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_yolov4_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_yolov4_tiny_detector_fp16(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_Tiny_FP16))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_yolov4_tiny_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_Tiny_FP32))
 

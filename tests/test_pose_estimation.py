@@ -2,6 +2,7 @@ import unittest
 
 import cv2
 import visiongraph as vg
+from visiongraph.util import OSUtils
 
 
 class PoseEstimationTests(unittest.TestCase):
@@ -53,12 +54,15 @@ class PoseEstimationTests(unittest.TestCase):
     def test_movenet_pose_estimator_single_fp32(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_Single_Lightning_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_movenet_pose_estimator_multi_192_fp32(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_MultiPose_192x192_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_movenet_pose_estimator_multi_256_fp32(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_MultiPose_256x256_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_movenet_pose_estimator_multi_320_fp32(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_MultiPose_320x320_FP32))
 

@@ -2,6 +2,7 @@ import unittest
 
 import cv2
 import visiongraph as vg
+from visiongraph.util import OSUtils
 
 
 class SegmentationEstimationTests(unittest.TestCase):
@@ -14,12 +15,15 @@ class SegmentationEstimationTests(unittest.TestCase):
         model.process(image)
         model.release()
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_maskrcnn_segmentation_fp32(self):
         self._test_model(vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_maskrcnn_segmentation_fp16(self):
         self._test_model(vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_FP16))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_maskrcnn_segmentation_int8(self):
         self._test_model(vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8))
 

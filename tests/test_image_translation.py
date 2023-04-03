@@ -1,7 +1,10 @@
 import unittest
 
 import cv2
+import pytest
+
 import visiongraph as vg
+from visiongraph.util import OSUtils
 
 
 class ImageTranslationTests(unittest.TestCase):
@@ -14,9 +17,11 @@ class ImageTranslationTests(unittest.TestCase):
         model.process(image)
         model.release()
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_deblurv2_gan_fp32(self):
         self._test_model(vg.DeblurGANv2.create(vg.DeblurGANv2Config.DeblurGANv2_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_deblurv2_gan_fp16(self):
         self._test_model(vg.DeblurGANv2.create(vg.DeblurGANv2Config.DeblurGANv2_FP16))
 
