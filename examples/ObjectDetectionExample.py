@@ -6,6 +6,7 @@ import cv2
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
+from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector, YOLOv5Config
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
@@ -19,7 +20,7 @@ class ObjectDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput, sliding_window=False):
         super().__init__()
         self.input = input
-        self.network = SSDDetector.create()
+        self.network = YOLOv5Detector.create(YOLOv5Config.YOLOv5_N)
 
         if sliding_window:
             self.network = SlidingWindowEstimator(
