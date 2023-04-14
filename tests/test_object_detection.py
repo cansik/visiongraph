@@ -76,6 +76,15 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_yolovf_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOF_FP32))
 
+    def test_yolov5_detector_n(self):
+        self._test_model(vg.YOLOv5Detector.create(vg.YOLOv5Config.YOLOv5_N))
+
+    def test_yolov5_detector_s(self):
+        self._test_model(vg.YOLOv5Detector.create(vg.YOLOv5Config.YOLOv5_S))
+
+    def test_crowdhuman_detector(self):
+        self._test_model(vg.CrowdHumanDetector.create(vg.CrowdHumanConfig.YOLOv5_N_640))
+
 
 if __name__ == '__main__':
     unittest.main()
