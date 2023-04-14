@@ -5,7 +5,7 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.FaceDetector import FaceDetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
@@ -38,7 +38,7 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         self.width: Optional[int] = None
         self.height: Optional[int] = None
 
-        self.engine = VisionInferenceEngine(model, weights, device=device)
+        self.engine = OpenVinoEngine(model, weights, device=device)
 
     def setup(self):
         self.engine.setup()

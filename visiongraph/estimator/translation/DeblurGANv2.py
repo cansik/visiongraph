@@ -7,6 +7,7 @@ import numpy as np
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.VisionEstimator import VisionEstimator
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.result.ImageResult import ImageResult
 
@@ -18,7 +19,7 @@ class DeblurGANv2Config(Enum):
 
 class DeblurGANv2(VisionEstimator[ImageResult]):
     def __init__(self, model: Asset, weights: Asset):
-        self.engine = VisionInferenceEngine(model, weights)
+        self.engine = OpenVinoEngine(model, weights)
 
     def setup(self):
         self.engine.setup()
