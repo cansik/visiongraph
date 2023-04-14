@@ -28,8 +28,16 @@ class BoundingBox2D:
         return vector.obj(x=self.x_min, y=self.y_min)
 
     @property
+    def top_right(self) -> vector.Vector2D:
+        return vector.obj(x=self.x_min + self.width, y=self.y_min)
+
+    @property
     def bottom_right(self) -> vector.Vector2D:
         return vector.obj(x=self.x_min + self.width, y=self.y_min + self.height)
+
+    @property
+    def bottom_left(self) -> vector.Vector2D:
+        return vector.obj(x=self.x_min, y=self.y_min + self.height)
 
     @property
     def x_max(self) -> float:

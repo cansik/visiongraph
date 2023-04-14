@@ -1,8 +1,9 @@
 import collections
 from enum import Enum
-from typing import Union
+from typing import Union, List
 
 import numpy as np
+from scipy.spatial.distance import cdist
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -11,6 +12,7 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.CrowdHumanResult import CrowdHumanResult
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
+from visiongraph.util.VectorUtils import vector_as_list, lerp_vector_2d
 
 
 class CrowdHumanConfig(Enum):
@@ -28,7 +30,7 @@ class CrowdHumanDetector(YOLOv5Detector):
         super().__init__(*assets, labels=["person", "head"], nms=True)
 
         self.assign_head_to_person = assign_head_to_person
-        self.assignment_solver = ObjectAssignmentSolver()
+        self.assignment_solver = ObjectAssignmentSolver(self.crowd_human_l2_cost_function)
 
     def process(self, image: np.ndarray) -> ResultList[Union[CrowdHumanResult, ObjectDetectionResult]]:
         results = super().process(image)
@@ -64,3 +66,17 @@ class CrowdHumanDetector(YOLOv5Detector):
     def create(config: CrowdHumanConfig = CrowdHumanConfig.YOLOv5_N_640) -> "CrowdHumanDetector":
         model = config.value
         return CrowdHumanDetector(model)
+
+    @staticmethod
+    def crowd_human_l2_cost_function(tracks: List[ObjectDetectionResult],
+                                     detections: List[ObjectDetectionResult]) -> np.ndarray:
+
+        def get_centers(results: List[ObjectDetectionResult]) -> np.ndarray:
+            return np.array([vector_as_list(lerp_vector_2d(r.bounding_box.top_left, r.bounding_box.top_right, 0.5))
+                             for r in results], dtype=float)
+
+        track_centers = get_centers(tracks)
+        detection_centers = get_centers(detections)
+
+        distances = cdist(track_centers, detection_centers, metric="euclid")
+        return distances
