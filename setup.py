@@ -196,7 +196,7 @@ class GenerateInitPy(distutils.cmd.Command):
 
 
 # define required packages
-required_packages = find_packages(exclude=["tests", "examples", "snippets", "assets"])
+required_packages = find_packages(exclude=["tests", "examples", "snippets", "assets", "tools"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
@@ -267,7 +267,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version="0.1.44",
+    version="0.1.45",
     packages=required_packages,
     url="https://github.com/cansik/visiongraph",
     license="MIT License",
@@ -300,7 +300,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "vg-calibrate = tools.CameraCalibratorTool:main",
+            # "vg-calibrate = tools.CameraCalibratorTool:main",
         ],
     },
 )
