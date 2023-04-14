@@ -31,6 +31,9 @@ class FaceCascadeRegressionEstimationTests(unittest.TestCase):
     def test_face_affect_net_emotion_classifier_fp32(self):
         self._test_model(vg.AffectNetEmotionClassifier(vg.ModelPrecision.FP32))
 
+    def test_fer_plus_emotion_classifier(self):
+        self._test_model(vg.FERPlusEmotionClassifier())
+
 
 if __name__ == '__main__':
     unittest.main()

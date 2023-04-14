@@ -7,6 +7,7 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 from visiongraph.estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
+from visiongraph.estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
 from visiongraph.input import add_input_step_choices
@@ -23,7 +24,8 @@ class CascadeFaceDetectionExample(BaseGraph):
         self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
                                                landmarks=RegressionLandmarkEstimator(),
                                                head_pose=AdasHeadPoseEstimator(),
-                                               emotion=AffectNetEmotionClassifier(ModelPrecision.INT8))
+                                               # emotion=AffectNetEmotionClassifier(ModelPrecision.INT8),
+                                               emotion2=FERPlusEmotionClassifier())
 
         self.add_nodes(self.input, self.network)
 

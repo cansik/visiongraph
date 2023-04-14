@@ -158,6 +158,10 @@ try:
     from .estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
 except ModuleNotFoundError as ex:
     logging.info(f"Module AffectNetEmotionClassifier not found")
+try:
+    from .estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
+except ModuleNotFoundError as ex:
+    logging.info(f"Module FERPlusEmotionClassifier not found")
 from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
