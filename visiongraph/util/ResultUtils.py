@@ -1,5 +1,5 @@
 import copy
-from typing import List, TypeVar, Tuple
+from typing import List, TypeVar, Tuple, Optional
 
 import cv2
 import numpy as np
@@ -12,10 +12,11 @@ from visiongraph.util import ImageUtils
 ODR = TypeVar("ODR", bound=ObjectDetectionResult)
 
 
-def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold: float) -> List[ODR]:
+def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold: float,
+                            eta: Optional[float] = None, top_k: Optional[int] = None) -> List[ODR]:
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
-    indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold)
+    indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold, eta, top_k)
     return [results[int(i)] for i in list(indices)]
 
 

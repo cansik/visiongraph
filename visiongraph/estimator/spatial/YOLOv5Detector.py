@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import numpy as np
 
@@ -25,7 +25,8 @@ class YOLOv5Config(Enum):
 
 class YOLOv5Detector(ObjectDetector):
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
-                 nms_threshold: float = 0.5, nms: bool = True,
+                 nms: bool = True, nms_threshold: float = 0.5,
+                 nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.ONNX):
         super().__init__(min_score)
         self.engine = InferenceEngineFactory.create(engine, assets,
@@ -38,6 +39,8 @@ class YOLOv5Detector(ObjectDetector):
         self.labels: List[str] = labels
         self.nms_threshold: float = nms_threshold
         self.nms: bool = nms
+        self.nms_eta = nms_eta
+        self.nms_top_k = nms_top_k
 
     def setup(self):
         self.engine.setup()
@@ -71,7 +74,8 @@ class YOLOv5Detector(ObjectDetector):
             results.append(detection)
 
         if self.nms:
-            results = ResultList(non_maximum_suppression(results, self.min_score, self.nms_threshold))
+            results = ResultList(non_maximum_suppression(results, self.min_score, self.nms_threshold,
+                                                         self.nms_eta, self.nms_top_k))
         return results
 
     def release(self):
