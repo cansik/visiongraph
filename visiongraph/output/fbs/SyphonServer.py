@@ -1,28 +1,31 @@
+import logging
 from argparse import Namespace, ArgumentParser
 from typing import Optional, Any
 
 import cv2
 import glfw
 
+try:
+    def monkeypatch_ctypes():
+        import os
+        import ctypes.util
+        uname = os.uname()
+        if uname.sysname == "Darwin" and uname.release >= "20.":
+            real_find_library = ctypes.util.find_library
 
-def monkeypatch_ctypes():
-    import os
-    import ctypes.util
-    uname = os.uname()
-    if uname.sysname == "Darwin" and uname.release >= "20.":
-        real_find_library = ctypes.util.find_library
+            def find_library(name):
+                if name in {"OpenGL", "GLUT"}:  # add more names here if necessary
+                    return f"/System/Library/Frameworks/{name}.framework/{name}"
+                return real_find_library(name)
 
-        def find_library(name):
-            if name in {"OpenGL", "GLUT"}:  # add more names here if necessary
-                return f"/System/Library/Frameworks/{name}.framework/{name}"
-            return real_find_library(name)
-
-        ctypes.util.find_library = find_library
-    return
+            ctypes.util.find_library = find_library
+        return
 
 
-# fixes opengl import on MacOS
-monkeypatch_ctypes()
+    # fixes opengl import on MacOS
+    monkeypatch_ctypes()
+except Exception as ex:
+    logging.warning(f"Error in Syphon Server monkeypatch: {ex}")
 
 import numpy as np
 import syphonpy
