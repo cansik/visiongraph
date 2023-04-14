@@ -25,9 +25,7 @@ class ONNXVisionEngine(BaseVisionEngine):
 
     def setup(self):
         if self.execution_providers is None:
-            self.execution_providers = ["CUDAExecutionProvider",
-                                        "OpenVINOExecutionProvider",
-                                        "CPUExecutionProvider"]
+            self.execution_providers = self.get_execution_providers()
 
         self.session = rt.InferenceSession(self.model.path,
                                            providers=self.execution_providers,
@@ -51,3 +49,6 @@ class ONNXVisionEngine(BaseVisionEngine):
 
     def release(self):
         self.session = None
+
+    def get_execution_providers(self) -> List[str]:
+        return rt.get_available_providers()
