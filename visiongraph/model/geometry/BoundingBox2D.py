@@ -111,5 +111,11 @@ class BoundingBox2D:
         iou = inter_area / float(box_a_area + box_b_area - inter_area)
         return iou
 
+    def contains(self, p: vector.Vector2D) -> bool:
+        if self.x_min < p.x < self.x_max:
+            if self.y_min < p.y < self.y_max:
+                return True
+        return False
+
     def __repr__(self):
         return f"BoundingBox2D(x={self.x_min:.4f}, y={self.y_min:.4f}, w={self.width:.4f}, h={self.height:.4f})"
