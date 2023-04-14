@@ -32,6 +32,14 @@ from .estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from .estimator.VisionClassifier import VisionClassifier
 from .estimator.VisionEstimator import VisionEstimator
 from .estimator.calculator.UndistortionCalculator import UndistortionCalculator
+try:
+    from .estimator.engine.InferenceEngineFactory import InferenceEngine
+except ModuleNotFoundError as ex:
+    logging.info(f"Module InferenceEngine not found")
+try:
+    from .estimator.engine.InferenceEngineFactory import InferenceEngineFactory
+except ModuleNotFoundError as ex:
+    logging.info(f"Module InferenceEngineFactory not found")
 from .estimator.inpaint.BaseInpainter import BaseInpainter
 try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNConfig
@@ -70,6 +78,14 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module CenterNetDetector not found")
 try:
+    from .estimator.spatial.CrowdHumanDetector import CrowdHumanConfig
+except ModuleNotFoundError as ex:
+    logging.info(f"Module CrowdHumanConfig not found")
+try:
+    from .estimator.spatial.CrowdHumanDetector import CrowdHumanDetector
+except ModuleNotFoundError as ex:
+    logging.info(f"Module CrowdHumanDetector not found")
+try:
     from .estimator.spatial.DETRDetector import DETRConfig
 except ModuleNotFoundError as ex:
     logging.info(f"Module DETRConfig not found")
@@ -103,6 +119,14 @@ try:
     from .estimator.spatial.YOLODetector import YOLODetector
 except ModuleNotFoundError as ex:
     logging.info(f"Module YOLODetector not found")
+try:
+    from .estimator.spatial.YOLOv5Detector import YOLOv5Config
+except ModuleNotFoundError as ex:
+    logging.info(f"Module YOLOv5Config not found")
+try:
+    from .estimator.spatial.YOLOv5Detector import YOLOv5Detector
+except ModuleNotFoundError as ex:
+    logging.info(f"Module YOLOv5Detector not found")
 try:
     from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
 except ModuleNotFoundError as ex:
@@ -362,6 +386,7 @@ from .result.ImageResult import ImageResult
 from .result.ResultAnnotator import ResultAnnotator
 from .result.ResultDict import ResultDict
 from .result.ResultList import ResultList
+from .result.spatial.CrowdHumanResult import CrowdHumanResult
 from .result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 from .result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from .result.spatial.ObjectDetectionResult import ObjectDetectionResult
@@ -405,6 +430,8 @@ from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
 from .tracker.CentroidTracker import CentroidTracker
 from .tracker.FlateTracker import FlateTracker
 from .tracker.MotpyTracker import MotpyTracker
+from .tracker.ObjectAssignmentSolver import ObjectAssignmentResult
+from .tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
 from .util.ArgUtils import PipelineNodeFactory
 from .util.ArgUtils import add_dict_choice_argument
 from .util.ArgUtils import add_enum_choice_argument
@@ -437,6 +464,9 @@ from .util.MathUtils import transform_coordinates
 from .util.NetworkUtils import download_file
 from .util.NetworkUtils import prepare_data_file
 from .util.NetworkUtils import prepare_openvino_model
+from .util.OSUtils import isLinux
+from .util.OSUtils import isMacOSX
+from .util.OSUtils import isWindows
 try:
     from .util.OpenVinoUtils import get_inference_engine_device
 except ModuleNotFoundError as ex:
