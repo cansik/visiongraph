@@ -17,6 +17,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 class KAPAOPoseConfig(Enum):
     KAPAO_S_COCO_1280 = RepositoryAsset("kapao_s_coco_1280.onnx"), 17
+    KAPAO_L_COCO_1280 = RepositoryAsset("kapao_l_coco_1280.onnx"), 17
 
 
 class KAPAOPoseEstimator(PoseEstimator):
