@@ -4,7 +4,6 @@ from typing import Optional
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
-from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
 from visiongraph.external.intel.models.model import Model
 from visiongraph.external.intel.models.open_pose import OpenPose
 
