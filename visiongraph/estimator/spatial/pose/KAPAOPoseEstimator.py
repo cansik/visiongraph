@@ -1,21 +1,18 @@
 from enum import Enum
-from typing import List, Optional
+from pathlib import Path
+from typing import List, Optional, Tuple
 
+import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
-from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
-from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
-from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class KAPAOPoseConfig(Enum):
@@ -25,11 +22,17 @@ class KAPAOPoseConfig(Enum):
 class KAPAOPoseEstimator(PoseEstimator):
     def __init__(self, *assets: Asset, num_keypoints: int,
                  min_score: float = 0.7, nms_threshold: float = 0.45,
+                 kp_min_score: float = 0.1, kp_nms_threshold: float = 0.95,
                  engine: InferenceEngine = InferenceEngine.ONNX):
         super().__init__(min_score)
 
-        self.num_keypoints = num_keypoints
         self.nms_threshold = nms_threshold
+
+        self.num_keypoints = num_keypoints
+        self.kp_min_score = kp_min_score
+        self.kp_nms_threshold = kp_nms_threshold
+
+        self.overwrite_tol = 25
 
         self.engine = InferenceEngineFactory.create(engine, assets,
                                                     flip_channels=True,
@@ -45,12 +48,40 @@ class KAPAOPoseEstimator(PoseEstimator):
         h, w = self.engine.first_input_shape[2:]
 
         output = self.engine.process(image)
+        tensor_size = output.image_size
         prediction = output[self.engine.output_names[0]]
 
-        xc = prediction[..., 4] > self.min_score
+        person_dets = self._nms_predictions(prediction, self.min_score, self.nms_threshold, classes=[0])
+        kp_dets = self._nms_predictions(prediction, self.kp_min_score, self.kp_nms_threshold,
+                                        classes=list(range(1, 1 + self.num_keypoints)))
+
+        _, raw_poses, pose_scores, _, _ = self._post_process_batch(image, [], [[image.shape[:2]]], person_dets, kp_dets)
+
+        poses = ResultList()
+        for i, raw_pose in enumerate(raw_poses):
+            score = pose_scores[i]
+            key_points: List[Tuple[float, float, float, float]] = []
+
+            for kp in raw_pose:
+                key_points.append((kp[0] / tensor_size.width, kp[1] / tensor_size.height, 0, kp[2]))
+
+            pose = COCOPose(float(score), list_of_vector4D(key_points))
+            pose.map_coordinates(output.image_size, Size2D.from_image(image), src_roi=output.padding_box)
+            poses.append(pose)
+
+        return poses
+
+    def release(self):
+        self.engine.release()
+
+    def _nms_predictions(self, prediction: np.ndarray, threshold: float, nms_threshold: float,
+                         classes: Optional[List[int]] = None) -> List[np.ndarray]:
+        xc = prediction[..., 4] > threshold
 
         num_coords = self.num_keypoints * 3
+        np_classes = np.array(classes)
 
+        result = []
         for xi, x in enumerate(prediction):
             x = x[xc[xi]]
 
@@ -59,25 +90,35 @@ class KAPAOPoseEstimator(PoseEstimator):
 
             kp_conf = x[:, 5:5 + self.num_keypoints]
             j = np.argmax(x[:, 5:5 + self.num_keypoints], 1, keepdims=True)
-            conf = np.take(kp_conf, j)
+            confidences = kp_conf[range(kp_conf.shape[0]), j.flatten()]
             kp = x[:, 5 + self.num_keypoints + 1:]
+            boxes = self._xywh2xyxy(x[:, :4])
 
-            det_bbox = x[0:4]
+            # Filter by class
+            if classes is not None:
+                indices, _ = np.where(j == np_classes)
+                j = j[indices]
+                confidences = confidences[indices]
+                kp = kp[indices]
+                boxes = boxes[indices]
 
-            # process bounding box
-            wh = det_bbox[2:]
-            xy = det_bbox[:2]
-            xy -= wh * 0.5
-            bbox = BoundingBox2D(xy[0], xy[1], wh[0], wh[1]).scale(1 / w, 1 / h)
+            nms_indices = cv2.dnn.NMSBoxes(boxes, confidences, threshold, nms_threshold)
+            outs = np.hstack((boxes, confidences.reshape(-1, 1), j, kp))
+            outs_filtered = outs[nms_indices]
+            result.append(outs_filtered)
+        return result
 
-            # filter detection min score
-            detections = detections[np.where(detections[:, 4] > self.min_score)]
+    @staticmethod
+    def _xywh2xyxy(x: np.ndarray) -> np.ndarray:
+        # Convert nx4 boxes from [x, y, w, h] to [x1, y1, x2, y2] where xy1=top-left, xy2=bottom-right
+        y = np.copy(x)
+        y[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
+        y[:, 1] = x[:, 1] - x[:, 3] / 2  # top left y
+        y[:, 2] = x[:, 0] + x[:, 2] / 2  # bottom right x
+        y[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
+        return y
 
-    def release(self):
-        self.engine.release()
-
-    def _post_process_batch(self, data, imgs, paths, shapes, person_dets, kp_dets,
-                            two_stage=False, pad=0, device='cpu', model=None, origins=None):
+    def _post_process_batch(self, imgs, paths, shapes, person_dets, kp_dets, origins=None):
 
         num_coords = self.num_keypoints * 2
 
@@ -94,31 +135,28 @@ class KAPAOPoseEstimator(PoseEstimator):
 
             if nd:
                 path, shape = Path(paths[si]) if len(paths) else '', shapes[si][0]
-                img_id = int(osp.splitext(osp.split(path)[-1])[0]) if path else si
 
-                scores = pd[:, 4].cpu().numpy()  # person detection score
-                bboxes = scale_coords(imgs[si].shape[1:], pd[:, :4], shape).round().cpu().numpy()
-                poses = scale_coords(imgs[si].shape[1:], pd[:, -num_coords:], shape).cpu().numpy()
+                scores = pd[:, 4]  # person detection score
+                bboxes = self.scale_coords(imgs[si].shape[1:], pd[:, :4], shape).round()
+                poses = self.scale_coords(imgs[si].shape[1:], pd[:, -num_coords:], shape)
                 poses = poses.reshape((nd, -num_coords, 2))
                 poses = np.concatenate((poses, np.zeros((nd, poses.shape[1], 1))), axis=-1)
 
-                if data['use_kp_dets'] and nkp:
-                    mask = scores > data['conf_thres_kp_person']
+                if nkp:
+                    mask = scores > self.kp_min_score
                     poses_mask = poses[mask]
 
                     if len(poses_mask):
-                        kpd[:, :4] = scale_coords(imgs[si].shape[1:], kpd[:, :4], shape)
-                        kpd = kpd[:, :6].cpu()
+                        kpd[:, :4] = self.scale_coords(imgs[si].shape[1:], kpd[:, :4], shape)
+                        kpd = kpd[:, :6]
 
                         for x1, y1, x2, y2, conf, cls in kpd:
                             x, y = np.mean((x1, x2)), np.mean((y1, y2))
                             pose_kps = poses_mask[:, int(cls - 1)]
                             dist = np.linalg.norm(pose_kps[:, :2] - np.array([[x, y]]), axis=-1)
                             kp_match = np.argmin(dist)
-                            if conf > pose_kps[kp_match, 2] and dist[kp_match] < data['overwrite_tol']:
+                            if conf > pose_kps[kp_match, 2] and dist[kp_match] < self.overwrite_tol:
                                 pose_kps[kp_match] = [x, y, conf]
-                                if data['count_fused']:
-                                    n_fused[int(cls - 1)] += 1
                         poses[mask] = poses_mask
 
                 poses = [p + origin for p in poses]
@@ -126,9 +164,12 @@ class KAPAOPoseEstimator(PoseEstimator):
                 batch_bboxes.extend(bboxes)
                 batch_poses.extend(poses)
                 batch_scores.extend(scores)
-                batch_ids.extend([img_id] * len(scores))
 
         return batch_bboxes, batch_poses, batch_scores, batch_ids, n_fused
+
+    @staticmethod
+    def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):
+        return coords
 
     @staticmethod
     def create(config: KAPAOPoseConfig = KAPAOPoseConfig.KAPAO_S_COCO_1280) -> "KAPAOPoseEstimator":
