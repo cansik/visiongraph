@@ -64,7 +64,8 @@ class KAPAOPoseEstimator(PoseEstimator):
             key_points: List[Tuple[float, float, float, float]] = []
 
             for kp in raw_pose:
-                key_points.append((kp[0] / tensor_size.width, kp[1] / tensor_size.height, 0, kp[2]))
+                # todo: find out why keypoint conf for last keypoint is not valid
+                key_points.append((kp[0] / tensor_size.width, kp[1] / tensor_size.height, 0, 1.0))
 
             pose = COCOPose(float(score), list_of_vector4D(key_points))
             pose.map_coordinates(output.image_size, Size2D.from_image(image), src_roi=output.padding_box)
@@ -87,7 +88,7 @@ class KAPAOPoseEstimator(PoseEstimator):
             x = x[xc[xi]]
 
             # calculate confidence
-            x[:, 5:-num_coords] *= x[:, 4:5]
+            x[:, 5:5 + self.num_keypoints] *= x[:, 4:5]
 
             kp_conf = x[:, 5:5 + self.num_keypoints]
             j = np.argmax(x[:, 5:5 + self.num_keypoints], 1, keepdims=True)
