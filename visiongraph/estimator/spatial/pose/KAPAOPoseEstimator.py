@@ -56,7 +56,7 @@ class KAPAOPoseEstimator(PoseEstimator):
         kp_dets = self._nms_predictions(prediction, self.kp_min_score, self.kp_nms_threshold,
                                         classes=list(range(1, 1 + self.num_keypoints)))
 
-        _, raw_poses, pose_scores, _, _ = self._post_process_batch(image, [], [[image.shape[:2]]], person_dets, kp_dets)
+        _, raw_poses, pose_scores, _, _ = self._post_process_batch(person_dets, kp_dets)
 
         poses = ResultList()
         for i, raw_pose in enumerate(raw_poses):
@@ -120,8 +120,7 @@ class KAPAOPoseEstimator(PoseEstimator):
         y[:, 3] = x[:, 1] + x[:, 3] / 2  # bottom right y
         return y
 
-    def _post_process_batch(self, imgs, paths, shapes, person_dets, kp_dets, origins=None):
-
+    def _post_process_batch(self, person_dets, kp_dets, origins=None):
         num_coords = self.num_keypoints * 2
 
         batch_bboxes, batch_poses, batch_scores, batch_ids = [], [], [], []
@@ -136,11 +135,9 @@ class KAPAOPoseEstimator(PoseEstimator):
             nkp = kpd.shape[0]
 
             if nd:
-                path, shape = Path(paths[si]) if len(paths) else '', shapes[si][0]
-
                 scores = pd[:, 4]  # person detection score
-                bboxes = self.scale_coords(imgs[si].shape[1:], pd[:, :4], shape).round()
-                poses = self.scale_coords(imgs[si].shape[1:], pd[:, -num_coords:], shape)
+                bboxes = pd[:, :4].round()
+                poses = pd[:, -num_coords:]
                 poses = poses.reshape((nd, -num_coords, 2))
                 poses = np.concatenate((poses, np.zeros((nd, poses.shape[1], 1))), axis=-1)
 
@@ -149,7 +146,6 @@ class KAPAOPoseEstimator(PoseEstimator):
                     poses_mask = poses[mask]
 
                     if len(poses_mask):
-                        kpd[:, :4] = self.scale_coords(imgs[si].shape[1:], kpd[:, :4], shape)
                         kpd = kpd[:, :6]
 
                         for x1, y1, x2, y2, conf, cls in kpd:
@@ -168,10 +164,6 @@ class KAPAOPoseEstimator(PoseEstimator):
                 batch_scores.extend(scores)
 
         return batch_bboxes, batch_poses, batch_scores, batch_ids, n_fused
-
-    @staticmethod
-    def scale_coords(img1_shape, coords, img0_shape, ratio_pad=None):
-        return coords
 
     @staticmethod
     def create(config: KAPAOPoseConfig = KAPAOPoseConfig.KAPAO_S_COCO_1280) -> "KAPAOPoseEstimator":
