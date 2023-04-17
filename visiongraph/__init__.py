@@ -225,6 +225,14 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module EfficientPoseEstimatorConfig not found")
 try:
+    from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseConfig
+except ModuleNotFoundError as ex:
+    logging.info(f"Module KAPAOPoseConfig not found")
+try:
+    from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseEstimator
+except ModuleNotFoundError as ex:
+    logging.info(f"Module KAPAOPoseEstimator not found")
+try:
     from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetConfig
 except ModuleNotFoundError as ex:
     logging.info(f"Module LiteHRNetConfig not found")

@@ -16,6 +16,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class KAPAOPoseConfig(Enum):
+    KAPAO_S_COCO_640 = RepositoryAsset("kapao_s_coco_640.onnx"), 17
     KAPAO_S_COCO_1280 = RepositoryAsset("kapao_s_coco_1280.onnx"), 17
     KAPAO_L_COCO_1280 = RepositoryAsset("kapao_l_coco_1280.onnx"), 17
 
@@ -166,6 +167,6 @@ class KAPAOPoseEstimator(PoseEstimator):
         return batch_bboxes, batch_poses, batch_scores, batch_ids, n_fused
 
     @staticmethod
-    def create(config: KAPAOPoseConfig = KAPAOPoseConfig.KAPAO_S_COCO_1280) -> "KAPAOPoseEstimator":
+    def create(config: KAPAOPoseConfig = KAPAOPoseConfig.KAPAO_S_COCO_640) -> "KAPAOPoseEstimator":
         model, num_keypoints = config.value
         return KAPAOPoseEstimator(model, num_keypoints=num_keypoints)
