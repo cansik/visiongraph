@@ -81,6 +81,7 @@ except ImportError as ex:
 try:
     from visiongraph.estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseEstimator, KAPAOPoseConfig
 
+    PoseEstimators["kapao-n"] = partial(KAPAOPoseEstimator.create, KAPAOPoseConfig.KAPAO_N_COCO_640)
     PoseEstimators["kapao-s"] = partial(KAPAOPoseEstimator.create, KAPAOPoseConfig.KAPAO_S_COCO_640)
     PoseEstimators["kapao-s-1280"] = partial(KAPAOPoseEstimator.create, KAPAOPoseConfig.KAPAO_S_COCO_1280)
     PoseEstimators["kapao-l-1280"] = partial(KAPAOPoseEstimator.create, KAPAOPoseConfig.KAPAO_L_COCO_1280)

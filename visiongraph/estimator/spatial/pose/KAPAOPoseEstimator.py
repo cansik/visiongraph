@@ -1,5 +1,4 @@
 from enum import Enum
-from pathlib import Path
 from typing import List, Optional, Tuple
 
 import cv2
@@ -16,6 +15,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class KAPAOPoseConfig(Enum):
+    KAPAO_N_COCO_640 = RepositoryAsset("kapao_n_coco_640.onnx"), 17
     KAPAO_S_COCO_640 = RepositoryAsset("kapao_s_coco_640.onnx"), 17
     KAPAO_S_COCO_1280 = RepositoryAsset("kapao_s_coco_1280.onnx"), 17
     KAPAO_L_COCO_1280 = RepositoryAsset("kapao_l_coco_1280.onnx"), 17
