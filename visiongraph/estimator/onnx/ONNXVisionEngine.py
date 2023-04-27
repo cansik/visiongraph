@@ -23,6 +23,8 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.session: Optional[rt.InferenceSession] = None
         self.session_options = rt.SessionOptions()
 
+        self.preferred_execution_providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+
     def setup(self):
         if self.execution_providers is None:
             self.execution_providers = self.get_execution_providers()
@@ -51,4 +53,11 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.session = None
 
     def get_execution_providers(self) -> List[str]:
-        return rt.get_available_providers()
+        providers = rt.get_available_providers()
+        providers_set = set(providers)
+        selected_providers = [p for p in self.preferred_execution_providers if p in providers_set]
+
+        if len(selected_providers) == 0:
+            return providers
+
+        return selected_providers
