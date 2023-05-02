@@ -121,6 +121,10 @@ class RealSenseInput(BaseDepthCamera):
 
             if depth_sensor is not None:
                 def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
+                    if not depth_sensor.supports(option):
+                        logging.warning(f"The option {option} is not supported!")
+                        return value
+
                     if value is not None:
                         return float(value)
 
