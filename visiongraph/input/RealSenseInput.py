@@ -131,10 +131,18 @@ class RealSenseInput(BaseDepthCamera):
                     option_range: rs.option_range = depth_sensor.get_option_range(option)
                     return option_range.max
 
-                self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
-                                value=get_option_max_or_value(rs.option.auto_exposure_limit, self.auto_exposure_limit))
-                self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
-                                value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
+                try:
+                    self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
+                                    value=get_option_max_or_value(rs.option.auto_exposure_limit,
+                                                                  self.auto_exposure_limit))
+                except Exception as ex:
+                    logging.error(f"Could not set auto_exposure_limit: {ex}")
+
+                try:
+                    self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
+                                    value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
+                except Exception as ex:
+                    logging.error(f"Could not set auto_gain_limit: {ex}")
 
         # start up device
         self.profile = self.pipeline.start(self.config)
@@ -319,7 +327,8 @@ class RealSenseInput(BaseDepthCamera):
         serdev = rs.serializable_device(self.device)
         return serdev.serialize_json()
 
-    def get_realsense_intrinsics(self, stream_type: Optional[rs.stream] = None, stream_index: int = -1) -> rs.intrinsics:
+    def get_realsense_intrinsics(self, stream_type: Optional[rs.stream] = None,
+                                 stream_index: int = -1) -> rs.intrinsics:
         profiles = self.pipeline.get_active_profile()
 
         # determine main stream_type type
