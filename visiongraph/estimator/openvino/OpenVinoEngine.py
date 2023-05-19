@@ -53,6 +53,9 @@ class OpenVinoEngine(BaseVisionEngine):
         return VisionEngineOutput(outputs)
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        if input_name in self.dynamic_input_shapes:
+            return self.dynamic_input_shapes[input_name]
+
         return self._input_lut[input_name].shape
 
     def release(self):

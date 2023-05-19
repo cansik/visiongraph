@@ -39,6 +39,9 @@ class VisionInferenceEngine(BaseVisionEngine):
         return VisionEngineOutput(self.infer_network.infer(inputs=inputs))
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        if input_name in self.dynamic_input_shapes:
+            return self.dynamic_input_shapes[input_name]
+
         return self.net.input_info[input_name].input_data.shape
 
     def release(self):
