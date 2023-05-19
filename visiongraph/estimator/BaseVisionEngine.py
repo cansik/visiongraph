@@ -28,6 +28,8 @@ class BaseVisionEngine(ABC):
         self.input_names: List[str] = []
         self.output_names: List[str] = []
 
+        self.dynamic_input_shapes: Dict[str, List[int]] = dict()
+
     @abstractmethod
     def setup(self):
         pass
@@ -99,6 +101,9 @@ class BaseVisionEngine(ABC):
         in_frame = in_frame.reshape((1, channels, height, width))
 
         return in_frame, pad_bbox, image_size
+
+    def set_dynamic_input_shape(self, name: str, batch_size: int, channels: int, height: int, width: int):
+        self.dynamic_input_shapes[name] = [batch_size, channels, height, width]
 
     @property
     def first_input_name(self) -> str:

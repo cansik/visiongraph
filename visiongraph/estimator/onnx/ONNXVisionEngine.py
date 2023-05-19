@@ -43,6 +43,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         return result_dict
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        if input_name in self.dynamic_input_shapes:
+            return self.dynamic_input_shapes[input_name]
+
         for input in self.session.get_inputs():
             if input.name == input_name:
                 return input.shape
