@@ -120,6 +120,10 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module YOLODetector not found")
 try:
+    from .estimator.spatial.YOLOXE2EDetector import YOLOXE2EDetector
+except ModuleNotFoundError as ex:
+    logging.info(f"Module YOLOXE2EDetector not found")
+try:
     from .estimator.spatial.YOLOv5Detector import YOLOv5Config
 except ModuleNotFoundError as ex:
     logging.info(f"Module YOLOv5Config not found")
