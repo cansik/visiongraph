@@ -56,7 +56,7 @@ class OpenVinoEngine(BaseVisionEngine):
         if input_name in self.dynamic_input_shapes:
             return self.dynamic_input_shapes[input_name]
 
-        return self._input_lut[input_name].shape
+        return tuple(self._input_lut[input_name].shape)
 
     def release(self):
         pass

@@ -5,11 +5,13 @@ from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
 from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 
 
 class InferenceEngine(Enum):
     ONNX = ONNXVisionEngine
     OpenVINO = VisionInferenceEngine
+    OpenVINO2 = OpenVinoEngine
 
 
 class InferenceEngineFactory:
