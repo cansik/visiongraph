@@ -4,7 +4,7 @@ opencv-python~=4.7.0
 numpy<=1.22.4
 requests
 tqdm
-vector~=0.10.0
+vector~=1.0.0
 scipy
 filterpy
 
@@ -19,16 +19,14 @@ pyk4a-bundle~=1.3.0.2; platform_system == "Windows" or platform_system == "Linux
 openvino~=2022.3.0
 
 # extra mediapipe
-mediapipe-silicon~=0.9.1; platform_system == "Darwin" and platform.machine == "arm64"
-mediapipe~=0.9.1; platform_system != "Darwin" or platform.machine != "arm64"
-protobuf>=3.11,<4
+mediapipe~=0.10.0
 
 # extra onnx
-onnxruntime~=1.12.0
+onnxruntime~=1.15.0
 
 # extra onnx-gpu
-onnxruntime~=1.12.0; platform_system == "Darwin"
-onnxruntime-gpu~=1.12.0; platform_system != "Darwin"
+onnxruntime~=1.15.0; platform_system == "Darwin"
+onnxruntime-gpu~=1.15.0; platform_system != "Darwin"
 
 # extra media
 moviepy
@@ -36,9 +34,6 @@ vidgear[core]
 
 # extra numba
 numba
-
-# extra opencv-contrib
-# opencv-contrib-python~=4.7.0.72
 
 # extra fbs
 pyopengl; platform_system == "Darwin" or platform_system == "Windows"
