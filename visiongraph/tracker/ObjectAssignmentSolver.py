@@ -83,6 +83,5 @@ class ObjectAssignmentSolver(Generic[T]):
 
         for y, track in enumerate(tracks):
             for x, detection in enumerate(detections):
-                cost_mat[y, x] = track.bounding_box.intersection_over_union(detection.bounding_box)
-
+                cost_mat[y, x] = 1.0 - track.bounding_box.intersection_over_union(detection.bounding_box)
         return cost_mat
