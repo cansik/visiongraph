@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Sequence, Dict, Optional, Union
+from typing import Sequence, Dict, Optional, Union, Any
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
@@ -24,7 +24,7 @@ class InferenceEngineFactory:
                padding: bool = False,
                transpose: bool = True,
                order: InputShapeOrder = InputShapeOrder.NCHW,
-               **engine_options) -> BaseVisionEngine:
+               **engine_options: Any) -> BaseVisionEngine:
         if len(assets) < 0:
             raise Exception("No model or weights provided for vision engine! At least one is required!")
 
