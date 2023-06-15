@@ -8,6 +8,7 @@ import vector
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
+from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.util import ImageUtils
 
 
@@ -16,7 +17,8 @@ class BaseVisionEngine(ABC):
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
                  padding: bool = False,
-                 transpose: bool = True):
+                 transpose: bool = True,
+                 order: InputShapeOrder = InputShapeOrder.NCHW):
 
         self.flip_channels = flip_channels
         self.scale = scale
@@ -24,6 +26,7 @@ class BaseVisionEngine(ABC):
         self.padding = padding
         self.padding_color: Optional[Sequence[int]] = None
         self.transpose = transpose
+        self.order = order
 
         self.input_names: List[str] = []
         self.output_names: List[str] = []
@@ -37,7 +40,7 @@ class BaseVisionEngine(ABC):
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         in_frame, padding_box, image_size = self.pre_process_image(image, self.first_input_name,
                                                                    self.flip_channels, self.scale, self.mean,
-                                                                   self.padding, self.transpose)
+                                                                   self.padding, self.transpose, self.order)
 
         if inputs is None:
             inputs = {}
@@ -59,9 +62,14 @@ class BaseVisionEngine(ABC):
                           scale: Optional[Union[float, Sequence[float]]] = None,
                           mean: Optional[Union[float, Sequence[float]]] = None,
                           padding: bool = False,
-                          transpose: bool = True) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
+                          transpose: bool = True,
+                          order: InputShapeOrder = InputShapeOrder.NCHW) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
         input_channels = image.shape[-1] if image.ndim == 3 else 1
-        batch_size, channels, height, width = self.get_input_shape(input_name)
+
+        if order == InputShapeOrder.NWHC:
+            batch_size, width, height, channels = self.get_input_shape(input_name)
+        else:
+            batch_size, channels, height, width = self.get_input_shape(input_name)
 
         if padding:
             pc = self.padding_color if self.padding_color is not None else (0, 0, 0)
@@ -97,8 +105,11 @@ class BaseVisionEngine(ABC):
             else:
                 in_frame = in_frame.transpose((1, 0))
 
-        # make ncwh
-        in_frame = in_frame.reshape((1, channels, height, width))
+        # make nchw
+        if order == InputShapeOrder.NWHC:
+            in_frame = in_frame.reshape((1, width, height, channels))
+        else:
+            in_frame = in_frame.reshape((1, channels, height, width))
 
         return in_frame, pad_bbox, image_size
 

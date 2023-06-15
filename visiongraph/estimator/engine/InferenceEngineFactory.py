@@ -6,6 +6,7 @@ from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
 from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
+from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 
 
 class InferenceEngine(Enum):
@@ -22,11 +23,13 @@ class InferenceEngineFactory:
                mean: Optional[Union[float, Sequence[float]]] = None,
                padding: bool = False,
                transpose: bool = True,
-               **engine_options: Dict) -> BaseVisionEngine:
+               order: InputShapeOrder = InputShapeOrder.NCHW,
+               **engine_options) -> BaseVisionEngine:
         if len(assets) < 0:
             raise Exception("No model or weights provided for vision engine! At least one is required!")
 
         instance = engine.value(*assets, flip_channels=flip_channels, scale=scale, mean=mean,
                                 padding=padding, **engine_options)
         instance.transpose = transpose
+        instance.order = order
         return instance
