@@ -347,7 +347,7 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def serial(self) -> str:
-        return self.device.selected_serial
+        return self.device.serial
 
     @property
     def color(self) -> np.ndarray:
