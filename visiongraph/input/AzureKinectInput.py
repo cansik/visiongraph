@@ -51,6 +51,9 @@ class AzureKinectInput(BaseDepthCamera):
         self.device: Optional[PyK4A] = None
         self.capture: Optional[PyK4ACapture] = None
 
+        self.wired_sync_mode: Optional[pyk4a.WiredSyncMode] = None
+        self.subordinate_delay_off_master_usec = 0
+
         self.device_id: int = device_id
         self.color_resolution: Optional[pyk4a.ColorResolution] = None
         self.color_format: pyk4a.ImageFormat = pyk4a.ImageFormat.COLOR_BGRA32
@@ -104,6 +107,10 @@ class AzureKinectInput(BaseDepthCamera):
             if self.enable_depth:
                 config.depth_mode = self.depth_mode
                 config.synchronized_images_only = self.sync_frames
+
+            if self.wired_sync_mode is not None:
+                self.config.wired_sync_mode = self.wired_sync_mode
+            self.config.subordinate_delay_off_master_usec = self.subordinate_delay_off_master_usec
 
             self.config = config
             self.device = PyK4A(config=config, device_id=self.device_id)
@@ -255,6 +262,9 @@ class AzureKinectInput(BaseDepthCamera):
 
         self.passive_ir = args.k4a_passive_ir
 
+        self.wired_sync_mode = args.k4a_wired_sync_mode
+        self.subordinate_delay_off_master_usec = args.k4a_subordinate_delay_off_master_usec
+
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
@@ -284,6 +294,11 @@ class AzureKinectInput(BaseDepthCamera):
         add_enum_choice_argument(parser, pyk4a.ImageFormat, "--k4a-color-format",
                                  default=pyk4a.ImageFormat.COLOR_BGRA32,
                                  help="Azure color image format")
+
+        add_enum_choice_argument(parser, pyk4a.WiredSyncMode, "--k4a-wired-sync-mode", default=None,
+                                 help="Synchronization mode when connecting two or more devices together")
+        parser.add_argument("--k4a-subordinate-delay-off-master-usec", type=int, default=0,
+                            help="The external synchronization timing.")
 
     @property
     def gain(self) -> int:
