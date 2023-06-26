@@ -109,8 +109,8 @@ class AzureKinectInput(BaseDepthCamera):
                 config.synchronized_images_only = self.sync_frames
 
             if self.wired_sync_mode is not None:
-                self.config.wired_sync_mode = self.wired_sync_mode
-            self.config.subordinate_delay_off_master_usec = self.subordinate_delay_off_master_usec
+                config.wired_sync_mode = self.wired_sync_mode
+            config.subordinate_delay_off_master_usec = self.subordinate_delay_off_master_usec
 
             self.config = config
             self.device = PyK4A(config=config, device_id=self.device_id)
