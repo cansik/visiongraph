@@ -51,12 +51,15 @@ class YOLOXE2EDetector(ObjectDetector):
         results = ResultList()
         for i in output_indices:
             label = labels[i]
+            if label < 0:
+                continue
+
             box = boxes[i]
 
             x1, y1, x2, y2, score = box
 
             # find label
-            label_index = int(np.argmax(label))
+            label_index = label
 
             # process bounding box
             bbox = BoundingBox2D(x1, y1, x2 - x1, y2 - y1).scale(1 / w, 1 / h)
