@@ -3,7 +3,6 @@ from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
 
 import cv2
 import numpy as np
-import vector
 
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -122,6 +121,10 @@ class BaseVisionEngine(ABC):
 
     @abstractmethod
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        pass
+
+    @abstractmethod
+    def get_device_name(self) -> str:
         pass
 
     @property

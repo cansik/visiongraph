@@ -32,7 +32,8 @@ class OpenVinoEngine(BaseVisionEngine):
 
     def setup(self):
         # setup inference engine
-        self.ie = ov.Core()
+        if self.ie is None:
+            self.ie = ov.Core()
 
         if self.weights is None:
             self.parsed_model = self.ie.read_model(self.model.path)
@@ -60,3 +61,7 @@ class OpenVinoEngine(BaseVisionEngine):
 
     def release(self):
         pass
+
+    def get_device_name(self) -> str:
+        device_name = self.ie.get_property(self.device, "FULL_DEVICE_NAME")
+        return f"{device_name}"

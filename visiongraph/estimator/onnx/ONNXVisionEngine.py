@@ -58,9 +58,14 @@ class ONNXVisionEngine(BaseVisionEngine):
     def get_execution_providers(self) -> List[str]:
         providers = rt.get_available_providers()
         providers_set = set(providers)
+
+        # filter user selected providers
         selected_providers = [p for p in self.preferred_execution_providers if p in providers_set]
 
         if len(selected_providers) == 0:
             return providers
 
         return selected_providers
+
+    def get_device_name(self) -> str:
+        return self.session.get_providers()[0]
