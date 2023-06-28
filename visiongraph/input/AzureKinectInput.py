@@ -37,7 +37,8 @@ class AzureKinectInput(BaseDepthCamera):
     def __init__(self, device_id: int = 0):
         super().__init__()
         self.sync_frames: bool = True
-        self.align_frames: bool = False
+        self.align_frames_to_color: bool = False
+        self.align_frames_to_depth: bool = False
 
         self.depth_min_clipping: Optional[int] = 0
         self.depth_max_clipping: Optional[int] = 5000
@@ -137,10 +138,10 @@ class AzureKinectInput(BaseDepthCamera):
             image = self._colorize(depth, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
         else:
             if self.use_infrared:
-                ir_frame = self.capture.transformed_ir if self.align_frames else self.capture.ir
+                ir_frame = self.capture.transformed_ir if self.align_frames_to_color else self.capture.ir
                 image = self._colorize(ir_frame, (self.ir_min_clipping, self.ir_max_clipping), self.ir_color_map)
             else:
-                image = self.capture.transformed_color if self.align_frames else self.capture.color
+                image = self.capture.transformed_color if self.align_frames_to_depth else self.capture.color
                 if image is not None:
                     image = self._convert_to_bgra_if_required(self.color_format, image)
                     image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
@@ -233,7 +234,7 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def depth_buffer(self) -> np.ndarray:
-        if self.align_frames:
+        if self.align_frames_to_color:
             return self.capture.transformed_depth
         return self.capture.depth
 
@@ -247,7 +248,9 @@ class AzureKinectInput(BaseDepthCamera):
         if args.source is not None:
             args.k4a_play_mkv = args.source
 
-        self.align_frames = args.k4a_align
+        self.align_frames_to_color = args.k4a_align_to_color
+        self.align_frames_to_depth = args.k4a_align_to_depth
+
         self.device_id = args.k4a_device
 
         self.output_mkv_file = args.k4a_record_mkv
@@ -270,7 +273,9 @@ class AzureKinectInput(BaseDepthCamera):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
         CommonArgs.add_source_argument(parser)
 
-        parser.add_argument("--k4a-align", action="store_true",
+        parser.add_argument("--k4a-align-to-color", action="store_true",
+                            help="Align azure frames to color frame.")
+        parser.add_argument("--k4a-align-to-depth", action="store_true",
                             help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
 
