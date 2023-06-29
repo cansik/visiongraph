@@ -9,7 +9,6 @@ from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class VisionInferenceEngine(BaseVisionEngine):
-
     def __init__(self, model: Asset, weights: Asset, flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
@@ -46,3 +45,7 @@ class VisionInferenceEngine(BaseVisionEngine):
 
     def release(self):
         pass
+
+    def get_device_name(self) -> str:
+        device_name = self.ie.get_config(self.device, "FULL_DEVICE_NAME")
+        return f"{device_name}"
