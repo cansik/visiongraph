@@ -1,3 +1,4 @@
+import logging
 from typing import Dict, Optional, Any, Sequence, Union
 
 import numpy as np
@@ -32,7 +33,14 @@ class VisionInferenceEngine(BaseVisionEngine):
         self.input_names = list(self.net.input_info.keys())
         self.output_names = list(self.net.outputs.keys())
 
-        self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
+        try:
+            self.infer_network = self.ie.load_network(network=self.net, device_name=self.device)
+        except RuntimeError as ex:
+            logging.warning(f"Could not load network: {ex}")
+
+            if self.device != "CPU":
+                logging.warning(f"Trying to load network with CPU device directly")
+                self.infer_network = self.ie.load_network(network=self.net, device_name="CPU")
 
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         return VisionEngineOutput(self.infer_network.infer(inputs=inputs))

@@ -5,6 +5,7 @@ on:
 
 jobs:
   test:
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +41,21 @@ jobs:
           pip install --upgrade pip
           pip install -r dev-requirements.txt
           pip install .[all]
+
+      - name: "Download all networks from ${{ github.event.inputs.tag }}"
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "cansik/data-storage"
+          tag: "sarmotion"
+          fileName: "*"
+          out-file-path: "visiongraph/cache"
+
+      # check networks
+      - name: Check networks
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          ls -la visiongraph/cache
 
       # run test
       - name: Test visiongraph
