@@ -49,7 +49,7 @@ jobs:
           tag: "sarmotion"
           fileName: "*"
           out-file-path: "visiongraph/cache"
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DATA_REPO_TOKEN }}
 
       # check networks
       - name: Check networks
