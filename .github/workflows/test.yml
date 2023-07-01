@@ -63,4 +63,4 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          python -m unittest discover -s ./tests -t ./
+          python -m unittest discover -s ./tests -t ./ -v
