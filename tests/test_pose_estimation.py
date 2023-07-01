@@ -48,9 +48,11 @@ class PoseEstimationTests(unittest.TestCase):
     def test_mobilenetv2_pose_estimator_fp32(self):
         self._test_model(vg.MobileNetV2PoseEstimator.create(vg.MobileNetV2PoseEstimatorConfig.MNV2PE_0_5_224_FP32))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_movenet_pose_estimator_single_fp16(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_Single_Lightning_FP16))
 
+    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_movenet_pose_estimator_single_fp32(self):
         self._test_model(vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_Single_Lightning_FP32))
 
