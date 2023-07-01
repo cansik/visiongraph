@@ -10,7 +10,7 @@ from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class VisionInferenceEngine(BaseVisionEngine):
-    def __init__(self, model: Asset, weights: Asset, flip_channels: bool = True,
+    def __init__(self, model: Asset, weights: Optional[Asset] = None, flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
                  padding: bool = False, device: str = "AUTO"):
@@ -28,7 +28,11 @@ class VisionInferenceEngine(BaseVisionEngine):
     def setup(self):
         # setup inference engine
         self.ie = IECore()
-        self.net = self.ie.read_network(model=self.model.path, weights=self.weights.path)
+
+        if self.weights is None:
+            self.net = self.ie.read_network(model=self.model.path)
+        else:
+            self.net = self.ie.read_network(model=self.model.path, weights=self.weights.path)
 
         self.input_names = list(self.net.input_info.keys())
         self.output_names = list(self.net.outputs.keys())
