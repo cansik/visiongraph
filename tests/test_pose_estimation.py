@@ -77,6 +77,18 @@ class PoseEstimationTests(unittest.TestCase):
     def test_openpose_estimator_fp32(self):
         self._test_model(vg.OpenPoseEstimator.create(vg.OpenPoseConfig.LightWeightOpenPose_FP32))
 
+    def test_kapao_n_coco_640_estimator(self):
+        self._test_model(vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_N_COCO_640))
+
+    def test_kapao_s_coco_640_estimator(self):
+        self._test_model(vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_S_COCO_640))
+
+    def test_kapao_s_coco_1280_estimator(self):
+        self._test_model(vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_S_COCO_1280))
+
+    def test_kapao_l_coco_1280_estimator(self):
+        self._test_model(vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_L_COCO_1280))
+
 
 if __name__ == '__main__':
     unittest.main()
