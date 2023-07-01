@@ -42,11 +42,14 @@ jobs:
           pip install -r dev-requirements.txt
           pip install .[all]
 
-      # pre-install networks
-      - name: "Download all networks from data-storage"
-        run: gh release download sarmotion -D "visiongraph/cache" -R cansik/data-storage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: "Download all networks from ${{ github.event.inputs.tag }}"
+        uses: robinraju/release-downloader@v1.8
+        with:
+          repository: "cansik/data-storage"
+          tag: "sarmotion"
+          fileName: "*"
+          out-file-path: "visiongraph/cache"
+          token: ${{ secrets.DATA_REPO_TOKEN }}
 
       # check networks
       - name: Check networks
