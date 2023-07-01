@@ -1,6 +1,8 @@
 import logging
 import os
+import shutil
 import sys
+from pathlib import Path
 from typing import Tuple
 
 import requests
@@ -11,15 +13,24 @@ import visiongraph.cache
 PUBLIC_DATA_URL = "https://github.com/cansik/data-storage/releases/download/sarmotion/"
 
 
-def download_file(url: str, path: str, description: str = "download"):
+def download_file(url: str, path: str, description: str = "download", with_progress: bool = True):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+
+    if not with_progress:
+        with tqdm(total=1, desc=description) as pb:
+            response = requests.get(url, stream=True)
+
+            with open(path, "wb") as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+            pb.update()
+        return
+
     head_request = requests.head(url)
 
     if "Content-Length" in head_request.headers:
         filesize = int(head_request.headers["Content-Length"])
     else:
         filesize = 0
-
-    os.makedirs(os.path.dirname(path), exist_ok=True)
 
     dl_path = path
     chunk_size = 1024
@@ -58,7 +69,11 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
     if os.path.exists(temp_file):
         os.remove(temp_file)
 
-    download_file(url, temp_file, f"Downloading {file_name}")
+    try:
+        download_file(url, temp_file, f"Downloading {file_name}")
+    except Exception as ex:
+        logging.warning(f"Retry download because {file_name} could not be download: {ex}")
+        download_file(url, temp_file, f"Downloading {file_name}", with_progress=False)
 
     # check if file has been downloaded correctly
     head = ""
