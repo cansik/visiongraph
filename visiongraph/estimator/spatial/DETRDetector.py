@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List
 
+import openvino.runtime
+
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
@@ -31,7 +33,9 @@ class DETRDetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return DETR.create_model(self.model.path, DETR.__model__, config, device=self.device)
+        core = openvino.runtime.Core()
+        adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
+        return DETR.create_model(DETR.__model__, adapter, config, preload=True)
 
     @staticmethod
     def create(config: DETRConfig = DETRConfig.DETR_Resnet50_FP32) -> "DETRDetector":

@@ -32,14 +32,8 @@ from .estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from .estimator.VisionClassifier import VisionClassifier
 from .estimator.VisionEstimator import VisionEstimator
 from .estimator.calculator.UndistortionCalculator import UndistortionCalculator
-try:
-    from .estimator.engine.InferenceEngineFactory import InferenceEngine
-except ModuleNotFoundError as ex:
-    logging.info(f"Module InferenceEngine not found")
-try:
-    from .estimator.engine.InferenceEngineFactory import InferenceEngineFactory
-except ModuleNotFoundError as ex:
-    logging.info(f"Module InferenceEngineFactory not found")
+from .estimator.engine.InferenceEngineFactory import InferenceEngine
+from .estimator.engine.InferenceEngineFactory import InferenceEngineFactory
 from .estimator.inpaint.BaseInpainter import BaseInpainter
 try:
     from .estimator.inpaint.GMCNNInpainter import GMCNNConfig
@@ -77,14 +71,8 @@ try:
     from .estimator.spatial.CenterNetDetector import CenterNetDetector
 except ModuleNotFoundError as ex:
     logging.info(f"Module CenterNetDetector not found")
-try:
-    from .estimator.spatial.CrowdHumanDetector import CrowdHumanConfig
-except ModuleNotFoundError as ex:
-    logging.info(f"Module CrowdHumanConfig not found")
-try:
-    from .estimator.spatial.CrowdHumanDetector import CrowdHumanDetector
-except ModuleNotFoundError as ex:
-    logging.info(f"Module CrowdHumanDetector not found")
+from .estimator.spatial.CrowdHumanDetector import CrowdHumanConfig
+from .estimator.spatial.CrowdHumanDetector import CrowdHumanDetector
 try:
     from .estimator.spatial.DETRDetector import DETRConfig
 except ModuleNotFoundError as ex:
@@ -119,18 +107,9 @@ try:
     from .estimator.spatial.YOLODetector import YOLODetector
 except ModuleNotFoundError as ex:
     logging.info(f"Module YOLODetector not found")
-try:
-    from .estimator.spatial.YOLOXE2EDetector import YOLOXE2EDetector
-except ModuleNotFoundError as ex:
-    logging.info(f"Module YOLOXE2EDetector not found")
-try:
-    from .estimator.spatial.YOLOv5Detector import YOLOv5Config
-except ModuleNotFoundError as ex:
-    logging.info(f"Module YOLOv5Config not found")
-try:
-    from .estimator.spatial.YOLOv5Detector import YOLOv5Detector
-except ModuleNotFoundError as ex:
-    logging.info(f"Module YOLOv5Detector not found")
+from .estimator.spatial.YOLOXE2EDetector import YOLOXE2EDetector
+from .estimator.spatial.YOLOv5Detector import YOLOv5Config
+from .estimator.spatial.YOLOv5Detector import YOLOv5Detector
 try:
     from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
 except ModuleNotFoundError as ex:
@@ -162,10 +141,7 @@ try:
     from .estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
 except ModuleNotFoundError as ex:
     logging.info(f"Module AffectNetEmotionClassifier not found")
-try:
-    from .estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
-except ModuleNotFoundError as ex:
-    logging.info(f"Module FERPlusEmotionClassifier not found")
+from .estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
 from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
@@ -228,14 +204,8 @@ try:
     from .estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimatorConfig
 except ModuleNotFoundError as ex:
     logging.info(f"Module EfficientPoseEstimatorConfig not found")
-try:
-    from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseConfig
-except ModuleNotFoundError as ex:
-    logging.info(f"Module KAPAOPoseConfig not found")
-try:
-    from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseEstimator
-except ModuleNotFoundError as ex:
-    logging.info(f"Module KAPAOPoseEstimator not found")
+from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseConfig
+from .estimator.spatial.pose.KAPAOPoseEstimator import KAPAOPoseEstimator
 try:
     from .estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetConfig
 except ModuleNotFoundError as ex:
@@ -360,6 +330,7 @@ from .model.geometry.BoundingBox2D import BoundingBox2D
 from .model.geometry.Size2D import Size2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
+from .model.types.InputShapeOrder import InputShapeOrder
 from .model.types.ModelPrecision import ModelPrecision
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
 from .node.ApplyNode import ApplyNode

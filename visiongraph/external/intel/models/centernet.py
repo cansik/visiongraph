@@ -23,24 +23,24 @@ from .utils import Detection, clip_detections
 
 
 class CenterNet(DetectionModel):
-    __model__ = "centernet"
+    __model__ = 'centernet'
 
-    def __init__(self, inference_adapter, configuration=None, preload=False):
-        super().__init__(inference_adapter, configuration, preload)
+    def __init__(self, model_adapter, configuration=None, preload=False):
+        super().__init__(model_adapter, configuration, preload)
         self._check_io_number(1, 3)
         self._output_layer_names = sorted(self.outputs)
 
     @classmethod
     def parameters(cls):
         parameters = super().parameters()
-        parameters["resize_type"].update_default_value("standard")
+        parameters['resize_type'].update_default_value('standard')
         return parameters
 
     def postprocess(self, outputs, meta):
         heat = outputs[self._output_layer_names[0]][0]
         reg = outputs[self._output_layer_names[1]][0]
         wh = outputs[self._output_layer_names[2]][0]
-        heat = np.exp(heat) / (1 + np.exp(heat))
+        heat = np.exp(heat)/(1 + np.exp(heat))
         height, width = heat.shape[1:3]
         num_predictions = 100
 
@@ -56,28 +56,22 @@ class CenterNet(DetectionModel):
         wh = wh.reshape((num_predictions, 2))
         clses = clses.reshape((num_predictions, 1))
         scores = scores.reshape((num_predictions, 1))
-        bboxes = np.concatenate(
-            (
-                xs - wh[..., 0:1] / 2,
-                ys - wh[..., 1:2] / 2,
-                xs + wh[..., 0:1] / 2,
-                ys + wh[..., 1:2] / 2,
-            ),
-            axis=1,
-        )
+        bboxes = np.concatenate((xs - wh[..., 0:1] / 2,
+                                 ys - wh[..., 1:2] / 2,
+                                 xs + wh[..., 0:1] / 2,
+                                 ys + wh[..., 1:2] / 2), axis=1)
         detections = np.concatenate((bboxes, scores, clses), axis=1)
         mask = detections[..., 4] >= self.confidence_threshold
         filtered_detections = detections[mask]
-        scale = max(meta["original_shape"])
-        center = np.array(meta["original_shape"][:2]) / 2.0
-        dets = self._transform(
-            filtered_detections, np.flip(center, 0), scale, height, width
-        )
+        scale = max(meta['original_shape'])
+        center = np.array(meta['original_shape'][:2])/2.0
+        dets = self._transform(filtered_detections, np.flip(center, 0), scale, height, width)
         dets = [Detection(x[0], x[1], x[2], x[3], score=x[4], id=x[5]) for x in dets]
-        return clip_detections(dets, meta["original_shape"])
+        return clip_detections(dets, meta['original_shape'])
 
     @staticmethod
     def get_affine_transform(center, scale, rot, output_size, inv=False):
+
         def get_dir(src_point, rot_rad):
             sn, cs = np.sin(rot_rad), np.cos(rot_rad)
             src_result = [0, 0]
@@ -146,31 +140,22 @@ class CenterNet(DetectionModel):
         topk_score = topk_scores[topk_ind]
         topk_clses = topk_ind / K
         topk_inds = CenterNet._gather_feat(
-            topk_inds.reshape((-1, 1)), topk_ind
-        ).reshape((K))
-        topk_ys = CenterNet._gather_feat(topk_ys.reshape((-1, 1)), topk_ind).reshape(
-            (K)
-        )
-        topk_xs = CenterNet._gather_feat(topk_xs.reshape((-1, 1)), topk_ind).reshape(
-            (K)
-        )
+            topk_inds.reshape((-1, 1)), topk_ind).reshape((K))
+        topk_ys = CenterNet._gather_feat(topk_ys.reshape((-1, 1)), topk_ind).reshape((K))
+        topk_xs = CenterNet._gather_feat(topk_xs.reshape((-1, 1)), topk_ind).reshape((K))
 
         return topk_score, topk_inds, topk_clses, topk_ys, topk_xs
 
     @staticmethod
     def _nms(heat, kernel=3):
         def max_pool2d(A, kernel_size, padding=1, stride=1):
-            A = np.pad(A, padding, mode="constant")
-            output_shape = (
-                (A.shape[0] - kernel_size) // stride + 1,
-                (A.shape[1] - kernel_size) // stride + 1,
-            )
+            A = np.pad(A, padding, mode='constant')
+            output_shape = ((A.shape[0] - kernel_size)//stride + 1,
+                            (A.shape[1] - kernel_size)//stride + 1)
             kernel_size = (kernel_size, kernel_size)
-            A_w = as_strided(
-                A,
-                shape=output_shape + kernel_size,
-                strides=(stride * A.strides[0], stride * A.strides[1]) + A.strides,
-            )
+            A_w = as_strided(A, shape=output_shape + kernel_size,
+                             strides=(stride*A.strides[0],
+                                      stride*A.strides[1]) + A.strides)
             A_w = A_w.reshape(-1, *kernel_size)
 
             return A_w.max(axis=(1, 2)).reshape(output_shape)
@@ -178,13 +163,13 @@ class CenterNet(DetectionModel):
         pad = (kernel - 1) // 2
 
         hmax = np.array([max_pool2d(channel, kernel, pad) for channel in heat])
-        keep = hmax == heat
+        keep = (hmax == heat)
         return heat * keep
 
     @staticmethod
     def _transform_preds(coords, center, scale, output_size):
         def affine_transform(pt, t):
-            new_pt = np.array([pt[0], pt[1], 1.0], dtype=np.float32).T
+            new_pt = np.array([pt[0], pt[1], 1.], dtype=np.float32).T
             new_pt = np.dot(t, new_pt)
             return new_pt[:2]
 
@@ -197,9 +182,7 @@ class CenterNet(DetectionModel):
     @staticmethod
     def _transform(dets, center, scale, height, width):
         dets[:, :2] = CenterNet._transform_preds(
-            dets[:, 0:2], center, scale, (width, height)
-        )
+            dets[:, 0:2], center, scale, (width, height))
         dets[:, 2:4] = CenterNet._transform_preds(
-            dets[:, 2:4], center, scale, (width, height)
-        )
+            dets[:, 2:4], center, scale, (width, height))
         return dets

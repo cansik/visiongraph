@@ -1,11 +1,13 @@
 from enum import Enum
-from typing import List, Optional, Tuple
+from typing import List, Tuple
+
+import openvino.runtime
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_90_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
-from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.detection_model import DetectionModel
 from visiongraph.external.intel.models.ssd import SSD
 
@@ -56,7 +58,9 @@ class SSDDetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return SSD.create_model(self.model.path, SSD.__model__, config, device=self.device)
+        core = openvino.runtime.Core()
+        adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
+        return SSD.create_model(SSD.__model__, adapter, config, preload=True)
 
     @staticmethod
     def create(config: SSDConfig = SSDConfig.SSDLiteMobileNetV2_FP32) -> "SSDDetector":

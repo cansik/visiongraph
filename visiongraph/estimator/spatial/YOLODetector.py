@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import List
 
+import openvino.runtime
+
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
@@ -55,7 +57,9 @@ class YOLODetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        return DetectionModel.create_model(self.model.path, self.architecture.value, config, device=self.device)
+        core = openvino.runtime.Core()
+        adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
+        return DetectionModel.create_model(self.architecture.value, adapter, config, preload=True)
 
     @staticmethod
     def create(config: YOLOConfig = YOLOConfig.YOLOv4_Tiny_FP16) -> "YOLODetector":

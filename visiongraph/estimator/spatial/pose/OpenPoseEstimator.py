@@ -1,9 +1,12 @@
 from enum import Enum
 from typing import Optional
 
+import openvino.runtime
+
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.model import Model
 from visiongraph.external.intel.models.open_pose import OpenPose
 
@@ -29,7 +32,9 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
             'delta': None
         }
 
-        return OpenPose.create_model(self.model.path, "OpenPose", config, device=self.device)
+        core = openvino.runtime.Core()
+        adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
+        return OpenPose.create_model(OpenPose.__model__, adapter, config, preload=True)
 
     @staticmethod
     def create(config: OpenPoseConfig = OpenPoseConfig.LightWeightOpenPose_FP16) -> "OpenPoseEstimator":

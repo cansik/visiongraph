@@ -18,7 +18,6 @@ class HandLandmarkTests(unittest.TestCase):
     def test_mediapipe_hand_estimator(self):
         self._test_model(vg.MediaPipeHandEstimator())
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_openpose_hand_estimator(self):
         self._test_model(vg.OpenPoseHandEstimator())
 

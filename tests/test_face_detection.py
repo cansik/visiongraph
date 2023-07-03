@@ -27,15 +27,12 @@ class FaceDetectionTests(unittest.TestCase):
     def test_openvino_face_detection_256_int8(self):
         self._test_model(vg.OpenVinoFaceDetector.create(vg.OpenVinoFaceConfig.MobileNetV2_256_FP16_INT8))
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_openvino_face_detection_640_fp32(self):
         self._test_model(vg.OpenVinoFaceDetector.create(vg.OpenVinoFaceConfig.MobileNetV2_640_FP32))
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_openvino_face_detection_640_fp16(self):
         self._test_model(vg.OpenVinoFaceDetector.create(vg.OpenVinoFaceConfig.MobileNetV2_640_FP16))
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_openvino_face_detection_640_int8(self):
         self._test_model(vg.OpenVinoFaceDetector.create(vg.OpenVinoFaceConfig.MobileNetV2_640_FP16_INT8))
 

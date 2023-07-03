@@ -14,28 +14,23 @@
  limitations under the License.
 """
 
-from typing import Tuple
-
 try:
     import ovmsclient
-
     ovmsclient_absent = False
 except ImportError:
     ovmsclient_absent = True
 
-import logging as log
 import re
-
 import numpy as np
-
-from .inference_adapter import InferenceAdapter, Metadata
+import logging as log
+from .model_adapter import ModelAdapter, Metadata
 from .utils import Layout
 
 
-class OVMSAdapter(InferenceAdapter):
-    """
+class OVMSAdapter(ModelAdapter):
+    '''
     Class that allows working with models served by the OpenVINO Model Server
-    """
+    '''
 
     tf2ov_precision = {
         "DT_INT64": "I64",
@@ -43,9 +38,9 @@ class OVMSAdapter(InferenceAdapter):
         "DT_FLOAT": "FP32",
         "DT_UINT32": "U32",
         "DT_INT32": "I32",
-        "DT_HALF": "FP16",
+        "DT_HALF" : "FP16",
         "DT_INT16": "I16",
-        "DT_INT8": "I8",
+        "DT_INT8" : "I8",
         "DT_UINT8": "U8",
     }
 
@@ -55,9 +50,9 @@ class OVMSAdapter(InferenceAdapter):
         "DT_FLOAT": np.float32,
         "DT_UINT32": np.uint32,
         "DT_INT32": np.int32,
-        "DT_HALF": np.float16,
+        "DT_HALF" : np.float16,
         "DT_INT16": np.int16,
-        "DT_INT8": np.int8,
+        "DT_INT8" : np.int8,
         "DT_UINT8": np.uint8,
     }
 
@@ -66,7 +61,7 @@ class OVMSAdapter(InferenceAdapter):
         if not isinstance(target_model, str):
             raise TypeError("--model option should be str")
         # Expecting format: <address>:<port>/models/<model_name>[:<model_version>]
-        pattern = re.compile(r"(\w+\.*\-*)*\w+:\d+\/models\/[a-zA-Z0-9_-]+(\:\d+)*")
+        pattern = re.compile(r"(\w+\.*\-*)*\w+:\d+\/models\/\w+(\:\d+)*")
         if not pattern.fullmatch(target_model):
             raise ValueError("invalid --model option format")
         service_url, _, model = target_model.split("/")
@@ -79,11 +74,10 @@ class OVMSAdapter(InferenceAdapter):
         else:
             raise ValueError("invalid --model option format")
 
+
     def _is_model_available(self):
         try:
-            model_status = self.client.get_model_status(
-                self.model_name, self.model_version
-            )
+            model_status = self.client.get_model_status(self.model_name, self.model_version)
         except ovmsclient.ModelNotFoundError:
             return False
         target_version = max(model_status.keys())
@@ -99,10 +93,7 @@ class OVMSAdapter(InferenceAdapter):
                 raise ValueError("Input data does not match model inputs")
             input_info = self.metadata["inputs"][input_name]
             model_precision = self.tf2np_precision[input_info["dtype"]]
-            if (
-                isinstance(input_data, np.ndarray)
-                and input_data.dtype != model_precision
-            ):
+            if isinstance(input_data, np.ndarray) and input_data.dtype != model_precision:
                 input_data = input_data.astype(model_precision)
             elif isinstance(input_data, list):
                 input_data = np.array(input_data, dtype=model_precision)
@@ -113,28 +104,19 @@ class OVMSAdapter(InferenceAdapter):
         if ovmsclient_absent:
             raise ImportError("The ovmsclient package is not installed")
 
-        log.info("Connecting to remote model: {}".format(target_model))
-        service_url, model_name, model_version = OVMSAdapter.parse_model_arg(
-            target_model
-        )
+        log.info('Connecting to remote model: {}'.format(target_model))
+        service_url, model_name, model_version = OVMSAdapter.parse_model_arg(target_model)
         self.model_name = model_name
         self.model_version = model_version
         self.client = ovmsclient.make_grpc_client(url=service_url)
         # Ensure the model is available
         if not self._is_model_available():
-            model_version_str = (
-                "latest" if self.model_version == 0 else str(self.model_version)
-            )
-            raise RuntimeError(
-                "Requested model: {}, version: {}, has not been found or is not "
-                "in available state".format(self.model_name, model_version_str)
-            )
+            model_version_str = "latest" if self.model_version == 0 else str(self.model_version)
+            raise RuntimeError("Requested model: {}, version: {}, has not been found or is not "
+                "in available state".format(self.model_name, model_version_str))
 
-        self.preprocessing_embedded = False
-
-        self.metadata = self.client.get_model_metadata(
-            model_name=self.model_name, model_version=self.model_version
-        )
+        self.metadata = self.client.get_model_metadata(model_name=self.model_name,
+                                                       model_version=self.model_version)
 
     def load_model(self):
         pass
@@ -143,22 +125,13 @@ class OVMSAdapter(InferenceAdapter):
         inputs = {}
         for name, meta in self.metadata["inputs"].items():
             input_layout = Layout.from_shape(meta["shape"])
-            inputs[name] = Metadata(
-                set(name),
-                meta["shape"],
-                input_layout,
-                self.tf2ov_precision.get(meta["dtype"], meta["dtype"]),
-            )
+            inputs[name] = Metadata(set(name), meta["shape"], input_layout, self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
         return inputs
 
     def get_output_layers(self):
         outputs = {}
         for name, meta in self.metadata["outputs"].items():
-            outputs[name] = Metadata(
-                names=set(name),
-                shape=meta["shape"],
-                precision=self.tf2ov_precision.get(meta["dtype"], meta["dtype"]),
-            )
+            outputs[name] = Metadata(names=set(name), shape=meta["shape"], precision=self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
         return outputs
 
     def reshape_model(self, new_shape):
@@ -166,9 +139,7 @@ class OVMSAdapter(InferenceAdapter):
 
     def infer_sync(self, dict_data):
         inputs = self._prepare_inputs(dict_data)
-        raw_result = self.client.predict(
-            inputs, model_name=self.model_name, model_version=self.model_version
-        )
+        raw_result = self.client.predict(inputs, model_name=self.model_name, model_version=self.model_version)
         # For models with single output ovmsclient returns ndarray with results,
         # so the dict must be created to correctly implement interface.
         if isinstance(raw_result, np.ndarray):
@@ -178,9 +149,7 @@ class OVMSAdapter(InferenceAdapter):
 
     def infer_async(self, dict_data, callback_data):
         inputs = self._prepare_inputs(dict_data)
-        raw_result = self.client.predict(
-            inputs, model_name=self.model_name, model_version=self.model_version
-        )
+        raw_result = self.client.predict(inputs, model_name=self.model_name, model_version=self.model_version)
         # For models with single output ovmsclient returns ndarray with results,
         # so the dict must be created to correctly implement interface.
         if isinstance(raw_result, np.ndarray):
@@ -198,21 +167,4 @@ class OVMSAdapter(InferenceAdapter):
         pass
 
     def await_any(self):
-        pass
-
-    def get_rt_info(self, path):
-        raise NotImplementedError("OVMSAdapter does not support RT info getting")
-
-    def embed_preprocessing(
-        self,
-        layout="NCHW",
-        resize_mode: str = None,
-        interpolation_mode="LINEAR",
-        target_shape: Tuple[int] = None,
-        dtype=type(int),
-        brg2rgb=False,
-        mean=None,
-        scale=None,
-        input_idx=0,
-    ):
         pass
