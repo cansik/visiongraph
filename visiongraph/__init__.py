@@ -264,6 +264,8 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module TopDownPoseEstimator not found")
 from .estimator.spatial.pose.__init__ import add_pose_estimation_step_choices
+from .estimator.spatial.segmentation.MODNetEstimator import ModNetConfig
+from .estimator.spatial.segmentation.MODNetEstimator import ModNetEstimator
 try:
     from .estimator.spatial.segmentation.MaskRCNNEstimator import MaskRCNNConfig
 except ModuleNotFoundError as ex:

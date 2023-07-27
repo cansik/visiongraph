@@ -30,6 +30,9 @@ class SegmentationEstimationTests(unittest.TestCase):
     def test_yolact_segmentation(self):
         self._test_model(vg.YolcatEstimator.create(vg.YolactConfig.YolactEdge_MobileNetV2_550))
 
+    def test_modnet_segmentation(self):
+        self._test_model(vg.ModNetEstimator.create())
+
 
 if __name__ == '__main__':
     unittest.main()
