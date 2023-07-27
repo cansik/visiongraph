@@ -6,7 +6,10 @@ import cv2
 import numpy as np
 
 from visiongraph.GraphNode import GraphNode
+from visiongraph.result.ImageResult import ImageResult
 from visiongraph.result.ResultDict import ResultDict, DEFAULT_IMAGE_KEY
+
+InputType = Optional[Union[np.ndarray, ResultDict, ImageResult]]
 
 
 class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
@@ -22,11 +25,17 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
     def setup(self):
         cv2.namedWindow(self.title, cv2.WINDOW_NORMAL or cv2.WINDOW_KEEPRATIO)
 
-    def process(self, data: Union[np.ndarray, ResultDict]) -> Union[np.ndarray, ResultDict]:
+    def process(self, data: InputType) -> InputType:
         image = data
 
-        if isinstance(image, ResultDict):
+        if isinstance(data, ResultDict):
             image = data[self.image_key]
+
+        if isinstance(data, ImageResult):
+            image = data.output
+
+        if data is None:
+            return data
 
         cv2.imshow(self.title, image)
         key = cv2.waitKey(self.wait_time)

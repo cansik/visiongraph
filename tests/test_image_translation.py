@@ -28,6 +28,9 @@ class ImageTranslationTests(unittest.TestCase):
     def test_midas_depth_estimation(self):
         self._test_model(vg.MidasDepthEstimator.create(vg.MidasConfig.MidasSmall))
 
+    def test_mbllen(self):
+        self._test_model(vg.MBLLENEstimator.create())
+
 
 if __name__ == '__main__':
     unittest.main()

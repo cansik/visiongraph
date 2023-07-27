@@ -297,6 +297,8 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module DeblurGANv2Config not found")
 from .estimator.translation.DepthEstimator import DepthEstimator
+from .estimator.translation.MBLLENEstimator import MBLLENConfig
+from .estimator.translation.MBLLENEstimator import MBLLENEstimator
 try:
     from .estimator.translation.MidasDepthEstimator import MidasConfig
 except ModuleNotFoundError as ex:
