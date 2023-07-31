@@ -85,6 +85,10 @@ class Oak1Input(BaseCamera):
         self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=1, blocking=False)
         self.isp_queue = self.device.getOutputQueue(name=self.isp_stream_name, maxSize=1, blocking=False)
 
+        isp_frame = typing.cast(dai.ImgFrame, self.isp_queue.get())
+        self.width = isp_frame.getWidth()
+        self.height = isp_frame.getHeight()
+
     def read(self) -> (int, Optional[np.ndarray]):
         frame = typing.cast(dai.ImgFrame, self.rgb_queue.get())
 
