@@ -19,8 +19,6 @@ class Oak1Input(BaseCamera):
 
         # settings
         self.sensor_resolution: _CameraProperties.SensorResolution = _CameraProperties.SensorResolution.THE_1080_P
-        self.width: int = 1920
-        self.height: int = 1080
 
         self.interleaved: bool = False
         self.isp_scale: Optional[Tuple[int, int]] = None

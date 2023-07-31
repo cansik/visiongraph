@@ -31,10 +31,11 @@ class InputExample(BaseGraph):
             print(f"{depth:.2f}m")
 
         self.fps_tracer.update()
-        cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
+        h, w = frame.shape[:2]
+        cv2.putText(frame, f"FPS: {self.fps_tracer.smooth_fps:.0f}",
                     (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
 
-        cv2.imshow("Input Example", frame)
+        cv2.imshow(f"Input Example {w}x{h}", frame)
         if cv2.waitKey(1) & 0xFF == 27:
             self.close()
 
