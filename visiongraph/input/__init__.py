@@ -34,6 +34,13 @@ try:
 except ImportError as ex:
     logging.info(f"VidGear not installed: {ex}")
 
+try:
+    from visiongraph.input.Oak1Input import Oak1Input
+
+    InputProviders["oak1"] = Oak1Input
+except ImportError as ex:
+    logging.info(f"DepthAI not installed: {ex}")
+
 
 def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,
                            add_params: bool = True):

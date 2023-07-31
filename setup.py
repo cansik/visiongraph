@@ -50,6 +50,7 @@ class GenerateInitPy(distutils.cmd.Command):
         "vidgear",
         "numba",
         "aruco",
+        "depthai"
 
         # frame buffer sharing
         "glfw",

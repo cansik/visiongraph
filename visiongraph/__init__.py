@@ -313,6 +313,7 @@ try:
     from .input.AzureKinectInput import AzureKinectInput
 except ModuleNotFoundError as ex:
     logging.info(f"Module AzureKinectInput not found")
+from .input.BaseCamera import BaseCamera
 from .input.BaseDepthCamera import BaseDepthCamera
 from .input.BaseDepthInput import BaseDepthInput
 from .input.BaseInput import BaseInput
@@ -321,6 +322,7 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module CamGearInput not found")
 from .input.ImageInput import ImageInput
+from .input.Oak1Input import Oak1Input
 try:
     from .input.RealSenseInput import RealSenseInput
 except ModuleNotFoundError as ex:
