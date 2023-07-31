@@ -3,9 +3,9 @@ from argparse import ArgumentParser
 
 import cv2
 
-from visiongraph.input.BaseDepthInput import BaseDepthInput
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.input import add_input_step_choices
+from visiongraph.input.BaseDepthInput import BaseDepthInput
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
