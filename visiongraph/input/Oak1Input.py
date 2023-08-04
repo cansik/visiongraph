@@ -190,11 +190,11 @@ class Oak1Input(BaseCamera):
         self.control_queue.send(ctrl)
 
     @property
-    def manual_lens_pos(self) -> int:
+    def focus_distance(self) -> int:
         return self._manual_lens_pos
 
-    @manual_lens_pos.setter
-    def manual_lens_pos(self, position: int):
+    @focus_distance.setter
+    def focus_distance(self, position: int):
         ctrl = dai.CameraControl()
 
         position = max(0, min(255, position))

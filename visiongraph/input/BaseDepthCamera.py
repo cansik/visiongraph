@@ -19,6 +19,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
     @staticmethod
     def add_params(parser: ArgumentParser):
         super(BaseDepthCamera, BaseDepthCamera).add_params(parser)
+        BaseDepthInput.add_params(parser)
 
         try:
             parser.add_argument("-ir", "--infrared", action="store_true",
