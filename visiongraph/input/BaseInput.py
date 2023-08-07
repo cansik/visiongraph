@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Optional
+from typing import Optional, List, Callable
 
 import numpy as np
 import cv2
@@ -24,6 +24,9 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         self.crop: Optional[BoundingBox2D] = None
         self.mask: Optional[np.ndarray] = None
 
+        self.pre_processing_hooks: List[Callable[[Optional[np.ndarray]], np.ndarray]] = []
+        self.post_processing_hooks: List[Callable[[Optional[np.ndarray]], np.ndarray]] = []
+
         self.raw_input = False
 
     @abstractmethod
@@ -37,6 +40,10 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
     def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
         if image is None:
             return ts, image
+
+        if len(self.pre_processing_hooks) > 0:
+            for step in self.pre_processing_hooks:
+                image = step(image)
 
         if self.rotate is not None:
             image = cv2.rotate(image, self.rotate)
@@ -52,6 +59,10 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
 
             if 0 in image.shape[:2]:
                 return ts, None
+
+        if len(self.post_processing_hooks) > 0:
+            for step in self.post_processing_hooks:
+                image = step(image)
 
         # prepare image to be 3 channel
         if not self.raw_input and (len(image.shape) < 3 or image.shape[2] == 1):

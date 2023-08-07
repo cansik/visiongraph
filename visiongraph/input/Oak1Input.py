@@ -169,7 +169,7 @@ class Oak1Input(BaseCamera):
     @white_balance.setter
     def white_balance(self, value: int):
         ctrl = dai.CameraControl()
-        value = max(1000, min(12000, value))
+        value = max(1000, min(12000, int(value)))
         ctrl.setManualWhiteBalance(value)
         self.control_queue.send(ctrl)
 
