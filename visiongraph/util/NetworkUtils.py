@@ -59,7 +59,12 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 
     data_path = os.path.abspath(os.path.dirname(visiongraph.cache.__file__))
+    if "_MEIPASS" in os.environ:
+        data_path = "./cache"
+
     file_path = os.path.join(data_path, file_name)
+
+    os.makedirs(data_path, exist_ok=True)
 
     if os.path.exists(file_path):
         return file_path
