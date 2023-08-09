@@ -119,6 +119,9 @@ class Oak1Input(BaseCamera):
 
     @iso.setter
     def iso(self, value: int):
+        if not self.is_running:
+            return
+
         self._iso_sensitivity = value
 
         # trigger exposure to set value
@@ -130,8 +133,11 @@ class Oak1Input(BaseCamera):
 
     @exposure.setter
     def exposure(self, value: int):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
-        value = max(1, min(60 * 1000 * 1000, value))
+        value = max(1, min(60 * 1000 * 1000, int(value)))
         self._exposure = timedelta(microseconds=value)
         ctrl.setManualExposure(self._exposure, self._iso_sensitivity)
         self.control_queue.send(ctrl)
@@ -142,6 +148,9 @@ class Oak1Input(BaseCamera):
 
     @enable_auto_exposure.setter
     def enable_auto_exposure(self, value: bool):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
         self._auto_exposure = value
         if value:
@@ -156,6 +165,9 @@ class Oak1Input(BaseCamera):
 
     @enable_auto_white_balance.setter
     def enable_auto_white_balance(self, value: bool):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
         self._auto_white_balance = value
         if value:
@@ -170,6 +182,9 @@ class Oak1Input(BaseCamera):
 
     @white_balance.setter
     def white_balance(self, value: int):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
         value = max(1000, min(12000, int(value)))
         ctrl.setManualWhiteBalance(value)
@@ -181,6 +196,9 @@ class Oak1Input(BaseCamera):
 
     @auto_focus.setter
     def auto_focus(self, value: bool):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
         if value:
             self._focus_mode = dai.RawCameraControl.AutoFocusMode.AUTO
@@ -197,10 +215,11 @@ class Oak1Input(BaseCamera):
 
     @focus_distance.setter
     def focus_distance(self, position: int):
+        if not self.is_running:
+            return
+
         ctrl = dai.CameraControl()
-
-        position = max(0, min(255, position))
-
+        position = max(0, min(255, int(position)))
         ctrl.setManualFocus(position)
         self.control_queue.send(ctrl)
 
@@ -226,3 +245,7 @@ class Oak1Input(BaseCamera):
     @property
     def device_info(self) -> dai.DeviceInfo:
         return self.device.getDeviceInfo()
+
+    @property
+    def is_running(self):
+        return self.device is not None and self.device.isPipelineRunning()
