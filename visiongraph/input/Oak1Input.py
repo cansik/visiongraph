@@ -120,7 +120,9 @@ class Oak1Input(BaseCamera):
     @iso.setter
     def iso(self, value: int):
         self._iso_sensitivity = value
-        self.exposure = self._exposure
+
+        # trigger exposure to set value
+        self.exposure = self.exposure
 
     @property
     def exposure(self) -> int:
@@ -218,7 +220,7 @@ class Oak1Input(BaseCamera):
         return info.mxid
 
     @property
-    def camera_features(self) -> list[CameraFeatures]:
+    def camera_features(self) -> typing.List[CameraFeatures]:
         return self.device.getConnectedCameraFeatures()
 
     @property
