@@ -2,7 +2,6 @@ import logging
 import os
 import shutil
 import sys
-from pathlib import Path
 from typing import Tuple
 
 import requests
@@ -59,7 +58,7 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 
     data_path = os.path.abspath(os.path.dirname(visiongraph.cache.__file__))
-    if "_MEIPASS" in os.environ:
+    if hasattr(sys, "_MEIPASS"):
         data_path = "./cache"
 
     file_path = os.path.join(data_path, file_name)
