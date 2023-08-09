@@ -322,7 +322,10 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module CamGearInput not found")
 from .input.ImageInput import ImageInput
-from .input.Oak1Input import Oak1Input
+try:
+    from .input.Oak1Input import Oak1Input
+except ModuleNotFoundError as ex:
+    logging.info(f"Module Oak1Input not found")
 try:
     from .input.RealSenseInput import RealSenseInput
 except ModuleNotFoundError as ex:
