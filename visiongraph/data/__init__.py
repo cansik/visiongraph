@@ -10,5 +10,8 @@ def reset_data_cache():
         if file.endswith(".py"):
             continue
 
+        if file.endswith(".gitignore"):
+            continue
+
         if os.path.isfile(file):
             os.remove(file)
