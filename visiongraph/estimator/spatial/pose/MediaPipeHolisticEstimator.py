@@ -5,14 +5,15 @@ import cv2
 import mediapipe as mp
 import numpy as np
 
-from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.result.ResultList import ResultList
+from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
+from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
+from visiongraph.result.spatial.hand.Handedness import Handedness
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
-from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
 from visiongraph.result.spatial.pose.HolisticPose import HolisticPose
 from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d, mediapipe_landmarks_to_vector4d
-from visiongraph.util.VectorUtils import list_of_vector4D
 
 _mp_holistic = mp.solutions.holistic
 
@@ -63,22 +64,25 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
 
         # create landmarks
         pose_score, pose_landmarks = mediapipe_landmarks_to_score_and_vector4d(results.pose_landmarks.landmark)
-        face_landmarks = mediapipe_landmarks_to_vector4d(results.face_landmarks.landmark)
-        rh_landmarks = mediapipe_landmarks_to_vector4d(results.right_hand_landmarks.landmark)
-        lh_landmarks = mediapipe_landmarks_to_vector4d(results.left_hand_landmarks.landmark)
+        pose = HolisticPose(pose_score, pose_landmarks)
 
-        # fix scores
-        face_landmarks.t[:] = 1.0
-        rh_landmarks.t[:] = 1.0
-        lh_landmarks.t[:] = 1.0
+        if results.face_landmarks:
+            face_landmarks = mediapipe_landmarks_to_vector4d(results.face_landmarks.landmark)
+            face_landmarks.t[:] = 1.0
+            pose.face = BlazeFaceMesh(1.0, face_landmarks)
 
-        pose = HolisticPose(pose_score, pose_landmarks,
-                            1.0, face_landmarks,
-                            1.0, rh_landmarks,
-                            1.0, lh_landmarks)
+        if results.right_hand_landmarks:
+            rh_landmarks = mediapipe_landmarks_to_vector4d(results.right_hand_landmarks.landmark)
+            rh_landmarks.t[:] = 1.0
+            pose.right_hand = BlazeHand(1.0, rh_landmarks, Handedness.RIGHT)
+
+        if results.left_hand_landmarks:
+            lh_landmarks = mediapipe_landmarks_to_vector4d(results.left_hand_landmarks.landmark)
+            lh_landmarks.t[:] = 1.0
+            pose.left_hand = BlazeHand(1.0, lh_landmarks, Handedness.LEFT)
 
         # use segmentation
-        if self.enable_segmentation:
+        if results.segmentation_mask:
             mask = results.segmentation_mask
             mask_uint8 = (mask * 255).astype(np.uint8)
             pose.segmentation_mask = mask_uint8

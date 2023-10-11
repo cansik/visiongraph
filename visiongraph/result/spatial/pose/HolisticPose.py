@@ -12,18 +12,12 @@ from visiongraph.result.spatial.pose.BlazePose import BlazePose
 class HolisticPose(BlazePose):
     def __init__(self, pose_score: float,
                  pose_landmarks: vector.VectorNumpy4D,
-                 face_score: float,
-                 face_landmarks: vector.VectorNumpy4D,
-                 right_hand_score: float,
-                 right_hand_landmarks: vector.VectorNumpy4D,
-                 left_hand_score: float,
-                 left_hand_landmarks: vector.VectorNumpy4D,
                  segmentation_mask: Optional[np.ndarray] = None):
         super().__init__(pose_score, pose_landmarks)
 
-        self.face = BlazeFaceMesh(face_score, face_landmarks)
-        self.right_hand = BlazeHand(right_hand_score, right_hand_landmarks, Handedness.RIGHT)
-        self.left_hand = BlazeHand(left_hand_score, left_hand_landmarks, Handedness.LEFT)
+        self.face: Optional[BlazeFaceMesh] = None
+        self.right_hand: Optional[BlazeHand] = None
+        self.left_hand: Optional[BlazeHand] = None
 
         self.segmentation_mask: Optional[np.ndarray] = segmentation_mask
 
@@ -31,6 +25,12 @@ class HolisticPose(BlazePose):
                  color: Optional[Sequence[int]] = None,
                  show_bounding_box: bool = False, min_score: float = 0, use_class_color: bool = True, **kwargs):
         BlazePose.annotate(self, image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
-        self.face.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
-        self.right_hand.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
-        self.left_hand.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
+
+        if self.face is not None:
+            self.face.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
+
+        if self.right_hand is not None:
+            self.right_hand.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
+
+        if self.left_hand is not None:
+            self.left_hand.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
