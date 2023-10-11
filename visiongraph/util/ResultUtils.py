@@ -3,6 +3,7 @@ from typing import List, TypeVar, Tuple, Optional
 
 import cv2
 import numpy as np
+import vector
 
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -28,3 +29,15 @@ def extract_object_detection_roi(image: np.ndarray,
     result = copy.deepcopy(detection)
     result.map_coordinates(Size2D.from_image(image), Size2D.from_image(roi), src_roi=box)
     return roi, result
+
+
+def bbox_from_landmarks(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
+    xs = np.ma.masked_equal(landmarks["x"], 0.0, copy=False)
+    ys = np.ma.masked_equal(landmarks["y"], 0.0, copy=False)
+
+    x_min = xs.min()
+    y_min = ys.min()
+    x_max = xs.max()
+    y_max = ys.max()
+
+    return BoundingBox2D(x_min, y_min, x_max - x_min, y_max - y_min)

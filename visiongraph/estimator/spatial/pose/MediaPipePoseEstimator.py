@@ -1,24 +1,19 @@
 from argparse import Namespace
-from enum import Enum
 from typing import Optional
 
 import cv2
 import mediapipe as mp
 import numpy as np
 
+from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
+from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 _mp_pose = mp.solutions.pose
-
-
-class PoseModelComplexity(Enum):
-    Light = 0
-    Normal = 1
-    Heavy = 2
 
 
 class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
@@ -59,9 +54,7 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         if not results.pose_landmarks:
             return ResultList()
 
-        raw_landmarks = [(lm.x, lm.y, lm.z, lm.visibility) for lm in results.pose_landmarks.landmark]
-        landmarks = list_of_vector4D(raw_landmarks)
-        score = float(np.average(landmarks["t"]))
+        score, landmarks = mediapipe_landmarks_to_score_and_vector4d(results.pose_landmarks.landmark)
 
         if not self.enable_segmentation:
             return ResultList([BlazePose(score, landmarks)])

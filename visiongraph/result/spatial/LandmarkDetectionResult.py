@@ -1,4 +1,3 @@
-import copy
 import numbers
 from typing import Optional, List, Tuple, Sequence, Union
 
@@ -9,13 +8,14 @@ import vector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
+from visiongraph.util.ResultUtils import bbox_from_landmarks
 
 
 class LandmarkDetectionResult(ObjectDetectionResult):
     def __init__(self, class_id: int, class_name: str, score: float,
                  landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
         if bounding_box is None:
-            bounding_box = self._create_bounding_box(landmarks)
+            bounding_box = bbox_from_landmarks(landmarks)
 
         ObjectDetectionResult.__init__(self, class_id, class_name, score, bounding_box)
         self.landmarks: vector.VectorNumpy4D = landmarks
@@ -83,15 +83,3 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                                * dest_roi.width + dest_roi.x_min) / dest_width
         self.landmarks.y[:] = ((((self.landmarks.y * src_height) - src_roi.y_min) / src_roi.height)
                                * dest_roi.height + dest_roi.y_min) / dest_height
-
-    @staticmethod
-    def _create_bounding_box(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
-        xs = np.ma.masked_equal(landmarks["x"], 0.0, copy=False)
-        ys = np.ma.masked_equal(landmarks["y"], 0.0, copy=False)
-
-        x_min = xs.min()
-        y_min = ys.min()
-        x_max = xs.max()
-        y_max = ys.max()
-
-        return BoundingBox2D(x_min, y_min, x_max - x_min, y_max - y_min)

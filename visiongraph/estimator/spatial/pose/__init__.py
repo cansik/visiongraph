@@ -10,11 +10,14 @@ PoseEstimators = {}
 
 # setup optional pose estimators
 try:
-    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator, PoseModelComplexity
+    from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
+    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
+    from visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator import MediaPipeHolisticEstimator
 
     PoseEstimators["mediapipe"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Normal)
     PoseEstimators["mediapipe-light"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Light)
     PoseEstimators["mediapipe-heavy"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Heavy)
+    PoseEstimators["mediapipe-holistic"] = partial(MediaPipeHolisticEstimator.create, PoseModelComplexity.Light)
 except ImportError as ex:
     logging.info(f"MediaPipe not installed: {ex}")
 

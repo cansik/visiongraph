@@ -223,13 +223,13 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module LitePoseEstimatorConfig not found")
 try:
+    from .estimator.spatial.pose.MediaPipeHolisticEstimator import MediaPipeHolisticEstimator
+except ModuleNotFoundError as ex:
+    logging.info(f"Module MediaPipeHolisticEstimator not found")
+try:
     from .estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
 except ModuleNotFoundError as ex:
     logging.info(f"Module MediaPipePoseEstimator not found")
-try:
-    from .estimator.spatial.pose.MediaPipePoseEstimator import PoseModelComplexity
-except ModuleNotFoundError as ex:
-    logging.info(f"Module PoseModelComplexity not found")
 try:
     from .estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator
 except ModuleNotFoundError as ex:
@@ -340,6 +340,7 @@ from .model.geometry.Size2D import Size2D
 from .model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from .model.tracker.Trackable import Trackable
 from .model.types.InputShapeOrder import InputShapeOrder
+from .model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from .model.types.ModelPrecision import ModelPrecision
 from .model.types.RealSenseColorScheme import RealSenseColorScheme
 from .node.ApplyNode import ApplyNode
@@ -420,6 +421,10 @@ except ModuleNotFoundError as ex:
 from .result.spatial.pose.COCOOpenPose import COCOOpenPose
 from .result.spatial.pose.COCOPose import COCOPose
 from .result.spatial.pose.EfficientPose import EfficientPose
+try:
+    from .result.spatial.pose.HolisticPose import HolisticPose
+except ModuleNotFoundError as ex:
+    logging.info(f"Module HolisticPose not found")
 from .result.spatial.pose.MobileHumanPose import MobileHumanPose
 from .result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from .tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
@@ -457,6 +462,8 @@ from .util.MathUtils import constrain
 from .util.MathUtils import map_value
 from .util.MathUtils import rotate_2d
 from .util.MathUtils import transform_coordinates
+from .util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d
+from .util.MediaPipeUtils import mediapipe_landmarks_to_vector4d
 from .util.NetworkUtils import download_file
 from .util.NetworkUtils import prepare_data_file
 from .util.NetworkUtils import prepare_openvino_model
@@ -467,6 +474,7 @@ try:
     from .util.OpenVinoUtils import get_inference_engine_device
 except ModuleNotFoundError as ex:
     logging.info(f"Module get_inference_engine_device not found")
+from .util.ResultUtils import bbox_from_landmarks
 from .util.ResultUtils import extract_object_detection_roi
 from .util.ResultUtils import non_maximum_suppression
 from .util.TimeUtils import FPSTracer
