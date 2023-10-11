@@ -491,6 +491,7 @@ from .util.VectorUtils import list_of_vector2D
 from .util.VectorUtils import list_of_vector3D
 from .util.VectorUtils import list_of_vector4D
 from .util.VectorUtils import vector_as_list
+from .util.VectorUtils import vector_distance
 from .util.VectorUtils import vector_to_array
 try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba

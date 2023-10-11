@@ -91,3 +91,7 @@ def landmarks_center_by_indices(landmarks: vector.VectorNumpy4D, indices: Sequen
     z = np.average(landmarks.z[indices])
     t = np.average(landmarks.t[indices])
     return vector.obj(x=x, y=y, z=z, t=t)
+
+
+def vector_distance(a: vector._methods.VectorProtocol, b: vector._methods.VectorProtocol) -> float:
+    return abs(b.subtract(a))
