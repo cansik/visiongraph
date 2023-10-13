@@ -23,8 +23,12 @@ class HolisticPose(BlazePose):
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  color: Optional[Sequence[int]] = None,
-                 show_bounding_box: bool = False, min_score: float = 0, use_class_color: bool = True, **kwargs):
+                 show_bounding_box: bool = False, min_score: float = 0, use_class_color: bool = True,
+                 pose_only: bool = False, **kwargs):
         BlazePose.annotate(self, image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
+
+        if pose_only:
+            return
 
         if self.face is not None:
             self.face.annotate(image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)
