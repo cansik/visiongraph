@@ -3,6 +3,7 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph.estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
@@ -12,6 +13,7 @@ from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.tracker.MotpyTracker import MotpyTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
+from visiongraph.util.PoseUtils import embed_pose
 from visiongraph.util.TimeUtils import FPSTracer
 
 
@@ -30,7 +32,9 @@ class PoseEstimationExample(BaseGraph):
         self.fps_tracer = FPSTracer()
         self.tracker = MotpyTracker()
 
-        self.add_nodes(self.input, self.network, self.tracker)
+        self.embedder = LandmarkEmbedder(embed_pose)
+
+        self.add_nodes(self.input, self.network, self.tracker, self.embedder)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -40,6 +44,8 @@ class PoseEstimationExample(BaseGraph):
 
         results = self.network.process(frame)
         results = self.tracker.process(results)
+
+        embeddings = self.embedder.process(results)
 
         for result in results:
             result.annotate(frame, min_score=0.1)

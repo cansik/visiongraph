@@ -44,7 +44,7 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         data = result[self.engine.output_names[0]]
         flat_data = data.reshape((data.shape[1]))
 
-        return EmbeddingResult(flat_data, landmark_overlap)
+        return EmbeddingResult(flat_data)
 
     def release(self):
         self.engine.release()
