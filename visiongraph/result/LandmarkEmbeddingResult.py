@@ -2,21 +2,16 @@ from typing import TypeVar
 
 import numpy as np
 
-from visiongraph.result.BaseResult import BaseResult
-from scipy.spatial.distance import cosine
-
+from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 
 T = TypeVar("T", bound=LandmarkDetectionResult)
 
 
-class LandmarkEmbeddingResult(BaseResult):
+class LandmarkEmbeddingResult(EmbeddingResult):
     def __init__(self, embeddings: np.ndarray, detection: T):
-        self.embeddings = embeddings
+        super().__init__(embeddings)
         self.detection = detection
 
     def annotate(self, image: np.ndarray, **kwargs):
-        pass
-
-    def cosine_dist(self, embeddings: np.ndarray):
-        return cosine(self.embeddings, embeddings) * 0.5
+        self.detection.annotate(image, **kwargs)
