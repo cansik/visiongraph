@@ -44,10 +44,13 @@ class FaissKNNClassifier(BaseKNNClassifier):
         # predict
         distances, indices = self.index.search(x.astype(np.float32), k=len(self.labels))
 
-        # lookup class for index
-        classes = self._data_labels[indices]
+        best_indices = indices[:, 0].reshape(-1, 1)
+        best_distances = distances[:, 0].reshape(-1, 1)
 
-        return np.hstack((classes, distances))
+        # lookup class for index
+        classes = self._data_labels[best_indices]
+
+        return np.hstack((classes, best_distances))
 
     def reset_index(self, index_dimensions: int):
         if self.index is None:
