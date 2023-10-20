@@ -77,7 +77,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
             return
 
         path = Path(path)
-        np.savez_compressed(path, x=self._training_data, y=self._data_labels)
+        np.savez_compressed(path, x=self._training_data, y=self._data_labels, labels=self.labels)
 
     def load_data(self, path: Union[str, os.PathLike]):
         path = Path(path)
@@ -85,7 +85,9 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
 
         x = data["x"]
         y = data["y"]
+        labels = data["labels"]
 
+        self.labels = labels.tolist()
         self.add_samples(x, y)
 
     @property

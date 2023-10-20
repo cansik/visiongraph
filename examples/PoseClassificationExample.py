@@ -50,8 +50,10 @@ def main():
     args = parser.parse_args()
 
     pose_classifier.setup()
-    pose_classifier.labels.append("standing")
-    pose_classifier.labels.append("sitting")
+
+    if len(pose_classifier.labels) == 0:
+        pose_classifier.labels.append("standing")
+        pose_classifier.labels.append("sitting")
 
     pipeline = (
         vg.create_graph(name="Pose Classification", handle_signals=True)
