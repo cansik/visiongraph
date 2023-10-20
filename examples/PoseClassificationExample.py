@@ -5,7 +5,8 @@ import numpy as np
 
 import visiongraph as vg
 
-pose_classifier = vg.FaissKNNClassifier()
+pose_data_path = "media/pose_training.npz"
+pose_classifier = vg.FaissKNNClassifier(data_path=pose_data_path)
 
 
 def classify(results: vg.ResultDict):
@@ -23,13 +24,16 @@ def classify(results: vg.ResultDict):
     cv2.imshow("Pose", image)
     key = cv2.waitKey(5) & 0xFF
 
-    print(pose_classifier.index.is_trained)
-
     if key == 27:
         quit(0)
 
     if chr(key).lower() == 's':
-        print("save samples")
+        print("saving samples")
+        pose_classifier.save_data(pose_data_path)
+
+    if chr(key).lower() == 'l':
+        print("loading samples")
+        pose_classifier.load_data(pose_data_path)
 
     if chr(key).isnumeric():
         number = int(chr(key))
@@ -45,6 +49,7 @@ def main():
     vg.VisionGraph.add_params(parser)
     args = parser.parse_args()
 
+    pose_classifier.setup()
     pose_classifier.labels.append("standing")
     pose_classifier.labels.append("sitting")
 
