@@ -1,8 +1,9 @@
-from typing import List, Tuple, Sequence
+from typing import List, Tuple, Sequence, Union
 
 import numpy as np
 import vector
 from numpy.lib.recfunctions import structured_to_unstructured, unstructured_to_structured
+from vector._methods import VectorProtocolPlanar
 
 from visiongraph.util.CodeUtils import deprecated
 
@@ -61,14 +62,16 @@ def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vect
     return lerp_vector_4d(a, b, amt)
 
 
-def lerp_vector_2d(a: vector.Vector2D, b: vector.Vector2D, amt: float) -> vector.Vector2D:
+def lerp_vector_2d(a: Union[vector.Vector2D, VectorProtocolPlanar],
+                   b: Union[vector.Vector2D, VectorProtocolPlanar], amt: float) -> vector.Vector2D:
     return vector.obj(
         x=(a.x * (1.0 - amt)) + (b.x * amt),
         y=(a.y * (1.0 - amt)) + (b.y * amt)
     )
 
 
-def lerp_vector_3d(a: vector.Vector3D, b: vector.Vector3D, amt: float) -> vector.Vector3D:
+def lerp_vector_3d(a: Union[vector.Vector3D, VectorProtocolPlanar],
+                   b: Union[vector.Vector3D, VectorProtocolPlanar], amt: float) -> vector.Vector3D:
     return vector.obj(
         x=(a.x * (1.0 - amt)) + (b.x * amt),
         y=(a.y * (1.0 - amt)) + (b.y * amt),
@@ -76,7 +79,8 @@ def lerp_vector_3d(a: vector.Vector3D, b: vector.Vector3D, amt: float) -> vector
     )
 
 
-def lerp_vector_4d(a: vector.Vector4D, b: vector.Vector4D, amt: float) -> vector.Vector4D:
+def lerp_vector_4d(a: Union[vector.Vector4D, VectorProtocolPlanar],
+                   b: Union[vector.Vector4D, VectorProtocolPlanar], amt: float) -> vector.Vector4D:
     return vector.obj(
         x=(a.x * (1.0 - amt)) + (b.x * amt),
         y=(a.y * (1.0 - amt)) + (b.y * amt),

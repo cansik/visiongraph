@@ -449,12 +449,15 @@ from .util.CommonArgs import add_source_argument
 from .util.DrawingUtils import draw_axis
 from .util.DrawingUtils import draw_bbox
 from .util.DrawingUtils import draw_landmark
+from .util.DrawingUtils import draw_text
+from .util.DrawingUtils import draw_text_normalized
 from .util.ImageUtils import align_image
 from .util.ImageUtils import apply_mask
 from .util.ImageUtils import extract_roi_safe
 from .util.ImageUtils import resize_and_letter_box
 from .util.ImageUtils import resize_and_pad
 from .util.ImageUtils import roi
+from .util.ImageUtils import roi_safe
 from .util.LinalgUtils import project_pixel_to_point
 from .util.LinalgUtils import project_pixels_to_points
 from .util.LinalgUtils import project_point_to_pixel

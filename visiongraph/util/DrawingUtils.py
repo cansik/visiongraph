@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Union
 
 import cv2
 import numpy as np
@@ -115,6 +115,32 @@ AXIS_COLORS = [
     (0, 255, 0),
     (255, 0, 0)
 ]
+
+
+def draw_text(image: np.ndarray,
+              text: str,
+              position: Sequence[int],
+              font: int = cv2.FONT_HERSHEY_SIMPLEX,
+              font_scale: float = 1.0,
+              color: Sequence[int] = (255, 255, 255),
+              thickness: int = 1,
+              **kwargs):
+    cv2.putText(image, text, position, font, font_scale, color, thickness, **kwargs)
+
+
+def draw_text_normalized(image: np.ndarray,
+                         text: str,
+                         position: Union[vector.Vector2D, vector._methods.VectorProtocol],
+                         font: int = cv2.FONT_HERSHEY_SIMPLEX,
+                         font_scale: float = 1.0,
+                         color: Sequence[int] = (255, 255, 255),
+                         thickness: int = 1,
+                         **kwargs):
+    h, w = image.shape[:2]
+    x = int(round(position.x * w))
+    y = int(round(position.y * h))
+
+    draw_text(image, text, (x, y), font, font_scale, color, thickness, **kwargs)
 
 
 def draw_axis(image: np.ndarray, rotation: vector.Vector3D,

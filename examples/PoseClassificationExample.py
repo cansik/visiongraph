@@ -19,7 +19,7 @@ def classify(results: vg.ResultDict):
     if len(classifications) > 0:
         cls = classifications[0]
         cv2.putText(image, f"{cls.class_name} ({cls.score:.2f})",
-                    (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0))
+                    (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0))
 
     cv2.imshow("Pose", image)
     key = cv2.waitKey(5) & 0xFF
