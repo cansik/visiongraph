@@ -51,7 +51,7 @@ class GenerateInitPy(distutils.cmd.Command):
         "numba",
         "aruco",
         "depthai",
-        "faiss"
+        "faiss",
 
         # frame buffer sharing
         "glfw",

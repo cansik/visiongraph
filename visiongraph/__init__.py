@@ -34,7 +34,10 @@ from .estimator.VisionEstimator import VisionEstimator
 from .estimator.calculator.UndistortionCalculator import UndistortionCalculator
 from .estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
 from .estimator.embedding.knn.BaseKNNClassifier import BaseKNNClassifier
-from .estimator.embedding.knn.FaissKNNClassifier import FaissKNNClassifier
+try:
+    from .estimator.embedding.knn.FaissKNNClassifier import FaissKNNClassifier
+except ModuleNotFoundError as ex:
+    logging.info(f"Module FaissKNNClassifier not found")
 from .estimator.engine.InferenceEngineFactory import InferenceEngine
 from .estimator.engine.InferenceEngineFactory import InferenceEngineFactory
 from .estimator.inpaint.BaseInpainter import BaseInpainter
