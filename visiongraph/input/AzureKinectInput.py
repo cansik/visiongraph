@@ -358,11 +358,11 @@ class AzureKinectInput(BaseDepthCamera):
         raise Exception(f"Azure Kinect calibration type {stream} not available.")
 
     def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
-        calibration = self.device.calibration
+        calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_camera_matrix(self._to_k4a_calibration_type(stream_type))
 
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
-        calibration = self.device.calibration
+        calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
 
     @property
