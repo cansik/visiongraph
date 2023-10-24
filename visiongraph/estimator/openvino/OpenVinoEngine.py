@@ -50,7 +50,7 @@ class OpenVinoEngine(BaseVisionEngine):
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         request: ov.InferRequest = self.compiled_model.create_infer_request()
         request.infer(inputs=inputs)
-        outputs = {l: request.outputs[i].data for i, l in enumerate(self.output_names)}
+        outputs = {l: request.output_tensors[i].data for i, l in enumerate(self.output_names)}
         return VisionEngineOutput(outputs)
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
