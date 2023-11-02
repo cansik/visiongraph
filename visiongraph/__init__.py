@@ -149,6 +149,10 @@ except ModuleNotFoundError as ex:
     logging.info(f"Module AffectNetEmotionClassifier not found")
 from .estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
 from .estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
+try:
+    from .estimator.spatial.face.eye.EyeOpenClosedEstimator import EyeOpenClosedEstimator
+except ModuleNotFoundError as ex:
+    logging.info(f"Module EyeOpenClosedEstimator not found")
 from .estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 try:
     from .estimator.spatial.face.landmark.IrisDistanceCalculator import IrisDistanceCalculator
@@ -401,6 +405,7 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module BlazeFaceMesh not found")
 from .result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
+from .result.spatial.face.EyeOpenClosedResult import EyeOpenClosedResult
 from .result.spatial.face.FaceDetectionResult import FaceDetectionResult
 from .result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from .result.spatial.face.IrisDistanceResult import IrisDistanceResult

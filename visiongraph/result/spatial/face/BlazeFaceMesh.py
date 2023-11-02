@@ -17,6 +17,9 @@ class BlazeFaceMesh(FaceLandmarkResult):
     LEFT_IRIS_INDICES = [474, 475, 476, 477]
     RIGHT_IRIS_INDICES = [469, 470, 471, 472]
 
+    LEFT_EYE_BOX_INDICES = [*LEFT_EYE_CENTER_INDICES, 362, 263]
+    RIGHT_EYE_BOX_INDICES = [*RIGHT_EYE_CENTER_INDICES, 33, 133]
+
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(score, landmarks)
 
