@@ -89,11 +89,11 @@ def roi(image: np.ndarray, box: BoundingBox2D) -> np.ndarray:
     return image[int(box.y_min):int(box.y_min + box.height), int(box.x_min):int(box.x_min + box.width)]
 
 
-def roi_safe(image: np.ndarray, box: BoundingBox2D) -> Tuple[np.ndarray, int, int]:
+def roi_safe(image: np.ndarray, box: BoundingBox2D, rectified: bool = False) -> Tuple[np.ndarray, int, int]:
     """
     Extract safe ROI with normalized bounding box.
     """
-    return extract_roi_safe(image, box.x_min, box.y_min, box.width, box.height)
+    return extract_roi_safe(image, box.x_min, box.y_min, box.x_max, box.y_max, rectified=rectified)
 
 
 def apply_mask(image: np.ndarray, mask: np.ndarray) -> np.ndarray:
