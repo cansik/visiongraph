@@ -52,6 +52,7 @@ class GenerateInitPy(distutils.cmd.Command):
         "aruco",
         "depthai",
         "faiss",
+        "pyzed",
 
         # frame buffer sharing
         "glfw",

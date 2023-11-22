@@ -41,6 +41,13 @@ try:
 except ImportError as ex:
     logging.info(f"DepthAI not installed: {ex}")
 
+try:
+    from visiongraph.input.ZEDInput import ZEDInput
+
+    InputProviders["zed"] = ZEDInput
+except ImportError as ex:
+    logging.info(f"ZED SDK not installed: {ex}")
+
 
 def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,
                            add_params: bool = True):
