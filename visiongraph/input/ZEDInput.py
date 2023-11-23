@@ -26,8 +26,8 @@ class ZEDInput(BaseDepthCamera):
         self.init_params.camera_resolution = sl.RESOLUTION.AUTO
         self.init_params.camera_fps = 30
 
-        #  self.init_params.depth_mode = sl.DEPTH_MODE.ULTRA  # Use ULTRA depth mode DEPTH_MODE.PERFORMANCE
-        # self.init_params.coordinate_units = sl.UNIT.MILLIMETER  # Use meter units (for depth measurements)
+        self.init_params.depth_mode = sl.DEPTH_MODE.ULTRA  # Use ULTRA depth mode DEPTH_MODE.PERFORMANCE
+        self.init_params.coordinate_units = sl.UNIT.MILLIMETER  # Use meter units (for depth measurements)
 
         self.capture = ZEDCapture()
 
@@ -60,11 +60,7 @@ class ZEDInput(BaseDepthCamera):
             return -1
 
         depth_frame = self.capture.depth
-
-        ix, iy = depth_frame.get_width() * x, depth_frame.get_height() * y
-
-        ix = round(constrain(ix, upper=depth_frame.get_width() - 1))
-        iy = round(constrain(iy, upper=depth_frame.get_height() - 1))
+        ix, iy = self._calculate_depth_coordinates(x, y, depth_frame.get_width(), depth_frame.get_height())
 
         err, depth_value = depth_frame.get_value(ix, iy)
 
@@ -72,7 +68,7 @@ class ZEDInput(BaseDepthCamera):
             logging.warning(f"Could not read depth from ZED depth frame: {err}")
             return -1
 
-        return depth_value
+        return depth_value / 1000
 
     @property
     def depth_buffer(self) -> np.ndarray:
@@ -80,7 +76,7 @@ class ZEDInput(BaseDepthCamera):
 
     @property
     def depth_map(self) -> np.ndarray:
-        pass
+        return self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
 
     @property
     def gain(self) -> int:

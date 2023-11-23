@@ -219,21 +219,6 @@ class RealSenseInput(BaseDepthCamera):
 
         return self._depth_frame
 
-    def _calculate_depth_coordinates(self, x: float, y: float, depth_frame: rs.depth_frame) -> Tuple[int, int]:
-        x, y = transform_coordinates(x, y, self.rotate, self.flip)
-
-        if self.crop is not None:
-            norm_crop = self.crop.scale(1.0 / self.depth_frame.width, 1.0 / self.depth_frame.height)
-            x = MathUtils.map_value(x, 0.0, 1.0, norm_crop.x_min, norm_crop.x_max)
-            y = MathUtils.map_value(y, 0.0, 1.0, norm_crop.y_min, norm_crop.y_max)
-
-        ix, iy = depth_frame.width * x, depth_frame.height * y
-
-        ix = round(constrain(ix, upper=depth_frame.width - 1))
-        iy = round(constrain(iy, upper=depth_frame.height - 1))
-
-        return ix, iy
-
     def _find_current_device(self, ctx: rs.context, serial: Optional[str] = None) -> rs.device:
         devices: List[rs.device] = ctx.devices
 
@@ -252,13 +237,13 @@ class RealSenseInput(BaseDepthCamera):
 
     def distance(self, x: float, y: float) -> float:
         depth_frame = self.depth_frame
-        ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
+        ix, iy = self._calculate_depth_coordinates(x, y, depth_frame.width, depth_frame.height)
 
         return depth_frame.get_distance(ix, iy)
 
     def pixel_to_point(self, x: float, y: float, depth_kernel_size: int = 1) -> vector.Vector3D:
         depth_frame: rs.depth_frame = self.depth_frame
-        ix, iy = self._calculate_depth_coordinates(x, y, self.depth_frame)
+        ix, iy = self._calculate_depth_coordinates(x, y, depth_frame.width, depth_frame.height)
 
         depth_intrinsics = depth_frame.profile.as_video_stream_profile().intrinsics
 
