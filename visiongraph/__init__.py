@@ -341,6 +341,14 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module RealSenseInput not found")
 from .input.VideoCaptureInput import VideoCaptureInput
+try:
+    from .input.ZEDInput import ZEDCapture
+except ModuleNotFoundError as ex:
+    logging.info(f"Module ZEDCapture not found")
+try:
+    from .input.ZEDInput import ZEDInput
+except ModuleNotFoundError as ex:
+    logging.info(f"Module ZEDInput not found")
 from .model.CameraIntrinsics import CameraIntrinsics
 from .model.CameraStreamType import CameraStreamType
 from .model.DepthBuffer import DepthBuffer

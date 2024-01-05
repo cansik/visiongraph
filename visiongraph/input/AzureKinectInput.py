@@ -167,13 +167,10 @@ class AzureKinectInput(BaseDepthCamera):
         depth_frame = self.capture.depth
         h, w = depth_frame.shape[:2]
 
-        x, y = transform_coordinates(x, y, self.rotate, self.flip)
-
-        ix = round(constrain(w * x, upper=w - 1))
-        iy = round(constrain(h * y, upper=h - 1))
+        ix, iy = self._calculate_depth_coordinates(x, y, w, h)
 
         # convert mm into m
-        return depth_frame[iy, ix] / 1000
+        return float(depth_frame[iy, ix] / 1000)
 
     def _read_next_capture(self):
         if self._playback is None:
@@ -188,24 +185,6 @@ class AzureKinectInput(BaseDepthCamera):
                 self.capture = self._playback.get_next_capture()
                 return
             raise error
-
-    @staticmethod
-    def _colorize(image: np.ndarray,
-                  clipping_range: Tuple[Optional[int], Optional[int]] = (None, None),
-                  colormap: Optional[int] = None) -> np.ndarray:
-        if clipping_range[0] is not None and clipping_range[1] is not None:
-            low, high = clipping_range
-            delta = high - low
-
-            img = image.clip(low, high)
-            img = (((img - low) / delta) * 255).astype(np.uint8)
-        else:
-            img = image
-            img = cv2.normalize(img, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
-
-        if colormap is not None:
-            img = cv2.applyColorMap(img, colormap)
-        return img
 
     @staticmethod
     def _convert_to_bgra_if_required(color_format: ImageFormat, color_image):
