@@ -56,7 +56,7 @@ class GenerateInitPy(distutils.cmd.Command):
         # frame buffer sharing
         "glfw",
         "OpenGL",
-        "syphonpy",
+        "syphon",
         "SpoutGL"
     }
 

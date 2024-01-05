@@ -24,11 +24,11 @@ openvino~=2023.0
 mediapipe~=0.10
 
 # extra onnx
-onnxruntime~=1.15.0
+onnxruntime~=1.16.3
 
 # extra onnx-gpu
-onnxruntime~=1.15.0; platform_system == "Darwin"
-onnxruntime-gpu~=1.15.0; platform_system != "Darwin"
+onnxruntime~=1.16.3; platform_system == "Darwin"
+onnxruntime-gpu~=1.16.3; platform_system != "Darwin"
 
 # extra media
 moviepy
@@ -39,9 +39,8 @@ numba
 
 # extra fbs
 pyopengl; platform_system == "Darwin" or platform_system == "Windows"
-syphonpy; platform_system == "Darwin"
-glfw; platform_system == "Darwin"
-SpoutGL>=0.0.4; platform_system == "Windows"
+syphon-python~=0.1.1; platform_system == "Darwin"
+SpoutGL~=0.0.4; platform_system == "Windows"
 
 # extra faiss
 faiss-cpu

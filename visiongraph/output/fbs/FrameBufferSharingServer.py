@@ -12,7 +12,7 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         self.name = name
 
     @abstractmethod
-    def send(self, frame: np.array):
+    def send(self, frame: np.ndarray, flip_texture: bool = False):
         pass
 
     def process(self, data: np.ndarray) -> np.ndarray:
