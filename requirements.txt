@@ -30,6 +30,10 @@ onnxruntime~=1.16.3
 onnxruntime~=1.16.3; platform_system == "Darwin"
 onnxruntime-gpu~=1.16.3; platform_system != "Darwin"
 
+# extra onnx-directml
+onnxruntime~=1.16.3; platform_system == "Darwin"
+onnxruntime-directml~=1.16.3; platform_system != "Darwin"
+
 # extra media
 moviepy
 vidgear[core]

@@ -23,7 +23,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.session: Optional[rt.InferenceSession] = None
         self.session_options = rt.SessionOptions()
 
-        self.preferred_execution_providers = ["CUDAExecutionProvider", "CPUExecutionProvider"]
+        self.preferred_execution_providers = ["CUDAExecutionProvider",
+                                              "DmlExecutionProvider",
+                                              "CPUExecutionProvider"]
 
     def setup(self):
         if self.execution_providers is None:
