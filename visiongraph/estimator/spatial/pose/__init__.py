@@ -70,7 +70,7 @@ try:
                                                   EfficientPoseEstimatorConfig.EFFICIENT_POSE_RT_FP32)
 
     PoseEstimators["litepose"] = partial(LitePoseEstimator.create,
-                                                  LitePoseEstimatorConfig.LitePose_S_COCO_FP32)
+                                         LitePoseEstimatorConfig.LitePose_S_COCO_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 
@@ -90,6 +90,21 @@ try:
     PoseEstimators["kapao-l-1280"] = partial(KAPAOPoseEstimator.create, KAPAOPoseConfig.KAPAO_L_COCO_1280)
 except ImportError as ex:
     logging.info(f"ONNX not installed: {ex}")
+
+try:
+    from visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseEstimator, YOLOv8PoseConfig
+
+    PoseEstimators["yolov8-n"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_N_640)
+    PoseEstimators["yolov8-s"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_S_640)
+    PoseEstimators["yolov8-m"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_M_640)
+    PoseEstimators["yolov8-l"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_L_640)
+    PoseEstimators["yolov8-x"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_X_640)
+
+    PoseEstimators["yolov8-n-int8"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_N_640_INT8)
+    PoseEstimators["yolov8-s-int8"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_S_640_INT8)
+
+except ImportError as ex:
+    logging.info(f"Could not import YOLOv8 - dependencies not installed: {ex}")
 
 
 def add_pose_estimation_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup],

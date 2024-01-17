@@ -273,6 +273,8 @@ try:
     from .estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
 except ModuleNotFoundError as ex:
     logging.info(f"Module TopDownPoseEstimator not found")
+from .estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseConfig
+from .estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseEstimator
 from .estimator.spatial.pose.__init__ import add_pose_estimation_step_choices
 from .estimator.spatial.segmentation.MODNetEstimator import ModNetConfig
 from .estimator.spatial.segmentation.MODNetEstimator import ModNetEstimator
