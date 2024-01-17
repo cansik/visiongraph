@@ -1,7 +1,7 @@
 import json
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, List, Tuple, Any
+from typing import Optional, List, Any
 
 import numpy as np
 import pyrealsense2 as rs
@@ -12,9 +12,8 @@ from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme
 from visiongraph.model.types.RealSenseFilter import RealSenseFilters
-from visiongraph.util import MathUtils, ImageUtils, CommonArgs
+from visiongraph.util import ImageUtils, CommonArgs
 from visiongraph.util.ArgUtils import add_enum_choice_argument, add_dict_choice_argument
-from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
 
@@ -358,6 +357,10 @@ class RealSenseInput(BaseDepthCamera):
         if sensor is None:
             sensor = self.image_sensor
 
+        if sensor is None:
+            logging.warning(f"No sensor for option {option} available!")
+            return 0.0
+
         if sensor.supports(option):
             return sensor.get_option(option)
         else:
@@ -367,6 +370,10 @@ class RealSenseInput(BaseDepthCamera):
     def set_option(self, option: rs.option, value: float, sensor: Optional[rs.sensor] = None):
         if sensor is None:
             sensor = self.image_sensor
+
+        if sensor is None:
+            logging.warning(f"No sensor for option {option} available!")
+            return 0.0
 
         if sensor.supports(option):
             if sensor.is_option_read_only(option):
