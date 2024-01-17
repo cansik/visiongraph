@@ -16,14 +16,14 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class YOLOv8PoseConfig(Enum):
-    YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), 17
-    YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), 17
-    YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx"), 17
-    YOLOv8_L_640 = RepositoryAsset("yolov8l-pose-8-1.onnx"), 17
-    YOLOv8_X_640 = RepositoryAsset("yolov8x-pose-8-1.onnx"), 17
+    YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), InferenceEngine.ONNX, 17
+    YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), InferenceEngine.ONNX, 17
+    YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx"), InferenceEngine.ONNX, 17
+    YOLOv8_L_640 = RepositoryAsset("yolov8l-pose-8-1.onnx"), InferenceEngine.ONNX, 17
+    YOLOv8_X_640 = RepositoryAsset("yolov8x-pose-8-1.onnx"), InferenceEngine.ONNX, 17
 
-    YOLOv8_N_640_INT8 = *RepositoryAsset.openVino("yolov8n-pose-8-1-INT8"), 17
-    YOLOv8_S_640_INT8 = *RepositoryAsset.openVino("yolov8s-pose-8-1-INT8"), 17
+    YOLOv8_N_640_INT8 = *RepositoryAsset.openVino("yolov8n-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
+    YOLOv8_S_640_INT8 = *RepositoryAsset.openVino("yolov8s-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
 
 
 class YOLOv8PoseEstimator(PoseEstimator):
@@ -93,12 +93,13 @@ class YOLOv8PoseEstimator(PoseEstimator):
 
     @staticmethod
     def create(config: YOLOv8PoseConfig = YOLOv8PoseConfig.YOLOv8_S_640) -> "YOLOv8PoseEstimator":
-        num_args = len(config.value) - 1
+        num_args = len(config.value) - 2
 
         assets = config.value[:num_args]
+        engine = config.value[-2]
         num_keypoints = config.value[-1]
 
         if type(assets) is not tuple:
             assets = (assets,)
 
-        return YOLOv8PoseEstimator(*assets, num_keypoints=num_keypoints)
+        return YOLOv8PoseEstimator(*assets, num_keypoints=num_keypoints, engine=engine)
