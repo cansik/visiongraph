@@ -81,13 +81,14 @@ The graph builder helps to create new graphs on a single line in python. It crea
 ```python
 import visiongraph as vg
 
-graph = vg.create_graph(name="Smooth Pose Estimation",
-                            input_node=vg.VideoCaptureInput(0),
-                            handle_signals=True) \
-        .apply(ssd=vg.sequence(vg.OpenPoseEstimator.create(), vg.MotpyTracker(), vg.LandmarkSmoothFilter()),
-               image=vg.passthrough()) \
-        .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
-        .open()
+graph = (vg.create_graph(name="Smooth Pose Estimation",
+                         input_node=vg.VideoCaptureInput(0),
+                         handle_signals=True)
+         .apply(ssd=vg.sequence(vg.OpenPoseEstimator.create(), vg.MotpyTracker(), vg.LandmarkSmoothFilter()),
+                image=vg.passthrough())
+         .then(vg.ResultAnnotator(image="image"), vg.ImagePreview())
+         )
+graph.open()
 ```
 
 ### Input
