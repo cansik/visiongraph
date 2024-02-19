@@ -1,5 +1,6 @@
+from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, List
+from typing import Optional, List, Dict
 
 import cv2
 import numpy as np
@@ -43,6 +44,12 @@ class MaskRCNNConfig(Enum):
     EfficientNet_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp32"), COCO_80_LABELS)
 
 
+@dataclass
+class _OutputLayerName:
+    name: str
+    options: List[str] = field(default_factory=lambda: [])
+
+
 class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
     def __init__(self, model: Asset, weights: Asset, labels: List[str],
                  min_score: float = 0.5, device: str = "AUTO"):
@@ -58,11 +65,28 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         self.device = device
         self.engine: Optional[OpenVinoEngine] = None
 
+        self.output_layer_mapping: Dict[str, _OutputLayerName] = {
+            "boxes": _OutputLayerName("boxes"),
+            "labels": _OutputLayerName("labels"),
+            "classes": _OutputLayerName("classes"),
+            "scores": _OutputLayerName("scores"),
+            "masks": _OutputLayerName("masks")
+        }
+
     def setup(self):
         self.engine = OpenVinoEngine(self.model, self.weights,
                                      flip_channels=True, device=self.device)
         self.engine.setup()
         _, _, self.height, self.width = self.engine.first_input_shape
+
+        # fix output layer mapping
+        for base_name, mapping in self.output_layer_mapping.items():
+            for option in [mapping.name, *mapping.options]:
+                for layer in self.engine.get_output_layers():
+                    if option in layer.layer_names:
+                        self.output_layer_mapping[base_name].name = layer.name
+
+        print(self.output_layer_mapping)
 
     def process(self, data: np.ndarray) -> ResultList[InstanceSegmentationResult]:
         h, w = data.shape[:2]
@@ -89,20 +113,26 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
     def release(self):
         self.engine.release()
 
-    @staticmethod
-    def _postprocess(outputs, scale_x, scale_y, frame_height,
+    def _postprocess(self, outputs, scale_x, scale_y, frame_height,
                      frame_width, input_height, input_width, conf_threshold):
+
+        boxes_name = self.output_layer_mapping["boxes"].name
+        scores_name = self.output_layer_mapping["scores"].name
+        labels_name = self.output_layer_mapping["labels"].name
+        classes_name = self.output_layer_mapping["classes"].name
+        masks_name = self.output_layer_mapping["masks"].name
+
         segmentoly_postprocess = 'raw_masks' in outputs
-        boxes = outputs['boxes'] if segmentoly_postprocess else outputs['boxes'][:, :4]
-        scores = outputs['scores'] if segmentoly_postprocess else outputs['boxes'][:, 4]
+        boxes = outputs[boxes_name] if segmentoly_postprocess else outputs[boxes_name][:, :4]
+        scores = outputs[scores_name] if segmentoly_postprocess else outputs[boxes_name][:, 4]
         boxes[:, 0::2] /= scale_x
         boxes[:, 1::2] /= scale_y
         if segmentoly_postprocess:
-            classes = outputs['classes'].astype(np.uint32)
+            classes = outputs[classes_name].astype(np.uint32)
         else:
-            classes = outputs['labels'].astype(np.uint32) + 1
+            classes = outputs[labels_name].astype(np.uint32) + 1
         masks = []
-        masks_name = 'raw_masks' if segmentoly_postprocess else 'masks'
+        masks_name = 'raw_masks' if segmentoly_postprocess else masks_name
         for box, cls, raw_mask in zip(boxes, classes, outputs[masks_name]):
             raw_cls_mask = raw_mask[cls, ...] if segmentoly_postprocess else raw_mask
             mask = MaskRCNNEstimator._segm_postprocess(box, raw_cls_mask, frame_height, frame_width)

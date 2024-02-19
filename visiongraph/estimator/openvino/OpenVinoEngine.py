@@ -76,7 +76,7 @@ class OpenVinoEngine(BaseVisionEngine):
     def _get_model_layer(compiled_layers: List) -> List[VisionEngineModelLayer]:
         return [
             VisionEngineModelLayer(name=l.any_name,
-                                   shape=list(l.shape),
+                                   shape=list(l.partial_shape),
                                    numpy_dtype=l.element_type.to_dtype(),
                                    layer_names=list(l.names))
             for l in compiled_layers
