@@ -7,7 +7,7 @@ import numpy as np
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.inpaint.BaseInpainter import BaseInpainter
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.result.ImageResult import ImageResult
 
 
@@ -19,7 +19,7 @@ class GMCNNConfig(Enum):
 class GMCNNInpainter(BaseInpainter):
     def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
         super().__init__()
-        self.engine = VisionInferenceEngine(model, weights, device=device, flip_channels=False)
+        self.engine = OpenVinoEngine(model, weights, device=device, flip_channels=False)
 
     def setup(self):
         self.engine.setup()

@@ -6,7 +6,7 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
@@ -43,7 +43,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
                  min_score: float = 0.2, device: str = "AUTO"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
+        self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
         self.threshold = 0.1
 
     def setup(self):

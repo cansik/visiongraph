@@ -7,7 +7,7 @@ import numpy as np
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
@@ -56,11 +56,11 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         self.labels = labels
 
         self.device = device
-        self.engine: Optional[VisionInferenceEngine] = None
+        self.engine: Optional[OpenVinoEngine] = None
 
     def setup(self):
-        self.engine = VisionInferenceEngine(self.model, self.weights,
-                                            flip_channels=True, device=self.device)
+        self.engine = OpenVinoEngine(self.model, self.weights,
+                                     flip_channels=True, device=self.device)
         self.engine.setup()
         _, _, self.height, self.width = self.engine.first_input_shape
 

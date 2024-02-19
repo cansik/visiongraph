@@ -1,7 +1,6 @@
-import logging
 from enum import Enum
 from functools import partial
-from typing import Sequence, Dict, Optional, Union, Any
+from typing import Sequence, Optional, Union, Any
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
@@ -13,11 +12,6 @@ def _get_onnx_vision_engine_type():
     return ONNXVisionEngine
 
 
-def _get_vision_inference_engine_type():
-    from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-    return VisionInferenceEngine
-
-
 def _get_open_vino_engine_type():
     from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
     return OpenVinoEngine
@@ -25,7 +19,7 @@ def _get_open_vino_engine_type():
 
 class InferenceEngine(Enum):
     ONNX = partial(_get_onnx_vision_engine_type)
-    OpenVINO = partial(_get_vision_inference_engine_type)
+    OpenVINO = partial(_get_open_vino_engine_type)
     OpenVINO2 = partial(_get_open_vino_engine_type)
 
 

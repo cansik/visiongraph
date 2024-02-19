@@ -66,10 +66,6 @@ try:
 except ModuleNotFoundError as ex:
     logging.info(f"Module SyncInferencePipeline not found")
 try:
-    from .estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
-except ModuleNotFoundError as ex:
-    logging.info(f"Module VisionInferenceEngine not found")
-try:
     from .estimator.spatial.CenterNetDetector import CenterNetConfig
 except ModuleNotFoundError as ex:
     logging.info(f"Module CenterNetConfig not found")

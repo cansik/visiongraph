@@ -3,7 +3,7 @@ from argparse import ArgumentParser, Namespace
 import numpy as np
 
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from visiongraph.model.types.ModelPrecision import ModelPrecision
 from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
@@ -15,7 +15,7 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
 
         model_name = f"emotions-recognition-retail-0003-{model_precision.open_vino_model_suffix}"
         model, weights = RepositoryAsset.openVino(model_name)
-        self.engine = VisionInferenceEngine(model, weights, device=device)
+        self.engine = OpenVinoEngine(model, weights, device=device)
 
         self.labels = ["neutral", "happy", "sad", "surprise", "anger"]
 

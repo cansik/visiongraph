@@ -7,7 +7,7 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.recognition.FaceRecognitionEstimator import FaceRecognitionEstimator
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
@@ -22,7 +22,7 @@ class FaceReidentificationConfig(Enum):
 class FaceReidentificationEstimator(FaceRecognitionEstimator):
     def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
         super().__init__()
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
+        self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
 
         # left eye, right eye, tip of nose, left lip corner, right lip corner
         # https://docs.openvino.ai/latest/omz_models_model_face_reidentification_retail_0095.html

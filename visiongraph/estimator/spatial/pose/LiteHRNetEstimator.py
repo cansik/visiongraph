@@ -5,7 +5,7 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
@@ -38,7 +38,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
                  device: str = "AUTO"):
         super().__init__(human_detector, min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, scale=255, device=device)
+        self.engine = OpenVinoEngine(model, weights, flip_channels=True, scale=255, device=device)
         self.enable_nms = enable_nms
         self.iou_threshold = iou_threshold
 

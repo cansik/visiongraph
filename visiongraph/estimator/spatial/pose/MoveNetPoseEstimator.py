@@ -5,7 +5,7 @@ import numpy as np
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
@@ -39,7 +39,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
                  device: str = "AUTO"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights, flip_channels=True, device=device)
+        self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
         self.enable_nms = enable_nms
         self.iou_threshold = iou_threshold
         self.multi_pose = multi_pose

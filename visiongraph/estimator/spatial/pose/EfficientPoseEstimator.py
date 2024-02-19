@@ -7,7 +7,7 @@ from scipy.ndimage import gaussian_filter
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
@@ -44,7 +44,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
                  min_score: float = 0.1, device: str = "AUTO"):
         super().__init__(min_score)
 
-        self.engine = VisionInferenceEngine(model, weights,
+        self.engine = OpenVinoEngine(model, weights,
                                             flip_channels=True, padding=True,
                                             device=device)
 

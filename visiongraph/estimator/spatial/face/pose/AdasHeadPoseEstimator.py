@@ -4,7 +4,7 @@ import numpy as np
 import vector
 
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.openvino.VisionInferenceEngine import VisionInferenceEngine
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.pose.HeadPoseEstimator import HeadPoseEstimator
 from visiongraph.result.HeadPoseResult import HeadPoseResult
 
@@ -12,7 +12,7 @@ from visiongraph.result.HeadPoseResult import HeadPoseResult
 class AdasHeadPoseEstimator(HeadPoseEstimator):
     def __init__(self, device: str = "AUTO"):
         model, weights = RepositoryAsset.openVino("head-pose-estimation-adas-0001")
-        self.engine = VisionInferenceEngine(model, weights, device=device)
+        self.engine = OpenVinoEngine(model, weights, device=device)
 
     def setup(self):
         self.engine.setup()
