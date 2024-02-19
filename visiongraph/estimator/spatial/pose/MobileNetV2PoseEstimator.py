@@ -9,6 +9,7 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
+from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
 from visiongraph.util.VectorUtils import list_of_vector4D
 
@@ -44,6 +45,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
+        self.engine.order = InputShapeOrder.NWHC
         self.threshold = 0.1
 
     def setup(self):
@@ -51,7 +53,10 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
 
     def process(self, data: np.ndarray) -> ResultList[COCOOpenPose]:
         output_dict = self.engine.process(data)
-        outputs = output_dict[self.engine.output_names[0]]
+        outputs_nhwc = output_dict[self.engine.output_names[0]]
+
+        # transpose data to nchw from nhwc
+        outputs = np.transpose(outputs_nhwc, (0, 3, 1, 2))
 
         h, w = outputs.shape[2:]
 

@@ -10,6 +10,7 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.EfficientPose import EfficientPose
 from visiongraph.util import VectorUtils, MathUtils
@@ -45,8 +46,9 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights,
-                                            flip_channels=True, padding=True,
-                                            device=device)
+                                     flip_channels=True, padding=True,
+                                     device=device)
+        self.engine.order = InputShapeOrder.NWHC
 
     def setup(self):
         self.engine.setup()
@@ -56,7 +58,9 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         outputs = output_dict[self.engine.output_names[0]]
         padding_box: BoundingBox2D = output_dict.padding_box
 
-        body_parts = self._extract_coordinates(outputs)
+        # transpose data to nchw from nhwc
+        outputs_nchw = np.transpose(outputs, (0, 3, 1, 2))
+        body_parts = self._extract_coordinates(outputs_nchw)
 
         landmarks: List[Tuple[float, float, float, float]] = []
         max_score = 0.0
