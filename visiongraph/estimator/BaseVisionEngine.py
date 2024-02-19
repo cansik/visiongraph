@@ -4,6 +4,7 @@ from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
 import cv2
 import numpy as np
 
+from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
@@ -133,4 +134,12 @@ class BaseVisionEngine(ABC):
 
     @abstractmethod
     def release(self):
+        pass
+
+    @abstractmethod
+    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+        pass
+
+    @abstractmethod
+    def get_output_layers(self) -> List[VisionEngineModelLayer]:
         pass

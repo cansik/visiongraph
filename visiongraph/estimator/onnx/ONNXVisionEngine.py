@@ -6,6 +6,7 @@ import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
+from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
@@ -71,3 +72,19 @@ class ONNXVisionEngine(BaseVisionEngine):
 
     def get_device_name(self) -> str:
         return self.session.get_providers()[0]
+
+    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+        return self._get_model_layer(self.session.get_inputs())
+
+    def get_output_layers(self) -> List[VisionEngineModelLayer]:
+        return self._get_model_layer(self.session.get_outputs())
+
+    @staticmethod
+    def _get_model_layer(compiled_layers: List[rt.NodeArg]) -> List[VisionEngineModelLayer]:
+        return [
+            VisionEngineModelLayer(name=l.name,
+                                   shape=list(l.shape),
+                                   numpy_dtype=l.type,  # todo: convert this to numpy dtype
+                                   layer_names=list(l.name))
+            for l in compiled_layers
+        ]

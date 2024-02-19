@@ -1,15 +1,15 @@
-from typing import Dict, Optional, Any, Sequence, Union
+from typing import Dict, Optional, Any, Sequence, Union, List
 
 import numpy as np
 import openvino.runtime as ov
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
+from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class OpenVinoEngine(BaseVisionEngine):
-
     def __init__(self, model: Asset,
                  weights: Optional[Asset] = None,
                  flip_channels: bool = True,
@@ -42,8 +42,8 @@ class OpenVinoEngine(BaseVisionEngine):
 
         self.compiled_model = self.ie.compile_model(self.parsed_model, device_name=self.device, config=self.config)
 
-        self.input_names = list([l.any_name for l in self.compiled_model.inputs])
-        self.output_names = list([l.any_name for l in self.compiled_model.outputs])
+        self.input_names = list([layer.any_name for layer in self.compiled_model.inputs])
+        self.output_names = list([layer.any_name for layer in self.compiled_model.outputs])
 
         self._input_lut = {l.any_name: l for l in self.compiled_model.inputs}
 
@@ -65,3 +65,19 @@ class OpenVinoEngine(BaseVisionEngine):
     def get_device_name(self) -> str:
         device_name = self.ie.get_property(self.device, "FULL_DEVICE_NAME")
         return f"{device_name}"
+
+    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+        return self._get_model_layer(self.compiled_model.inputs)
+
+    def get_output_layers(self) -> List[VisionEngineModelLayer]:
+        return self._get_model_layer(self.compiled_model.outputs)
+
+    @staticmethod
+    def _get_model_layer(compiled_layers: List) -> List[VisionEngineModelLayer]:
+        return [
+            VisionEngineModelLayer(name=l.any_name,
+                                   shape=list(l.shape),
+                                   numpy_dtype=l.element_type.to_dtype(),
+                                   layer_names=list(l.names))
+            for l in compiled_layers
+        ]
