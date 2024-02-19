@@ -18,7 +18,8 @@ class BaseVisionEngine(ABC):
                  mean: Optional[Union[float, Sequence[float]]] = None,
                  padding: bool = False,
                  transpose: bool = True,
-                 order: InputShapeOrder = InputShapeOrder.NCHW):
+                 order: InputShapeOrder = InputShapeOrder.NCHW,
+                 dtype: np.dtype = np.float32):
 
         self.flip_channels = flip_channels
         self.scale = scale
@@ -27,6 +28,7 @@ class BaseVisionEngine(ABC):
         self.padding_color: Optional[Sequence[int]] = None
         self.transpose = transpose
         self.order = order
+        self.dtype = dtype
 
         self.input_names: List[str] = []
         self.output_names: List[str] = []
@@ -40,7 +42,8 @@ class BaseVisionEngine(ABC):
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         in_frame, padding_box, image_size = self.pre_process_image(image, self.first_input_name,
                                                                    self.flip_channels, self.scale, self.mean,
-                                                                   self.padding, self.transpose, self.order)
+                                                                   self.padding, self.transpose, self.order,
+                                                                   self.dtype)
 
         if inputs is None:
             inputs = {}
@@ -63,7 +66,8 @@ class BaseVisionEngine(ABC):
                           mean: Optional[Union[float, Sequence[float]]] = None,
                           padding: bool = False,
                           transpose: bool = True,
-                          order: InputShapeOrder = InputShapeOrder.NCHW) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
+                          order: InputShapeOrder = InputShapeOrder.NCHW,
+                          dtype: np.dtype = np.float32) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
         input_channels = image.shape[-1] if image.ndim == 3 else 1
 
         if order == InputShapeOrder.NWHC:
@@ -86,7 +90,7 @@ class BaseVisionEngine(ABC):
             in_frame = cv2.cvtColor(in_frame, cv2.COLOR_GRAY2RGB)
 
         # convert to float32
-        in_frame = in_frame.astype(np.float32)
+        in_frame = in_frame.astype(dtype)
 
         if mean is not None:
             in_frame -= mean
