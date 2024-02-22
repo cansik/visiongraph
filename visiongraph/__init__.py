@@ -350,6 +350,7 @@ except ModuleNotFoundError as ex:
 from .model.CameraIntrinsics import CameraIntrinsics
 from .model.CameraStreamType import CameraStreamType
 from .model.DepthBuffer import DepthBuffer
+from .model.VisionEngineModelLayer import VisionEngineModelLayer
 from .model.VisionEngineOutput import VisionEngineOutput
 from .model.geometry.BoundingBox2D import BoundingBox2D
 from .model.geometry.Size2D import Size2D
