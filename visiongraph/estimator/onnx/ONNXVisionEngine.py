@@ -28,6 +28,12 @@ class ONNXVisionEngine(BaseVisionEngine):
                                               "DmlExecutionProvider",
                                               "CPUExecutionProvider"]
 
+        self.dtype_conversion_table = {
+            "tensor(float)": np.float32,
+            "tensor(float32)": np.float32,
+            "tensor(uint8)": np.uint8,
+        }
+
     def setup(self):
         if self.execution_providers is None:
             self.execution_providers = self.get_execution_providers()
@@ -79,12 +85,17 @@ class ONNXVisionEngine(BaseVisionEngine):
     def get_output_layers(self) -> List[VisionEngineModelLayer]:
         return self._get_model_layer(self.session.get_outputs())
 
-    @staticmethod
-    def _get_model_layer(compiled_layers: List[rt.NodeArg]) -> List[VisionEngineModelLayer]:
+    def _get_model_layer(self, compiled_layers: List[rt.NodeArg]) -> List[VisionEngineModelLayer]:
         return [
             VisionEngineModelLayer(name=l.name,
                                    shape=list(l.shape),
-                                   numpy_dtype=l.type,  # todo: convert this to numpy dtype
+                                   numpy_dtype=self._to_numpy_dtype(l.type),
                                    layer_names=list(l.name))
             for l in compiled_layers
         ]
+
+    def _to_numpy_dtype(self, type_text: str) -> np.dtype:
+        if type_text not in self.dtype_conversion_table:
+            raise TypeError(f"Could not convert '{type_text}' into a numpy dtype.")
+
+        return self.dtype_conversion_table[type_text]
