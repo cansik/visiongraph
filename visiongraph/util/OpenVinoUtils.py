@@ -1,12 +1,13 @@
 import logging
-from openvino.inference_engine import IECore
+
+from openvino import Core
 
 
 def get_inference_engine_device() -> str:
-    ie = IECore()
+    core = Core()
 
     device_id = 0
-    devices = ie.available_devices
+    devices = core.available_devices
 
     # try to find preferred GPU device
     for i, device in enumerate(devices):
@@ -22,7 +23,7 @@ def get_inference_engine_device() -> str:
         if i == device_id:
             default_sign = " (Default)"
 
-        full_device_name = ie.get_metric(device, "FULL_DEVICE_NAME")
+        full_device_name = core.get_property(device, "FULL_DEVICE_NAME")
         logging.info(f"{device}{default_sign}: {full_device_name}")
 
     return devices[device_id]

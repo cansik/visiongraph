@@ -56,6 +56,10 @@ class TestInferenceEngine(unittest.TestCase):
 
         self._engine_test(vg.InferenceEngine.OpenVINO2, method)
 
+    def test_openvino_utils_get_inference_engine_device(self):
+        device = vg.get_inference_engine_device()
+        assert device
+
 
 if __name__ == '__main__':
     unittest.main()

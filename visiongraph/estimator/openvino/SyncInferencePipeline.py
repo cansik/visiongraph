@@ -1,7 +1,6 @@
-from typing import Optional, List
+from typing import List
 
 import numpy as np
-from openvino.inference_engine import IECore, IENetwork, ExecutableNetwork
 
 from visiongraph.external.intel.models.model import Model
 
