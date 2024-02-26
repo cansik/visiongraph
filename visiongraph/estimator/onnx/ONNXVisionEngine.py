@@ -1,7 +1,6 @@
 from typing import Sequence, Optional, Dict, Any, List, Union
 
 import numpy as np
-
 import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
@@ -30,8 +29,12 @@ class ONNXVisionEngine(BaseVisionEngine):
 
         self.dtype_conversion_table = {
             "tensor(float)": np.float32,
+            "tensor(float16)": np.float16,
             "tensor(float32)": np.float32,
-            "tensor(uint8)": np.uint8,
+            "tensor(int64)": np.int64,
+            "tensor(int32)": np.int32,
+            "tensor(int8)": np.int8,
+            "tensor(uint8)": np.uint8
         }
 
     def setup(self):
