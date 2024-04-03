@@ -57,14 +57,8 @@ try:
     from .estimator.openvino.OpenVinoEngine import OpenVinoEngine
 except ModuleNotFoundError as ex:
     logging.info(f"Module OpenVinoEngine not found")
-try:
-    from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
-except ModuleNotFoundError as ex:
-    logging.info(f"Module OpenVinoObjectDetector not found")
-try:
-    from .estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
-except ModuleNotFoundError as ex:
-    logging.info(f"Module SyncInferencePipeline not found")
+from .estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
+from .estimator.openvino.SyncInferencePipeline import SyncInferencePipeline
 try:
     from .estimator.spatial.CenterNetDetector import CenterNetConfig
 except ModuleNotFoundError as ex:
@@ -520,10 +514,7 @@ try:
     from .dsp.OneEuroFilterNumba import OneEuroFilterNumba
 except ModuleNotFoundError as ex:
     logging.info(f"Module OneEuroFilterNumba not found")
-try:
-    from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
-except ModuleNotFoundError as ex:
-    logging.info(f"Module OpenVinoPoseEstimator not found")
+from .estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
 try:
     from .estimator.spatial.face.landmark.MediaPipeFaceMeshEstimator import MediaPipeFaceMeshEstimator
 except ModuleNotFoundError as ex:
