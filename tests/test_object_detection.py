@@ -80,6 +80,9 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_yolov5_detector_s(self):
         self._test_model(vg.YOLOv5Detector.create(vg.YOLOv5Config.YOLOv5_S))
 
+    def test_ultralytics_yolov8_detector_s(self):
+        self._test_model(vg.UltralyticsYOLODetector.create(vg.UltralyticsYOLOConfig.YOLOv8_S))
+
     def test_crowdhuman_detector(self):
         self._test_model(vg.CrowdHumanDetector.create(vg.CrowdHumanConfig.YOLOv5_N_640))
 

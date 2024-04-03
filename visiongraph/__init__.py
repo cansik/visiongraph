@@ -91,6 +91,8 @@ except ModuleNotFoundError as ex:
     logging.info(f"Module SSDDetector not found")
 from .estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from .estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
+from .estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLOConfig
+from .estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 try:
     from .estimator.spatial.YOLODetector import YOLOArchitecture
 except ModuleNotFoundError as ex:

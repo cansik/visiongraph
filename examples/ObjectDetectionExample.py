@@ -7,6 +7,7 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanDetector, CrowdHumanConfig
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
+from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector, UltralyticsYOLOConfig
 from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector, YOLOv5Config
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
@@ -22,6 +23,7 @@ class ObjectDetectionExample(BaseGraph):
         super().__init__()
         self.input = input
         self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
+        self.network = UltralyticsYOLODetector.create(UltralyticsYOLOConfig.YOLOv8_N)
 
         if sliding_window:
             self.network = SlidingWindowEstimator(
