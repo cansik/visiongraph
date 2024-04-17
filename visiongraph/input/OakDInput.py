@@ -154,22 +154,22 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         return dmap
 
     @property
-    def ir_laser_dot_projector_brightness(self):
-        return self._ir_laser_dot_projector_brightness
+    def ir_laser_dot_projector_intensity(self):
+        return self._ir_laser_dot_projector_intensity
 
-    @ir_laser_dot_projector_brightness.setter
-    def ir_laser_dot_projector_brightness(self, value: int):
-        self.device.setIrLaserDotProjectorBrightness(value)
-        self._ir_laser_dot_projector_brightness = value
+    @ir_laser_dot_projector_intensity.setter
+    def ir_laser_dot_projector_intensity(self, value: int):
+        self.device.setIrLaserDotProjectorIntensity(value)
+        self._ir_laser_dot_projector_intensity = value
 
     @property
-    def ir_flood_light_brightness(self):
-        return self._ir_laser_dot_projector_brightness
+    def ir_flood_light_intensity(self):
+        return self._ir_laser_dot_projector_intensity
 
-    @ir_flood_light_brightness.setter
-    def ir_flood_light_brightness(self, value: int):
-        self.device.setIrFloodLightBrightness(value)
-        self._ir_flood_light_brightness = value
+    @ir_flood_light_intensity.setter
+    def ir_flood_light_intensity(self, value: int):
+        self.device.setIrFloodLightIntensity(value)
+        self._ir_flood_light_intensity = value
 
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
