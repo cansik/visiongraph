@@ -15,8 +15,8 @@ class OakDProInput(DepthAIBaseInput, BaseDepthCamera):
 
         self.color_sensor_resolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
 
-        self._ir_laser_dot_projector_brightness: int = 0  # in mA, 0..1200
-        self._ir_flood_light_brightness = 0  # in mA, 0..1500
+        self._ir_laser_dot_projector_intensity: float = 0  # 0..1
+        self._ir_flood_light_intensity: float = 0  # 0..1
 
         self.select_ir_camera: dai.CameraBoardSocket = dai.CameraBoardSocket.LEFT
 
@@ -93,8 +93,8 @@ class OakDProInput(DepthAIBaseInput, BaseDepthCamera):
         self.depth_queue = self.device.getOutputQueue(name=self.depth_stream_name, maxSize=self.queue_max_size,
                                                       blocking=False)
 
-        self.device.setIrLaserDotProjectorBrightness(self._ir_laser_dot_projector_brightness)
-        self.device.setIrFloodLightBrightness(self._ir_flood_light_brightness)
+        self.device.setIrLaserDotProjectorIntensity(self._ir_laser_dot_projector_intensity)
+        self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
 
     def read(self) -> (int, Optional[np.ndarray]):
         super().read()
