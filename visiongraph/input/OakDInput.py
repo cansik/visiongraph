@@ -1,13 +1,14 @@
 import typing
+from argparse import Namespace
 from enum import Enum
 from typing import Optional
 
 import cv2
 import depthai as dai
 import numpy as np
-
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.input.DepthAIBaseInput import DepthAIBaseInput
+from visiongraph.model.CameraStreamType import CameraStreamType
 
 
 class OakDFrameAlignment(Enum):
@@ -149,7 +150,8 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     @property
     def depth_map(self) -> np.ndarray:
-        return self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
+        dmap = self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
+        return dmap
 
     @property
     def ir_laser_dot_projector_brightness(self):
@@ -169,6 +171,18 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.device.setIrFloodLightBrightness(value)
         self._ir_flood_light_brightness = value
 
-    @property
-    def ir_frame(self) -> Optional[np.ndarray]:
-        return self._last_ir_frame
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self.depth_map
+        elif stream_type == CameraStreamType.Infrared:
+            return self._last_ir_frame
+        elif stream_type == CameraStreamType.Color:
+            return self._last_rgb_frame
+
+        return None
+
+    def configure(self, args: Namespace):
+        super().configure(args)
+
+        if self.use_infrared:
+            self.frame_alignment = OakDFrameAlignment.Infrared

@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace, ArgumentError
 from typing import Tuple, Optional
 
@@ -7,6 +7,7 @@ import numpy as np
 
 from visiongraph.input.BaseCamera import BaseCamera
 from visiongraph.input.BaseDepthInput import BaseDepthInput
+from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.util import MathUtils
 
 
@@ -53,6 +54,35 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         if colormap is not None:
             img = cv2.applyColorMap(img, colormap)
         return img
+
+    @abstractmethod
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        pass
+
+    def get_image(self, stream_type: CameraStreamType = CameraStreamType.Color,
+                  post_processed: bool = True) -> Optional[np.ndarray]:
+        frame = self.get_raw_image(stream_type)
+
+        if frame is None:
+            return None
+
+        if post_processed:
+            _, frame = self._post_process(0, frame)
+            return frame
+
+        return frame
+
+    @property
+    def color_image(self) -> Optional[np.ndarray]:
+        return self.get_image(CameraStreamType.Color, True)
+
+    @property
+    def depth_image(self) -> Optional[np.ndarray]:
+        return self.get_image(CameraStreamType.Depth, True)
+
+    @property
+    def infrared_image(self) -> Optional[np.ndarray]:
+        return self.get_image(CameraStreamType.Infrared, True)
 
     @staticmethod
     def add_params(parser: ArgumentParser):

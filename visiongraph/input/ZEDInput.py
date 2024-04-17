@@ -7,7 +7,6 @@ import pyzed.sl as sl
 
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.model.CameraStreamType import CameraStreamType
-from visiongraph.util.MathUtils import constrain
 
 
 class ZEDCapture:
@@ -33,6 +32,8 @@ class ZEDInput(BaseDepthCamera):
 
         self.runtime_parameters = sl.RuntimeParameters()
 
+        self._last_color_frame: Optional[np.ndarray] = None
+
     def setup(self):
         err = self.camera.open(self.init_params)
         if err != sl.ERROR_CODE.SUCCESS:
@@ -50,6 +51,8 @@ class ZEDInput(BaseDepthCamera):
         self.camera.retrieve_measure(self.capture.depth, sl.MEASURE.DEPTH)
 
         frame = cv2.cvtColor(self.capture.left_image.get_data(), cv2.COLOR_BGRA2BGR)
+        self._last_color_frame = frame
+
         return 0, frame
 
     def release(self):
@@ -144,3 +147,11 @@ class ZEDInput(BaseDepthCamera):
             return "none"
 
         return str(self.camera.get_camera_information().serial_number)
+
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self.depth_map
+        elif stream_type == CameraStreamType.Color:
+            return self._last_color_frame
+
+        return None

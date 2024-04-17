@@ -1,6 +1,6 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Tuple
+from typing import Optional
 
 import cv2
 import numpy as np
@@ -12,7 +12,6 @@ from visiongraph.model.CameraStreamType import CameraStreamType
 from visiongraph.util import CommonArgs
 from visiongraph.util.ArgUtils import add_enum_choice_argument
 from visiongraph.util.CollectionUtils import default_value_dict
-from visiongraph.util.MathUtils import transform_coordinates, constrain
 from visiongraph.util.TimeUtils import current_millis
 
 
@@ -70,6 +69,10 @@ class AzureKinectInput(BaseDepthCamera):
         self._playback: Optional[PyK4APlayback] = None
 
         self.loop: bool = True
+
+        self._last_color_frame: Optional[np.ndarray] = None
+        self._last_ir_frame: Optional[np.ndarray] = None
+        self._last_depth_frame: Optional[np.ndarray] = None
 
     def setup(self, config: Optional[Config] = None):
         if self.input_mkv_file is not None:
@@ -136,15 +139,18 @@ class AzureKinectInput(BaseDepthCamera):
         if self.enable_depth and self.use_depth_as_input:
             depth = self.capture.depth
             image = self._colorize(depth, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
+            self._last_depth_frame = image
         else:
             if self.use_infrared:
                 ir_frame = self.capture.transformed_ir if self.align_frames_to_color else self.capture.ir
                 image = self._colorize(ir_frame, (self.ir_min_clipping, self.ir_max_clipping), self.ir_color_map)
+                self._last_ir_frame = image
             else:
                 image = self.capture.transformed_color if self.align_frames_to_depth else self.capture.color
                 if image is not None:
                     image = self._convert_to_bgra_if_required(self.color_format, image)
                     image = cv2.cvtColor(image, cv2.COLOR_RGBA2RGB)
+                self._last_color_frame = image
 
         if image is None:
             logging.warning("could not read frame.")
@@ -343,6 +349,16 @@ class AzureKinectInput(BaseDepthCamera):
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
+
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self._last_depth_frame
+        elif stream_type == CameraStreamType.Infrared:
+            return self._last_ir_frame
+        elif stream_type == CameraStreamType.Color:
+            return self._last_color_frame
+
+        return None
 
     @property
     def serial(self) -> str:

@@ -260,8 +260,7 @@ class RealSenseInput(BaseDepthCamera):
     def depth_map(self) -> np.ndarray:
         depth_frame = self.depth_frame
         depth_colormap = np.asanyarray(self.colorizer.colorize(depth_frame).get_data())
-        ts, transformed_depth = self._post_process(0, depth_colormap)
-        return transformed_depth
+        return depth_colormap
 
     @property
     def depth_buffer(self) -> np.ndarray:
@@ -347,6 +346,16 @@ class RealSenseInput(BaseDepthCamera):
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array(intrinsics.coeffs[:4])
+
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self.depth_map
+        elif stream_type == CameraStreamType.Infrared:
+            return np.asanyarray(self.frames.get_infrared_frame().get_data())
+        elif stream_type == CameraStreamType.Color:
+            return np.asanyarray(self.frames.get_color_frame().get_data())
+
+        return None
 
     @property
     def device_count(self) -> int:
