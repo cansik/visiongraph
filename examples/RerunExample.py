@@ -3,7 +3,7 @@ import numpy as np
 import rerun as rr  # pip install rerun-sdk
 
 from visiongraph.VisionGraphBuilder import create_graph, custom
-from visiongraph.input.OakDProInput import OakDProInput
+from visiongraph.input.OakDInput import OakDInput
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
     rr.disable_timeline("0")
     rr.spawn()
 
-    oak_d = OakDProInput()
+    oak_d = OakDInput()
 
     def on_frame(frame: np.ndarray):
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

@@ -36,8 +36,10 @@ except ImportError as ex:
 
 try:
     from visiongraph.input.Oak1Input import Oak1Input
+    from visiongraph.input.OakDInput import OakDInput
 
     InputProviders["oak1"] = Oak1Input
+    InputProviders["oakd"] = OakDInput
 except ImportError as ex:
     logging.info(f"DepthAI not installed: {ex}")
 

@@ -1,4 +1,5 @@
 import typing
+from enum import Enum
 from typing import Optional
 
 import cv2
@@ -9,7 +10,13 @@ from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.input.DepthAIBaseInput import DepthAIBaseInput
 
 
-class OakDProInput(DepthAIBaseInput, BaseDepthCamera):
+class OakDFrameAlignment(Enum):
+    Disabled = 0
+    Color = 1
+    Infrared = 2
+
+
+class OakDInput(DepthAIBaseInput, BaseDepthCamera):
     def __init__(self):
         super().__init__()
 
@@ -31,6 +38,8 @@ class OakDProInput(DepthAIBaseInput, BaseDepthCamera):
         self.depth_left_right_check: bool = True  # better handling for occlusions
         self.depth_subpixel: bool = False  # better accuracy for longer distance, fractional disparity 32-levels
         self.depth_extended_disparity: bool = False  # closer-in minimum depth, disparity range is doubled (from 95 to 190)
+
+        self.frame_alignment: OakDFrameAlignment = OakDFrameAlignment.Color
 
         # node names
         self.ir_stream_name = "ir"
@@ -76,6 +85,12 @@ class OakDProInput(DepthAIBaseInput, BaseDepthCamera):
         self.depth_node.setLeftRightCheck(self.depth_left_right_check)
         self.depth_node.setExtendedDisparity(self.depth_extended_disparity)
         self.depth_node.setSubpixel(self.depth_subpixel)
+
+        # setup depth align
+        if self.frame_alignment == self.frame_alignment.Infrared:
+            self.depth_node.setDepthAlign(camera=self.active_ir_camera.getBoardSocket())
+        elif self.frame_alignment == self.frame_alignment.Color:
+            self.depth_node.setDepthAlign(camera=self.color_camera.getBoardSocket())
 
         # link depth
         self.ir_left_camera.out.link(self.depth_node.left)

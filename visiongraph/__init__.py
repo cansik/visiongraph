@@ -325,11 +325,23 @@ try:
     from .input.CamGearInput import CamGearInput
 except ModuleNotFoundError as ex:
     logging.info(f"Module CamGearInput not found")
+try:
+    from .input.DepthAIBaseInput import DepthAIBaseInput
+except ModuleNotFoundError as ex:
+    logging.info(f"Module DepthAIBaseInput not found")
 from .input.ImageInput import ImageInput
 try:
     from .input.Oak1Input import Oak1Input
 except ModuleNotFoundError as ex:
     logging.info(f"Module Oak1Input not found")
+try:
+    from .input.OakDInput import OakDFrameAlignment
+except ModuleNotFoundError as ex:
+    logging.info(f"Module OakDFrameAlignment not found")
+try:
+    from .input.OakDInput import OakDInput
+except ModuleNotFoundError as ex:
+    logging.info(f"Module OakDInput not found")
 try:
     from .input.RealSenseInput import RealSenseInput
 except ModuleNotFoundError as ex:
