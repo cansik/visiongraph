@@ -32,8 +32,8 @@ onnxruntime~=1.17.1; platform_system == "Darwin"
 onnxruntime-gpu~=1.17.1; platform_system != "Darwin"
 
 # extra onnx-directml
-onnxruntime~=1.17.1; platform_system == "Darwin"
-onnxruntime-directml~=1.17.1; platform_system != "Darwin"
+onnxruntime~=1.17.1; platform_system == "Darwin" or platform_system == "Linux"
+onnxruntime-directml~=1.17.1; platform_system == "Windows"
 
 # extra media
 moviepy
