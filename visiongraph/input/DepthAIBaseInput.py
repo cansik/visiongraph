@@ -26,6 +26,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.interleaved: bool = False
         self.color_isp_scale: Optional[Tuple[int, int]] = None
         self.color_board_socket: dai.CameraBoardSocket = dai.CameraBoardSocket.CAM_A
+        self.color_fps: Optional[float] = None
 
         self._focus_mode: dai.RawCameraControl.AutoFocusMode = dai.RawCameraControl.AutoFocusMode.AUTO
         self._manual_lens_pos: int = 0
@@ -65,7 +66,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.pre_start_setup()
 
         # starts pipeline
-        self.device = dai.Device(self.pipeline)
+        self.device = dai.Device(self.pipeline).__enter__()
 
         self.rgb_control_queue = self.device.getInputQueue(self.rgb_control_in_name)
         self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
@@ -82,6 +83,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.color_camera = self.pipeline.create(dai.node.ColorCamera)
         self.color_camera.setBoardSocket(self.color_board_socket)
         self.color_camera.setResolution(self.color_sensor_resolution)
+
+        if self.color_fps is not None:
+            self.color_camera.setFps(self.color_fps)
 
         self.color_camera.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         self.color_camera.setInterleaved(self.interleaved)
@@ -117,7 +121,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self._last_ts = ts
 
     def release(self):
-        self.device.close()
+        self.device.__exit__(None, None, None)
 
     @property
     def gain(self) -> int:

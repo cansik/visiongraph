@@ -6,6 +6,7 @@ from typing import Optional
 import cv2
 import depthai as dai
 import numpy as np
+
 from visiongraph.input.BaseDepthCamera import BaseDepthCamera
 from visiongraph.input.DepthAIBaseInput import DepthAIBaseInput
 from visiongraph.model.CameraStreamType import CameraStreamType
@@ -58,56 +59,65 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self._last_depth_frame: Optional[np.ndarray] = None
 
     def pre_start_setup(self):
+        if self.use_depth_as_input:
+            self.enable_depth = True
+
         super().pre_start_setup()
 
         # setup ir camera's
-        self.ir_left_camera = self.pipeline.create(dai.node.MonoCamera)
-        self.ir_left_camera.setBoardSocket(dai.CameraBoardSocket.LEFT)
-        self.ir_left_camera.setResolution(self.ir_sensor_resolution)
+        if self.use_infrared or self.enable_depth:
+            self.ir_left_camera = self.pipeline.create(dai.node.MonoCamera)
+            self.ir_left_camera.setBoardSocket(dai.CameraBoardSocket.LEFT)
+            self.ir_left_camera.setResolution(self.ir_sensor_resolution)
 
-        self.ir_right_camera = self.pipeline.create(dai.node.MonoCamera)
-        self.ir_right_camera.setBoardSocket(dai.CameraBoardSocket.RIGHT)
-        self.ir_right_camera.setResolution(self.ir_sensor_resolution)
+            self.ir_right_camera = self.pipeline.create(dai.node.MonoCamera)
+            self.ir_right_camera.setBoardSocket(dai.CameraBoardSocket.RIGHT)
+            self.ir_right_camera.setResolution(self.ir_sensor_resolution)
 
-        if self.select_ir_camera.LEFT:
-            self.active_ir_camera = self.ir_left_camera
-        else:
-            self.active_ir_camera = self.ir_right_camera
+            if self.select_ir_camera.LEFT:
+                self.active_ir_camera = self.ir_left_camera
+            else:
+                self.active_ir_camera = self.ir_right_camera
 
-        # link active ir camera
-        self.ir_x_out = self.pipeline.create(dai.node.XLinkOut)
-        self.ir_x_out.setStreamName(self.ir_stream_name)
-        self.active_ir_camera.out.link(self.ir_x_out.input)
+            # link active ir camera
+            self.ir_x_out = self.pipeline.create(dai.node.XLinkOut)
+            self.ir_x_out.setStreamName(self.ir_stream_name)
+            self.active_ir_camera.out.link(self.ir_x_out.input)
 
         # set depth camera settings
-        self.depth_node = self.pipeline.create(dai.node.StereoDepth)
-        self.depth_node.setDefaultProfilePreset(self.depth_preset_mode)
-        self.depth_node.initialConfig.setMedianFilter(self.depth_median_filter)
-        self.depth_node.setLeftRightCheck(self.depth_left_right_check)
-        self.depth_node.setExtendedDisparity(self.depth_extended_disparity)
-        self.depth_node.setSubpixel(self.depth_subpixel)
+        if self.enable_depth:
+            self.depth_node = self.pipeline.create(dai.node.StereoDepth)
+            self.depth_node.setDefaultProfilePreset(self.depth_preset_mode)
+            self.depth_node.initialConfig.setMedianFilter(self.depth_median_filter)
+            self.depth_node.setLeftRightCheck(self.depth_left_right_check)
+            self.depth_node.setExtendedDisparity(self.depth_extended_disparity)
+            self.depth_node.setSubpixel(self.depth_subpixel)
 
-        # setup depth align
-        if self.frame_alignment == self.frame_alignment.Infrared:
-            self.depth_node.setDepthAlign(camera=self.active_ir_camera.getBoardSocket())
-        elif self.frame_alignment == self.frame_alignment.Color:
-            self.depth_node.setDepthAlign(camera=self.color_camera.getBoardSocket())
+            # setup depth align
+            if self.frame_alignment == self.frame_alignment.Infrared:
+                self.depth_node.setDepthAlign(camera=self.active_ir_camera.getBoardSocket())
+            elif self.frame_alignment == self.frame_alignment.Color:
+                self.depth_node.setDepthAlign(camera=self.color_camera.getBoardSocket())
 
-        # link depth
-        self.ir_left_camera.out.link(self.depth_node.left)
-        self.ir_right_camera.out.link(self.depth_node.right)
+            # link depth
+            self.ir_left_camera.out.link(self.depth_node.left)
+            self.ir_right_camera.out.link(self.depth_node.right)
 
-        self.depth_x_out = self.pipeline.create(dai.node.XLinkOut)
-        self.depth_x_out.setStreamName(self.depth_stream_name)
-        self.depth_node.depth.link(self.depth_x_out.input)
+            self.depth_x_out = self.pipeline.create(dai.node.XLinkOut)
+            self.depth_x_out.setStreamName(self.depth_stream_name)
+            self.depth_node.depth.link(self.depth_x_out.input)
 
     def setup(self):
         super().setup()
 
-        self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name, maxSize=self.queue_max_size,
+        self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name,
+                                                   maxSize=self.queue_max_size,
                                                    blocking=False)
-        self.depth_queue = self.device.getOutputQueue(name=self.depth_stream_name, maxSize=self.queue_max_size,
-                                                      blocking=False)
+
+        if self.enable_depth:
+            self.depth_queue = self.device.getOutputQueue(name=self.depth_stream_name,
+                                                          maxSize=self.queue_max_size,
+                                                          blocking=False)
 
         self.device.setIrLaserDotProjectorIntensity(self._ir_laser_dot_projector_intensity)
         self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
@@ -115,14 +125,15 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
     def read(self) -> (int, Optional[np.ndarray]):
         super().read()
 
-        ir_frame = typing.cast(dai.ImgFrame, self.ir_queue.get())
-        depth_frame = typing.cast(dai.ImgFrame, self.depth_queue.get())
+        if self.use_infrared:
+            ir_frame = typing.cast(dai.ImgFrame, self.ir_queue.get())
+            ir_image = typing.cast(np.ndarray, ir_frame.getCvFrame())
+            self._last_ir_frame = ir_image
 
-        ir_image = typing.cast(np.ndarray, ir_frame.getCvFrame())
-        depth_image = typing.cast(np.ndarray, depth_frame.getCvFrame())
-
-        self._last_ir_frame = ir_image
-        self._last_depth_frame = depth_image
+        if self.enable_depth:
+            depth_frame = typing.cast(dai.ImgFrame, self.depth_queue.get())
+            depth_image = typing.cast(np.ndarray, depth_frame.getCvFrame())
+            self._last_depth_frame = depth_image
 
         if self.use_depth_as_input:
             return self._post_process(self._last_ts, self.depth_map)
@@ -159,8 +170,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     @ir_laser_dot_projector_intensity.setter
     def ir_laser_dot_projector_intensity(self, value: int):
-        self.device.setIrLaserDotProjectorIntensity(value)
-        self._ir_laser_dot_projector_intensity = value
+        if self.device is not None:
+            self.device.setIrLaserDotProjectorIntensity(value)
+            self._ir_laser_dot_projector_intensity = value
 
     @property
     def ir_flood_light_intensity(self):
@@ -168,8 +180,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     @ir_flood_light_intensity.setter
     def ir_flood_light_intensity(self, value: int):
-        self.device.setIrFloodLightIntensity(value)
-        self._ir_flood_light_intensity = value
+        if self.device is not None:
+            self.device.setIrFloodLightIntensity(value)
+            self._ir_flood_light_intensity = value
 
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
