@@ -18,7 +18,7 @@ T = TypeVar("T", bound=ObjectDetectionResult)
 class ObjectAssignmentResult(Generic[T]):
     assignments: Dict[T, Optional[T]]
     unassigned_destinations: List[T]
-    scores: Dict[T, float]
+    costs: Dict[T, float]
 
     @property
     def unassigned_sources(self):
@@ -42,20 +42,20 @@ class ObjectAssignmentSolver(Generic[T]):
 
         # find all matches between tracks and detections
         assignments = dict()
-        scores = dict()
+        costs = dict()
         matched_detections = set()
         index = 0
         for ti, source in enumerate(source_list):
             if ti in row_indices:
                 # match has been found
                 x = col_indices[index]
-                score = cost_mat[ti, x]
+                cost = cost_mat[ti, x]
 
-                if score <= self.max_cost:
+                if cost <= self.max_cost:
                     # match is valid
                     dest = destination_list[x]
                     assignments[source] = dest
-                    scores[source] = float(score)
+                    costs[source] = float(cost)
                     matched_detections.add(x)
 
                 index += 1
@@ -63,7 +63,7 @@ class ObjectAssignmentSolver(Generic[T]):
 
             # no association
             assignments[source] = None
-            scores[source] = 0.0
+            costs[source] = 0.0
 
         # process unmatched detections
         unassigned_destinations = []
@@ -71,7 +71,7 @@ class ObjectAssignmentSolver(Generic[T]):
             if di not in matched_detections:
                 unassigned_destinations.append(dest)
 
-        return ObjectAssignmentResult(assignments, unassigned_destinations, scores)
+        return ObjectAssignmentResult(assignments, unassigned_destinations, costs)
 
     @staticmethod
     def l2_cost_function(tracks: List[T], detections: List[T]) -> np.ndarray:
@@ -82,10 +82,14 @@ class ObjectAssignmentSolver(Generic[T]):
         return distances
 
     @staticmethod
-    def iou_cost_function(tracks: List[T], detections: List[T]) -> np.ndarray:
+    def iou_cost_function(tracks: List[T], detections: List[T], class_exclusive: bool = False) -> np.ndarray:
         cost_mat = np.zeros((len(tracks), len(detections)), dtype=float)
 
         for y, track in enumerate(tracks):
             for x, detection in enumerate(detections):
+                if class_exclusive and track.class_id != detection.class_id:
+                    cost_mat[y, x] = sys.maxsize
+                    continue
+
                 cost_mat[y, x] = 1.0 - track.bounding_box.intersection_over_union(detection.bounding_box)
         return cost_mat
