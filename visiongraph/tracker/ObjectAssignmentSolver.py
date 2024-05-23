@@ -18,6 +18,7 @@ T = TypeVar("T", bound=ObjectDetectionResult)
 class ObjectAssignmentResult(Generic[T]):
     assignments: Dict[T, Optional[T]]
     unassigned_destinations: List[T]
+    scores: Dict[T, float]
 
     @property
     def unassigned_sources(self):
@@ -41,6 +42,7 @@ class ObjectAssignmentSolver(Generic[T]):
 
         # find all matches between tracks and detections
         assignments = dict()
+        scores = dict()
         matched_detections = set()
         index = 0
         for ti, source in enumerate(source_list):
@@ -53,6 +55,7 @@ class ObjectAssignmentSolver(Generic[T]):
                     # match is valid
                     dest = destination_list[x]
                     assignments[source] = dest
+                    scores[source] = score
                     matched_detections.add(x)
 
                 index += 1
@@ -60,6 +63,7 @@ class ObjectAssignmentSolver(Generic[T]):
 
             # no association
             assignments[source] = None
+            scores[source] = 0.0
 
         # process unmatched detections
         unassigned_destinations = []
