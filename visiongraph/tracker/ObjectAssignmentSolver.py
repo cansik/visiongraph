@@ -55,7 +55,7 @@ class ObjectAssignmentSolver(Generic[T]):
                     # match is valid
                     dest = destination_list[x]
                     assignments[source] = dest
-                    scores[source] = score
+                    scores[source] = float(score)
                     matched_detections.add(x)
 
                 index += 1
@@ -71,7 +71,7 @@ class ObjectAssignmentSolver(Generic[T]):
             if di not in matched_detections:
                 unassigned_destinations.append(dest)
 
-        return ObjectAssignmentResult(assignments, unassigned_destinations)
+        return ObjectAssignmentResult(assignments, unassigned_destinations, scores)
 
     @staticmethod
     def l2_cost_function(tracks: List[T], detections: List[T]) -> np.ndarray:
