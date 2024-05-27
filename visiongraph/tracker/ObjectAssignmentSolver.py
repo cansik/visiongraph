@@ -16,21 +16,57 @@ T = TypeVar("T", bound=ObjectDetectionResult)
 
 @dataclass
 class ObjectAssignmentResult(Generic[T]):
+    """
+    Data class representing the result of an object assignment process.
+
+    Attributes:
+        assignments (Dict[T, Optional[T]]): A dictionary mapping source objects to destination objects or None.
+        unassigned_destinations (List[T]): A list of destination objects that were not assigned.
+        costs (Dict[T, float]): A dictionary mapping source objects to their respective assignment costs.
+    """
     assignments: Dict[T, Optional[T]]
     unassigned_destinations: List[T]
     costs: Dict[T, float]
 
     @property
     def unassigned_sources(self):
+        """
+        Returns a list of source objects that were not assigned to any destination.
+        """
         return [k for k, v in self.assignments.items() if v is None]
 
 
 class ObjectAssignmentSolver(Generic[T]):
+    """
+    Solver for assigning source objects to destination objects based on a given cost function.
+
+    Attributes:
+        cost_function (CostFunctionType): A function to compute the cost matrix between sources and destinations.
+        max_cost (float): The maximum allowable cost for an assignment to be considered valid.
+    """
+
     def __init__(self, cost_function: Optional[CostFunctionType] = None, max_cost: float = sys.maxsize):
+        """
+        Initializes the ObjectAssignmentSolver with a given cost function and maximum cost.
+
+        Args:
+            cost_function (Optional[CostFunctionType]): The cost function to use for assignment. Defaults to L2 cost function.
+            max_cost (float): The maximum allowable cost for an assignment to be considered valid. Defaults to sys.maxsize.
+        """
         self.cost_function: CostFunctionType = self.l2_cost_function if cost_function is None else cost_function
         self.max_cost = max_cost
 
     def solve(self, source_list: List[T], destination_list: List[T]) -> ObjectAssignmentResult[T]:
+        """
+        Solves the assignment problem for the given lists of source and destination objects.
+
+        Args:
+            source_list (List[T]): The list of source objects.
+            destination_list (List[T]): The list of destination objects.
+
+        Returns:
+            ObjectAssignmentResult[T]: The result of the assignment process.
+        """
         # create cost matrix
         if len(source_list) == 0 or len(destination_list) == 0:
             cost_mat = np.zeros(shape=(0, 0), dtype=float)
@@ -57,13 +93,16 @@ class ObjectAssignmentSolver(Generic[T]):
                     assignments[source] = dest
                     costs[source] = float(cost)
                     matched_detections.add(x)
+                else:
+                    assignments[source] = None
+                    costs[source] = self.max_cost
 
                 index += 1
                 continue
 
             # no association
             assignments[source] = None
-            costs[source] = 0.0
+            costs[source] = self.max_cost
 
         # process unmatched detections
         unassigned_destinations = []
@@ -75,6 +114,16 @@ class ObjectAssignmentSolver(Generic[T]):
 
     @staticmethod
     def l2_cost_function(tracks: List[T], detections: List[T]) -> np.ndarray:
+        """
+        Computes the L2 (Euclidean) distance cost matrix between source and destination objects.
+
+        Args:
+            tracks (List[T]): The list of source objects.
+            detections (List[T]): The list of destination objects.
+
+        Returns:
+            np.ndarray: The cost matrix based on L2 distances.
+        """
         track_centers = np.array([vector_as_list(h.bounding_box.center) for h in tracks], dtype=float)
         detection_centers = np.array([vector_as_list(h.bounding_box.center) for h in detections], dtype=float)
 
@@ -83,6 +132,17 @@ class ObjectAssignmentSolver(Generic[T]):
 
     @staticmethod
     def iou_cost_function(tracks: List[T], detections: List[T], class_exclusive: bool = False) -> np.ndarray:
+        """
+        Computes the Intersection-over-Union (IoU) cost matrix between source and destination objects.
+
+        Args:
+            tracks (List[T]): The list of source objects.
+            detections (List[T]): The list of destination objects.
+            class_exclusive (bool): Whether to only consider matches between objects of the same class. Defaults to False.
+
+        Returns:
+            np.ndarray: The cost matrix based on IoU values.
+        """
         cost_mat = np.zeros((len(tracks), len(detections)), dtype=float)
 
         for y, track in enumerate(tracks):
