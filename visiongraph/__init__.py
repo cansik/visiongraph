@@ -489,6 +489,7 @@ from .util.LoggingUtils import add_logging_parameter
 from .util.LoggingUtils import setup_logging
 from .util.MathUtils import StreamingMovingAverage
 from .util.MathUtils import constrain
+from .util.MathUtils import intersection_over_union
 from .util.MathUtils import map_value
 from .util.MathUtils import rotate_2d
 from .util.MathUtils import transform_coordinates

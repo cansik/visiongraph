@@ -4,6 +4,7 @@ import numpy as np
 import vector
 
 from visiongraph.model.geometry.Size2D import Size2D
+from visiongraph.util import MathUtils
 
 
 class BoundingBox2D:
@@ -101,23 +102,8 @@ class BoundingBox2D:
         shift = kernel_size // 2
         return BoundingBox2D(x - shift, y - shift, kernel_size, kernel_size)
 
-    def intersection_over_union(self, box: "BoundingBox2D") -> float:
-        box_a = self.to_array(tl_br_format=True)
-        box_b = box.to_array(tl_br_format=True)
-
-        # determine the (x, y)-coordinates of the intersection rectangle
-        xa = max(box_a[0], box_b[0])
-        ya = max(box_a[1], box_b[1])
-        xb = min(box_a[2], box_b[2])
-        yb = min(box_a[3], box_b[3])
-
-        inter_area = max(0, xb - xa + 1) * max(0, yb - ya + 1)
-
-        box_a_area = (box_a[2] - box_a[0] + 1) * (box_a[3] - box_a[1] + 1)
-        box_b_area = (box_b[2] - box_b[0] + 1) * (box_b[3] - box_b[1] + 1)
-
-        iou = inter_area / float(box_a_area + box_b_area - inter_area)
-        return iou
+    def intersection_over_union(self, box: "BoundingBox2D", epsilon: float = 1e-5) -> float:
+        return MathUtils.intersection_over_union(self.to_array(True), box.to_array(True), epsilon)
 
     def contains(self, p: vector.Vector2D) -> bool:
         if self.x_min < p.x < self.x_max:
