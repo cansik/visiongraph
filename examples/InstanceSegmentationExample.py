@@ -4,9 +4,9 @@ import visiongraph as vg
 
 def main():
     pipeline = vg.create_graph(name="Instance Segmentation", handle_signals=True) \
-        .apply(ssd=vg.sequence(vg.YolcatEstimator.create()),
+        .apply(ssd=vg.sequence(vg.YOLOv8SegmentationEstimator.create()),
                image=vg.passthrough()) \
-        .then(vg.ResultAnnotator(image="image"), vg.ImagePreview()) \
+        .then(vg.ResultAnnotator(), vg.ImagePreview()) \
         .build()
     pipeline.configure(args)
 

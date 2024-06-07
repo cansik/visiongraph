@@ -289,6 +289,8 @@ try:
     from .estimator.spatial.segmentation.MediaPipeSelfieSegmentation import SelfieSegmentationModel
 except ModuleNotFoundError as ex:
     logging.info(f"Module SelfieSegmentationModel not found")
+from .estimator.spatial.segmentation.YOLOv8SegmentationEstimator import YOLOv8SegmentationConfig
+from .estimator.spatial.segmentation.YOLOv8SegmentationEstimator import YOLOv8SegmentationEstimator
 try:
     from .estimator.spatial.segmentation.YolactEstimator import YolactConfig
 except ModuleNotFoundError as ex:
@@ -496,6 +498,7 @@ from .util.MathUtils import constrain
 from .util.MathUtils import intersection_over_union
 from .util.MathUtils import map_value
 from .util.MathUtils import rotate_2d
+from .util.MathUtils import sigmoid
 from .util.MathUtils import transform_coordinates
 from .util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d
 from .util.MediaPipeUtils import mediapipe_landmarks_to_vector4d

@@ -2,6 +2,7 @@ import math
 from typing import Optional, Tuple, Sequence
 
 import cv2
+import numpy as np
 
 
 def transform_coordinates(x: float, y: float, rotate: Optional[int], flip: Optional[int]) -> Tuple[float, float]:
@@ -104,3 +105,7 @@ def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: flo
     # RATIO OF AREA OF OVERLAP OVER COMBINED AREA
     iou = area_overlap / (area_combined + epsilon)
     return iou
+
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))

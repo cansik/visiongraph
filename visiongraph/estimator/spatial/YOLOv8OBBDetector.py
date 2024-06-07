@@ -4,7 +4,7 @@ import numpy as np
 
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.DOTA import DOTA_v1_0
-from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector, R
+from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
@@ -21,10 +21,6 @@ class YOLOv8OBBConfig(Enum):
 
 
 class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
-
-    def _decode_prediction(self, prediction: np.ndarray, score: float) -> R:
-        # not used because process method is directly overwritten
-        pass
 
     def process(self, image: np.ndarray) -> ResultList[OrientedObjectDetectionResult]:
         output = self.engine.process(image)
