@@ -1,9 +1,10 @@
 # base packages
 wheel
-opencv-python~=4.9.0
+opencv-python~=4.7.0; python_version <= "3.9"
+opencv-python~=4.9.0; python_version > "3.9"
 requests
 tqdm
-vector~=1.0.0
+vector~=1.4.0
 scipy
 filterpy
 
@@ -16,24 +17,24 @@ pyk4a-bundle~=1.3.0.2; platform_system == "Linux"
 pyk4a-bundle~=1.5; platform_system == "Windows"
 
 # extra depthai
-depthai~=2.25
+depthai~=2.26
 
 # extra openvino
-openvino~=2024.0.0
+openvino~=2024.1.0
 
 # extra mediapipe
-mediapipe~=0.10.9.0
+mediapipe~=0.10.14
 
 # extra onnx
-onnxruntime~=1.17.0
+onnxruntime~=1.18.0
 
 # extra onnx-gpu
-onnxruntime~=1.17.1; platform_system == "Darwin"
-onnxruntime-gpu~=1.17.1; platform_system != "Darwin"
+onnxruntime~=1.18.0; platform_system == "Darwin"
+onnxruntime-gpu~=1.18.0; platform_system != "Darwin"
 
 # extra onnx-directml
-onnxruntime~=1.17.1; platform_system == "Darwin" or platform_system == "Linux"
-onnxruntime-directml~=1.17.1; platform_system == "Windows"
+onnxruntime~=1.18.0; platform_system == "Darwin" or platform_system == "Linux"
+onnxruntime-directml~=1.18.0; platform_system == "Windows"
 
 # extra media
 moviepy
