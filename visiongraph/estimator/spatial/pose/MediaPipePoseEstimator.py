@@ -5,13 +5,12 @@ import cv2
 import mediapipe as mp
 import numpy as np
 
-from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
 from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d
-from visiongraph.util.VectorUtils import list_of_vector4D
 
 _mp_pose = mp.solutions.pose
 
