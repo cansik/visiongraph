@@ -14,14 +14,18 @@ jobs:
             host: windows-latest
             args:
 
-          - name: macos
+          - name: macos-intel
             host: macos-12
+            args:
+
+          - name: macos-silicon
+            host: macos-14
             args:
 
           - name: ubuntu
             host: ubuntu-latest
             args:
-        python-version: [ '3.9', '3.10', '3.11' ]
+        python-version: [ '3.10', '3.11' ]
 
     runs-on: ${{ matrix.os.host }}
 
@@ -39,6 +43,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           pip install --upgrade pip
+          pip cache purge
           pip install -r dev-requirements.txt
           pip install .[all]
 
