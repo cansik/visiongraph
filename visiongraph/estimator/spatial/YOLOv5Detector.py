@@ -1,10 +1,10 @@
 from enum import Enum
-from typing import List, Optional
+from typing import Tuple
 
-from visiongraph.data.Asset import Asset
+import numpy as np
+
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
-from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 
 
@@ -17,19 +17,15 @@ class YOLOv5Config(Enum):
 
 
 class YOLOv5Detector(UltralyticsYOLODetector):
-    def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
-                 nms: bool = True, nms_threshold: float = 0.5,
-                 nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
-        super().__init__(*assets,
-                         labels=labels,
-                         min_score=min_score,
-                         nms=nms,
-                         nms_threshold=nms_threshold,
-                         nms_eta=nms_eta,
-                         nms_top_k=nms_top_k,
-                         engine=engine)
-        self.transpose_result = False
+
+    def _filter_predictions(self, predictions: np.ndarray, min_score: float):
+        valid_predictions = np.where(predictions[:, 4] > min_score)
+        predictions = predictions[valid_predictions]
+        scores = predictions[:, 4]
+        return predictions, scores
+
+    def _unpack_box_prediction(self, prediction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        return prediction[0:4], prediction[5:]
 
     @staticmethod
     def create(config: YOLOv5Config = YOLOv5Config.YOLOv5_S) -> "YOLOv5Detector":

@@ -7,13 +7,14 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanDetector, CrowdHumanConfig
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
-from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector, UltralyticsYOLOConfig
 from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector, YOLOv5Config
+from visiongraph.estimator.spatial.YOLOv8Detector import YOLOv8Detector, YOLOv8Config
+from visiongraph.estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBConfig
+from visiongraph.estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.tracker.FlateTracker import FlateTracker
-from visiongraph.tracker.MotpyTracker import MotpyTracker
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 
 
@@ -23,7 +24,10 @@ class ObjectDetectionExample(BaseGraph):
         super().__init__()
         self.input = input
         self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
-        self.network = UltralyticsYOLODetector.create(UltralyticsYOLOConfig.YOLOv8_N)
+
+        self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_N)
+        # self.network = YOLOv5Detector.create(YOLOv5Config.YOLOv5_N)
+        # self.network = YOLOv8OBBDetector.create(YOLOv8OBBConfig.YOLOv8_OBB_N)
 
         if sliding_window:
             self.network = SlidingWindowEstimator(

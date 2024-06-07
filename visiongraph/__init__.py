@@ -91,7 +91,6 @@ except ModuleNotFoundError as ex:
     logging.info(f"Module SSDDetector not found")
 from .estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
 from .estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
-from .estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLOConfig
 from .estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 try:
     from .estimator.spatial.YOLODetector import YOLOArchitecture
@@ -108,6 +107,10 @@ except ModuleNotFoundError as ex:
 from .estimator.spatial.YOLOXE2EDetector import YOLOXE2EDetector
 from .estimator.spatial.YOLOv5Detector import YOLOv5Config
 from .estimator.spatial.YOLOv5Detector import YOLOv5Detector
+from .estimator.spatial.YOLOv8Detector import YOLOv8Config
+from .estimator.spatial.YOLOv8Detector import YOLOv8Detector
+from .estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBConfig
+from .estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBDetector
 try:
     from .estimator.spatial.camera.ArUcoCameraPoseEstimator import ArUcoCameraPoseEstimator
 except ModuleNotFoundError as ex:
@@ -413,6 +416,7 @@ from .result.spatial.CrowdHumanResult import CrowdHumanResult
 from .result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 from .result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from .result.spatial.ObjectDetectionResult import ObjectDetectionResult
+from .result.spatial.OrientedObjectDetectionResult import OrientedObjectDetectionResult
 from .result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from .result.spatial.face.BlazeFace import BlazeFace
 try:
