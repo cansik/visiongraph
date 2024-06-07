@@ -11,7 +11,7 @@ vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 The main goal is to implement a platform independent and high performance framework for day-to-day computer vision tasks.
 
 ## Installation
-Visiongraph supports python `3.9` and `3.10`. Other versions might work as well but are not officially supported.
+Visiongraph supports python `3.10` and `3.11`. Other versions might work as well but are not officially supported.
 
 To install visiongraph with all dependencies call [pip](https://pypi.org/project/pip/) like this:
 
