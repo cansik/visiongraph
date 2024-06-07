@@ -1,8 +1,8 @@
 import unittest
 
 import cv2
+
 import visiongraph as vg
-from visiongraph.util import OSUtils
 
 
 class SegmentationEstimationTests(unittest.TestCase):
@@ -29,6 +29,9 @@ class SegmentationEstimationTests(unittest.TestCase):
 
     def test_yolact_segmentation(self):
         self._test_model(vg.YolcatEstimator.create(vg.YolactConfig.YolactEdge_MobileNetV2_550))
+
+    def test_ultralytics_yolov8_segmentation_s(self):
+        self._test_model(vg.YOLOv8SegmentationEstimator.create(vg.YOLOv8SegmentationConfig.YOLOv8_SEG_S))
 
     def test_modnet_segmentation(self):
         self._test_model(vg.ModNetEstimator.create())

@@ -8,6 +8,7 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine
+from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
@@ -25,7 +26,7 @@ class YOLOv8SegmentationConfig(Enum):
     YOLOv8_SEG_X = RepositoryAsset("yolov8x-seg.onnx"), COCO_80_LABELS
 
 
-class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationResult]):
+class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationResult], InstanceSegmentationEstimator):
 
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3, nms: bool = True,
                  nms_threshold: float = 0.5, nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
