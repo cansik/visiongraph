@@ -1,11 +1,13 @@
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, List, Optional, Set
 
 import cv2
 import numpy as np
 
+from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
+from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
@@ -24,6 +26,17 @@ class YOLOv8SegmentationConfig(Enum):
 
 
 class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationResult]):
+
+    def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3, nms: bool = True,
+                 nms_threshold: float = 0.5, nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
+                 engine: InferenceEngine = InferenceEngine.ONNX,
+                 allowed_classes: Optional[Set[int]] = None, mask_threshold: float = 0.5):
+
+        super().__init__(*assets, labels=labels, min_score=min_score, nms=nms, nms_threshold=nms_threshold,
+                         nms_eta=nms_eta, nms_top_k=nms_top_k, engine=engine)
+
+        self.allowed_classes: Optional[Set[int]] = allowed_classes
+        self.mask_threshold = mask_threshold
 
     def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
         predictions = predictions.T
@@ -66,6 +79,12 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
 
         results = ResultList()
         for box, score, class_id, mask in zip(boxes, scores, class_ids, masks):
+
+            # filter classes if necessary
+            if self.allowed_classes is not None:
+                if class_id not in self.allowed_classes:
+                    continue
+
             # process bounding box
             wh = box[2:4]
             xy = box[0:2]
@@ -83,7 +102,7 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
             cropped = cv2.resize(cropped, (iw, ih), interpolation=cv2.INTER_CUBIC)
             cropped = cv2.blur(cropped, blur_size)
 
-            cropped = (cropped > 0.5).astype(np.uint8)
+            cropped = (cropped > self.mask_threshold).astype(np.uint8)
 
             result = InstanceSegmentationResult(class_id, self.labels[class_id], score, cropped, bbox)
             result.map_coordinates(Size2D.from_image(mask), (iw, ih), src_roi=mask_box)
