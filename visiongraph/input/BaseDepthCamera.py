@@ -96,3 +96,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
             if ex.message.startswith("conflicting"):
                 return
             raise ex
+
+    @property
+    def is_playback(self) -> bool:
+        return False
