@@ -56,16 +56,26 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return img
 
     @abstractmethod
+    def pre_process_image(self, image: np.ndarray,
+                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        return image
+
+    @abstractmethod
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         pass
 
     def get_image(self, stream_type: CameraStreamType = CameraStreamType.Color,
-                  post_processed: bool = True) -> Optional[np.ndarray]:
+                  pre_processed: bool = True, post_processed: bool = True) -> Optional[np.ndarray]:
         frame = self.get_raw_image(stream_type)
 
         if frame is None:
             return None
 
+        # apply camera pre-processing
+        if pre_processed:
+            frame = self.pre_process_image(frame, stream_type)
+
+        # apply base camera post-processing
         if post_processed:
             _, frame = self._post_process(0, frame)
             return frame
@@ -74,15 +84,27 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
 
     @property
     def color_image(self) -> Optional[np.ndarray]:
-        return self.get_image(CameraStreamType.Color, True)
+        return self.get_image(CameraStreamType.Color, True, True)
 
     @property
     def depth_image(self) -> Optional[np.ndarray]:
-        return self.get_image(CameraStreamType.Depth, True)
+        return self.get_image(CameraStreamType.Depth, True, True)
 
     @property
     def infrared_image(self) -> Optional[np.ndarray]:
-        return self.get_image(CameraStreamType.Infrared, True)
+        return self.get_image(CameraStreamType.Infrared, True, True)
+
+    @property
+    def raw_color_image(self) -> Optional[np.ndarray]:
+        return self.get_raw_image(CameraStreamType.Color)
+
+    @property
+    def raw_depth_image(self) -> Optional[np.ndarray]:
+        return self.get_raw_image(CameraStreamType.Depth)
+
+    @property
+    def raw_infrared_image(self) -> Optional[np.ndarray]:
+        return self.get_raw_image(CameraStreamType.Infrared)
 
     @staticmethod
     def add_params(parser: ArgumentParser):

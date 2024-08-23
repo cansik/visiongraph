@@ -350,13 +350,31 @@ class AzureKinectInput(BaseDepthCamera):
         calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
 
+    def pre_process_image(self, image: np.ndarray,
+                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self._colorize(image, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
+        elif stream_type == CameraStreamType.Infrared:
+            return self._colorize(image, (self.ir_min_clipping, self.ir_max_clipping), self.ir_color_map)
+
+        return image
+
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
-            return self._last_depth_frame
+            if self.align_frames_to_color:
+                return self.transformed_depth
+            else:
+                return self.device
         elif stream_type == CameraStreamType.Infrared:
-            return self._last_ir_frame
+            if self.align_frames_to_color:
+                return self.transformed_infrared
+            else:
+                return self.infrared
         elif stream_type == CameraStreamType.Color:
-            return self._last_color_frame
+            if self.align_frames_to_depth:
+                return self.transformed_color
+            else:
+                return self.color
 
         return None
 

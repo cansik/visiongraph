@@ -184,9 +184,16 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
             self.device.setIrFloodLightIntensity(value)
             self._ir_flood_light_intensity = value
 
+    def pre_process_image(self, image: np.ndarray,
+                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self._colorize(image, (0, 12000), cv2.COLORMAP_JET)
+
+        return image
+
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
-            return self.depth_map
+            return self.depth_buffer
         elif stream_type == CameraStreamType.Infrared:
             return self._last_ir_frame
         elif stream_type == CameraStreamType.Color:

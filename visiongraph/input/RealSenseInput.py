@@ -347,9 +347,16 @@ class RealSenseInput(BaseDepthCamera):
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array(intrinsics.coeffs[:4])
 
+    def pre_process_image(self, image: np.ndarray,
+                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return np.asanyarray(self.colorizer.colorize(self.depth_frame).get_data())
+
+        return image
+
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
-            return self.depth_map
+            return self.depth_buffer
         elif stream_type == CameraStreamType.Infrared:
             return np.asanyarray(self.frames.get_infrared_frame().get_data())
         elif stream_type == CameraStreamType.Color:

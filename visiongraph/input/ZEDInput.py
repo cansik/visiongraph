@@ -148,9 +148,16 @@ class ZEDInput(BaseDepthCamera):
 
         return str(self.camera.get_camera_information().serial_number)
 
+    def pre_process_image(self, image: np.ndarray,
+                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        if stream_type == CameraStreamType.Depth:
+            return self._colorize(image, (0, 12000), cv2.COLORMAP_JET)
+
+        return image
+
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
         if stream_type == CameraStreamType.Depth:
-            return self.depth_map
+            return self.depth_buffer
         elif stream_type == CameraStreamType.Color:
             return self._last_color_frame
 
