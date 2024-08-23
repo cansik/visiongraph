@@ -364,7 +364,7 @@ class AzureKinectInput(BaseDepthCamera):
             if self.align_frames_to_color:
                 return self.transformed_depth
             else:
-                return self.device
+                return self.depth
         elif stream_type == CameraStreamType.Infrared:
             if self.align_frames_to_color:
                 return self.transformed_infrared
