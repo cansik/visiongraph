@@ -1,11 +1,13 @@
 import os
+from pathlib import Path
+from typing import Union
 
 from visiongraph.data.Asset import Asset
 
 
 class LocalAsset(Asset):
-    def __init__(self, file_path: str):
-        self._file_path = file_path
+    def __init__(self, file_path: Union[str, os.PathLike]):
+        self._file_path = str(Path(file_path))
 
     @property
     def exists(self) -> bool:
