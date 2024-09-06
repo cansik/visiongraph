@@ -159,8 +159,7 @@ class GenerateInitPy(distutils.cmd.Command):
 
         for imp in imports:
             # relative import
-            module = imp.module.replace(self.root_package, "")
-            import_line = f"    from {module} import {imp.name}"
+            import_line = f"    from {imp.module} import {imp.name}"
 
             if imp.optional:
                 line = f"    try:\n    {import_line}\n    except ModuleNotFoundError as ex:\n" \
@@ -176,7 +175,7 @@ class GenerateInitPy(distutils.cmd.Command):
                      "import sys\n"
                      "import logging\n"
                      "from typing import Dict, TYPE_CHECKING\n"
-                     "from .model._LazyImport import _LazyImport\n"
+                     "from visiongraph.model._LazyImport import _LazyImport\n"
                      "\n"
                      "LOGLEVEL = os.environ.get(\"VISIONGRAPH_LOGLEVEL\", \"WARNING\").upper()\n"
                      "logging.basicConfig(level=LOGLEVEL)\n")
@@ -186,8 +185,7 @@ class GenerateInitPy(distutils.cmd.Command):
         lines.append("_visiongraph_imports: Dict[str, _LazyImport] = {")
         for imp in imports:
             # relative import
-            module = imp.module.replace(self.root_package, "")
-            lines.append(f"    \"{imp.name}\": _LazyImport(\"{imp.name}\", \"{module}\", {imp.optional}),")
+            lines.append(f"    \"{imp.name}\": _LazyImport(\"{imp.name}\", \"{imp.module}\", {imp.optional}),")
         lines.append("}")
 
         # append import stub support
@@ -196,13 +194,14 @@ class GenerateInitPy(distutils.cmd.Command):
             "_CURRENT_MODULE = sys.modules[__name__]",
             "",
             "def __getattr__(name):",
-            "    element = _visiongraph_imports[name]",
-            "    return element.attribute",
+            "    attribute = _visiongraph_imports[name].attribute",
+            "    _CURRENT_MODULE.__setattr__(name, attribute)",
+            "    return attribute",
         ]
 
         lines.append("")
 
-        with open(f"{self.root_package}/__init__.py", "w+") as file:
+        with open(f"{self.root_package}/vg/__init__.py", "w+") as file:
             file.write("\n".join(lines))
 
     def initialize_options(self) -> None:
