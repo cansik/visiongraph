@@ -1,7 +1,7 @@
 import cv2
 import vector
 
-import visiongraph as vg
+from visiongraph import vg
 from visiongraph.util import ImageUtils
 
 iw, ih = 224, 224

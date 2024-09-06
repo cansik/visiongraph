@@ -1,6 +1,6 @@
 import argparse
 
-import visiongraph as vg
+from visiongraph import vg
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("VisionGraph Example", description="Undistortion Pipeline")

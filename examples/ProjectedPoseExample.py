@@ -10,7 +10,7 @@ from open3d.cpu.pybind.geometry import TriangleMesh
 from open3d.cpu.pybind.visualization import rendering
 from open3d.visualization import gui
 
-import visiongraph as vg
+from visiongraph import vg
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.input import add_input_step_choices
 

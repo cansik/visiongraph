@@ -3,7 +3,7 @@ from typing import Callable, Optional
 
 import cv2
 
-import visiongraph as vg
+from visiongraph import vg
 
 
 class TestInferenceEngine(unittest.TestCase):

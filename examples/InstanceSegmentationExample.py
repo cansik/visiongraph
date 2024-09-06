@@ -1,6 +1,6 @@
 import argparse
 
-import visiongraph as vg
+from visiongraph import vg
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 
 

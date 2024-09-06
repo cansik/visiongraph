@@ -3,7 +3,7 @@ import unittest
 import cv2
 import pytest
 
-import visiongraph as vg
+from visiongraph import vg
 from visiongraph.util import OSUtils
 
 

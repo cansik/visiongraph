@@ -2,7 +2,7 @@ import time
 
 if False:
     start = time.time()
-    import visiongraph as vg
+    from visiongraph import vg
 
     end = time.time()
 
@@ -22,7 +22,7 @@ for r in range(100000):
     for i, name in enumerate(attribute_names):
         start = time.time()
         # access element
-        import visiongraph as vg
+        from visiongraph import vg
 
         e = vg.__getattribute__(name)
         end = time.time()

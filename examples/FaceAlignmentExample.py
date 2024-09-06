@@ -4,7 +4,7 @@ from typing import List, Optional
 import cv2
 import numpy as np
 
-import visiongraph as vg
+from visiongraph import vg
 
 FACE_KEY = "face"
 

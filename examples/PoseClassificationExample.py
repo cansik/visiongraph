@@ -3,7 +3,7 @@ import argparse
 import cv2
 import numpy as np
 
-import visiongraph as vg
+from visiongraph import vg
 
 pose_data_path = "media/pose_training.npz"
 pose_classifier = vg.FaissKNNClassifier(data_path=pose_data_path)

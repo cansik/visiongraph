@@ -4,7 +4,7 @@ Visiongraph is a high level computer vision framework that includes predefined m
 Here an example on how to start a webcam capture and display the image:
 
 ```python
-import visiongraph as vg
+from visiongraph import vg
 vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 ```
 
@@ -69,6 +69,37 @@ There are even more examples where visiongraph is currently in use:
 ## Documentation
 This documentation is intended to provide an overview of the framework. A full documentation will be available later.
 
+### Import Visiongraph
+There are two ways on how to import visiongraph related objects and classes. The classical way is to use the direct import like this:
+
+```python
+from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
+
+engine = OpenVinoEngine(...)
+```
+
+However, due to the amount of packages and package depth in visiongraph, it is recommended to use the `vg` package:
+
+```python
+from visiongraph import vg
+
+engine = vg.OpenVinoEngine(...)
+```
+
+#### Optional Imports
+
+`vg` allows for direct access of all members of visiongraph and even handles optional imports. If an import is not available, a stub-object is returned which throws an error on accessing its attributes. The reason behind this is, that it is possible to work with objects types, which would not be accessable on certain systems (like MacOS):
+
+```python
+from visiongraph import vg
+
+device = ...
+
+if isinstance(device, vg.AzureKinectInput):
+    # would always be "False" on MacOS
+    print("This is a Kinect")
+```
+
 ### Graph
 The core component of visiongraph is the [BaseGraph](https://github.com/cansik/visiongraph/blob/main/visiongraph/BaseGraph.py) class. It contains and handles all the nodes of the graph. A BaseGraph can run on the same thread as called or a new thread or process. The nodes in the graph are just a list, the graph itself is created by nesting nodes into each other.
 
@@ -79,15 +110,16 @@ A [GraphNode](https://github.com/cansik/visiongraph/blob/main/visiongraph/GraphN
 The graph builder helps to create new graphs on a single line in python. It creates a [VisionGraph](https://github.com/cansik/visiongraph/blob/main/visiongraph/VisionGraph.py) object which is a child of the BaseGraph. The following code snippet is an example of the graph builder which creates a smooth pose estimation graph.
 
 ```python
-import visiongraph as vg
+from visiongraph import vg
 
-graph = (vg.create_graph(name="Smooth Pose Estimation",
-                         input_node=vg.VideoCaptureInput(0),
-                         handle_signals=True)
-         .apply(ssd=vg.sequence(vg.OpenPoseEstimator.create(), vg.MotpyTracker(), vg.LandmarkSmoothFilter()),
-                image=vg.passthrough())
-         .then(vg.ResultAnnotator(image="image"), vg.ImagePreview())
-         )
+graph = (
+    vg.create_graph(name="Smooth Pose Estimation",
+                    input_node=vg.VideoCaptureInput(0),
+                    handle_signals=True)
+    .apply(ssd=vg.sequence(vg.OpenPoseEstimator.create(), vg.MotpyTracker(), vg.LandmarkSmoothFilter()),
+           image=vg.passthrough())
+    .then(vg.ResultAnnotator(image="image"), vg.ImagePreview())
+)
 graph.open()
 ```
 
@@ -126,13 +158,8 @@ set VISIONGRAPH_LOGLEVEL=INFO
 $env:VISIONGRAPH_LOGLEVEL="INFO"
 ```
 
-## Roadmap
-Next roadmap points:
-
-- Async input and network model (run when ready)
-
 ## About
-Copyright (c) 2023 Florian Bruggisser
+Copyright (c) 2024 Florian Bruggisser
 
 ### Included Libraries
 

@@ -1,5 +1,5 @@
 # simplest vision graph example
-import visiongraph as vg
+from visiongraph import vg
 
 if __name__ == "__main__":
     graph = vg.create_graph(name="Object Detection", input_node=vg.VideoCaptureInput(1), handle_signals=True) \

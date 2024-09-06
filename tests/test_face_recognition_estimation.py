@@ -2,7 +2,7 @@ import unittest
 
 import cv2
 
-import visiongraph as vg
+from visiongraph import vg
 
 
 class FaceRecognitionEstimationTests(unittest.TestCase):

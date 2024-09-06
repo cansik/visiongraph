@@ -283,7 +283,7 @@ long_description = (current_dir / "README.md").read_text()
 
 setup(
     name="visiongraph",
-    version="0.1.61",
+    version="1.0.0",
     packages=required_packages,
     url="https://github.com/cansik/visiongraph",
     license="MIT License",
@@ -295,7 +295,7 @@ setup(
     install_requires=install_required,
     extras_require=extras_required,
     classifiers=[
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "Intended Audience :: Education",
         "Intended Audience :: Science/Research",

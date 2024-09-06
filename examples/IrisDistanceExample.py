@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 import vector
 
-import visiongraph as vg
+from visiongraph import vg
 
 
 class IrisDistanceApp:

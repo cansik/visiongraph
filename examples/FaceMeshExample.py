@@ -1,6 +1,6 @@
 import argparse
 
-import visiongraph as vg
+from visiongraph import vg
 
 
 def send_osc(faces: vg.ResultList[vg.BlazeFaceMesh]) -> vg.ResultList[vg.BlazeFaceMesh]:

@@ -2,7 +2,7 @@ import time
 
 import cv2
 
-import visiongraph as vg
+from visiongraph import vg
 
 
 def main():

@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-import visiongraph as vg
+from visiongraph import vg
 
 if __name__ == "__main__":
     face_mesh = vg.MediaPipeFaceMeshEstimator()

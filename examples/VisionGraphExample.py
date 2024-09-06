@@ -1,7 +1,7 @@
 import argparse
 from typing import List, Optional
 
-import visiongraph as vg
+from visiongraph import vg
 
 pipeline: Optional[vg.VisionGraph] = None
 
