@@ -10,7 +10,7 @@ from visiongraph.result.spatial.hand.HandDetectionResult import HandDetectionRes
 OutputType = TypeVar('OutputType', bound=HandDetectionResult)
 
 
-class FaceDetector(ObjectDetector[OutputType], ABC):
+class HandDetector(ObjectDetector[OutputType], ABC):
     @abstractmethod
     def process(self, data: np.ndarray) -> ResultList[OutputType]:
         pass
