@@ -194,6 +194,8 @@ class GenerateInitPy(distutils.cmd.Command):
             "_CURRENT_MODULE = sys.modules[__name__]",
             "",
             "def __getattr__(name):",
+            "    if name not in _visiongraph_imports:",
+            "        raise AttributeError(f\"'vg' object has no attribute '{name}'\")",
             "    attribute = _visiongraph_imports[name].attribute",
             "    _CURRENT_MODULE.__setattr__(name, attribute)",
             "    return attribute",
