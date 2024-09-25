@@ -1,12 +1,19 @@
-# ![image](https://user-images.githubusercontent.com/5220162/192808079-2043fb41-8637-4697-8286-985bc5340f37.png) Visiongraph [![PyPI](https://img.shields.io/pypi/v/visiongraph)](https://pypi.org/project/visiongraph/)
+# ![image](https://user-images.githubusercontent.com/5220162/192808079-2043fb41-8637-4697-8286-985bc5340f37.png) Visiongraph 
+
+[![PyPI](https://img.shields.io/pypi/v/visiongraph)](https://pypi.org/project/visiongraph/)
+[![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/visiongraph/visiongraph.html#documentation)
+
 Visiongraph is a high level computer vision framework that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://github.com/openvinotoolkit/openvino) and [Google MediaPipe](https://github.com/google-ai-edge/mediapipe).
 
 Here an example on how to start a webcam capture and display the image:
 
 ```python
 from visiongraph import vg
+
 vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 ```
+
+Get started with `visiongraph` by reading the **[documentation](https://cansik.github.io/visiongraph/visiongraph.html#documentation)**.
 
 ## Installation
 Visiongraph supports python `3.10` and `3.11`. Other versions might work as well but are not officially supported.
@@ -47,7 +54,7 @@ There are even more examples where visiongraph is currently in use:
 - [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over spout or syphon.
 - [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph
 
-### Development
+## Development
 To develop on visiograph it is recommended to clone this repository and install the dependencies like this:
 
 ```bash
