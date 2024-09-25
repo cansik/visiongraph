@@ -1,5 +1,5 @@
 # ![image](https://user-images.githubusercontent.com/5220162/192808079-2043fb41-8637-4697-8286-985bc5340f37.png) Visiongraph [![PyPI](https://img.shields.io/pypi/v/visiongraph)](https://pypi.org/project/visiongraph/)
-Visiongraph is a high level computer vision framework that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html) and [Google MediaPipe](https://google.github.io/mediapipe/).
+Visiongraph is a high level computer vision framework that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://github.com/openvinotoolkit/openvino) and [Google MediaPipe](https://github.com/google-ai-edge/mediapipe).
 
 Here an example on how to start a webcam capture and display the image:
 
@@ -7,8 +7,6 @@ Here an example on how to start a webcam capture and display the image:
 from visiongraph import vg
 vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 ```
-
-The main goal is to implement a platform independent and high performance framework for day-to-day computer vision tasks.
 
 ## Installation
 Visiongraph supports python `3.10` and `3.11`. Other versions might work as well but are not officially supported.
@@ -19,27 +17,10 @@ To install visiongraph with all dependencies call [pip](https://pypi.org/project
 pip install "visiongraph[all]"
 ```
 
-🚨 *Please note that visiongraph is in an early alpha phase and the API will still undergo changes.*
-
 It is also possible to only install certain packages depending on your needs:
 
 ```bash
 pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba, opencv-contrib]"
-```
-
-### Development
-To develop visiograph itself it is recommended to clone this repository and install the dependencies like this:
-
-```bash
-# in the visiongraph directory
-pip install -e ".[all]"
-```
-
-### Build
-To build a new wheel package of visiongraph run the following command in the root directory.
-
-```bash
-python setup.py bdist_wheel
 ```
 
 ## Examples
@@ -66,102 +47,34 @@ There are even more examples where visiongraph is currently in use:
 - [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over spout or syphon.
 - [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph
 
-## Documentation
-This documentation is intended to provide an overview of the framework. A full documentation will be available later.
-
-### Import Visiongraph
-There are two ways on how to import visiongraph related objects and classes. The classical way is to use the direct import like this:
-
-```python
-from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
-
-engine = OpenVinoEngine(...)
-```
-
-However, due to the amount of packages and package depth in visiongraph, it is recommended to use the `vg` package:
-
-```python
-from visiongraph import vg
-
-engine = vg.OpenVinoEngine(...)
-```
-
-#### Optional Imports
-
-`vg` allows for direct access of all members of visiongraph and even handles optional imports. If an import is not available, a stub-object is returned which throws an error on accessing its attributes. The reason behind this is, that it is possible to work with objects types, which would not be accessable on certain systems (like MacOS):
-
-```python
-from visiongraph import vg
-
-device = ...
-
-if isinstance(device, vg.AzureKinectInput):
-    # would always be "False" on MacOS
-    print("This is a Kinect")
-```
-
-### Graph
-The core component of visiongraph is the [BaseGraph](https://github.com/cansik/visiongraph/blob/main/visiongraph/BaseGraph.py) class. It contains and handles all the nodes of the graph. A BaseGraph can run on the same thread as called or a new thread or process. The nodes in the graph are just a list, the graph itself is created by nesting nodes into each other.
-
-#### Graph Node
-A [GraphNode](https://github.com/cansik/visiongraph/blob/main/visiongraph/GraphNode.py) is a single step in the graph. It has a input and output type and processes the data within the `process()` method.
-
-#### Graph Builder
-The graph builder helps to create new graphs on a single line in python. It creates a [VisionGraph](https://github.com/cansik/visiongraph/blob/main/visiongraph/VisionGraph.py) object which is a child of the BaseGraph. The following code snippet is an example of the graph builder which creates a smooth pose estimation graph.
-
-```python
-from visiongraph import vg
-
-graph = (
-    vg.create_graph(name="Smooth Pose Estimation",
-                    input_node=vg.VideoCaptureInput(0),
-                    handle_signals=True)
-    .apply(ssd=vg.sequence(vg.OpenPoseEstimator.create(), vg.MotpyTracker(), vg.LandmarkSmoothFilter()),
-           image=vg.passthrough())
-    .then(vg.ResultAnnotator(image="image"), vg.ImagePreview())
-)
-graph.open()
-```
-
-### Input
-Supported are image, video, webcam, RealSense and Azure Kinect input types.
-
-### Estimator
-Usually an estimator is a graph node which takes an image as an input and estimates an information about the content. This could be a pose estimation or a face detection. It is also possible to have a transformation of the image, for example de-blurring it or estimate the depth map.
-
-### Object Detection Tracker
-Object detection trackers allow a detected object to be assigned an id that remains the same across successive frames.
-
-### DSP (Digital Signal Processing)
-To filter noisy estimations or inputs, the DSP package provides different filters which can be applied directly into a graph.
-
-### Recorder
-To record incoming frames or annotated results, multiple frame recorders are provided.
-
-### Assets
-Most estimators use big model and weight descriptions for their neural networks. To keep visiongraph small and easy to install, these assets are hosted externally on github. Visiongraph provides a system to directly download and cache these files.
-
-### Argparse
-To support rapid prototyping many graph and estimator options are already provided to add to the argparse parser.
-
-### Logging
-To enable logging for visiongraph imports please set the following environment variable:
+### Development
+To develop on visiograph it is recommended to clone this repository and install the dependencies like this:
 
 ```bash
-# zsh / bash
-export VISIONGRAPH_LOGLEVEL=INFO
-
-# cmd
-set VISIONGRAPH_LOGLEVEL=INFO
-
-# powershell
-$env:VISIONGRAPH_LOGLEVEL="INFO"
+# in the visiongraph directory
+pip install -e ".[all]"
 ```
 
-## About
-Copyright (c) 2024 Florian Bruggisser
+### Build
+To build a new wheel package of visiongraph run the following command in the root directory.
 
-### Included Libraries
+```bash
+python setup.py bdist_wheel
+```
+
+### Docs
+
+To generate the documentation, use the following commands.
+
+```bash
+# create documentation into "./docs
+python setup.py doc
+
+# launch pdoc webserver
+python setup.py doc --launch
+```
+
+## Dependencies
 
 Parts of these libraries are directly included and adapted to work with visiongraph.
 
@@ -198,3 +111,6 @@ wheel                 MIT License
 ```
 
 For more information about the dependencies have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
+
+## About
+Copyright (c) 2024 Florian Bruggisser
