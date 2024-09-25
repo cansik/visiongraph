@@ -6,13 +6,20 @@ from typing import Set
 from setuptools import find_packages
 from setuptools import setup
 
+from scripts.generate_doc import GenerateDoc
 from scripts.generate_init import GenerateInitPy
 
 # define required packages
-required_packages = find_packages(exclude=["tests", "examples", "snippets", "assets", "tools"])
+required_packages: List[str] = find_packages(exclude=["tests", "examples", "snippets", "assets", "tools"])
 
 BASE_NAME = "__required__"
 ALL_NAME = "all"
+
+NAME = "visiongraph"
+PACKAGE_NAME = NAME
+PACKAGE_VERSION = "1.0.0b3"
+PACKAGE_URL = "https://github.com/cansik/visiongraph"
+PACKAGE_DOC_MODULES = ["visiongraph"]
 
 
 def parse_requirements():
@@ -78,11 +85,18 @@ install_required, extras_required = parse_requirements()
 current_dir = Path(__file__).parent
 long_description = (current_dir / "README.md").read_text()
 
+# copy values over to generate doc
+GenerateDoc.PACKAGE_NAME = PACKAGE_NAME
+GenerateDoc.PACKAGE_VERSION = PACKAGE_VERSION
+GenerateDoc.PACKAGE_URL = PACKAGE_URL
+GenerateDoc.PACKAGE_DOC_MODULES = PACKAGE_DOC_MODULES
+GenerateDoc.REQUIRED_PACKAGES = required_packages
+
 setup(
-    name="visiongraph",
-    version="1.0.0b3",
+    name=PACKAGE_NAME,
+    version=PACKAGE_VERSION,
     packages=required_packages,
-    url="https://github.com/cansik/visiongraph",
+    url=PACKAGE_URL,
     license="MIT License",
     author="Florian Bruggisser",
     author_email="github@broox.ch",
@@ -110,6 +124,7 @@ setup(
     ],
     cmdclass={
         "generate_init": GenerateInitPy,
+        "doc": GenerateDoc
     },
     entry_points={
         "console_scripts": [
