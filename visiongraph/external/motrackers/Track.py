@@ -47,7 +47,8 @@ class Track:
         self.lost = 0
         self.age = 0
 
-        self.update(frame_id, bbox, detection_confidence, class_id=class_id, lost=lost, iou_score=iou_score, reference=reference, **kwargs)
+        self.update(frame_id, bbox, detection_confidence, class_id=class_id,
+                    lost=lost, iou_score=iou_score, reference=reference, **kwargs)
 
         if data_output_format == 'raw':
             self.output = self.get_raw

@@ -39,7 +39,8 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.depth_median_filter: dai.MedianFilter = dai.MedianFilter.KERNEL_7x7
         self.depth_left_right_check: bool = True  # better handling for occlusions
         self.depth_subpixel: bool = False  # better accuracy for longer distance, fractional disparity 32-levels
-        self.depth_extended_disparity: bool = False  # closer-in minimum depth, disparity range is doubled (from 95 to 190)
+        # closer-in minimum depth, disparity range is doubled (from 95 to 190)
+        self.depth_extended_disparity: bool = False
 
         self.frame_alignment: OakDFrameAlignment = OakDFrameAlignment.Color
 

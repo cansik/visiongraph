@@ -42,7 +42,7 @@ class OpenvinoAdapter(ModelAdapter):
     Works with OpenVINO model
     '''
 
-    def __init__(self, core, model_path, weights_path=None, model_parameters = {}, device='CPU', plugin_config=None, max_num_requests=0):
+    def __init__(self, core, model_path, weights_path=None, model_parameters={}, device='CPU', plugin_config=None, max_num_requests=0):
         self.core = core
         self.model_path = model_path
         self.device = device
@@ -68,7 +68,8 @@ class OpenvinoAdapter(ModelAdapter):
             # +1 to use it as a buffer of the pipeline
             self.async_queue = AsyncInferQueue(self.compiled_model, len(self.async_queue) + 1)
 
-        log.info('The model {} is loaded to {}'.format("from buffer" if self.model_from_buffer else self.model_path, self.device))
+        log.info('The model {} is loaded to {}'.format(
+            "from buffer" if self.model_from_buffer else self.model_path, self.device))
         self.log_runtime_settings()
 
     def log_runtime_settings(self):
@@ -91,7 +92,8 @@ class OpenvinoAdapter(ModelAdapter):
         for input in self.model.inputs:
             input_shape = get_input_shape(input)
             input_layout = self.get_layout_for_input(input, input_shape)
-            inputs[input.get_any_name()] = Metadata(input.get_names(), input_shape, input_layout, input.get_element_type().get_type_name())
+            inputs[input.get_any_name()] = Metadata(input.get_names(), input_shape,
+                                                    input_layout, input.get_element_type().get_type_name())
         inputs = self._get_meta_from_ngraph(inputs)
         return inputs
 
@@ -110,14 +112,15 @@ class OpenvinoAdapter(ModelAdapter):
         outputs = {}
         for output in self.model.outputs:
             output_shape = output.partial_shape.get_min_shape() if self.model.is_dynamic() else output.shape
-            outputs[output.get_any_name()] = Metadata(output.get_names(), list(output_shape), precision=output.get_element_type().get_type_name())
+            outputs[output.get_any_name()] = Metadata(output.get_names(), list(output_shape),
+                                                      precision=output.get_element_type().get_type_name())
         outputs = self._get_meta_from_ngraph(outputs)
         return outputs
 
     def reshape_model(self, new_shape):
         new_shape = {name: PartialShape(
             [Dimension(dim) if not isinstance(dim, tuple) else Dimension(dim[0], dim[1])
-            for dim in shape]) for name, shape in new_shape.items()}
+             for dim in shape]) for name, shape in new_shape.items()}
         self.model.reshape(new_shape)
 
     def get_raw_result(self, request):

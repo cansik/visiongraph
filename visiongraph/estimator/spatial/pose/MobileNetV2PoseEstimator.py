@@ -206,7 +206,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
                     if found:
                         personwiseKeypoints[person_idx][indexB] = partBs[i]
                         personwiseKeypoints[person_idx][-1] += keypoints_list[partBs[i].astype(int), 2] + \
-                                                               valid_pairs[k][i][2]
+                            valid_pairs[k][i][2]
 
                     elif not found and k < 17:
                         row = -1 * np.ones(19)

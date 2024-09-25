@@ -14,6 +14,7 @@
  limitations under the License.
 """
 
+
 class ConfigurableValueError(ValueError):
     def __init__(self, message, prefix=None):
         self.message = f'{prefix}: {message}' if prefix else message
@@ -63,7 +64,8 @@ class NumericalValue(BaseValue):
             return errors
         if len(self.choices):
             if value not in self.choices:
-                errors.append(ConfigurableValueError(f'Incorrect value {value}: out of allowable list - {self.choices}'))
+                errors.append(ConfigurableValueError(
+                    f'Incorrect value {value}: out of allowable list - {self.choices}'))
         if self.min is not None and value < self.min:
             errors.append(ConfigurableValueError(f'Incorrect value {value}: less than minimum allowable {self.min}'))
         if self.max is not None and value > self.max:
@@ -76,6 +78,7 @@ class NumericalValue(BaseValue):
         if self.choices:
             info += f"\nAppropriate values are {self.choices}"
         return info
+
 
 class StringValue(BaseValue):
     def __init__(self, choices=(), **kwargs):
@@ -91,7 +94,7 @@ class StringValue(BaseValue):
             return errors
         if not isinstance(value, str):
             errors.append(ConfigurableValueError(f'Incorrect value type {type(value)}: should be "str"'))
-        if len(self.choices)>0 and value not in self.choices:
+        if len(self.choices) > 0 and value not in self.choices:
             errors.append(ConfigurableValueError(f'Incorrect value {value}: out of allowable list - {self.choices}'))
         return errors
 
@@ -137,7 +140,8 @@ class ListValue(BaseValue):
             else:
                 for i, element in enumerate(value):
                     if not isinstance(element, self.value_type):
-                        errors.append(ConfigurableValueError(f'Incorrect #{i} element type - {type(element)}: should be {self.value_type}'))
+                        errors.append(ConfigurableValueError(
+                            f'Incorrect #{i} element type - {type(element)}: should be {self.value_type}'))
         return errors
 
 

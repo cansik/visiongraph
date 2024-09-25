@@ -71,7 +71,8 @@ def main():
             # different networks
             # vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
             # vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(), landmarks=vg.RegressionLandmarkEstimator()),
-            vg.SpatialCascadeEstimator(vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range), landmarks=vg.RegressionLandmarkEstimator()),
+            vg.SpatialCascadeEstimator(vg.MediaPipeFaceDetector(
+                vg.MediaPipeFaceModel.Full_Range), landmarks=vg.RegressionLandmarkEstimator()),
             # vg.MediaPipeFaceMeshEstimator(),
             vg.custom(extract_landmarks),
             vg.CentroidTracker(),

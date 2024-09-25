@@ -38,9 +38,9 @@ class OVMSAdapter(ModelAdapter):
         "DT_FLOAT": "FP32",
         "DT_UINT32": "U32",
         "DT_INT32": "I32",
-        "DT_HALF" : "FP16",
+        "DT_HALF": "FP16",
         "DT_INT16": "I16",
-        "DT_INT8" : "I8",
+        "DT_INT8": "I8",
         "DT_UINT8": "U8",
     }
 
@@ -50,9 +50,9 @@ class OVMSAdapter(ModelAdapter):
         "DT_FLOAT": np.float32,
         "DT_UINT32": np.uint32,
         "DT_INT32": np.int32,
-        "DT_HALF" : np.float16,
+        "DT_HALF": np.float16,
         "DT_INT16": np.int16,
-        "DT_INT8" : np.int8,
+        "DT_INT8": np.int8,
         "DT_UINT8": np.uint8,
     }
 
@@ -73,7 +73,6 @@ class OVMSAdapter(ModelAdapter):
             return service_url, model_spec[0], int(model_spec[1])
         else:
             raise ValueError("invalid --model option format")
-
 
     def _is_model_available(self):
         try:
@@ -113,7 +112,7 @@ class OVMSAdapter(ModelAdapter):
         if not self._is_model_available():
             model_version_str = "latest" if self.model_version == 0 else str(self.model_version)
             raise RuntimeError("Requested model: {}, version: {}, has not been found or is not "
-                "in available state".format(self.model_name, model_version_str))
+                               "in available state".format(self.model_name, model_version_str))
 
         self.metadata = self.client.get_model_metadata(model_name=self.model_name,
                                                        model_version=self.model_version)
@@ -125,13 +124,15 @@ class OVMSAdapter(ModelAdapter):
         inputs = {}
         for name, meta in self.metadata["inputs"].items():
             input_layout = Layout.from_shape(meta["shape"])
-            inputs[name] = Metadata(set(name), meta["shape"], input_layout, self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
+            inputs[name] = Metadata(set(name), meta["shape"], input_layout,
+                                    self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
         return inputs
 
     def get_output_layers(self):
         outputs = {}
         for name, meta in self.metadata["outputs"].items():
-            outputs[name] = Metadata(names=set(name), shape=meta["shape"], precision=self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
+            outputs[name] = Metadata(names=set(name), shape=meta["shape"],
+                                     precision=self.tf2ov_precision.get(meta["dtype"], meta["dtype"]))
         return outputs
 
     def reshape_model(self, new_shape):

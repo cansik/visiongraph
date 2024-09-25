@@ -13,6 +13,7 @@ from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionRes
 
 BOXES_NAME = "boxes"
 
+
 class OpenVinoFaceConfig(Enum):
     MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8")
     MobileNetV2_256_FP16 = RepositoryAsset.openVino("face-detection-0200-fp16")

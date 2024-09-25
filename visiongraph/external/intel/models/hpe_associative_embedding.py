@@ -18,7 +18,6 @@ import numpy as np
 from scipy.optimize import linear_sum_assignment
 
 
-
 from .image_model import ImageModel
 from .types import NumericalValue, StringValue
 from .utils import resize_image
@@ -49,7 +48,8 @@ class HpeAssociativeEmbedding(ImageModel):
         self.w = (input_width + self.size_divisor - 1) // self.size_divisor * self.size_divisor
         default_input_shape = self.inputs[self.image_blob_name].shape
         input_shape = {self.image_blob_name: [self.n, self.c, self.h, self.w]}
-        self.logger.debug('\tReshape model from {} to {}'.format(default_input_shape, input_shape[self.image_blob_name]))
+        self.logger.debug('\tReshape model from {} to {}'.format(
+            default_input_shape, input_shape[self.image_blob_name]))
         super().reshape(input_shape)
 
         if preload:

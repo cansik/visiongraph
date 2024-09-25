@@ -88,7 +88,8 @@ class DetectionModel(ImageModel):
         if self.resize_type == 'fit_to_window_letterbox':
             detections = resize_detections_letterbox(detections, original_shape[1::-1], resized_shape[1::-1])
         elif self.resize_type == 'fit_to_window':
-            detections = resize_detections_with_aspect_ratio(detections, original_shape[1::-1], resized_shape[1::-1], (self.w, self.h))
+            detections = resize_detections_with_aspect_ratio(
+                detections, original_shape[1::-1], resized_shape[1::-1], (self.w, self.h))
         elif self.resize_type == 'standard':
             detections = resize_detections(detections, original_shape[1::-1])
         else:
@@ -104,6 +105,7 @@ def resize_detections(detections, original_image_size):
         detection.ymax *= original_image_size[1]
     return detections
 
+
 def resize_detections_with_aspect_ratio(detections, original_image_size, resized_image_size, model_input_size):
     scale_x = model_input_size[0] / resized_image_size[0] * original_image_size[0]
     scale_y = model_input_size[1] / resized_image_size[1] * original_image_size[1]
@@ -113,6 +115,7 @@ def resize_detections_with_aspect_ratio(detections, original_image_size, resized
         detection.ymin *= scale_y
         detection.ymax *= scale_y
     return detections
+
 
 def resize_detections_letterbox(detections, original_image_size, resized_image_size):
     scales = [x / y for x, y in zip(resized_image_size, original_image_size)]

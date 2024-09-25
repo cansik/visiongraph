@@ -10,7 +10,6 @@ if __name__ == "__main__":
     eye_classifier = vg.EyeOpenClosedEstimator()
     eye_classifier.setup()
 
-
     def check_eye_closed(image: np.ndarray):
         faces = face_mesh.process(image)
         if len(faces) == 0:
@@ -26,7 +25,6 @@ if __name__ == "__main__":
             print(f"{name}: {result.class_name}")
 
             cv2.imshow(f"ROI {name}", roi)
-
 
     graph = (
         vg.create_graph(name="VisionGraph", input_node=vg.VideoCaptureInput(), handle_signals=True)

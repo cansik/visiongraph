@@ -62,14 +62,15 @@ class OpenPose(ImageModel):
         p = int(np.round(6 / 7 * self.upsample_ratio))
         k = 2 * p + 1
         pooled_heatmap = opset8.max_pool(heatmap, kernel_shape=(k, k), dilations=(1, 1), pads_begin=(p, p), pads_end=(p, p),
-                                     strides=(1, 1), name=self.pooled_heatmaps_blob_name)
+                                         strides=(1, 1), name=self.pooled_heatmaps_blob_name)
         pooled_heatmap.output(0).get_tensor().set_names({self.pooled_heatmaps_blob_name})
         self.model_adapter.model.add_outputs([pooled_heatmap.output(0)])
 
         self.inputs = self.model_adapter.get_input_layers()
         self.outputs = self.model_adapter.get_output_layers()
 
-        self.output_scale = self.inputs[self.image_blob_name].shape[-2] / self.outputs[self.heatmaps_blob_name].shape[-2]
+        self.output_scale = self.inputs[self.image_blob_name].shape[-2] / \
+            self.outputs[self.heatmaps_blob_name].shape[-2]
 
         if self.target_size is None:
             self.target_size = self.inputs[self.image_blob_name].shape[-2]
@@ -78,7 +79,8 @@ class OpenPose(ImageModel):
         self.w = (input_width + self.size_divisor - 1) // self.size_divisor * self.size_divisor
         default_input_shape = self.inputs[self.image_blob_name].shape
         input_shape = {self.image_blob_name: (default_input_shape[:-2] + [self.h, self.w])}
-        self.logger.debug('\tReshape model from {} to {}'.format(default_input_shape, input_shape[self.image_blob_name]))
+        self.logger.debug('\tReshape model from {} to {}'.format(
+            default_input_shape, input_shape[self.image_blob_name]))
         super().reshape(input_shape)
 
         if preload:

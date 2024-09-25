@@ -19,6 +19,7 @@ import logging as log
 
 class WrapperError(RuntimeError):
     '''Special class for errors occurred in Model API wrappers'''
+
     def __init__(self, wrapper_name, message):
         super().__init__(f"{wrapper_name}: {message}")
 
@@ -49,7 +50,7 @@ class Model:
         model_loaded (bool): a flag whether the model is loaded to device
     '''
 
-    __model__ = None # Abstract wrapper has no name
+    __model__ = None  # Abstract wrapper has no name
 
     def __init__(self, model_adapter, configuration=None, preload=False):
         '''Model constructor
@@ -145,7 +146,8 @@ class Model:
          Raises:
             WrapperError: if the configuration is incorrect
         '''
-        if config is None: return
+        if config is None:
+            return
         parameters = self.parameters()
         for name, value in config.items():
             if name in parameters:
@@ -219,7 +221,7 @@ class Model:
         if not isinstance(number_of_inputs, tuple):
             if len(self.inputs) != number_of_inputs and number_of_inputs != -1:
                 self.raise_error("Expected {} input blob{}, but {} found: {}".format(
-                    number_of_inputs, 's' if number_of_inputs !=1 else '',
+                    number_of_inputs, 's' if number_of_inputs != 1 else '',
                     len(self.inputs), ', '.join(self.inputs)
                 ))
         else:
@@ -232,7 +234,7 @@ class Model:
         if not isinstance(number_of_outputs, tuple):
             if len(self.outputs) != number_of_outputs and number_of_outputs != -1:
                 self.raise_error("Expected {} output blob{}, but {} found: {}".format(
-                    number_of_outputs, 's' if number_of_outputs !=1 else '',
+                    number_of_outputs, 's' if number_of_outputs != 1 else '',
                     len(self.outputs), ', '.join(self.outputs)
                 ))
         else:
@@ -274,13 +276,13 @@ class Model:
     def infer_sync(self, dict_data):
         if not self.model_loaded:
             self.raise_error("The model is not loaded to the device. Please, create the wrapper "
-                "with preload=True option or call load() method before infer_sync()")
+                             "with preload=True option or call load() method before infer_sync()")
         return self.model_adapter.infer_sync(dict_data)
 
     def infer_async(self, dict_data, callback_data):
         if not self.model_loaded:
             self.raise_error("The model is not loaded to the device. Please, create the wrapper "
-                "with preload=True option or call load() method before infer_async()")
+                             "with preload=True option or call load() method before infer_async()")
         self.model_adapter.infer_async(dict_data, callback_data)
 
     def is_ready(self):

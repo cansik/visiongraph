@@ -19,7 +19,7 @@ from openvino.runtime import layout_helpers
 
 
 class Layout:
-    def __init__(self, layout = '') -> None:
+    def __init__(self, layout='') -> None:
         self.layout = layout
 
     @staticmethod

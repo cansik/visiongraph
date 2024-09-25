@@ -123,7 +123,7 @@ def pad_image(image, size):
     h, w = image.shape[:2]
     if h != size[1] or w != size[0]:
         image = np.pad(image, ((0, size[1] - h), (0, size[0] - w), (0, 0)),
-                               mode='constant', constant_values=0)
+                       mode='constant', constant_values=0)
     return image
 
 
@@ -142,7 +142,7 @@ def resize_image_letterbox(image, size, interpolation=cv2.INTER_LINEAR):
 
 
 def crop_resize(image, size):
-    desired_aspect_ratio = size[1] / size[0] # width / height
+    desired_aspect_ratio = size[1] / size[0]  # width / height
     if desired_aspect_ratio == 1:
         if (image.shape[0] > image.shape[1]):
             offset = (image.shape[0] - image.shape[1]) // 2
@@ -163,7 +163,7 @@ def crop_resize(image, size):
 
 
 RESIZE_TYPES = {
-    'crop' : crop_resize,
+    'crop': crop_resize,
     'standard': resize_image,
     'fit_to_window': resize_image_with_aspect,
     'fit_to_window_letterbox': resize_image_letterbox,

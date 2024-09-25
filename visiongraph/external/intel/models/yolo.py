@@ -29,9 +29,10 @@ ANCHORS = {
                142.0, 110.0, 192.0, 243.0, 459.0, 401.0],
     'YOLOV4-TINY': [10.0, 14.0, 23.0, 27.0, 37.0, 58.0,
                     81.0, 82.0, 135.0, 169.0, 344.0, 319.0],
-    'YOLOF' : [16.0, 16.0, 32.0, 32.0, 64.0, 64.0,
-               128.0, 128.0, 256.0, 256.0, 512.0, 512.0]
+    'YOLOF': [16.0, 16.0, 32.0, 32.0, 64.0, 64.0,
+              128.0, 128.0, 256.0, 256.0, 512.0, 512.0]
 }
+
 
 def permute_to_N_HWA_K(tensor, K, output_layout):
     """
@@ -45,6 +46,7 @@ def permute_to_N_HWA_K(tensor, K, output_layout):
     tensor = tensor.transpose(0, 3, 4, 1, 2)
     tensor = tensor.reshape(N, -1, K)
     return tensor
+
 
 def sigmoid(x):
     return 1. / (1. + np.exp(-x))
@@ -266,7 +268,7 @@ class YoloV4(YOLO):
             classes = channels // num - 5
             if channels % num != 0:
                 self.raise_error("The output blob {} has wrong 2nd dimension".format(name))
-            yolo_params = self.Params(classes, num, sides, self.anchors, self.masks[i*num : (i+1)*num], layout)
+            yolo_params = self.Params(classes, num, sides, self.anchors, self.masks[i*num: (i+1)*num], layout)
             output_info[name] = (shape, yolo_params)
         return output_info
 
@@ -456,7 +458,7 @@ class YoloV3ONNX(DetectionModel):
                 scores_blob_name = name
             else:
                 self.raise_error("Expected shapes [:,:,4], [:,{},:] and [:,3] for outputs, but got {}, {} and {}"
-                    .format(self.classes, *[output.shape for output in self.outputs.values()]))
+                                 .format(self.classes, *[output.shape for output in self.outputs.values()]))
         if self.outputs[bboxes_blob_name].shape[1] != self.outputs[scores_blob_name].shape[2]:
             self.raise_error("Expected the same dimension for boxes and scores, but got {} and {}".format(
                 self.outputs[bboxes_blob_name].shape[1], self.outputs[scores_blob_name].shape[2]))

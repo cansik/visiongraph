@@ -291,15 +291,14 @@ if __name__ == '__main__':
     bb = np.random.random_integers(0, 100, size=(20,)).reshape((5, 4))
     c = get_centroid(bb)
     print(bb, c)
-    
+
     bb2 = np.array([1, 2, 3, 4])
     c2 = get_centroid(bb2)
     print(bb2, c2)
 
     data = {
-            0: 'background', 1: 'aeroplane', 2: 'bicycle', 3: 'bird', 4: 'boat', 5: 'bottle', 6: 'bus',
-            7: 'car', 8: 'cat', 9: 'chair', 10: 'cow', 11: 'diningtable', 12: 'dog', 13: 'horse', 14: 'motorbike',
-            15: 'person', 16: 'pottedplant', 17: 'sheep', 18: 'sofa', 19: 'train', 20: 'tvmonitor'
-        }
+        0: 'background', 1: 'aeroplane', 2: 'bicycle', 3: 'bird', 4: 'boat', 5: 'bottle', 6: 'bus',
+        7: 'car', 8: 'cat', 9: 'chair', 10: 'cow', 11: 'diningtable', 12: 'dog', 13: 'horse', 14: 'motorbike',
+        15: 'person', 16: 'pottedplant', 17: 'sheep', 18: 'sofa', 19: 'train', 20: 'tvmonitor'
+    }
     dict2jsonfile(data, '../../examples/pretrained_models/caffemodel_weights/ssd_mobilenet_caffe_names.json')
-

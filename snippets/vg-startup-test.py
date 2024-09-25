@@ -1,7 +1,7 @@
+from visiongraph import vg
 import time
 
 start = time.time()
-from visiongraph import vg
 
 is_first_run = True
 

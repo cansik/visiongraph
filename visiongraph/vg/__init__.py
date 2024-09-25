@@ -842,6 +842,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
 
 _CURRENT_MODULE = sys.modules[__name__]
 
+
 def __getattr__(name):
     if name not in _visiongraph_imports:
         raise AttributeError(f"'vg' object has no attribute '{name}'")
