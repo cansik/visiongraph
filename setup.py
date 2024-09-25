@@ -19,7 +19,7 @@ NAME = "visiongraph"
 PACKAGE_NAME = NAME
 PACKAGE_VERSION = "1.0.0b3"
 PACKAGE_URL = "https://github.com/cansik/visiongraph"
-PACKAGE_DOC_MODULES = ["visiongraph"]
+PACKAGE_DOC_MODULES = ["visiongraph", "!visiongraph.external"]
 
 
 def parse_requirements():
@@ -90,7 +90,6 @@ GenerateDoc.PACKAGE_NAME = PACKAGE_NAME
 GenerateDoc.PACKAGE_VERSION = PACKAGE_VERSION
 GenerateDoc.PACKAGE_URL = PACKAGE_URL
 GenerateDoc.PACKAGE_DOC_MODULES = PACKAGE_DOC_MODULES
-GenerateDoc.REQUIRED_PACKAGES = required_packages
 
 setup(
     name=PACKAGE_NAME,

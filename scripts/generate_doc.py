@@ -5,7 +5,8 @@ import shutil
 import sys
 from distutils.command.install import install
 from pathlib import Path
-from typing import Union, Optional, List
+from typing import Union, Optional, List, Sequence
+from unittest.mock import MagicMock
 
 import pdoc
 import pdoc.web
@@ -14,6 +15,34 @@ from jinja2.runtime import Context
 from markupsafe import Markup
 from pdoc._compat import removesuffix
 from pdoc.render_helpers import qualname_candidates, possible_sources, relative_link
+
+from scripts import pdoc_monkeypatch
+from scripts.import_analyzer import VisiongraphAnalyzer
+
+
+class AutoMock(MagicMock):
+    """
+    A MagicMock subclass that returns an AutoMock instance for any attribute or submodule access.
+    Additionally, handles type annotations and sets `__path__` for modules so they are treated as packages when needed.
+    """
+
+    def __init__(self, name=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.name = name
+
+    def __getattr__(self, name):
+        # Avoid recursion for internal MagicMock attributes
+        if name.startswith('_'):
+            return super().__getattr__(name)
+
+        # For any other attribute access, return another AutoMock
+        return AutoMock(name)
+
+    def __name__(self):
+        return self.name
+
+    def __path__(self):
+        return self.name
 
 
 @pass_context
@@ -135,11 +164,14 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
 def generate_doc(package_name: str,
                  package_version: str,
                  package_url: Optional[str],
-                 required_packages: List[str],
                  output_path: Union[str, os.PathLike],
                  package_paths: List[Union[str, os.PathLike]],
+                 optional_modules: Sequence[str] = None,
                  extra_asset_path: Union[str, os.PathLike] = "doc",
                  launch: bool = False):
+    if optional_modules is None:
+        optional_modules = []
+
     output_path = Path(output_path)
     extra_asset_path = Path(extra_asset_path)
 
@@ -152,7 +184,9 @@ def generate_doc(package_name: str,
     pdoc.render.configure(
         footer_text=f"{package_name} v{package_version}",
         logo_link=package_url,
-        template_directory=extra_asset_path.joinpath("theme")
+        template_directory=extra_asset_path.joinpath("theme"),
+        math=True,
+        mermaid=True
     )
 
     # add additional filters
@@ -164,6 +198,12 @@ def generate_doc(package_name: str,
 
     pdoc.render.env.filters["remove_identifier"] = remove_identifier
     pdoc.render.env.filters["linkify"] = custom_linkify
+
+    # add optional modules as patch
+    pdoc_monkeypatch.patch()
+    for module_name in optional_modules:
+        if module_name not in sys.modules:
+            sys.modules[module_name] = AutoMock(module_name)
 
     if launch:
         host = "localhost"
@@ -210,7 +250,6 @@ class GenerateDoc(distutils.cmd.Command):
     PACKAGE_VERSION: str = ""
     PACKAGE_URL: str = ""
     PACKAGE_DOC_MODULES: List[str] = []
-    REQUIRED_PACKAGES: List[str] = []
 
     def initialize_options(self):
         install.initialize_options(self)
@@ -221,6 +260,10 @@ class GenerateDoc(distutils.cmd.Command):
         pass
 
     def run(self) -> None:
+        # find optional modules
+        result = VisiongraphAnalyzer().analyze()
+
         from scripts.generate_doc import generate_doc
-        generate_doc(self.PACKAGE_NAME, self.PACKAGE_VERSION, self.PACKAGE_URL, self.REQUIRED_PACKAGES,
-                     Path(self.output), self.PACKAGE_DOC_MODULES, launch=bool(self.launch))
+        generate_doc(self.PACKAGE_NAME, self.PACKAGE_VERSION, self.PACKAGE_URL,
+                     Path(self.output), self.PACKAGE_DOC_MODULES, result.optional_modules,
+                     launch=bool(self.launch))

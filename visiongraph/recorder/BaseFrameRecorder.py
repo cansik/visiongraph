@@ -4,7 +4,7 @@ from argparse import Namespace, ArgumentParser
 import cv2
 import numpy as np
 
-from visiongraph import GraphNode
+from visiongraph.GraphNode import GraphNode
 
 
 class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
