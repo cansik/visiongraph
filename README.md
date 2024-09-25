@@ -169,4 +169,32 @@ Parts of these libraries are directly included and adapted to work with visiongr
 * [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
 * [OneEuroFilter-Numpy](https://github.com/HoBeom/OneEuroFilter-Numpy) - (MIT License)
 
+Here you can find a list of the dependencies of visiongraph and their licence:
+
+```
+depthai               MIT License
+faiss-cpu             MIT License
+filterpy              MIT License
+mediapipe             Apache License 2.0
+moviepy               MIT License
+numba                 BSD License
+onnxruntime           MIT License
+onnxruntime-directml  MIT License
+onnxruntime-gpu       MIT License
+opencv-python         Apache License 2.0
+openvino              Apache License 2.0
+pyk4a-bundle          MIT License
+pyopengl              BSD License
+pyrealsense2          Apache License 2.0
+pyrealsense2-macosx   Apache License 2.0
+requests              Apache License 2.0
+scipy                 MIT License
+SpoutGL               BSD License
+syphon-python         MIT License
+tqdm                  MIT License
+vector                BSD License
+vidgear               Apache License 2.0
+wheel                 MIT License
+```
+
 For more information about the dependencies have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
