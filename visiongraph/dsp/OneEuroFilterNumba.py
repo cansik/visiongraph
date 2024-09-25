@@ -10,7 +10,7 @@ from typing import Optional
 import numpy as np
 from numba import njit
 
-from visiongraph import OneEuroFilterNumpy
+from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 
 
 @njit()
