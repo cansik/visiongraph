@@ -53,10 +53,6 @@ class _OutputLayerName:
     """
     A class to represent the name and options for an output layer in the
     Mask R-CNN model.
-
-    Attributes:
-        name (str): The name of the output layer.
-        options (List[str]): A list of additional options for the output layer.
     """
     name: str
     options: List[str] = field(default_factory=lambda: [])
@@ -69,16 +65,6 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
     Inherits from:
         InstanceSegmentationEstimator[InstanceSegmentationResult]: Base class for
         instance segmentation estimators.
-
-    Attributes:
-        model (Asset): The model asset used for inference.
-        weights (Asset): The weights asset used for inference.
-        width (Optional[int]): The width of the input image.
-        height (Optional[int]): The height of the input image.
-        labels (List[str]): List of label names for detected classes.
-        device (str): The device used for inference (e.g., "AUTO").
-        engine (Optional[OpenVinoEngine]): The OpenVino engine for inference.
-        output_layer_mapping (Dict[str, _OutputLayerName]): Mapping of output layer names.
     """
 
     def __init__(self, model: Asset, weights: Asset, labels: List[str],

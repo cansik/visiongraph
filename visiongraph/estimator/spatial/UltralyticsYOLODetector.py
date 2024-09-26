@@ -23,14 +23,6 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         ObjectDetector: A class for detecting objects.
         Generic[R]: A generic type for object detection results.
         ABC: Abstract Base Class for defining abstract methods.
-
-    Attributes:
-        engine (InferenceEngine): The inference engine for processing object detection.
-        labels (List[str]): List of labels.
-        nms_threshold (float): Threshold for non-maximum suppression.
-        nms (bool): Flag indicating whether to perform non-maximum suppression.
-        nms_eta (Optional[float]): Epsilon value for non-maximum suppression.
-        nms_top_k (Optional[int]): Top K value for non-maximum suppression.
     """
 
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,

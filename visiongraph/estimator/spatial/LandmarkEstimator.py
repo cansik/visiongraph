@@ -15,9 +15,6 @@ class LandmarkEstimator(ObjectDetector[OutputType], ABC):
     A generic abstract class for a landmark estimator that extends ObjectDetector.
 
     This class is responsible for processing input data and generating a list of LandmarkDetectionResults.
-
-    Attributes:
-        OutputType (TypeVar): A type variable bound to LandmarkDetectionResult.
     """
 
     @abstractmethod

@@ -18,9 +18,6 @@ class ObjectDetector(VisionClassifier[ResultList[OutputType]], ABC):
 
     Type Parameters:
         OutputType: The type of output expected from the object detection process.
-
-    Attributes:
-        OutputType: TypeVar bound to ObjectDetectionResult: The type of output expected from the object detection process.
     """
 
     @abstractmethod

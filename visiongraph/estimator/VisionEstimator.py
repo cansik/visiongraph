@@ -10,6 +10,22 @@ OutputType = TypeVar('OutputType', bound=BaseResult)
 
 
 class VisionEstimator(BaseEstimator[np.ndarray, OutputType], ABC):
+    """
+    Abstract base class for estimators in the VisionGraph framework.
+
+    This class provides a common interface for different types of estimators,
+    allowing them to be used uniformly throughout the framework.
+    """
+
     @abstractmethod
     def process(self, data: np.ndarray) -> OutputType:
+        """
+        Processes the input data using the estimator's logic.
+
+        Args:
+            data (np.ndarray): The input data to be processed.
+
+        Returns:
+            OutputType: The result of processing the input data.
+        """
         pass

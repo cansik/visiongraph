@@ -15,18 +15,6 @@ from visiongraph.util import ImageUtils
 class BaseVisionEngine(ABC):
     """
     An abstract base class for a vision engine that processes images and performs inference.
-
-    Attributes:
-        flip_channels (bool): Whether to flip the image channels.
-        scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
-        mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
-        padding (bool): Whether to apply padding to the image.
-        transpose (bool): Whether to transpose the image dimensions.
-        order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
-        dtype (np.dtype): The data type of the input images.
-        input_names (List[str]): List of input names.
-        output_names (List[str]): List of output names.
-        dynamic_input_shapes (Dict[str, List[int]]): Dictionary to hold dynamic input shapes.
     """
 
     def __init__(self, flip_channels: bool = True,

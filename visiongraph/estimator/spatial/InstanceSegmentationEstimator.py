@@ -18,9 +18,6 @@ class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC):
 
     Type Parameters:
         - OutputType: Type of the output result, bound to InstanceSegmentationResult.
-    
-    Attributes:
-        OutputType: TypeVar bound to InstanceSegmentationResult for defining the output type.
     """
 
     @abstractmethod
