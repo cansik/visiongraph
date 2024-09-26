@@ -8,7 +8,20 @@ from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 
 class MoviePyVideoRecorder(BaseFrameRecorder):
-    def __init__(self, width: int, height: int, output_path: str = "video.mp4", fps: float = 30):
+    """
+    A video recorder that utilizes MoviePy to write the recorded frames into a video file.
+    """
+
+    def __init__(self, width: int, height: int, output_path: str = "video.mp4", fps: float = 30) -> None:
+        """
+        Initializes the MoviePyVideoRecorder object with the specified parameters.
+
+        Args:
+            width (int): The desired width of the recorded video.
+            height (int): The desired height of the recorded video.
+            output_path (str, optional): The path to save the recorded video. Defaults to "video.mp4".
+            fps (float, optional): The frames per second for the recorded video. Defaults to 30.
+        """
         super().__init__()
         self.output_path = output_path
         self.fps = fps
@@ -16,15 +29,27 @@ class MoviePyVideoRecorder(BaseFrameRecorder):
         self.height = height
         self._images = []
 
-    def open(self):
+    def open(self) -> None:
+        """
+        Opens the recorder, resetting the internal image list and calling the superclass's open method.
+        """
         self._images = []
         super().open()
 
-    def add_image(self, image: np.ndarray):
+    def add_image(self, image: np.ndarray) -> None:
+        """
+        Adds an image to the recorder's internal image list, converting it from BGR to RGB format before doing so.
+
+        Args:
+            image (np.ndarray): The image to be added.
+        """
         im_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         super().add_image(im_rgb)
 
-    def close(self):
+    def close(self) -> None:
+        """
+        Closes the recorder, writing the recorded images into a video file using MoviePy and then closing the superclass's closed method.
+        """
         clip = ImageSequenceClip(self._images, fps=self.fps)
         clip.write_videofile(self.output_path, logger=None)
         clip.close()

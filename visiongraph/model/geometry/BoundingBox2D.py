@@ -10,12 +10,6 @@ from visiongraph.util import MathUtils
 class BoundingBox2D:
     """
     A class to represent a 2-dimensional bounding box.
-
-    Attributes:
-        x_min (float): The minimum x-coordinate of the bounding box.
-        y_min (float): The minimum y-coordinate of the bounding box.
-        width (float): The width of the bounding box.
-        height (float): The height of the bounding box.
     """
 
     def __init__(self, x_min: float, y_min: float, width: float, height: float):
