@@ -1,9 +1,7 @@
-import distutils
 import os
 import re
 import shutil
 import sys
-from distutils.command.install import install
 from pathlib import Path
 from typing import Union, Optional, List, Sequence
 from unittest.mock import MagicMock
@@ -17,7 +15,6 @@ from pdoc._compat import removesuffix
 from pdoc.render_helpers import qualname_candidates, possible_sources, relative_link
 
 from scripts import pdoc_monkeypatch
-from scripts.import_analyzer import VisiongraphAnalyzer
 
 
 class AutoMock(MagicMock):
@@ -112,7 +109,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
                 assert isinstance(doc, pdoc.doc.Module)
                 doc = doc.get(qualname)
             target_exists_and_public = (
-                doc is not None and context["is_public"](doc).strip()
+                    doc is not None and context["is_public"](doc).strip()
             )
             if target_exists_and_public:
                 assert doc is not None  # mypy
@@ -236,34 +233,3 @@ def generate_doc(package_name: str,
 
     # copy doc content
     shutil.copytree(extra_asset_path, output_path.joinpath(extra_asset_path.name))
-
-
-class GenerateDoc(distutils.cmd.Command):
-    description = "generate pdoc documentation"
-
-    user_options = install.user_options + [
-        ("output=", None, "Output path for the documentation."),
-        ("launch", None, "Launch webserver to display documentation.")
-    ]
-
-    PACKAGE_NAME: str = ""
-    PACKAGE_VERSION: str = ""
-    PACKAGE_URL: str = ""
-    PACKAGE_DOC_MODULES: List[str] = []
-
-    def initialize_options(self):
-        install.initialize_options(self)
-        self.output: str = "docs"
-        self.launch: bool = False
-
-    def finalize_options(self):
-        pass
-
-    def run(self) -> None:
-        # find optional modules
-        result = VisiongraphAnalyzer().analyze()
-
-        from scripts.generate_doc import generate_doc
-        generate_doc(self.PACKAGE_NAME, self.PACKAGE_VERSION, self.PACKAGE_URL,
-                     Path(self.output), self.PACKAGE_DOC_MODULES, result.optional_modules,
-                     launch=bool(self.launch))

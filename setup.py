@@ -3,11 +3,9 @@ from sys import platform
 from typing import List
 from typing import Set
 
-from setuptools import find_packages
+from setuptools import find_packages, Command
 from setuptools import setup
-
-from scripts.generate_doc import GenerateDoc
-from scripts.generate_init import GenerateInitPy
+from setuptools.command.install import install
 
 # define required packages
 required_packages: List[str] = find_packages(exclude=["tests", "examples", "snippets", "assets", "tools"])
@@ -20,6 +18,48 @@ PACKAGE_NAME = NAME
 PACKAGE_VERSION = "1.0.0b3"
 PACKAGE_URL = "https://github.com/cansik/visiongraph"
 PACKAGE_DOC_MODULES = ["visiongraph", "!visiongraph.external"]
+
+
+class GenerateDoc(Command):
+    description = "generate pdoc documentation"
+
+    user_options = [
+        ("output=", None, "Output path for the documentation."),
+        ("launch", None, "Launch webserver to display documentation.")
+    ]
+
+    def initialize_options(self):
+        self.output: str = "docs"
+        self.launch: bool = False
+
+    def finalize_options(self):
+        pass
+
+    def run(self) -> None:
+        from scripts.import_analyzer import VisiongraphAnalyzer
+
+        # find optional modules
+        result = VisiongraphAnalyzer().analyze()
+
+        from scripts.generate_doc import generate_doc
+        generate_doc(PACKAGE_NAME, PACKAGE_VERSION, PACKAGE_URL,
+                     Path(self.output), PACKAGE_DOC_MODULES, result.optional_modules,
+                     launch=bool(self.launch))
+
+
+class GenerateInitPy(Command):
+    description = 'generate top-level init py'
+    user_options = []
+
+    def run(self) -> None:
+        from scripts.generate_init import generate_init
+        generate_init()
+
+    def initialize_options(self) -> None:
+        pass
+
+    def finalize_options(self) -> None:
+        pass
 
 
 def parse_requirements():
@@ -84,12 +124,6 @@ install_required, extras_required = parse_requirements()
 # read readme
 current_dir = Path(__file__).parent
 long_description = (current_dir / "README.md").read_text()
-
-# copy values over to generate doc
-GenerateDoc.PACKAGE_NAME = PACKAGE_NAME
-GenerateDoc.PACKAGE_VERSION = PACKAGE_VERSION
-GenerateDoc.PACKAGE_URL = PACKAGE_URL
-GenerateDoc.PACKAGE_DOC_MODULES = PACKAGE_DOC_MODULES
 
 setup(
     name=PACKAGE_NAME,
