@@ -6,6 +6,10 @@ import numpy as np
 
 @dataclass
 class VisionEngineModelLayer:
+    """
+    Represents a layer in the vision engine model.
+    """
+
     name: str
     shape: Sequence[int]
     numpy_dtype: np.dtype

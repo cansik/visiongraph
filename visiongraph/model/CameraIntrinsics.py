@@ -8,11 +8,28 @@ DISTORTION_COEFFICIENTS_NAME = "distortion_coefficients"
 
 
 class CameraIntrinsics:
+    """
+    Represents the intrinsic parameters of a camera.
+    """
+
     def __init__(self, intrinsic_matrix: np.ndarray, distortion_coefficients: np.ndarray):
+        """
+        Initializes the CameraIntrinsics object with the given intrinsic and distortion parameters.
+
+        Args:
+            intrinsic_matrix (np.ndarray): The 3x4 intrinsic matrix.
+            distortion_coefficients (np.ndarray): The distortion coefficients.
+        """
         self.intrinsic_matrix = intrinsic_matrix
         self.distortion_coefficients = distortion_coefficients
 
     def save(self, path: str):
+        """
+        Saves the camera intrinsics to a JSON file.
+
+        Args:
+            path (str): The file path to save the data to.
+        """
         data = {
             INTRINSIC_MATRIX_NAME: self.intrinsic_matrix.tolist(),
             DISTORTION_COEFFICIENTS_NAME: self.distortion_coefficients.tolist()
@@ -23,6 +40,15 @@ class CameraIntrinsics:
 
     @staticmethod
     def load(path: str) -> "CameraIntrinsics":
+        """
+        Loads the camera intrinsics from a JSON file.
+
+        Args:
+            path (str): The file path to load the data from.
+
+        Returns:
+            CameraIntrinsics: The loaded CameraIntrinsics object.
+        """
         with open(path, "r") as file:
             data = json.load(file)
 
@@ -33,6 +59,15 @@ class CameraIntrinsics:
 
     @staticmethod
     def load_from_file_storage(path: str):
+        """
+        Loads the camera intrinsics from a file stored in OpenCV's storage format.
+
+        Args:
+            path (str): The file path to load the data from.
+
+        Returns:
+            CameraIntrinsics: The loaded CameraIntrinsics object.
+        """
         storage = cv2.FileStorage(path, cv2.FILE_STORAGE_READ)
         intrinsic_mat = storage.getNode('Camera_Matrix').mat()
         distortion_coeff = storage.getNode('Distortion_Coefficients').mat()
@@ -42,19 +77,49 @@ class CameraIntrinsics:
 
     @property
     def px(self) -> float:
+        """
+        Gets the pixel distance from the principal point.
+
+        Returns:
+            float: The pixel distance.
+        """
         return self.intrinsic_matrix[0, 2]
 
     @property
     def py(self) -> float:
+        """
+        Gets the pixel distance from the principal point (y-axis).
+
+        Returns:
+            float: The pixel distance.
+        """
         return self.intrinsic_matrix[1, 2]
 
     @property
     def fx(self) -> float:
+        """
+        Gets the focal length in the x-direction.
+
+        Returns:
+            float: The focal length.
+        """
         return self.intrinsic_matrix[0, 0]
 
     @property
     def fy(self) -> float:
+        """
+        Gets the focal length in the y-direction.
+
+        Returns:
+            float: The focal length.
+        """
         return self.intrinsic_matrix[1, 1]
 
     def __repr__(self):
+        """
+        Returns a string representation of the CameraIntrinsics object.
+
+        Returns:
+            str: A string representation of the object.
+        """
         return f"{CameraIntrinsics.__name__} (fx: {self.fx:.3f}, fy: {self.fy:.3f} px: {self.px:.3f}, py: {self.py:.3f})"
