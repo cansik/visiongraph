@@ -16,6 +16,19 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
+    """
+    A class to estimate 2D pose from a single image using OpenVINO.
+
+    Args:
+        model (Asset): The model for inference.
+        weights (Asset): The weights for the model.
+        target_size (Optional[int]): The target size of the input image. Defaults to None.
+        aspect_ratio (float): The default aspect ratio. Defaults to 16/9.
+        min_score (float): The minimum score for pose estimation. Defaults to 0.5.
+        auto_adjust_aspect_ratio (bool): Whether to automatically adjust the aspect ratio. Defaults to True.
+        device (str): The device for inference. Defaults to "AUTO".
+    """
+
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.5,
                  auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
@@ -32,6 +45,9 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         self.ie_model: Optional[Model] = None
 
     def setup(self):
+        """
+        Prepare the model and weights, and create an IE model.
+        """
         Asset.prepare_all(self.model, self.weights)
 
         self.ie_model = self._create_ie_model()
@@ -39,6 +55,15 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         self.pipeline.setup()
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
+        """
+        Process the input image and estimate poses.
+
+        Args:
+            data (np.ndarray): The input image.
+
+        Returns:
+            ResultList[COCOPose]: A list of estimated pose objects.
+        """
         h, w = data.shape[:2]
 
         # auto-adjust aspect ratio
@@ -63,9 +88,19 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         return poses
 
     def release(self):
+        """
+        Release the pipeline and IE model.
+        """
         self.pipeline.release()
 
     def adjust_aspect_ratio(self, ratio: float, timeout: float = 5.0):
+        """
+        Adjust the aspect ratio of the input image.
+
+        Args:
+            ratio (float): The new aspect ratio.
+            timeout (float): The timeout for adjusting the aspect ratio. Defaults to 5.0.
+        """
         logging.warning(f"auto-adjusting aspect ratio to {ratio:.2f}")
         self.aspect_ratio = ratio
 
@@ -82,4 +117,10 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
 
     @abstractmethod
     def _create_ie_model(self) -> Model:
+        """
+        Create the IE model for inference.
+
+        Returns:
+            Model: The created IE model.
+        """
         pass

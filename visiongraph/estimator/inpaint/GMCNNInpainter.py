@@ -12,20 +12,51 @@ from visiongraph.result.ImageResult import ImageResult
 
 
 class GMCNNConfig(Enum):
+    """
+    Enum to represent different configurations for the GMCNN model.
+    """
+
     GMCNN_Places2_FP16 = RepositoryAsset.openVino("gmcnn-places2-tf-fp16")
     GMCNN_Places2_FP32 = RepositoryAsset.openVino("gmcnn-places2-tf-fp32")
 
 
 class GMCNNInpainter(BaseInpainter):
+    """
+    A class representing a GMCNN-based inpainting model.
+
+    https://github.com/shepnerd/inpainting_gmcnn
+    """
+
     def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
+        """
+        Initializes the GMCNNInpainter object.
+
+        Args:
+            model (Asset): The repository asset containing the model.
+            weights (Asset): The repository asset containing the weights for the model.
+            device (str, optional): The device to use. Defaults to "AUTO".
+        """
         super().__init__()
         self.engine = OpenVinoEngine(model, weights, device=device, flip_channels=False)
 
     def setup(self):
+        """
+        Sets up the OpenVINO engine.
+        """
         self.engine.setup()
 
     def inpaint(self, image: np.ndarray, mask: np.ndarray) -> ImageResult:
-        # prepare mask
+        """
+        Performs inpainting on the given image using the provided mask.
+
+        Args:
+            image (np.ndarray): The input image.
+            mask (np.ndarray): The binary mask to use for inpainting.
+
+        Returns:
+            ImageResult: The resulting image after inpainting.
+        """
+        # Prepare mask
         _, binary_mask = cv2.threshold(mask, 1, 1, cv2.THRESH_BINARY)
 
         mask_input_name = self.engine.input_names[1]
@@ -44,16 +75,37 @@ class GMCNNInpainter(BaseInpainter):
         return ImageResult(resized_frame)
 
     def release(self):
+        """
+        Releases the OpenVINO engine.
+        """
         self.engine.release()
 
     def configure(self, args: Namespace):
+        """
+        Configures the GMCNNInpainter object based on the provided arguments.
+
+        Args:
+            args (Namespace): The namespace containing the configuration arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the argument parser for configuring the GMCNNInpainter model.
+        """
         pass
 
     @staticmethod
     def create(config: GMCNNConfig = GMCNNConfig.GMCNN_Places2_FP32) -> "GMCNNInpainter":
+        """
+        Creates a new instance of the GMCNNInpainter class.
+
+        Args:
+            config (GMCNNConfig, optional): The configuration to use for the model. Defaults to GMCNNConfig.GMCNN_Places2_FP32.
+
+        Returns:
+            GMCNNInpainter: A new instance of the GMCNNInpainter class.
+        """
         model, weights = config.value
         return GMCNNInpainter(model, weights)

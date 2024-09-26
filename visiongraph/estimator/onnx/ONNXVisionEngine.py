@@ -10,11 +10,28 @@ from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 
 
 class ONNXVisionEngine(BaseVisionEngine):
+    """
+    A class to represent an ONNX-based vision engine.
+
+    https://github.com/microsoft/onnxruntime
+    """
+
     def __init__(self, model: Asset, execution_providers: Optional[List[str]] = None,
                  flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
                  padding: bool = False):
+        """
+        Initializes the ONNXVisionEngine object.
+
+        Args:
+            model (Asset): The ONNX model to be executed.
+            execution_providers (Optional[List[str]], optional): The list of execution providers. Defaults to None.
+            flip_channels (bool, optional): Whether to flip channels or not. Defaults to True.
+            scale (Optional[Union[float, Sequence[float]]], optional): The scaling factor for input data. Defaults to None.
+            mean (Optional[Union[float, Sequence[float]]], optional): The mean value for normalization. Defaults to None.
+            padding (bool, optional): Whether to pad input data or not. Defaults to False.
+        """
         super().__init__(flip_channels, scale, mean, padding)
 
         self.model = model
@@ -38,6 +55,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         }
 
     def setup(self):
+        """
+        Sets up the ONNXVisionEngine object by creating an InferenceSession.
+        """
         if self.execution_providers is None:
             self.execution_providers = self.get_execution_providers()
 
@@ -50,11 +70,30 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.output_names = [e.name for e in self.session.get_outputs()]
 
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+        """
+        Performs inference on the input image using the ONNX model.
+
+        Args:
+            image (np.ndarray): The input image.
+            inputs (Optional[Dict[str, Any]], optional): The input data. Defaults to None.
+
+        Returns:
+            VisionEngineOutput: The output of the ONNX model.
+        """
         results = self.session.run(self.output_names, inputs)
         result_dict = VisionEngineOutput({n: r for n, r in zip(self.output_names, results)})
         return result_dict
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        """
+        Gets the shape of a specific input.
+
+        Args:
+            input_name (str): The name of the input.
+
+        Returns:
+            Sequence[int]: The shape of the input.
+        """
         if input_name in self.dynamic_input_shapes:
             return self.dynamic_input_shapes[input_name]
 
@@ -65,9 +104,19 @@ class ONNXVisionEngine(BaseVisionEngine):
         return []
 
     def release(self):
+        """
+        Releases the ONNXVisionEngine object by deleting the InferenceSession.
+        """
         self.session = None
 
     def get_execution_providers(self) -> List[str]:
+        """
+        Returns a list of available execution providers, with preference given to user-specified providers if available.
+
+        Returns:
+            List[str]: A list of execution provider names. If user-specified preferred providers are available,
+            the list will contain only those. Otherwise, it will return all available providers.
+        """
         providers = rt.get_available_providers()
         providers_set = set(providers)
 
@@ -80,15 +129,42 @@ class ONNXVisionEngine(BaseVisionEngine):
         return selected_providers
 
     def get_device_name(self) -> str:
+        """
+        Gets the name of the device used for execution.
+
+        Returns:
+            str: The name of the device.
+        """
         return self.session.get_providers()[0]
 
     def get_input_layers(self) -> List[VisionEngineModelLayer]:
+        """
+        Gets the input layers of the ONNX model.
+
+        Returns:
+            List[VisionEngineModelLayer]: The input layers.
+        """
         return self._get_model_layer(self.session.get_inputs())
 
     def get_output_layers(self) -> List[VisionEngineModelLayer]:
+        """
+        Gets the output layers of the ONNX model.
+
+        Returns:
+            List[VisionEngineModelLayer]: The output layers.
+        """
         return self._get_model_layer(self.session.get_outputs())
 
     def _get_model_layer(self, compiled_layers: List[rt.NodeArg]) -> List[VisionEngineModelLayer]:
+        """
+        Gets the model layers from a list of NodeArgs.
+
+        Args:
+            compiled_layers (List[rt.NodeArg]): The list of NodeArgs.
+
+        Returns:
+            List[VisionEngineModelLayer]: The model layers.
+        """
         return [
             VisionEngineModelLayer(name=l.name,
                                    shape=list(l.shape),
@@ -98,6 +174,15 @@ class ONNXVisionEngine(BaseVisionEngine):
         ]
 
     def _to_numpy_dtype(self, type_text: str) -> np.dtype:
+        """
+        Converts a ONNX type text to a NumPy dtype.
+
+        Args:
+            type_text (str): The ONNX type text.
+
+        Returns:
+            np.dtype: The corresponding NumPy dtype.
+        """
         if type_text not in self.dtype_conversion_table:
             raise TypeError(f"Could not convert '{type_text}' into a numpy dtype.")
 

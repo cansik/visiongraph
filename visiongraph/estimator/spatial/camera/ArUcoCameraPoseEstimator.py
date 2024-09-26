@@ -12,11 +12,27 @@ from visiongraph.result.ArUcoMarkerDetection import ArUcoMarkerDetection
 
 
 class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
+    """
+    A class to estimate camera pose using ArUco markers.
+    
+    It provides a way to detect and track ArUco markers in an image or video stream,
+    estimate the corresponding 3D pose, and draw the marker corners on the original image.
+    """
+
     def __init__(self,
                  camera_matrix: np.ndarray,
                  fisheye_distortion: np.ndarray,
                  aruco_config: int = aruco.DICT_6X6_50,
                  marker_length_in_m: float = 0.1):
+        """
+        Initializes the ArUcoCameraPoseEstimator object.
+
+        Args:
+            camera_matrix (np.ndarray): The camera intrinsic matrix.
+            fisheye_distortion (np.ndarray): The camera distortion coefficients.
+            aruco_config (int, optional): The configuration of the ArUco dictionary. Defaults to aruco.DICT_6X6_50.
+            marker_length_in_m (float, optional): The length of an ArUco marker in meters. Defaults to 0.1.
+        """
         self.camera_matrix = camera_matrix
         self.fisheye_distortion = fisheye_distortion
 
@@ -29,11 +45,23 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         self.aruco_detector: Optional[aruco.ArucoDetector] = None
 
     def setup(self):
+        """
+        Sets up the ArUco marker detector and parameters.
+        """
         self.aruco_dict = aruco.getPredefinedDictionary(self.aruco_config)
         self.aruco_params = aruco.DetectorParameters()
         self.aruco_detector = aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
 
     def process(self, data: np.ndarray) -> Optional[ArUcoCameraPose]:
+        """
+        Processes the input image or video frame to detect ArUco markers and estimate camera pose.
+
+        Args:
+            data (np.ndarray): The input image or video frame.
+
+        Returns:
+            Optional[ArUcoCameraPose]: The estimated camera pose if an ArUco marker is detected, otherwise None.
+        """
         # find ArUco markers
         (corners, ids, rejected) = self.aruco_detector.detectMarkers(data)
 
@@ -72,11 +100,26 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
                                marker=marker)
 
     def release(self):
+        """
+        Releases any system resources used by the estimator.
+        """
         pass
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator based on the provided command-line arguments.
+
+        Args:
+            args (Namespace): The parsed command-line arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the parser for configuration.
+
+        Args:
+            parser (ArgumentParser): The parser to add parameters to.
+        """
         pass

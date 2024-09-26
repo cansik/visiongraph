@@ -11,7 +11,20 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class ChessboardCalibrator(BoardCameraCalibrator):
+    """
+    A class to calibrate a camera using a chessboard pattern.
+    """
+
     def __init__(self, columns: int, rows: int, max_samples: int = -1):
+        """
+        Initializes the ChessboardCalibrator object with the number of rows and columns,
+        as well as the maximum number of samples.
+
+        Args:
+            columns (int): The number of columns in the chessboard pattern.
+            rows (int): The number of rows in the chessboard pattern.
+            max_samples (int, optional): The maximum number of samples. Defaults to -1.
+        """
         super().__init__(rows, columns, max_samples)
 
         # termination criteria
@@ -28,9 +41,21 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         self.pose_result: Optional[CameraPoseResult] = None
 
     def setup(self):
+        """
+        Sets up the ChessboardCalibrator object.
+        """
         pass
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+        """
+        Processes a frame of image data to detect chessboard corners.
+
+        Args:
+            data (np.ndarray): The input image frame.
+
+        Returns:
+            Optional[CameraPoseResult]: The calibrated camera pose if detected, otherwise None.
+        """
         self.board_detected = False
 
         if self.pose_result is not None:
@@ -59,6 +84,12 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         return None
 
     def calibrate(self) -> Optional[CameraPoseResult]:
+        """
+        Calculates the camera pose using the detected chessboard corners.
+
+        Returns:
+            Optional[CameraPoseResult]: The calibrated camera pose if successful, otherwise None.
+        """
         ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.obj_points, self.img_points,
                                                            self.image_size, None, None)
 
@@ -80,15 +111,36 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         return None
 
     def release(self):
+        """
+        Releases any system resources used by the ChessboardCalibrator object.
+        """
         pass
 
     def configure(self, args: Namespace):
+        """
+        Configures the ChessboardCalibrator object based on user input.
+
+        Args:
+            args (Namespace): The parsed command line arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the argument parser for the ChessboardCalibrator class.
+
+        Args:
+            parser (ArgumentParser): The argument parser object.
+        """
         pass
 
     @property
     def sample_count(self):
+        """
+        Gets the number of samples used in the camera calibration process.
+
+        Returns:
+            int: The number of samples.
+        """
         return len(self.img_points)

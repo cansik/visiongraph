@@ -12,11 +12,26 @@ from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
 class ChArUcoCalibrator(BoardCameraCalibrator):
+    """
+    A class to perform camera calibration using ChArUco boards.
+    """
+
     def __init__(self, columns: int, rows: int,
                  marker_length_in_m: float = 0.23,
                  square_length_in_m: float = 0.3,
                  aruco_config: int = aruco.DICT_4X4_50,
                  max_samples: int = -1):
+        """
+        Initializes the ChArUcoCalibrator with specified parameters.
+
+        Args:
+            columns (int): Number of columns in the ChArUco board.
+            rows (int): Number of rows in the ChArUco board.
+            marker_length_in_m (float): Length of the markers in meters.
+            square_length_in_m (float): Length of the squares in meters.
+            aruco_config (int): Configuration for the ArUco dictionary.
+            max_samples (int): Maximum number of samples to collect for calibration.
+        """
         super().__init__(rows, columns, max_samples)
 
         self.marker_length_in_m: float = marker_length_in_m
@@ -38,6 +53,9 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.00001)
 
     def setup(self):
+        """
+        Sets up the ChArUco board and initializes the detector.
+        """
         self.corners = []
         self.ids = []
 
@@ -49,6 +67,15 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.detector = aruco.CharucoDetector(self.board)
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+        """
+        Processes the input data to detect ChArUco markers and calibrate the camera.
+
+        Args:
+            data (np.ndarray): The input image data.
+
+        Returns:
+            Optional[CameraPoseResult]: The result of the camera pose estimation, or None if not available.
+        """
         self.board_detected = False
 
         if self.pose_result is not None:
@@ -75,6 +102,15 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         return None
 
     def calibrate(self) -> Optional[CameraPoseResult]:
+        """
+        Calibrates the camera using the detected corners and IDs.
+
+        Raises:
+            Exception: If calibration is not supported by OpenCV.
+
+        Returns:
+            Optional[CameraPoseResult]: The result of the camera pose estimation, or None if calibration fails.
+        """
         raise Exception("Currently not supported! - Waiting for fix by opencv!")
 
         (ret, camera_matrix, distortion_coefficients,
@@ -102,17 +138,38 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         return None
 
     def release(self):
+        """
+        Releases resources associated with the calibrator.
+        """
         pass
 
     def configure(self, args: Namespace):
+        """
+        Configures the calibrator with command line arguments.
+
+        Args:
+            args (Namespace): The parsed command line arguments.
+        """
         self.marker_length_in_m = float(args.marker_length)
         self.square_length_in_m = float(args.square_length)
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds command line arguments for the calibrator.
+
+        Args:
+            parser (ArgumentParser): The argument parser to which parameters are added.
+        """
         parser.add_argument("--marker-length", type=float, required=True, help="Marker length in m.")
         parser.add_argument("--square-length", type=float, required=True, help="Square length in m.")
 
     @property
-    def sample_count(self):
+    def sample_count(self) -> int:
+        """
+        Gets the count of samples collected.
+
+        Returns:
+            int: The number of samples collected.
+        """
         return len(self.ids)

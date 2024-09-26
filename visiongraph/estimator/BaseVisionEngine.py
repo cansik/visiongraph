@@ -13,6 +13,22 @@ from visiongraph.util import ImageUtils
 
 
 class BaseVisionEngine(ABC):
+    """
+    An abstract base class for a vision engine that processes images and performs inference.
+
+    Attributes:
+        flip_channels (bool): Whether to flip the image channels.
+        scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
+        mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
+        padding (bool): Whether to apply padding to the image.
+        transpose (bool): Whether to transpose the image dimensions.
+        order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
+        dtype (np.dtype): The data type of the input images.
+        input_names (List[str]): List of input names.
+        output_names (List[str]): List of output names.
+        dynamic_input_shapes (Dict[str, List[int]]): Dictionary to hold dynamic input shapes.
+    """
+
     def __init__(self, flip_channels: bool = True,
                  scale: Optional[Union[float, Sequence[float]]] = None,
                  mean: Optional[Union[float, Sequence[float]]] = None,
@@ -20,7 +36,18 @@ class BaseVisionEngine(ABC):
                  transpose: bool = True,
                  order: InputShapeOrder = InputShapeOrder.NCHW,
                  dtype: np.dtype = np.float32):
+        """
+        Initializes the BaseVisionEngine with specified parameters.
 
+        Args:
+            flip_channels (bool): Whether to flip the image channels.
+            scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
+            mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
+            padding (bool): Whether to apply padding to the image.
+            transpose (bool): Whether to transpose the image dimensions.
+            order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
+            dtype (np.dtype): The data type of the input images.
+        """
         self.flip_channels = flip_channels
         self.scale = scale
         self.mean = mean
@@ -37,9 +64,22 @@ class BaseVisionEngine(ABC):
 
     @abstractmethod
     def setup(self):
+        """
+        Sets up the vision engine. Must be implemented by subclasses.
+        """
         pass
 
     def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+        """
+        Processes an input image and performs inference.
+
+        Args:
+            image (np.ndarray): The input image to be processed.
+            inputs (Optional[Dict[str, Any]]): Optional additional inputs for inference.
+
+        Returns:
+            VisionEngineOutput: The output from the inference process.
+        """
         in_frame, padding_box, image_size = self.pre_process_image(image, self.first_input_name,
                                                                    self.flip_channels, self.scale, self.mean,
                                                                    self.padding, self.transpose, self.order,
@@ -59,6 +99,16 @@ class BaseVisionEngine(ABC):
 
     @abstractmethod
     def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+        """
+        Performs inference on the input image.
+
+        Args:
+            image (np.ndarray): The input image to be inferred.
+            inputs (Optional[Dict[str, Any]]): Optional additional inputs for inference.
+
+        Returns:
+            VisionEngineOutput: The output from the inference process.
+        """
         pass
 
     def pre_process_image(self, image: np.ndarray, input_name: str, flip_channels: bool = True,
@@ -68,6 +118,24 @@ class BaseVisionEngine(ABC):
                           transpose: bool = True,
                           order: InputShapeOrder = InputShapeOrder.NCHW,
                           dtype: np.dtype = np.float32) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
+        """
+        Preprocesses the input image for inference.
+
+        Args:
+            image (np.ndarray): The input image to preprocess.
+            input_name (str): The name of the input to be processed.
+            flip_channels (bool): Whether to flip the image channels.
+            scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
+            mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
+            padding (bool): Whether to apply padding to the image.
+            transpose (bool): Whether to transpose the image dimensions.
+            order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
+            dtype (np.dtype): The data type of the input images.
+
+        Returns:
+            Tuple[np.ndarray, BoundingBox2D, Size2D]: A tuple containing the preprocessed image,
+            the bounding box for padding, and the size of the image.
+        """
         input_channels = image.shape[-1] if image.ndim == 3 else 1
 
         if order == InputShapeOrder.NWHC:
@@ -118,32 +186,84 @@ class BaseVisionEngine(ABC):
         return in_frame, pad_bbox, image_size
 
     def set_dynamic_input_shape(self, name: str, batch_size: int, channels: int, height: int, width: int):
+        """
+        Sets the dynamic input shape for a given input name.
+
+        Args:
+            name (str): The name of the input.
+            batch_size (int): The batch size.
+            channels (int): The number of channels.
+            height (int): The height of the input.
+            width (int): The width of the input.
+        """
         self.dynamic_input_shapes[name] = [batch_size, channels, height, width]
 
     @property
     def first_input_name(self) -> str:
+        """
+        Gets the name of the first input.
+
+        Returns:
+            str: The name of the first input.
+        """
         return self.input_names[0]
 
     @abstractmethod
     def get_input_shape(self, input_name: str) -> Sequence[int]:
+        """
+        Gets the shape of the specified input.
+
+        Args:
+            input_name (str): The name of the input.
+
+        Returns:
+            Sequence[int]: The shape of the input.
+        """
         pass
 
     @abstractmethod
     def get_device_name(self) -> str:
+        """
+        Gets the name of the device used for processing.
+
+        Returns:
+            str: The name of the processing device.
+        """
         pass
 
     @property
     def first_input_shape(self) -> Sequence[int]:
+        """
+        Gets the shape of the first input.
+
+        Returns:
+            Sequence[int]: The shape of the first input.
+        """
         return self.get_input_shape(self.first_input_name)
 
     @abstractmethod
     def release(self):
+        """
+        Releases any resources held by the vision engine.
+        """
         pass
 
     @abstractmethod
     def get_input_layers(self) -> List[VisionEngineModelLayer]:
+        """
+        Gets the input layers of the model.
+
+        Returns:
+            List[VisionEngineModelLayer]: A list of input layers.
+        """
         pass
 
     @abstractmethod
     def get_output_layers(self) -> List[VisionEngineModelLayer]:
+        """
+        Gets the output layers of the model.
+
+        Returns:
+            List[VisionEngineModelLayer]: A list of output layers.
+        """
         pass
