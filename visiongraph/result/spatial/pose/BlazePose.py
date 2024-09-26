@@ -20,7 +20,7 @@ class BlazePose(PoseLandmarkResult):
         Returns the connections between pose landmarks as a frozen set of tuples.
 
         Each tuple contains two integer indices representing connected landmarks.
-        
+
         Returns:
             FrozenSet[Tuple[int, int]]: The connections defined in MediaPipe.
         """

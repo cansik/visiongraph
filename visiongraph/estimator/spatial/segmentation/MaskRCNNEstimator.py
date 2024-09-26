@@ -253,7 +253,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         # Put an object mask in an image mask.
         im_mask = np.zeros((im_h, im_w), dtype=np.uint8)
         im_mask[y0:y1, x0:x1] = mask[(y0 - extended_box[1]):(y1 - extended_box[1]),
-                                (x0 - extended_box[0]):(x1 - extended_box[0])]
+                                     (x0 - extended_box[0]):(x1 - extended_box[0])]
         return im_mask
 
     @staticmethod

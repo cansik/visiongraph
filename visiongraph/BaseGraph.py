@@ -6,8 +6,8 @@ from multiprocessing import Process
 from threading import Thread
 from typing import List, Callable, Optional, Union
 
-from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 from visiongraph.GraphNode import GraphNode
+from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
 
 class BaseGraph(ArgumentConfigurable, ABC):
@@ -15,10 +15,10 @@ class BaseGraph(ArgumentConfigurable, ABC):
     Abstract base class for a graph in VisionGraph.
     """
 
-    def __init__(self, 
-                 multi_threaded: bool = False, 
-                 daemon: bool = False, 
-                 handle_signals: bool = False, 
+    def __init__(self,
+                 multi_threaded: bool = False,
+                 daemon: bool = False,
+                 handle_signals: bool = False,
                  new_process: bool = False):
         """
         Initializes the BaseGraph object.

@@ -1,8 +1,8 @@
 from abc import ABC
 from typing import TypeVar
 
-from visiongraph.result.BaseResult import BaseResult
 from visiongraph.estimator.BaseEstimator import BaseEstimator
+from visiongraph.result.BaseResult import BaseResult
 
 InputType = TypeVar('InputType')
 OutputType = TypeVar('OutputType', bound=BaseResult)

@@ -13,7 +13,6 @@ from visiongraph.util.VectorUtils import landmarks_center_by_indices
 
 
 class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[IrisDistanceResult]]):
-
     """
     A class used to calculate the distance between iris in face detection.
     """

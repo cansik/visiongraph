@@ -13,7 +13,7 @@ from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionC
 class FERPlusEmotionClassifier(FaceEmotionEstimator):
     """
     A class to represent an example object with a name and a status flag.
-    
+
     Provides an implementation of the Face Emotion Estimator using FER+ models.
     """
 

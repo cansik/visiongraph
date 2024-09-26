@@ -2,7 +2,6 @@ from argparse import ArgumentParser, Namespace
 from enum import Enum
 from typing import Optional
 
-import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset

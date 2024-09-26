@@ -1,8 +1,8 @@
 from typing import Optional, Sequence, List, Tuple
 
+import mediapipe as mp
 import numpy as np
 import vector
-import mediapipe as mp
 
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from visiongraph.util.VectorUtils import landmarks_center_by_indices

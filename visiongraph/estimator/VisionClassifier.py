@@ -14,7 +14,7 @@ OutputType = TypeVar('OutputType', bound=ClassificationResult)
 class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, OutputType], ABC):
     """
     Abstract base class for vision classifiers.
-    
+
     Provides a common interface for various vision classification algorithms.
     """
 

@@ -47,7 +47,7 @@ def _exponential_smoothing(a: float, x: np.ndarray, x_prev: np.ndarray) -> np.nd
 
 @njit()
 def _apply_filter(x: np.ndarray, t: float, x_prev: np.ndarray, t_prev: float, dx_prev: np.ndarray,
-                   min_cutoff: float, beta: float, d_cutoff: float) -> (np.ndarray, np.ndarray, np.ndarray, float):
+                  min_cutoff: float, beta: float, d_cutoff: float) -> (np.ndarray, np.ndarray, np.ndarray, float):
     """
     Computes the filtered signal using the OneEuro filter algorithm.
 

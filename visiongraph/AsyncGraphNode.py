@@ -1,8 +1,8 @@
+import multiprocessing as mp
 from argparse import Namespace, ArgumentParser
 from typing import TypeVar, Optional
 
 from visiongraph.GraphNode import GraphNode
-import multiprocessing as mp
 
 InputType = TypeVar('InputType')
 OutputType = TypeVar('OutputType')
@@ -11,7 +11,7 @@ OutputType = TypeVar('OutputType')
 class AsyncGraphNode(GraphNode[InputType, OutputType]):
     """
     An asynchronous graph node that runs in a separate process.
-    
+
     This class provides an implementation of the graph node interface 
     with support for asynchronous execution.
     """
@@ -41,7 +41,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     def setup(self):
         """
         Starts the process and begins the loop.
-        
+
         This method should be called before any other methods on the 
         instance are invoked.
         """
@@ -53,7 +53,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     def _graph_loop(self):
         """
         The main loop of the process.
-        
+
         This method is responsible for setting up the underlying graph node,
         processing input data, and sending output to the output queue.
         """
@@ -80,7 +80,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
 
         Args:
             data (InputType): The input data to be processed.
-        
+
         Returns:
             OutputType: The output of the processing operation.
         """
@@ -90,7 +90,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     def release(self):
         """
         Stops the process and waits for it to terminate.
-        
+
         This method should be called when the instance is no longer needed.
         """
         self._running = False
@@ -110,7 +110,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     def add_params(parser: ArgumentParser):
         """
         Adds command-line parameters to the parser.
-        
+
         This method should be overridden by subclasses to provide custom 
         command-line options.
         """

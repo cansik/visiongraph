@@ -9,7 +9,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 class SpatialCascadeResult(ObjectDetectionResult):
     """
     Represents the result of a spatial cascade object detection process.
-    
+
     Inherits from ObjectDetectionResult and holds additional results
     corresponding to the detection process.
     """

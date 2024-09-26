@@ -14,7 +14,6 @@ OutputType = TypeVar('OutputType', bound=VectorNumpy)
 
 
 class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
-
     """
     A filter node that applies a smoothing operation to the input data using a one-euro filter.
     """

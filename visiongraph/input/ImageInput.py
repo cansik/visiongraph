@@ -66,7 +66,7 @@ class ImageInput(BaseInput):
     def release(self):
         """
         Releases any resources held by the image input.
-        
+
         Args:
             None
         """

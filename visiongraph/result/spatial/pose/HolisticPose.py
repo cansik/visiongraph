@@ -5,7 +5,6 @@ import vector
 
 from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
-from visiongraph.result.spatial.hand.Handedness import Handedness
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 
 

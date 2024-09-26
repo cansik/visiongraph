@@ -1,10 +1,8 @@
-from typing import Optional
-
 import cv2
 import numpy as np
+from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
-from moviepy.video.io.ImageSequenceClip import ImageSequenceClip
 
 
 class MoviePyVideoRecorder(BaseFrameRecorder):

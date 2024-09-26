@@ -6,7 +6,7 @@ import openvino.runtime
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEstimator
-from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter, create_core
+from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.hpe_associative_embedding import HpeAssociativeEmbedding
 from visiongraph.external.intel.models.model import Model
 

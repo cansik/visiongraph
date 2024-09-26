@@ -1,6 +1,5 @@
-from typing import Optional, Sequence, FrozenSet, Tuple
+from typing import FrozenSet, Tuple
 
-import numpy as np
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult

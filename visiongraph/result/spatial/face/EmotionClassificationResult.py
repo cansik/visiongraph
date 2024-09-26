@@ -7,6 +7,7 @@ from visiongraph.result.ClassificationResult import ClassificationResult
 A class to represent an emotion classification result, inheriting from the base ClassificationResult.
 """
 
+
 class EmotionClassificationResult(ClassificationResult):
     def __init__(self, class_id: int, class_name: str, score: float, probabilities: np.ndarray) -> None:
         """

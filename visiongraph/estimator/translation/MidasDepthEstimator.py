@@ -8,7 +8,6 @@ import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
-from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
 from visiongraph.estimator.translation.DepthEstimator import DepthEstimator
 from visiongraph.external.midas.transforms import Resize, PrepareForNet
 from visiongraph.result.DepthMap import DepthMap

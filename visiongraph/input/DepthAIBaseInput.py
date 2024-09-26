@@ -155,7 +155,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
     def gain(self) -> int:
         """
         Raises an exception indicating that gain adjustment is not supported.
-        
+
         Raises:
             Exception: Gain is not supported.
         """
@@ -165,7 +165,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
     def gain(self, value: int):
         """
         Raises an exception indicating that gain adjustment is not supported.
-        
+
         Raises:
             Exception: Gain is not supported.
         """

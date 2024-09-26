@@ -29,7 +29,7 @@ def resize_and_letter_box(image, width, height):
     row_start = int((letter_box.shape[0] - image_resized.shape[0]) / 2)
     col_start = int((letter_box.shape[1] - image_resized.shape[1]) / 2)
     letter_box[row_start:row_start + image_resized.shape[0],
-    col_start:col_start + image_resized.shape[1]] = image_resized
+               col_start:col_start + image_resized.shape[1]] = image_resized
     return letter_box
 
 

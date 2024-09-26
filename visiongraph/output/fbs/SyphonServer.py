@@ -76,7 +76,7 @@ class SyphonServer(FrameBufferSharingServer):
     def configure(self, args: Namespace) -> None:
         """
         Configures the SyphonServer object based on the provided arguments.
-        
+
         Args:
             args (Namespace): The namespace containing configuration options.
         """

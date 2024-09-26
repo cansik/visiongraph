@@ -1,5 +1,3 @@
-import json
-
 import numpy as np
 
 from visiongraph.model.CameraIntrinsics import CameraIntrinsics
@@ -14,7 +12,7 @@ class CameraPoseResult(BaseResult):
     Represents the result of a camera pose estimation.
     """
 
-    def __init__(self, intrinsics: CameraIntrastics):
+    def __init__(self, intrinsics: CameraIntrinsics):
         """
         Initializes the CameraPoseResult object with the given camera intrinsics.
 

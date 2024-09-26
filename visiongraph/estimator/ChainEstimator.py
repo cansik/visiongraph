@@ -14,7 +14,7 @@ OutputType = TypeVar('OutputType', bound=BaseResult)
 class ChainEstimator(VisionEstimator[OutputType], ABC):
     """
     A base class for chain estimators in the VisionGraph framework.
-    
+
     Provides a common interface for chaining multiple estimators together, 
     allowing for modular and extensible vision graph processing pipelines.
     """
@@ -31,7 +31,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
     def setup(self):
         """
         Sets up the estimator by calling the setup method on each linked node.
-        
+
         This ensures that all nodes in the chain are properly configured before processing begins.
         """
         super().setup()
@@ -80,7 +80,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
         Adds parameters to the given ArgumentParser instance for the ChainEstimator.
 
         This is typically called from a setup function or class method to define command-line arguments.
-        
+
         Args:
             parser (ArgumentParser): The parser instance to add parameters to.
         """

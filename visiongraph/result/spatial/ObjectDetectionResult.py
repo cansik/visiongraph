@@ -5,8 +5,8 @@ import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
-from visiongraph.result.ClassificationResult import ClassificationResult
 from visiongraph.model.tracker.Trackable import Trackable
+from visiongraph.result.ClassificationResult import ClassificationResult
 from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox
 
 

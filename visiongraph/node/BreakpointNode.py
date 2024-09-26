@@ -1,4 +1,3 @@
-import logging
 from argparse import ArgumentParser, Namespace
 from typing import TypeVar, Optional, Union
 

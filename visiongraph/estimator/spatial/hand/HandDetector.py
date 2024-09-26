@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, TypeVar
+from typing import TypeVar
 
 import numpy as np
 
@@ -13,7 +13,7 @@ OutputType = TypeVar('OutputType', bound=HandDetectionResult)
 class HandDetector(ObjectDetector[OutputType], ABC):
     """
     Abstract base class for hand detectors.
-    
+
     This class provides a common interface for different hand detection algorithms, 
     allowing users to easily switch between them based on their specific requirements.
     """

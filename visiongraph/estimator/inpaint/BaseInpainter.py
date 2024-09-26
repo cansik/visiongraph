@@ -12,7 +12,7 @@ InpaintInputType = Dict[str, np.ndarray]
 class BaseInpainter(BaseEstimator[InpaintInputType, ImageResult], ABC):
     """
     Abstract base class for inpainting estimators.
-    
+
     Provides a common interface for different inpainting strategies.
     """
 

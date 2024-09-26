@@ -1,4 +1,3 @@
-import time
 from argparse import ArgumentParser, Namespace
 from typing import TypeVar, List, Dict
 

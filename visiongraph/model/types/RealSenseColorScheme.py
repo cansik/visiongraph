@@ -4,7 +4,7 @@ from enum import Enum
 class RealSenseColorScheme(Enum):
     """
     Color scheme used by RealSense cameras.
-    
+
     This enumeration defines the different color schemes available for RealSense cameras,
     including common ones like Jet, Classic, and Quantized, as well as some specialized ones
     like Bio and Cold. These schemes can be used to adjust the color balance of the camera's output.

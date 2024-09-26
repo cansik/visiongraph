@@ -7,7 +7,6 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class BaseObjectDetectionTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]], ABC):
-
     """
     Abstract base class for object detection trackers.
 

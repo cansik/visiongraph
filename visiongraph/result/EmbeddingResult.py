@@ -1,7 +1,7 @@
 import numpy as np
+from scipy.spatial.distance import cosine
 
 from visiongraph.result.BaseResult import BaseResult
-from scipy.spatial.distance import cosine
 
 
 class EmbeddingResult(BaseResult):

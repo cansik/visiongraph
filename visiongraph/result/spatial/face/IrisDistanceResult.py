@@ -6,7 +6,7 @@ import vector
 from vector import Vector4D
 
 from visiongraph.result.BaseResult import BaseResult
-from visiongraph.util.VectorUtils import lerp_vector_2d, lerp_vector_4d
+from visiongraph.util.VectorUtils import lerp_vector_4d
 
 
 @dataclass

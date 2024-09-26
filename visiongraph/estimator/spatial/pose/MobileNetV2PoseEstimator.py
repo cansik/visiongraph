@@ -8,8 +8,8 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.result.ResultList import ResultList
 from visiongraph.model.types.InputShapeOrder import InputShapeOrder
+from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
 from visiongraph.util.VectorUtils import list_of_vector4D
 

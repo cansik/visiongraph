@@ -13,6 +13,7 @@ EFFICIENT_POSE_PAIRS = frozenset([
 A set of efficient pairs of landmark indices for pose connections.
 """
 
+
 class EfficientPose(PoseLandmarkResult):
     """
     A class to represent an efficient pose estimation model, 

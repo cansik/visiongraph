@@ -11,7 +11,7 @@ OutputType = TypeVar('OutputType', bound=BaseResult)
 class BaseEstimator(GraphNode[InputType, OutputType], ABC):
     """
     Abstract base class for estimators in VisionGraph.
-    
+
     This class provides a common interface for different types of estimators
     to extend and provide their own implementation of the `process` method.
     """

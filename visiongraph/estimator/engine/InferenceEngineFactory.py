@@ -10,7 +10,7 @@ from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 def _get_onnx_vision_engine_type():
     """
     Returns the ONNXVisionEngine class type.
-    
+
     Returns:
         type: The ONNXVisionEngine class type.
     """
@@ -21,7 +21,7 @@ def _get_onnx_vision_engine_type():
 def _get_open_vino_engine_type():
     """
     Returns the OpenVinoEngine class type.
-    
+
     Returns:
         type: The OpenVinoEngine class type.
     """
@@ -32,7 +32,7 @@ def _get_open_vino_engine_type():
 class InferenceEngine(Enum):
     """
     Enum for selecting different inference engine types.
-    
+
     Available options are:
     - ONNX: ONNXVisionEngine
     - OpenVINO: OpenVinoEngine

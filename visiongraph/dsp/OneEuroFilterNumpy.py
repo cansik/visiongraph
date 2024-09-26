@@ -2,11 +2,10 @@
 Source: https://github.com/HoBeom/OneEuroFilter-Numpy
 MIT License
 """
-import math
+from time import time
 from typing import Optional
 
 import numpy as np
-from time import time
 
 from visiongraph.dsp.BaseFilterNumpy import BaseFilterNumpy
 

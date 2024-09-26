@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, TypeVar, Sequence, Union
+from typing import List, TypeVar
 
 from visiongraph.estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult

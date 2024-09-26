@@ -14,7 +14,7 @@ from visiongraph.result.ArUcoMarkerDetection import ArUcoMarkerDetection
 class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
     """
     A class to estimate camera pose using ArUco markers.
-    
+
     It provides a way to detect and track ArUco markers in an image or video stream,
     estimate the corresponding 3D pose, and draw the marker corners on the original image.
     """
