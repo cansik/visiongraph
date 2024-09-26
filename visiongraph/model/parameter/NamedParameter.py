@@ -15,6 +15,6 @@ Mapping of flip parameters to their corresponding OpenCV constants.
 """
 
 FlipParameter = {
-    "h": cv2.FLIP_HORIZONTAL,  # Horizontal flipping
-    "v": cv2.FLIP_VERTICAL,  # Vertical flipping
+    "h": 1,  # Horizontal flipping
+    "v": 0,  # Vertical flipping
 }
