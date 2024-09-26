@@ -1,4 +1,8 @@
-DOTA_v1_0 = [
+"""
+List of DOTA game objects from the V1.0 version.
+"""
+
+DOTA_v1_0: list[str] = [
     "plane",
     "ship",
     "storage tank",

@@ -1,3 +1,10 @@
+"""
+COCO 80 and COCO 90 labels.
+
+These are the lists of classes used in the COCO (Common Objects in Context)
+dataset for object detection tasks.
+"""
+
 COCO_80_LABELS = [
     "person",
     "bicycle",
