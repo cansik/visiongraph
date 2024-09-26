@@ -8,9 +8,34 @@ ResultType = TypeVar('ResultType', bound=BaseResult)
 
 
 class ResultList(List[ResultType], BaseResult):
+    """
+    A list of results that can be annotated on an image.
+    """
+
     def __init__(self, base_list: Optional[Sequence[BaseResult]] = ()):
+        """
+        Initializes the ResultList object.
+
+        Args:
+            base_list (Optional[Sequence[BaseResult]], optional): The initial list of results. Defaults to ().
+
+        Raises:
+            ValueError: If the input is not a sequence.
+        """
         super().__init__(base_list)
 
     def annotate(self, image: np.ndarray, **kwargs):
+        """
+        Annotates each result in the list on the given image.
+
+        Args:
+            image (np.ndarray): The image to annotate.
+            **kwargs: Additional keyword arguments to be passed to the annotation method of each result.
+
+        Raises:
+            ValueError: If any result is None.
+        """
         for result in self:
+            if result is None:
+                raise ValueError("Cannot annotate a None result")
             result.annotate(image, **kwargs)

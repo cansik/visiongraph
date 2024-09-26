@@ -9,19 +9,50 @@ from visiongraph.util.MathUtils import constrain
 
 
 class DepthMap(DepthBuffer, ImageResult):
+    """
+    A class representing a depth map image result.
+    """
+
     def __init__(self, buffer: np.ndarray):
+        """
+        Initializes the DepthMap object with the given depth buffer.
+
+        Args:
+            buffer (np.ndarray): The input depth buffer array.
+        """
         self._buffer = buffer
         super().__init__(self.apply_colormap())
 
     @property
     def depth_buffer(self) -> np.ndarray:
+        """
+        Gets the underlying depth buffer array.
+
+        Returns:
+            np.ndarray: The input depth buffer array.
+        """
         return self._buffer
 
     @property
     def depth_map(self) -> np.ndarray:
+        """
+        Gets the output depth map image result.
+
+        Returns:
+            np.ndarray: The output depth map image array.
+        """
         return self.output
 
     def apply_colormap(self, color_map=cv2.COLORMAP_INFERNO) -> np.ndarray:
+        """
+        Applies a colormap to the depth buffer and updates the output.
+
+        Args:
+            color_map (int): The colormap index. Defaults to cv2.COLORMAP_INFERNO.
+
+        Returns:
+            np.ndarray: The colored depth map image array.
+        """
         norm_buffer = self.normalize_buffer()
         self.output = cv2.applyColorMap(norm_buffer, colormap=color_map)
         return self.output
@@ -29,6 +60,17 @@ class DepthMap(DepthBuffer, ImageResult):
     def normalize_buffer(self, bit_depth: int = 8,
                          depth_min: Optional[float] = None,
                          depth_max: Optional[float] = None) -> np.ndarray:
+        """
+        Normalizes the depth buffer values to a specified range.
+
+        Args:
+            bit_depth (int): The number of bits in the output depth data. Defaults to 8.
+            depth_min (float): The minimum allowed depth value. If not provided, uses the actual minimum value.
+            depth_max (float): The maximum allowed depth value. If not provided, uses the actual maximum value.
+
+        Returns:
+            np.ndarray: The normalized depth buffer array.
+        """
         max_val = pow(2, bit_depth)
 
         # normalize prediction
@@ -46,6 +88,16 @@ class DepthMap(DepthBuffer, ImageResult):
             return out.astype(np.uint16)
 
     def distance(self, x: float, y: float) -> float:
+        """
+        Calculates the depth value at a given 2D point.
+
+        Args:
+            x (float): The x-coordinate of the point.
+            y (float): The y-coordinate of the point.
+
+        Returns:
+            float: The corresponding depth value.
+        """
         h, w = self._buffer.shape[:2]
 
         ix = constrain(round(w * x, 0), w - 1)

@@ -30,95 +30,223 @@ DEFAULT_POSE_LANDMARKS = [
 
 
 class PoseLandmarkResult(LandmarkDetectionResult, ABC):
+    """
+    A class to represent the results of landmark detection for poses.
+
+    Inherits from LandmarkDetectionResult and provides properties for pose landmarks.
+    """
+
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
+        """
+        Initializes the PoseLandmarkResult with a score, landmarks, and an optional bounding box.
+
+        Args:
+            score (float): The score representing the confidence of the pose detection.
+            landmarks (vector.VectorNumpy4D): The detected landmarks in a 4D vector format.
+            bounding_box (Optional[BoundingBox2D]): An optional bounding box around the pose.
+        """
         super().__init__(POSE_DETECTION_ID, POSE_DETECTION_NAME, score, landmarks, bounding_box=bounding_box)
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
                  min_score: float = 0, **kwargs):
+        """
+        Annotates the image with the pose landmarks and optional information.
+
+        Args:
+            image (np.ndarray): The image to annotate.
+            show_info (bool): Flag to show additional information.
+            info_text (Optional[str]): Custom text to show on the image.
+            color (Optional[Sequence[int]]): Color for annotation.
+            show_bounding_box (bool): Whether to display the bounding box.
+            min_score (float): Minimum score threshold for displaying landmarks.
+            **kwargs: Additional keyword arguments for customization.
+        """
         super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
                          connections=self.connections, **kwargs)
 
     @property
     def default_landmarks(self) -> List[vector.Vector4D]:
+        """
+        Retrieves the default landmarks for the pose.
+
+        Returns:
+            List[vector.Vector4D]: A list of default pose landmarks.
+        """
         return [getattr(self, lm_name) for lm_name in DEFAULT_POSE_LANDMARKS]
 
     @property
     @abstractmethod
     def connections(self) -> FrozenSet[Tuple[int, int]]:
+        """
+        Abstract property that must return the connections between landmarks as a set of tuples.
+
+        Returns:
+            FrozenSet[Tuple[int, int]]: A frozen set containing pairs of landmark indices that are connected.
+        """
         pass
 
     @property
     @abstractmethod
     def nose(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the nose landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the nose.
+        """
         pass
 
     @property
     @abstractmethod
     def left_eye(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left eye landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left eye.
+        """
         pass
 
     @property
     @abstractmethod
     def right_eye(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right eye landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right eye.
+        """
         pass
 
     @property
     @abstractmethod
     def left_shoulder(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left shoulder landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left shoulder.
+        """
         pass
 
     @property
     @abstractmethod
     def right_shoulder(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right shoulder landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right shoulder.
+        """
         pass
 
     @property
     @abstractmethod
     def left_elbow(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left elbow landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left elbow.
+        """
         pass
 
     @property
     @abstractmethod
     def right_elbow(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right elbow landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right elbow.
+        """
         pass
 
     @property
     @abstractmethod
     def left_wrist(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left wrist landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left wrist.
+        """
         pass
 
     @property
     @abstractmethod
     def right_wrist(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right wrist landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right wrist.
+        """
         pass
 
     @property
     @abstractmethod
     def left_hip(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left hip landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left hip.
+        """
         pass
 
     @property
     @abstractmethod
     def right_hip(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right hip landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right hip.
+        """
         pass
 
     @property
     @abstractmethod
     def left_knee(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left knee landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left knee.
+        """
         pass
 
     @property
     @abstractmethod
     def right_knee(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right knee landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right knee.
+        """
         pass
 
     @property
     @abstractmethod
     def left_ankle(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the left ankle landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the left ankle.
+        """
         pass
 
     @property
     @abstractmethod
     def right_ankle(self) -> vector.Vector4D:
+        """
+        Abstract property that must return the position of the right ankle landmark.
+
+        Returns:
+            vector.Vector4D: The vector position of the right ankle.
+        """
         pass

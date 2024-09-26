@@ -11,7 +11,20 @@ from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox
 
 
 class ObjectDetectionResult(ClassificationResult, Trackable):
+    """
+    Represents the result of an object detection task, including its classification and bounding box.
+    """
+
     def __init__(self, class_id: int, class_name: str, score: float, bounding_box: BoundingBox2D):
+        """
+        Initializes an ObjectDetectionResult instance.
+
+        Args:
+            class_id (int): The ID of the detected class.
+            class_name (str): The name of the detected class.
+            score (float): The confidence score of the detection.
+            bounding_box (BoundingBox2D): The bounding box enclosing the detected object.
+        """
         super().__init__(class_id, class_name, score)
 
         self._tracking_id = -1
@@ -20,6 +33,16 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  color: Optional[Sequence[int]] = None, **kwargs):
+        """
+        Annotates an image with the object detection result.
+
+        Args:
+            image (np.ndarray): The image to annotate.
+            show_info (bool): Flag indicating whether to display additional information.
+            info_text (Optional[str]): Custom text to display on the annotation.
+            color (Optional[Sequence[int]]): Color for the annotation box.
+            **kwargs: Additional keyword arguments for annotation.
+        """
         super().annotate(image, **kwargs)
 
         h, w = image.shape[:2]
@@ -46,38 +69,95 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
 
     @property
     def bounding_box(self) -> BoundingBox2D:
+        """
+        Gets the bounding box of the detected object.
+
+        Returns:
+            BoundingBox2D: The bounding box enclosing the detected object.
+        """
         return self._bounding_box
 
     @bounding_box.setter
     def bounding_box(self, box: BoundingBox2D):
+        """
+        Sets the bounding box of the detected object.
+
+        Args:
+            box (BoundingBox2D): The new bounding box to set.
+        """
         self._bounding_box = box
 
     @property
     def annotation_color(self):
+        """
+        Gets the color used for annotation based on the tracking ID.
+
+        Returns:
+            Sequence[int]: The color RGB values for annotation.
+        """
         return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
 
     @property
     def tracking_id(self) -> int:
+        """
+        Gets the tracking ID of the object.
+
+        Returns:
+            int: The tracking ID of the object.
+        """
         return self._tracking_id
 
     @tracking_id.setter
     def tracking_id(self, value: int):
+        """
+        Sets the tracking ID of the object.
+
+        Args:
+            value (int): The new tracking ID to set.
+        """
         self._tracking_id = value
 
     @property
     def staleness(self) -> int:
+        """
+        Gets the staleness of the object.
+
+        Returns:
+            int: The staleness value indicating how outdated the detection is.
+        """
         return self._staleness
 
     @staleness.setter
     def staleness(self, value: int):
+        """
+        Sets the staleness of the object.
+
+        Args:
+            value (int): The new staleness value to set.
+        """
         self._staleness = value
 
     @property
     def is_stale(self) -> bool:
+        """
+        Checks whether the object detection result is considered stale.
+
+        Returns:
+            bool: True if the staleness is greater than 0, otherwise False.
+        """
         return self._staleness > 0
 
     def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
                         src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
+        """
+        Maps the coordinates of the bounding box from source size to destination size.
+
+        Args:
+            src_size (Union[Sequence[float], Size2D]): The size of the source.
+            dest_size (Union[Sequence[float], Size2D]): The size of the destination.
+            src_roi (Optional[BoundingBox2D]): The region of interest in the source.
+            dest_roi (Optional[BoundingBox2D]): The region of interest in the destination.
+        """
         bbox = self._bounding_box
 
         src_width, src_height = src_size

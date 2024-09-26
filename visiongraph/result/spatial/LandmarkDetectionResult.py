@@ -12,8 +12,25 @@ from visiongraph.util.ResultUtils import bbox_from_landmarks
 
 
 class LandmarkDetectionResult(ObjectDetectionResult):
+    """
+    A class to represent the result of a landmark detection process.
+
+    Inherits from ObjectDetectionResult and contains the detected landmarks,
+    bounding box, and methods for annotation on images.
+    """
+
     def __init__(self, class_id: int, class_name: str, score: float,
                  landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
+        """
+        Initializes the LandmarkDetectionResult with class ID, name, score, landmarks, and an optional bounding box.
+
+        Args:
+            class_id (int): The ID of the detected class.
+            class_name (str): The name of the detected class.
+            score (float): The confidence score of the detection.
+            landmarks (vector.VectorNumpy4D): A vector of detected landmarks.
+            bounding_box (Optional[BoundingBox2D]): An optional bounding box around the detected landmarks.
+        """
         if bounding_box is None:
             bounding_box = bbox_from_landmarks(landmarks)
 
@@ -26,7 +43,23 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                  connections: Optional[List[Tuple[int, int]]] = None,
                  marker_size: int = 3, marker_type: Optional[int] = None, stroke_width: int = 2,
                  landmark_colors: Optional[Union[Sequence[int], Sequence[Sequence[int]]]] = None, **kwargs):
+        """
+        Annotates the given image with landmarks and optional bounding box.
 
+        Args:
+            image (np.ndarray): The image to annotate.
+            show_info (bool): Whether to show additional info.
+            info_text (Optional[str]): Text information to display.
+            color (Optional[Sequence[int]]): Color for drawing. Defaults to the annotation color.
+            show_bounding_box (bool): Whether to show the bounding box.
+            min_score (float): The minimum score for visible landmarks.
+            connections (Optional[List[Tuple[int, int]]]): Connections to draw between landmarks.
+            marker_size (int): Size of the landmark marker.
+            marker_type (Optional[int]): Type of marker for drawing.
+            stroke_width (int): Width of the lines connecting landmarks.
+            landmark_colors (Optional[Union[Sequence[int], Sequence[Sequence[int]]]]): Colors for landmarks.
+            kwargs: Additional parameters for the annotation.
+        """
         if show_bounding_box:
             super().annotate(image, show_info, info_text, color, **kwargs)
 
@@ -68,6 +101,15 @@ class LandmarkDetectionResult(ObjectDetectionResult):
 
     def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
                         src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
+        """
+        Maps the landmark coordinates from source size to destination size optionally using regions of interest.
+
+        Args:
+            src_size (Union[Sequence[float], Size2D]): The size of the source image.
+            dest_size (Union[Sequence[float], Size2D]): The size of the destination image.
+            src_roi (Optional[BoundingBox2D]): The region of interest in the source image.
+            dest_roi (Optional[BoundingBox2D]): The region of interest in the destination image.
+        """
         src_width, src_height = src_size
         dest_width, dest_height = dest_size
 

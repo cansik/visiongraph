@@ -6,5 +6,16 @@ HAND_DETECTION_LABEL = "hand"
 
 
 class HandDetectionResult(ObjectDetectionResult):
-    def __init__(self, score: float, bounding_box: BoundingBox2D):
+    """
+    Represents the result of a hand detection task.
+    """
+
+    def __init__(self, score: float, bounding_box: BoundingBox2D) -> None:
+        """
+        Initializes the HandDetectionResult object.
+
+        Args:
+            score (float): The confidence score of the detection.
+            bounding_box (BoundingBox2D): The bounding box of the detected object.
+        """
         super().__init__(HAND_DETECTION_ID, HAND_DETECTION_LABEL, score, bounding_box)

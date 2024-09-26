@@ -11,31 +11,72 @@ from visiongraph.util.VectorUtils import lerp_vector_2d, lerp_vector_4d
 
 @dataclass
 class IrisParameter:
+    """
+    Represents iris parameters with distance, diameter and position.
+    """
     distance: float
     diameter: float
     position: vector.Vector4D
 
 
 class IrisDistanceResult(BaseResult):
+    """
+    A result class for calculating the distance and center of irises in an image.
+    """
 
     def __init__(self, right_iris: IrisParameter, left_iris: IrisParameter):
+        """
+        Initializes the IrisDistanceResult object with the given irises.
+
+        Args:
+            right_iris (IrisParameter): The parameters of the right iris.
+            left_iris (IrisParameter): The parameters of the left iris.
+        """
         self.right_iris: IrisParameter = right_iris
         self.left_iris: IrisParameter = left_iris
 
     def average_iris_distance(self) -> float:
+        """
+        Calculates and returns the average distance between the camera and both irises.
+
+        Returns:
+            float: The average distance as a float.
+        """
         return float(np.mean([self.right_iris.distance, self.left_iris.distance]))
 
     def head_center(self) -> Vector4D:
+        """
+        Calculates and returns the center position of the face by interpolating between the positions of the left and right irises.
+
+        Returns:
+            Vector4D: The interpolated 3D position as a vector.
+        """
         return lerp_vector_4d(self.left_iris.position, self.right_iris.position, 0.5)
 
     @staticmethod
     def _mark_point(image: np.ndarray, point: vector.Vector2D, radius: float, w: float, h: float):
+        """
+        Draws a circle at the given position on the image with the specified radius.
+
+        Args:
+            image (np.ndarray): The input image.
+            point (Vector2D): The 2D position to draw the circle at.
+            radius (float): The radius of the circle.
+            w (float): The width of the image.
+            h (float): The height of the image.
+        """
         x = int(point.x * w)
         y = int(point.y * h)
 
         cv2.circle(image, (x, y), round(radius), (0, 255, 255), 1)
 
-    def annotate(self, image: np.ndarray, **kwargs):
+    def annotate(self, image: np.ndarray, **kwargs) -> None:
+        """
+        Annotates the given image with the positions of both irises.
+
+        Args:
+            image (np.ndarray): The input image.
+        """
         h, w = image.shape[:2]
 
         # self.face.annotate(image, **kwargs)

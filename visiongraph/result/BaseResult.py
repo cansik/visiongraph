@@ -4,6 +4,17 @@ import numpy as np
 
 
 class BaseResult(ABC):
+    """
+    An abstract base class representing a result object.
+    """
+
     @abstractmethod
-    def annotate(self, image: np.ndarray, **kwargs):
+    def annotate(self, image: np.ndarray, **kwargs) -> None:
+        """
+        Applies annotations to the given image.
+
+        Args:
+            image (np.ndarray): The input image array.
+            **kwargs: Additional keyword arguments for customizing the annotation process.
+        """
         pass

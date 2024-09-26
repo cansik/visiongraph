@@ -8,6 +8,21 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 class BaseObjectDetectionTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]], ABC):
 
+    """
+    Abstract base class for object detection trackers.
+
+    This class serves as a starting point for all object detection trackers. It defines the interface that must be implemented by any concrete tracker.
+    """
+
     @abstractmethod
     def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+        """
+        Processes a list of detected objects.
+
+        Args:
+            data (List[ObjectDetectionResult]): The list of objects to be processed.
+
+        Returns:
+            ResultList[ObjectDetectionResult]: A list of results containing the processed object detection information.
+        """
         pass

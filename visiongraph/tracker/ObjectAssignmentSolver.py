@@ -18,20 +18,18 @@ T = TypeVar("T", bound=ObjectDetectionResult)
 class ObjectAssignmentResult(Generic[T]):
     """
     Data class representing the result of an object assignment process.
-
-    Attributes:
-        assignments (Dict[T, Optional[T]]): A dictionary mapping source objects to destination objects or None.
-        unassigned_destinations (List[T]): A list of destination objects that were not assigned.
-        costs (Dict[T, float]): A dictionary mapping source objects to their respective assignment costs.
     """
     assignments: Dict[T, Optional[T]]
     unassigned_destinations: List[T]
     costs: Dict[T, float]
 
     @property
-    def unassigned_sources(self):
+    def unassigned_sources(self) -> List[T]:
         """
         Returns a list of source objects that were not assigned to any destination.
+
+        Returns:
+            List[T]: A list of unassigned source objects.
         """
         return [k for k, v in self.assignments.items() if v is None]
 
@@ -39,10 +37,6 @@ class ObjectAssignmentResult(Generic[T]):
 class ObjectAssignmentSolver(Generic[T]):
     """
     Solver for assigning source objects to destination objects based on a given cost function.
-
-    Attributes:
-        cost_function (CostFunctionType): A function to compute the cost matrix between sources and destinations.
-        max_cost (float): The maximum allowable cost for an assignment to be considered valid.
     """
 
     def __init__(self, cost_function: Optional[CostFunctionType] = None, max_cost: float = sys.maxsize):

@@ -6,13 +6,34 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class CrowdHumanResult(ObjectDetectionResult):
+    """
+    Represents the result of detecting a crowd human, including information 
+    about the person and their head if available.
+    """
 
     def __init__(self, person: ObjectDetectionResult, head: Optional[ObjectDetectionResult]):
+        """
+        Initializes the CrowdHumanResult with the detected person and an optional head detection.
+
+        Args:
+            person (ObjectDetectionResult): The result of the object detection for the person.
+            head (Optional[ObjectDetectionResult]): The result of the object detection for the head, if detected.
+        """
         super().__init__(person.class_id, person.class_name, person.score, person.bounding_box)
         self.head = head
 
     def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
                  color: Optional[Sequence[int]] = None, **kwargs):
+        """
+        Annotates the given image with the detected person's and their head's information.
+
+        Args:
+            image (np.ndarray): The image to annotate.
+            show_info (bool): Whether to display additional info on the image.
+            info_text (Optional[str]): Custom text to display.
+            color (Optional[Sequence[int]]): Color for the annotations, specified as a sequence of RGB values.
+            **kwargs: Additional keyword arguments for customization.
+        """
         super().annotate(image, show_info, info_text, color, **kwargs)
 
         if self.head is None:

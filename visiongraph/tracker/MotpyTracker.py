@@ -10,6 +10,10 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 
 class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[ObjectDetectionResult]]):
+    """
+    A class to track multiple objects using the MOTPy tracker.
+    """
+
     def __init__(self, delta_time: float = 1.0 / 10.0,
                  min_iou: float = 0.1,
                  multi_match_min_iou: float = 1. + EPS,
@@ -17,7 +21,18 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
                  max_staleness_to_positive_ratio: float = 3.0,
                  max_staleness: float = 12.0,
                  use_predicted_bounding_box: bool = False):
+        """
+        Initializes the MOTPyTracker with given parameters.
 
+        Args:
+            delta_time (float): The time step for tracking.
+            min_steps_alive (int): Minimum steps required for an object to be considered active.
+            min_iou (float): Minimum IoU required for matching detections.
+            multi_match_min_iou (float): Minimum IoU required for multi-match detection.
+            max_staleness_to_positive_ratio (float): Maximum staleness ratio before dropping a track.
+            max_staleness (float): Maximum staleness value.
+            use_predicted_bounding_box (bool): Whether to use predicted bounding box.
+        """
         self.delta_time = delta_time
         self.min_steps_alive = min_steps_alive
         self.min_iou = min_iou
@@ -30,6 +45,11 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         self.tracker: Optional[MultiObjectTracker] = None
 
     def setup(self):
+        """
+        Sets up the MOTPy tracker with given parameters.
+
+        If the tracker is not initialized, it creates a new MultiObjectTracker instance.
+        """
         if self.tracker is None:
             self.tracker = MultiObjectTracker(dt=self.delta_time,
                                               tracker_kwargs={'max_staleness': self.max_staleness},
@@ -37,6 +57,15 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
                                                                   'multi_match_min_iou': self.multi_match_min_iou})
 
     def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+        """
+        Processes the given object detection results and returns the tracked objects.
+
+        Args:
+            data (List[ObjectDetectionResult]): The list of object detection results.
+
+        Returns:
+            ResultList[ObjectDetectionResult]: The list of tracked object detection results.
+        """
         detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True), reference=d)
                       for d in data]
         self.tracker.step(detections)
@@ -56,6 +85,9 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         return results
 
     def release(self):
+        """
+        Releases the MOTPy tracker.
+        """
         self.tracker = None
 
     def configure(self, args):
@@ -63,4 +95,10 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the parser for configuring the MOTPy tracker.
+
+        Args:
+            parser (ArgumentParser): The parser instance.
+        """
         pass

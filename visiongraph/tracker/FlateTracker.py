@@ -31,6 +31,14 @@ class FlateTracker(BaseObjectDetectionTracker):
     """
 
     def __init__(self, max_cost: float = 0.2, min_alive: int = 0, max_lost: int = 5):
+        """
+        Initializes the FlateTracker with specified parameters.
+
+        Args:
+            max_cost (float): Maximum cost for a trackable match.
+            min_alive (int): Minimum number of frames a track must be visible to be considered alive.
+            max_lost (int): Maximum number of frames a track can be lost before it is removed.
+        """
         self.max_cost: float = max_cost
 
         self.min_alive: int = min_alive
@@ -44,15 +52,33 @@ class FlateTracker(BaseObjectDetectionTracker):
         self._unique_id: int = 0
 
     def setup(self):
+        """
+        Prepares the tracker for a new tracking session by clearing existing tracks and resetting the unique ID.
+        """
         self._tracks.clear()
         self._unique_id = 0
 
     def _new_id(self) -> int:
+        """
+        Generates a new unique track ID.
+
+        Returns:
+            int: A new unique track ID.
+        """
         track_id = self._unique_id
         self._unique_id += 1
         return track_id
 
     def process(self, detections: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+        """
+        Processes the given detections to update tracks and create new ones if necessary.
+
+        Args:
+            detections (List[ObjectDetectionResult]): A list of detected objects to process.
+
+        Returns:
+            ResultList[ObjectDetectionResult]: A list of tracked objects.
+        """
         # create cost matrix
         if len(self._tracks) == 0 or len(detections) == 0:
             cost_mat = np.zeros(shape=(0, 0), dtype=float)
@@ -101,6 +127,16 @@ class FlateTracker(BaseObjectDetectionTracker):
 
     @staticmethod
     def _l2_cost_function(tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]) -> np.ndarray:
+        """
+        Computes the L2 cost matrix between tracks and detections based on their center positions.
+
+        Args:
+            tracks (List[ObjectDetectionResult]): A list of tracked object detection results.
+            detections (List[ObjectDetectionResult]): A list of detected object results.
+
+        Returns:
+            np.ndarray: The L2 cost matrix representing distances between tracks and detections.
+        """
         track_centers = np.array([vector_as_list(h.bounding_box.center) for h in tracks], dtype=float)
         detection_centers = np.array([vector_as_list(h.bounding_box.center) for h in detections], dtype=float)
 
@@ -109,6 +145,16 @@ class FlateTracker(BaseObjectDetectionTracker):
 
     @staticmethod
     def _iou_cost_function(tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]) -> np.ndarray:
+        """
+        Computes the Intersection over Union (IoU) cost matrix between tracks and detections.
+
+        Args:
+            tracks (List[ObjectDetectionResult]): A list of tracked object detection results.
+            detections (List[ObjectDetectionResult]): A list of detected object results.
+
+        Returns:
+            np.ndarray: The IoU cost matrix representing the overlap between tracks and detections.
+        """
         cost_mat = np.zeros((len(tracks), len(detections)), dtype=float)
 
         for y, track in enumerate(tracks):
@@ -118,15 +164,30 @@ class FlateTracker(BaseObjectDetectionTracker):
         return cost_mat
 
     def release(self):
+        """
+        Releases resources and clears all tracks.
+        """
         self._tracks.clear()
 
     def configure(self, args):
+        """
+        Configures the tracker with parameters from the provided argument parser.
+
+        Args:
+            args: Argument parser containing configuration parameters.
+        """
         self.max_cost = self._get_param(args, "tracker_max_cost", self.max_cost)
         self.min_alive = self._get_param(args, "tracker_min_alive", self.min_alive)
         self.max_lost = self._get_param(args, "tracker_max_lost", self.max_lost)
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds command line parameters for configuring the tracker.
+
+        Args:
+            parser (ArgumentParser): The argument parser to add parameters to.
+        """
         parser.add_argument("--tracker-max-cost", type=float, default=0.2, help="Max cost for trackable match.")
         parser.add_argument("--tracker-min-alive", type=int, default=0, help="Min frames trackable visible.")
         parser.add_argument("--tracker-max-lost", type=int, default=5, help="Max frames trackable not visible.")
