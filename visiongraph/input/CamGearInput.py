@@ -9,16 +9,36 @@ from visiongraph.input.VideoCaptureInput import VideoCaptureInput
 
 
 class CamGearInput(VideoCaptureInput):
+    """
+    A class that handles video capture input from a CamGear source.
+    This class extends the VideoCaptureInput to include specific
+    setup and management for CamGear inputs.
+    """
+
     def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
                  loop: bool = True, fps_lock: bool = False, stream_mode: bool = False):
-        super().__init__(channel, input_skip, loop, fps_lock)
+        """
+        Initializes the CamGearInput with the given parameters.
 
+        Args:
+            channel (Union[str, int], optional): The input channel for video capture (default is 0).
+            input_skip (int, optional): The milliseconds to skip in the video stream (default is -1).
+            loop (bool, optional): Indicates whether to loop the video (default is True).
+            fps_lock (bool, optional): Indicates whether to lock to a specific frames per second (default is False).
+            stream_mode (bool, optional): Indicates whether the capture is in stream mode (default is False).
+        """
+        super().__init__(channel, input_skip, loop, fps_lock)
         self.stream_mode: bool = stream_mode
         self.input_options = {}
 
         self._cap: Optional[CamGear] = None
 
     def _setup_cap(self):
+        """
+        Sets up the video capture device with the specified options.
+        Configures resolution, frames per second, and input skipping.
+        Starts the CamGear capture.
+        """
         if str(self.channel).isnumeric():
             # probably a webcam input
             self.input_options.update({
@@ -41,14 +61,37 @@ class CamGearInput(VideoCaptureInput):
         self.fps = self._cap.framerate
 
     def _release_cap(self):
+        """
+        Releases the captured video device.
+        Stops the CamGear capture.
+        """
         self._cap.stop()
 
     def _is_cap_open(self) -> bool:
+        """
+        Checks if the video capture device is open.
+
+        Returns:
+            bool: True if the capture device is open, False otherwise.
+        """
         return self._cap is not None and self._cap.stream.isOpened()
 
     def _read_next_frame(self) -> Tuple[bool, Optional[np.ndarray]]:
+        """
+        Reads the next frame from the video capture.
+
+        Returns:
+            Tuple[bool, Optional[np.ndarray]]: A tuple containing a boolean indicating
+            if the frame was read successfully and the frame as a NumPy array if successful.
+        """
         frame = self._cap.read()
         return frame is not None, frame
 
     def _skip_to_frame(self, frame_position: int):
+        """
+        Skips to a specific frame position in the video stream.
+
+        Args:
+            frame_position (int): The position of the frame to skip to.
+        """
         self._cap.stream.set(cv2.CAP_PROP_POS_FRAMES, frame_position)

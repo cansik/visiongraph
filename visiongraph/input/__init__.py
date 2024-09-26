@@ -53,5 +53,16 @@ except ImportError as ex:
 
 def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,
                            add_params: bool = True):
+    """
+    Adds input step choices to the given parser.
+
+    This function modifies the provided parser to include choices for input providers. 
+    It uses predefined input providers which are conditionally imported based on availability.
+
+    Args:
+        parser (Union[argparse.ArgumentParser, _ArgumentGroup]): The parser or argument group to which the input step choices will be added.
+        default (Union[int, str], optional): The default value for the input choice. Default is 0.
+        add_params (bool, optional): A flag indicating whether to add additional parameters for the input choice. Default is True.
+    """
     add_step_choice_argument(parser, InputProviders, "--input", help="Image input provider",
                              default=default, add_params=add_params)

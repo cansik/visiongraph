@@ -19,7 +19,16 @@ class OakDFrameAlignment(Enum):
 
 
 class OakDInput(DepthAIBaseInput, BaseDepthCamera):
+    """
+    A class to handle input from the Oak-D camera, managing both infrared 
+    and depth camera functionalities.
+    """
+
     def __init__(self):
+        """
+        Initializes the OakDInput object, setting up camera properties and 
+        internal states.
+        """
         super().__init__()
 
         self.color_sensor_resolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
@@ -60,6 +69,10 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self._last_depth_frame: Optional[np.ndarray] = None
 
     def pre_start_setup(self):
+        """
+        Performs setup procedures before starting the camera pipeline, 
+        such as enabling depth and configuring infrared settings.
+        """
         if self.use_depth_as_input:
             self.enable_depth = True
 
@@ -109,6 +122,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
             self.depth_node.depth.link(self.depth_x_out.input)
 
     def setup(self):
+        """
+        Initializes output queues and camera settings after the pipeline is ready.
+        """
         super().setup()
 
         self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name,
@@ -124,6 +140,13 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
 
     def read(self) -> (int, Optional[np.ndarray]):
+        """
+        Reads the most recent infrared and depth frames from the respective queues.
+
+        Returns:
+            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the image 
+            data (either infrared or RGB), or depth data if enabled.
+        """
         super().read()
 
         if self.use_infrared:
@@ -145,6 +168,16 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         return self._post_process(self._last_ts, self._last_rgb_frame)
 
     def distance(self, x: float, y: float) -> float:
+        """
+        Calculates the distance in meters from the camera to a certain point using the depth data.
+
+        Args:
+            x (float): The x-coordinate in the image.
+            y (float): The y-coordinate in the image.
+
+        Returns:
+            float: The distance in meters, or -1 if the device is not initialized.
+        """
         if self.device is None:
             return -1
 
@@ -158,41 +191,96 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     @property
     def depth_buffer(self) -> np.ndarray:
+        """
+        Provides access to the last captured depth frame.
+
+        Returns:
+            np.ndarray: The last depth frame.
+        """
         return self._last_depth_frame
 
     @property
     def depth_map(self) -> np.ndarray:
+        """
+        Generates a color-mapped depth representation for visualization.
+
+        Returns:
+            np.ndarray: The colorized depth map.
+        """
         dmap = self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
         return dmap
 
     @property
     def ir_laser_dot_projector_intensity(self):
+        """
+        Gets the intensity of the infrared laser dot projector.
+
+        Returns:
+            float: The current intensity level.
+        """
         return self._ir_laser_dot_projector_intensity
 
     @ir_laser_dot_projector_intensity.setter
     def ir_laser_dot_projector_intensity(self, value: int):
+        """
+        Sets the intensity of the infrared laser dot projector.
+
+        Args:
+            value (int): The desired intensity level.
+        """
         if self.device is not None:
             self.device.setIrLaserDotProjectorIntensity(value)
             self._ir_laser_dot_projector_intensity = value
 
     @property
     def ir_flood_light_intensity(self):
+        """
+        Gets the intensity of the infrared flood light.
+
+        Returns:
+            float: The current intensity level.
+        """
         return self._ir_laser_dot_projector_intensity
 
     @ir_flood_light_intensity.setter
     def ir_flood_light_intensity(self, value: int):
+        """
+        Sets the intensity of the infrared flood light.
+
+        Args:
+            value (int): The desired intensity level.
+        """
         if self.device is not None:
             self.device.setIrFloodLightIntensity(value)
             self._ir_flood_light_intensity = value
 
     def pre_process_image(self, image: np.ndarray,
                           stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Pre-processes the input image based on the specified stream type.
+
+        Args:
+            image (np.ndarray): The raw image to be processed.
+            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+
+        Returns:
+            Optional[np.ndarray]: The processed image, or None if no processing is needed.
+        """
         if stream_type == CameraStreamType.Depth:
             return self._colorize(image, (0, 12000), cv2.COLORMAP_JET)
 
         return image
 
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Retrieves the raw image data based on the specified stream type.
+
+        Args:
+            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+
+        Returns:
+            Optional[np.ndarray]: The raw image data, or None if the stream type is invalid.
+        """
         if stream_type == CameraStreamType.Depth:
             return self.depth_buffer
         elif stream_type == CameraStreamType.Infrared:
@@ -203,6 +291,12 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         return None
 
     def configure(self, args: Namespace):
+        """
+        Configures the OakDInput settings based on the provided command-line arguments.
+
+        Args:
+            args (Namespace): The command-line arguments for configuration.
+        """
         super().configure(args)
 
         if self.use_infrared:

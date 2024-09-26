@@ -2,8 +2,8 @@ from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace, ArgumentError
 from typing import Optional, List, Callable
 
-import numpy as np
 import cv2
+import numpy as np
 
 from visiongraph.GraphNode import GraphNode, InputType, OutputType
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -13,8 +13,15 @@ from visiongraph.util.ArgUtils import add_dict_choice_argument
 
 
 class BaseInput(GraphNode[None, np.ndarray], ABC):
+    """
+    Abstract base class for input sources that provide images for processing.
+    """
+
     @abstractmethod
     def __init__(self):
+        """
+        Initializes the BaseInput object with default parameters.
+        """
         self.width: int = 640
         self.height: int = 480
         self.fps: float = 30.0
@@ -31,13 +38,39 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
 
     @abstractmethod
     def read(self) -> (int, Optional[np.ndarray]):
+        """
+        Reads a frame from the input source.
+
+        Returns:
+            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the image read from the input source.
+        """
         pass
 
     def process(self, data: InputType) -> OutputType:
+        """
+        Processes the input data and returns the corresponding image.
+
+        Args:
+            data (InputType): The input data to be processed.
+
+        Returns:
+            OutputType: The processed image.
+        """
         ts, image = self.read()
         return image
 
     def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
+        """
+        Applies the processing pipeline on the input image including pre-processing, cropping, masking, 
+        rotation, and flipping.
+
+        Args:
+            ts (int): The timestamp associated with the image.
+            image (Optional[np.ndarray]): The image to be processed.
+
+        Returns:
+            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the processed image.
+        """
         if image is None:
             return ts, image
 
@@ -72,6 +105,12 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
 
     @abstractmethod
     def configure(self, args: Namespace):
+        """
+        Configures the input source based on command-line arguments.
+
+        Args:
+            args (Namespace): The command-line arguments namespace containing configuration parameters.
+        """
         self.width, self.height = args.input_size
         self.fps = float(args.input_fps)
         self.rotate = args.input_rotate
@@ -90,6 +129,12 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
     @staticmethod
     @abstractmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds command-line arguments for input source configuration to the argument parser.
+
+        Args:
+            parser (ArgumentParser): The argument parser to which the input parameters will be added.
+        """
         try:
             parser.add_argument("--input-size", default=[640, 480], type=int, nargs=2, metavar=("width", "height"),
                                 help="Requested input media size.")

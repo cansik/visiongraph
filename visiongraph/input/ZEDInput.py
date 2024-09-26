@@ -10,13 +10,27 @@ from visiongraph.model.CameraStreamType import CameraStreamType
 
 
 class ZEDCapture:
+    """
+    A class for capturing ZED camera data.
+    """
     timestamp: float = 0
     left_image: sl.Mat = sl.Mat()
     depth: sl.Mat = sl.Mat()
 
 
 class ZEDInput(BaseDepthCamera):
+    """
+    A class for handling the ZED camera input.
+
+    Inherits from BaseDepthCamera to provide depth camera functionalities.
+    """
+
     def __init__(self):
+        """
+        Initializes the ZEDInput object and sets up the ZED camera parameters.
+
+        This includes setting resolution, frame rate, depth mode, and measurement units.
+        """
         super().__init__()
 
         self.camera = sl.Camera()
@@ -35,12 +49,24 @@ class ZEDInput(BaseDepthCamera):
         self._last_color_frame: Optional[np.ndarray] = None
 
     def setup(self):
+        """
+        Opens the ZED camera with the defined initialization parameters.
+
+        Raises:
+            Exception: If the camera fails to open.
+        """
         err = self.camera.open(self.init_params)
         if err != sl.ERROR_CODE.SUCCESS:
             raise Exception(f"Could not start ZED camera: {err}")
         print("camera has been opened")
 
     def read(self) -> (int, Optional[np.ndarray]):
+        """
+        Captures the next frame from the ZED camera.
+
+        Returns:
+            Tuple[int, Optional[np.ndarray]]: A tuple containing a status code and the captured frame as a numpy array.
+        """
         err = self.camera.grab(self.runtime_parameters)
         if err != sl.ERROR_CODE.SUCCESS:
             return 0, None
@@ -56,9 +82,22 @@ class ZEDInput(BaseDepthCamera):
         return 0, frame
 
     def release(self):
+        """
+        Closes the ZED camera when done.
+        """
         self.camera.close()
 
     def distance(self, x: float, y: float) -> float:
+        """
+        Calculates the distance to a point in the depth frame.
+
+        Args:
+            x (float): The x-coordinate of the point in the depth frame.
+            y (float): The y-coordinate of the point in the depth frame.
+
+        Returns:
+            float: The distance to the point in meters or -1 if not successful.
+        """
         if not self.camera.is_opened():
             return -1
 
@@ -75,53 +114,134 @@ class ZEDInput(BaseDepthCamera):
 
     @property
     def depth_buffer(self) -> np.ndarray:
+        """
+        Returns the depth buffer as a numpy array.
+
+        Returns:
+            np.ndarray: The depth buffer data.
+        """
         return self.capture.depth.get_data()
 
     @property
     def depth_map(self) -> np.ndarray:
+        """
+        Generates a colorized depth map from the depth buffer.
+
+        Returns:
+            np.ndarray: A colorized depth map.
+        """
         return self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
 
     @property
     def gain(self) -> int:
+        """
+        Gets the current gain setting of the camera.
+
+        Returns:
+            int: The current gain value.
+        """
         return self.camera.get_camera_settings(sl.VIDEO_SETTINGS.GAIN)
 
     @gain.setter
     def gain(self, value: int):
+        """
+        Sets the gain for the camera.
+
+        Args:
+            value (int): The desired gain value.
+        """
         self.camera.set_camera_settings(sl.VIDEO_SETTINGS.GAIN, int(value))
 
     @property
     def exposure(self) -> int:
+        """
+        Gets the current exposure setting of the camera.
+
+        Returns:
+            int: The current exposure value.
+        """
         return self.camera.get_camera_settings(sl.VIDEO_SETTINGS.EXPOSURE)
 
     @exposure.setter
     def exposure(self, value: int):
+        """
+        Sets the exposure for the camera.
+
+        Args:
+            value (int): The desired exposure value.
+        """
         pass
 
     @property
     def enable_auto_exposure(self) -> bool:
+        """
+        Checks if auto exposure is enabled on the camera.
+
+        Returns:
+            bool: True if auto exposure is enabled, False otherwise.
+        """
         pass
 
     @enable_auto_exposure.setter
     def enable_auto_exposure(self, value: bool):
+        """
+        Enables or disables auto exposure for the camera.
+
+        Args:
+            value (bool): True to enable, False to disable auto exposure.
+        """
         pass
 
     @property
     def enable_auto_white_balance(self) -> bool:
+        """
+        Checks if auto white balance is enabled on the camera.
+
+        Returns:
+            bool: True if auto white balance is enabled, False otherwise.
+        """
         pass
 
     @enable_auto_white_balance.setter
     def enable_auto_white_balance(self, value: bool):
+        """
+        Enables or disables auto white balance for the camera.
+
+        Args:
+            value (bool): True to enable, False to disable auto white balance.
+        """
         pass
 
     @property
     def white_balance(self) -> int:
+        """
+        Gets the current white balance setting of the camera.
+
+        Returns:
+            int: The current white balance value.
+        """
         pass
 
     @white_balance.setter
     def white_balance(self, value: int):
+        """
+        Sets the white balance for the camera.
+
+        Args:
+            value (int): The desired white balance value.
+        """
         pass
 
     def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        """
+        Retrieves the camera matrix for the specified stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of the camera stream (Color or Depth).
+
+        Returns:
+            np.ndarray: The camera matrix as a 3x3 numpy array.
+        """
         cam = self._get_camera_params()
         return np.array([
             [cam.fx, 0, cam.cx],
@@ -130,10 +250,25 @@ class ZEDInput(BaseDepthCamera):
         ], dtype=float)
 
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        """
+        Retrieves the fisheye distortion coefficients for the specified stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of the camera stream (Color or Depth).
+
+        Returns:
+            np.ndarray: The distortion coefficients as a numpy array.
+        """
         cam = self._get_camera_params()
         return cam.disto
 
     def _get_camera_params(self) -> sl.CameraParameters:
+        """
+        Retrieves the camera parameters from the ZED camera.
+
+        Returns:
+            sl.CameraParameters: The parameters for the left camera.
+        """
         info: sl.CameraInformation = self.camera.get_camera_information()
         config: sl.CameraConfiguration = info.camera_configuration
         params: sl.CalibrationParameters = config.calibration_parameters
@@ -143,6 +278,12 @@ class ZEDInput(BaseDepthCamera):
 
     @property
     def serial(self) -> str:
+        """
+        Retrieves the serial number of the ZED camera.
+
+        Returns:
+            str: The serial number of the camera or "none" if it is not opened.
+        """
         if not self.camera.is_opened():
             return "none"
 
@@ -150,12 +291,31 @@ class ZEDInput(BaseDepthCamera):
 
     def pre_process_image(self, image: np.ndarray,
                           stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Pre-processes the input image based on the stream type.
+
+        Args:
+            image (np.ndarray): The input image to be processed.
+            stream_type (CameraStreamType): The type of the camera stream (Color or Depth).
+
+        Returns:
+            Optional[np.ndarray]: The processed image or None if not applicable.
+        """
         if stream_type == CameraStreamType.Depth:
             return self._colorize(image, (0, 12000), cv2.COLORMAP_JET)
 
         return image
 
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Retrieves the raw image from the camera based on the stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of the camera stream (Color or Depth).
+
+        Returns:
+            Optional[np.ndarray]: The raw image as a numpy array or None if not applicable.
+        """
         if stream_type == CameraStreamType.Depth:
             return self.depth_buffer
         elif stream_type == CameraStreamType.Color:

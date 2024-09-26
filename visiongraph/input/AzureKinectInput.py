@@ -16,6 +16,9 @@ from visiongraph.util.TimeUtils import current_millis
 
 
 class AzureKinectInput(BaseDepthCamera):
+    """
+    Azure Kinect DK1 input device based on pyk4a library.
+    """
     _HeightToResolutionMapping = default_value_dict(pyk4a.ColorResolution.RES_720P,
                                                     {
                                                         720: pyk4a.ColorResolution.RES_720P,
@@ -34,6 +37,12 @@ class AzureKinectInput(BaseDepthCamera):
                                              })
 
     def __init__(self, device_id: int = 0):
+        """
+        Initializes the Azure Kinect input stream with specified device ID.
+
+        Args:
+            device_id (int): The ID of the Azure Kinect device to use. Default is 0.
+        """
         super().__init__()
         self.sync_frames: bool = True
         self.align_frames_to_color: bool = False
@@ -75,6 +84,12 @@ class AzureKinectInput(BaseDepthCamera):
         self._last_depth_frame: Optional[np.ndarray] = None
 
     def setup(self, config: Optional[Config] = None):
+        """
+        Sets up the Azure Kinect device by initializing it and configuring settings.
+
+        Args:
+            config (Optional[Config]): Optional configuration object for initializing the device.
+        """
         if self.input_mkv_file is not None:
             logging.info(f"Playing mkv file from {self.input_mkv_file}")
             self._playback = PyK4APlayback(self.input_mkv_file)
@@ -130,6 +145,12 @@ class AzureKinectInput(BaseDepthCamera):
             self._record.create()
 
     def read(self) -> (int, Optional[np.ndarray]):
+        """
+        Reads the next frame from the Azure Kinect device.
+
+        Returns:
+            Tuple[int, Optional[np.ndarray]]: A timestamp and the captured image or None if not available.
+        """
         self._read_next_capture()
         time_stamp = current_millis()
 
@@ -159,6 +180,9 @@ class AzureKinectInput(BaseDepthCamera):
         return self._post_process(time_stamp, image)
 
     def release(self):
+        """
+        Releases the Azure Kinect device resources and stops recording or playback.
+        """
         if self._record is not None:
             self._record.flush()
             self._record.close()
@@ -170,6 +194,16 @@ class AzureKinectInput(BaseDepthCamera):
             self.device.stop()
 
     def distance(self, x: float, y: float) -> float:
+        """
+        Calculates the distance from the camera to a point in the depth frame.
+
+        Args:
+            x (float): The x-coordinate in the depth frame.
+            y (float): The y-coordinate in the depth frame.
+
+        Returns:
+            float: The distance in meters to the specified coordinates.
+        """
         depth_frame = self.capture.depth
         h, w = depth_frame.shape[:2]
 
@@ -194,6 +228,16 @@ class AzureKinectInput(BaseDepthCamera):
 
     @staticmethod
     def _convert_to_bgra_if_required(color_format: ImageFormat, color_image):
+        """
+        Converts the color image to BGRA format if required based on the specified image format.
+
+        Args:
+            color_format (ImageFormat): The format of the input color image.
+            color_image: The color image to convert.
+
+        Returns:
+            The converted color image in BGRA format.
+        """
         if color_format == ImageFormat.COLOR_BGRA32:
             return color_image
 
@@ -214,20 +258,44 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def depth_map(self) -> np.ndarray:
+        """
+        Gets the colorized depth map of the current frame based on clipping values and color map.
+
+        Returns:
+            np.ndarray: The colorized depth map.
+        """
         return self._colorize(self.depth_buffer, (self.depth_min_clipping, self.depth_max_clipping),
                               self.depth_color_map)
 
     @property
     def depth_buffer(self) -> np.ndarray:
+        """
+        Retrieves the current depth buffer array based on frame alignment settings.
+
+        Returns:
+            np.ndarray: The raw depth buffer.
+        """
         if self.align_frames_to_color:
             return self.capture.transformed_depth
         return self.capture.depth
 
     @property
     def device_count(self) -> int:
+        """
+        Gets the number of connected Azure Kinect devices.
+
+        Returns:
+            int: The count of connected devices.
+        """
         return pyk4a.connected_device_count()
 
     def configure(self, args: Namespace):
+        """
+        Configures the Azure Kinect input using command line arguments.
+
+        Args:
+            args (Namespace): The command line arguments to configure the input.
+        """
         super().configure(args)
 
         if args.source is not None:
@@ -255,6 +323,12 @@ class AzureKinectInput(BaseDepthCamera):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds the Azure Kinect input parameters to the argument parser.
+
+        Args:
+            parser (ArgumentParser): The argument parser to add parameters to.
+        """
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
         CommonArgs.add_source_argument(parser)
 
@@ -292,47 +366,119 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def gain(self) -> int:
+        """
+        Gets the current gain setting for the device.
+
+        Returns:
+            int: The current gain setting.
+        """
         return self.device.gain
 
     @gain.setter
     def gain(self, value: int):
+        """
+        Sets the gain for the device.
+
+        Args:
+            value (int): The gain value to set.
+        """
         self.device.gain = value
 
     @property
     def exposure(self) -> int:
+        """
+        Gets the current exposure setting for the device.
+
+        Returns:
+            int: The current exposure setting.
+        """
         return self.device.exposure
 
     @exposure.setter
     def exposure(self, value: int):
+        """
+        Sets the exposure for the device.
+
+        Args:
+            value (int): The exposure value to set.
+        """
         self.device.exposure = value
 
     @property
     def enable_auto_exposure(self) -> bool:
+        """
+        Checks if auto exposure is enabled.
+
+        Returns:
+            bool: True if auto exposure is enabled, False otherwise.
+        """
         return self.device.exposure_mode_auto
 
     @enable_auto_exposure.setter
     def enable_auto_exposure(self, value: bool):
+        """
+        Enables or disables auto exposure.
+
+        Args:
+            value (bool): Flag to enable or disable auto exposure.
+        """
         self.device.exposure_mode_auto = value
 
     @property
     def enable_auto_white_balance(self) -> bool:
+        """
+        Checks if auto white balance is enabled.
+
+        Returns:
+            bool: True if auto white balance is enabled, False otherwise.
+        """
         return self.device.whitebalance_mode_auto
 
     @enable_auto_white_balance.setter
     def enable_auto_white_balance(self, value: bool):
+        """
+        Enables or disables auto white balance.
+
+        Args:
+            value (bool): Flag to enable or disable auto white balance.
+        """
         self.device.whitebalance_mode_auto = value
 
     @property
     def white_balance(self) -> int:
+        """
+        Gets the current white balance setting for the device.
+
+        Returns:
+            int: The current white balance setting.
+        """
         return self.device.whitebalance
 
     @white_balance.setter
     def white_balance(self, value: int):
+        """
+        Sets the white balance for the device.
+
+        Args:
+            value (int): The white balance value to set.
+        """
         value = value // 10 * 10
         self.device.whitebalance = value
 
     @staticmethod
     def _to_k4a_calibration_type(stream: CameraStreamType) -> CalibrationType:
+        """
+        Converts CameraStreamType to PyK4A calibration type.
+
+        Args:
+            stream (CameraStreamType): The camera stream type.
+
+        Returns:
+            CalibrationType: The corresponding calibration type.
+
+        Raises:
+            Exception: If the stream type is not recognized.
+        """
         if stream == CameraStreamType.Color:
             return CalibrationType.COLOR
         elif stream == CameraStreamType.Depth:
@@ -343,15 +489,43 @@ class AzureKinectInput(BaseDepthCamera):
         raise Exception(f"Azure Kinect calibration type {stream} not available.")
 
     def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        """
+        Retrieves the camera matrix for a specified stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of camera stream (Color, Depth, or Infrared).
+
+        Returns:
+            np.ndarray: The camera matrix for the specified stream type.
+        """
         calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_camera_matrix(self._to_k4a_calibration_type(stream_type))
 
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
+        """
+        Retrieves the fisheye distortion coefficients for a specified stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of camera stream (Color, Depth, or Infrared).
+
+        Returns:
+            np.ndarray: The fisheye distortion coefficients for the specified stream type.
+        """
         calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
 
     def pre_process_image(self, image: np.ndarray,
                           stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Pre-processes the input image based on the stream type.
+
+        Args:
+            image (np.ndarray): The image to process.
+            stream_type (CameraStreamType): The type of camera stream (Color, Depth, or Infrared).
+
+        Returns:
+            Optional[np.ndarray]: The processed image after applying colorization if applicable.
+        """
         if stream_type == CameraStreamType.Depth:
             return self._colorize(image, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map)
         elif stream_type == CameraStreamType.Infrared:
@@ -360,6 +534,15 @@ class AzureKinectInput(BaseDepthCamera):
         return image
 
     def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+        """
+        Retrieves the raw image from the specified stream type.
+
+        Args:
+            stream_type (CameraStreamType): The type of camera stream (Color, Depth, or Infrared).
+
+        Returns:
+            Optional[np.ndarray]: The raw image for the specified stream type, or None if unavailable.
+        """
         if stream_type == CameraStreamType.Depth:
             if self.align_frames_to_color:
                 return self.transformed_depth
@@ -380,10 +563,22 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def serial(self) -> str:
+        """
+        Gets the serial number of the connected Azure Kinect device.
+
+        Returns:
+            str: The serial number of the device.
+        """
         return self.device.serial
 
     @property
     def color(self) -> np.ndarray:
+        """
+        Retrieves the color image from the current capture.
+
+        Returns:
+            np.ndarray: The color image.
+        """
         if self._playback is None:
             return self.capture.color
 
@@ -392,6 +587,12 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def transformed_color(self) -> np.ndarray:
+        """
+        Retrieves the transformed color image.
+
+        Returns:
+            np.ndarray: The transformed color image aligned with depth frame.
+        """
         if self._playback is None:
             return self.capture.transformed_color
 
@@ -405,30 +606,72 @@ class AzureKinectInput(BaseDepthCamera):
 
     @property
     def infrared(self) -> np.ndarray:
+        """
+        Retrieves the infrared image from the current capture.
+
+        Returns:
+            np.ndarray: The infrared image.
+        """
         return self.capture.ir
 
     @property
     def transformed_infrared(self) -> np.ndarray:
+        """
+        Retrieves the transformed infrared image.
+
+        Returns:
+            np.ndarray: The transformed infrared image aligned with depth frame.
+        """
         return self.capture.transformed_ir
 
     @property
     def depth(self) -> np.ndarray:
+        """
+        Retrieves the depth image from the current capture.
+
+        Returns:
+            np.ndarray: The depth image.
+        """
         return self.capture.depth
 
     @property
     def transformed_depth(self) -> np.ndarray:
+        """
+        Retrieves the transformed depth image.
+
+        Returns:
+            np.ndarray: The transformed depth image aligned with color frame.
+        """
         return self.capture.transformed_depth
 
     @property
     def is_playback(self):
+        """
+        Checks if the input is currently in playback mode.
+
+        Returns:
+            bool: True if in playback mode, False otherwise.
+        """
         return self._playback is not None
 
     @property
     def playback(self) -> Optional[PyK4APlayback]:
+        """
+        Gets the playback object if available.
+
+        Returns:
+            Optional[PyK4APlayback]: The playback object.
+        """
         return self._playback
 
     @property
     def record_length_ms(self) -> float:
+        """
+        Gets the length of the recording in milliseconds.
+
+        Returns:
+            float: The length of the recording, or -1 if not in playback mode.
+        """
         if self._playback is None:
             logging.warning("Azure Kinect is not a playback device.")
             return -1
@@ -436,6 +679,12 @@ class AzureKinectInput(BaseDepthCamera):
         return self._playback.length / 1000
 
     def seek(self, time_ms: float):
+        """
+        Seeks to a specific time in playback.
+
+        Args:
+            time_ms (float): The time in milliseconds to seek to.
+        """
         if self._playback is None:
             logging.warning("Azure Kinect is not a playback device.")
             return
