@@ -13,19 +13,44 @@ InputType = Optional[Union[np.ndarray, ResultDict, ImageResult]]
 
 
 class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
+    """
+    A graph node that displays an image and waits for user input.
+    """
+
     def __init__(self, title: str = "Image",
                  image_key: str = DEFAULT_IMAGE_KEY,
                  wait_time: int = 1,
                  handle_key_callback: Optional[Callable[[int], None]] = None):
+        """
+        Initializes the ImagePreview node.
+
+        Args:
+            title (str, optional): The window title. Defaults to "Image".
+            image_key (str, optional): The key of the image result. Defaults to DEFAULT_IMAGE_KEY.
+            wait_time (int, optional): The time to wait for user input in milliseconds. Defaults to 1.
+            handle_key_callback (Optional[Callable[[int], None]], optional): A callback function to handle the pressed key. Defaults to None.
+        """
         self.title = title
         self.image_key = image_key
         self.wait_time = wait_time
         self.handle_key_callback = handle_key_callback
 
     def setup(self):
+        """
+        Sets up the OpenCV window.
+        """
         cv2.namedWindow(self.title, cv2.WINDOW_NORMAL or cv2.WINDOW_KEEPRATIO)
 
     def process(self, data: InputType) -> InputType:
+        """
+        Processes the input data and displays the image.
+
+        Args:
+            data (Optional[Union[np.ndarray, ResultDict, ImageResult]]): The input data.
+
+        Returns:
+            InputType: The processed data.
+        """
         image = data
 
         if isinstance(data, ResultDict):
@@ -49,11 +74,26 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         return data
 
     def release(self):
+        """
+        Releases the OpenCV window.
+        """
         cv2.destroyWindow(self.title)
 
     def configure(self, args: Namespace):
+        """
+        Configures the node with the given arguments.
+
+        Args:
+            args (Namespace): The parsed command-line arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the parser.
+
+        Args:
+            parser (ArgumentParser): The parser object.
+        """
         pass

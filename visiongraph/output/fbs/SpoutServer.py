@@ -11,16 +11,40 @@ from visiongraph.output.fbs.FrameBufferSharingServer import FrameBufferSharingSe
 
 
 class SpoutServer(FrameBufferSharingServer):
+    """
+    A class to represent a Spout server with shared frame buffer capabilities.
+    """
+
     def __init__(self, name: str = "SpoutServer"):
+        """
+        Initializes the SpoutServer object with a default name and sets up the context.
+
+        Args:
+            name (str): The name of the Spout server. Defaults to "SpoutServer".
+        """
         super().__init__(name)
         self.ctx: Optional[SpoutGL.SpoutSender] = None
 
     def setup(self):
+        """
+        Sets up the Spout sender and sets its name.
+        """
         # setup spout
         self.ctx = SpoutGL.SpoutSender()
         self.ctx.setSenderName(self.name)
 
     def send(self, frame: np.ndarray, send_alpha: bool = True, flip_texture: bool = False):
+        """
+        Sends a frame to the Spout receiver.
+
+        Args:
+            frame (np.ndarray): The frame to be sent.
+            send_alpha (bool): Whether to send an alpha channel. Defaults to True.
+            flip_texture (bool): Whether to flip the texture. Defaults to False.
+
+        Returns:
+            bool: Whether the image was sent successfully.
+        """
         h, w = frame.shape[:2]
 
         if send_alpha and frame.shape[2] < 4:
@@ -40,11 +64,26 @@ class SpoutServer(FrameBufferSharingServer):
         self.ctx.setFrameSync(self.name)
 
     def release(self):
+        """
+        Releases the Spout sender.
+        """
         self.ctx.releaseSender()
 
     def configure(self, args: Namespace):
+        """
+        Configures the Spout server based on the provided arguments.
+
+        Args:
+            args (Namespace): The parsed command-line arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters to the argument parser for the Spout server.
+
+        Args:
+            parser (ArgumentParser): The argument parser to add parameters to.
+        """
         pass
