@@ -16,9 +16,22 @@ from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmen
 
 class ModNetConfig(Enum):
     ModNetBasic = RepositoryAsset("modnet.onnx")
+    """
+    Enum representing the configuration for ModNet.
+    Contains the path to the basic ModNet model asset.
+    """
 
 
 class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
+    """
+    ModNetEstimator is a specific implementation of InstanceSegmentationEstimator
+    tailored for the ModNet architecture.
+
+    Args:
+        assets (Asset): Assets to be used for inference.
+        engine (InferenceEngine): The inference engine to be used. Default is ONNX.
+    """
+
     def __init__(self, *assets: Asset,
                  engine: InferenceEngine = InferenceEngine.ONNX):
         super().__init__(0.5)
@@ -37,9 +50,21 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         self.mask_threshold: Optional[int] = 127
 
     def setup(self):
+        """
+        Prepares the inference engine for processing.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[InstanceSegmentationResult]:
+        """
+        Processes an input image to perform instance segmentation.
+
+        Args:
+            image (np.ndarray): The input image for segmentation.
+
+        Returns:
+            ResultList[InstanceSegmentationResult]: A list of segmentation results containing masks and bounding boxes.
+        """
         h, w = image.shape[:2]
         im_rw, im_rh = self._get_scale_factor(h, w, self.reference_size)
 
@@ -58,11 +83,24 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         return ResultList([InstanceSegmentationResult(0, "human", 1.0, mask, box)])
 
     def release(self):
+        """
+        Releases resources held by the inference engine.
+        """
         self.engine.release()
 
     @staticmethod
     def _get_scale_factor(im_h, im_w, ref_size):
+        """
+        Computes the scaling factors for the input image dimensions.
 
+        Args:
+            im_h (int): Height of the input image.
+            im_w (int): Width of the input image.
+            ref_size (int): Reference size for scaling.
+
+        Returns:
+            Tuple[int, int]: Scaled width and height.
+        """
         if max(im_h, im_w) < ref_size or min(im_h, im_w) > ref_size:
             if im_w >= im_h:
                 im_rh = ref_size
@@ -80,13 +118,34 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         return im_rw, im_rh
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator with command line arguments.
+
+        Args:
+            args (Namespace): The parsed command line arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds command line parameters for the estimator to the argument parser.
+
+        Args:
+            parser (ArgumentParser): The argument parser to which parameters should be added.
+        """
         pass
 
     @staticmethod
     def create(config: ModNetConfig = ModNetConfig.ModNetBasic) -> "ModNetEstimator":
+        """
+        Creates an instance of ModNetEstimator with the specified configuration.
+
+        Args:
+            config (ModNetConfig): The configuration for the ModNet estimator.
+
+        Returns:
+            ModNetEstimator: An instance of the ModNetEstimator.
+        """
         model = config.value
         return ModNetEstimator(model)

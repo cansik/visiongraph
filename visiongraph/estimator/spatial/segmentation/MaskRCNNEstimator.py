@@ -18,6 +18,10 @@ _IS_NAME = "instance-segmentation-security"
 
 
 class MaskRCNNConfig(Enum):
+    """
+    Enumeration of available configurations for the Mask R-CNN model, including
+    different architectures and precision options.
+    """
     # 0002 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0002.html
     ResNet50_1024x768_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16-int8"), COCO_80_LABELS)
     ResNet50_1024x768_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16"), COCO_80_LABELS)
@@ -46,13 +50,49 @@ class MaskRCNNConfig(Enum):
 
 @dataclass
 class _OutputLayerName:
+    """
+    A class to represent the name and options for an output layer in the
+    Mask R-CNN model.
+
+    Attributes:
+        name (str): The name of the output layer.
+        options (List[str]): A list of additional options for the output layer.
+    """
     name: str
     options: List[str] = field(default_factory=lambda: [])
 
 
 class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
+    """
+    An estimator for instance segmentation using the Mask R-CNN model.
+
+    Inherits from:
+        InstanceSegmentationEstimator[InstanceSegmentationResult]: Base class for
+        instance segmentation estimators.
+
+    Attributes:
+        model (Asset): The model asset used for inference.
+        weights (Asset): The weights asset used for inference.
+        width (Optional[int]): The width of the input image.
+        height (Optional[int]): The height of the input image.
+        labels (List[str]): List of label names for detected classes.
+        device (str): The device used for inference (e.g., "AUTO").
+        engine (Optional[OpenVinoEngine]): The OpenVino engine for inference.
+        output_layer_mapping (Dict[str, _OutputLayerName]): Mapping of output layer names.
+    """
+
     def __init__(self, model: Asset, weights: Asset, labels: List[str],
                  min_score: float = 0.5, device: str = "AUTO"):
+        """
+        Initializes the MaskRCNNEstimator with the specified model, weights, and labels.
+
+        Args:
+            model (Asset): The model asset for instance segmentation.
+            weights (Asset): The weights asset for instance segmentation.
+            labels (List[str]): List of label names for segmentation results.
+            min_score (float, optional): Minimum score for filtering predictions. Defaults to 0.5.
+            device (str, optional): Device for inference (e.g., "AUTO"). Defaults to "AUTO".
+        """
         super().__init__(min_score)
         self.model = model
         self.weights = weights
@@ -74,6 +114,9 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         }
 
     def setup(self):
+        """
+        Sets up the OpenVino engine for inference and configures output layer mappings.
+        """
         self.engine = OpenVinoEngine(self.model, self.weights,
                                      flip_channels=True, device=self.device)
         self.engine.setup()
@@ -89,6 +132,15 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         print(self.output_layer_mapping)
 
     def process(self, data: np.ndarray) -> ResultList[InstanceSegmentationResult]:
+        """
+        Processes the input data through the model and returns segmentation results.
+
+        Args:
+            data (np.ndarray): The input image data as a NumPy array.
+
+        Returns:
+            ResultList[InstanceSegmentationResult]: A list of instance segmentation results.
+        """
         h, w = data.shape[:2]
 
         scale_x = self.width / w
@@ -111,11 +163,29 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         return results
 
     def release(self):
+        """
+        Releases resources associated with the OpenVino engine.
+        """
         self.engine.release()
 
     def _postprocess(self, outputs, scale_x, scale_y, frame_height,
                      frame_width, input_height, input_width, conf_threshold):
+        """
+        Post-processes the model outputs to extract bounding boxes, scores, classes, and masks.
 
+        Args:
+            outputs: The raw outputs from the model.
+            scale_x (float): Scaling factor for the x dimension.
+            scale_y (float): Scaling factor for the y dimension.
+            frame_height (int): Height of the input frame.
+            frame_width (int): Width of the input frame.
+            input_height (int): Height of the input image.
+            input_width (int): Width of the input image.
+            conf_threshold (float): Confidence threshold for filtering predictions.
+
+        Returns:
+            Tuple: A tuple containing scores, classes, boxes, and masks.
+        """
         boxes_name = self.output_layer_mapping["boxes"].name
         scores_name = self.output_layer_mapping["scores"].name
         labels_name = self.output_layer_mapping["labels"].name
@@ -147,6 +217,16 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
 
     @staticmethod
     def _expand_box(box, scale):
+        """
+        Expands a bounding box by a specified scale factor.
+
+        Args:
+            box (np.ndarray): The bounding box to expand.
+            scale (float): The scale factor for expansion.
+
+        Returns:
+            np.ndarray: The expanded bounding box.
+        """
         w_half = (box[2] - box[0]) * .5
         h_half = (box[3] - box[1]) * .5
         x_c = (box[2] + box[0]) * .5
@@ -162,6 +242,18 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
 
     @staticmethod
     def _segm_postprocess(box, raw_cls_mask, im_h, im_w):
+        """
+        Processes the raw mask for segmentation and aligns it with the image.
+
+        Args:
+            box (np.ndarray): The bounding box for the object.
+            raw_cls_mask (np.ndarray): The raw mask for the object class.
+            im_h (int): The height of the original image.
+            im_w (int): The width of the original image.
+
+        Returns:
+            np.ndarray: The processed binary mask.
+        """
         # Add zero border to prevent upsampling artifacts on segment borders.
         raw_cls_mask = np.pad(raw_cls_mask, ((1, 1), (1, 1)), 'constant', constant_values=0)
         extended_box = MaskRCNNEstimator._expand_box(box,
@@ -175,10 +267,20 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         # Put an object mask in an image mask.
         im_mask = np.zeros((im_h, im_w), dtype=np.uint8)
         im_mask[y0:y1, x0:x1] = mask[(y0 - extended_box[1]):(y1 - extended_box[1]),
-                                     (x0 - extended_box[0]):(x1 - extended_box[0])]
+                                (x0 - extended_box[0]):(x1 - extended_box[0])]
         return im_mask
 
     @staticmethod
     def create(config: MaskRCNNConfig = MaskRCNNConfig.EfficientNet_480_FP32) -> "MaskRCNNEstimator":
+        """
+        Creates an instance of the MaskRCNNEstimator using the specified configuration.
+
+        Args:
+            config (MaskRCNNConfig, optional): The configuration to use for the estimator.
+            Defaults to MaskRCNNConfig.EfficientNet_480_FP32.
+
+        Returns:
+            MaskRCNNEstimator: An instance of the MaskRCNNEstimator.
+        """
         model, weights, labels = config.value
         return MaskRCNNEstimator(model, weights, labels)

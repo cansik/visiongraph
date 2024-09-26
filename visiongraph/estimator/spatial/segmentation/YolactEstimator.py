@@ -17,20 +17,47 @@ from visiongraph.util import ImageUtils
 
 
 class YolactConfig(Enum):
+    """
+    Enum containing configuration options for the Yolcat estimator.
+    """
     YolactEdge_MobileNetV2_550 = (RepositoryAsset("yolact_edge_mobilenetv2_550x550.onnx"), COCO_80_LABELS)
 
 
 class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
+    """
+    An instance segmentation estimator using the Yolcat model.
+    """
+
     def __init__(self, model: Asset, labels: List[str], min_score: float = 0.1):
+        """
+        Initializes the Yolcat estimator.
+
+        Args:
+            model (Asset): The ONNX model to be used for inference.
+            labels (List[str]): A list of class names corresponding to each label index.
+            min_score (float, optional): The minimum score required for a detected instance to be considered. Defaults to 0.1.
+        """
         super().__init__(min_score)
 
         self.labels = labels
         self.engine = ONNXVisionEngine(model, flip_channels=True, padding=True)
 
     def setup(self):
+        """
+        Sets up the estimator by calling the setup method of the underlying ONNX engine.
+        """
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[InstanceSegmentationResult]:
+        """
+        Processes the input image and returns a list of instance segmentation results.
+
+        Args:
+            data (np.ndarray): The input image to be processed.
+
+        Returns:
+            ResultList[InstanceSegmentationResult]: A list of instance segmentation results.
+        """
         ih, iw = data.shape[:2]
         outputs = self.engine.process(data)
 
@@ -73,10 +100,23 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         return results
 
     def release(self):
+        """
+        Releases the estimator's resources.
+        """
         self.engine.release()
 
     @staticmethod
     def _crop(bbox, shape):
+        """
+        Crops a region of interest from an image.
+
+        Args:
+            bbox (list): A list containing the coordinates of the top-left and bottom-right corners of the ROI.
+            shape (tuple): The size of the input image.
+
+        Returns:
+            tuple: A tuple containing two slice objects representing the cropped region.
+        """
         x1 = int(max(bbox[0] * shape[1], 0))
         y1 = int(max(bbox[1] * shape[0], 0))
         x2 = int(max(bbox[2] * shape[1], 0))
@@ -85,5 +125,11 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
 
     @staticmethod
     def create(config: YolactConfig = YolactConfig.YolactEdge_MobileNetV2_550) -> "YolcatEstimator":
+        """
+        Creates a new instance of the Yolcat estimator.
+
+        Args:
+            config (YolcatConfig, optional): The configuration option to be used for the estimator. Defaults to YolcatConfig.YolactEdge_MobileNetV2_550.
+        """
         model, labels = config.value
         return YolcatEstimator(model, labels)

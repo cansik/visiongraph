@@ -19,6 +19,9 @@ from visiongraph.util.MathUtils import sigmoid
 
 
 class YOLOv8SegmentationConfig(Enum):
+    """
+    Configuration options for YOLOv8 segmentation models.
+    """
     YOLOv8_SEG_N = RepositoryAsset("yolov8n-seg.onnx"), COCO_80_LABELS
     YOLOv8_SEG_S = RepositoryAsset("yolov8s-seg.onnx"), COCO_80_LABELS
     YOLOv8_SEG_M = RepositoryAsset("yolov8m-seg.onnx"), COCO_80_LABELS
@@ -27,12 +30,30 @@ class YOLOv8SegmentationConfig(Enum):
 
 
 class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationResult], InstanceSegmentationEstimator):
+    """
+    YOLOv8 segmentation estimator for instance segmentation tasks.
+    Inherits from UltralyticsYOLODetector and InstanceSegmentationEstimator.
+    """
 
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3, nms: bool = True,
                  nms_threshold: float = 0.5, nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.ONNX,
                  allowed_classes: Optional[Set[int]] = None, mask_threshold: float = 0.5):
+        """
+        Initializes the YOLOv8SegmentationEstimator.
 
+        Args:
+            assets (Asset): The model assets.
+            labels (List[str]): The list of class labels.
+            min_score (float, optional): Minimum score for detections. Defaults to 0.3.
+            nms (bool, optional): Whether to apply non-maximum suppression. Defaults to True.
+            nms_threshold (float, optional): Threshold for NMS. Defaults to 0.5.
+            nms_eta (Optional[float], optional): Eta parameter for NMS. Defaults to None.
+            nms_top_k (Optional[int], optional): Maximum number of boxes to keep after NMS. Defaults to None.
+            engine (InferenceEngine, optional): The inference engine to use. Defaults to InferenceEngine.ONNX.
+            allowed_classes (Optional[Set[int]], optional): Set of allowed class IDs. Defaults to None.
+            mask_threshold (float, optional): Threshold for mask predictions. Defaults to 0.5.
+        """
         super().__init__(*assets, labels=labels, min_score=min_score, nms=nms, nms_threshold=nms_threshold,
                          nms_eta=nms_eta, nms_top_k=nms_top_k, engine=engine)
 
@@ -40,6 +61,16 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         self.mask_threshold = mask_threshold
 
     def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Filters predictions based on a minimum score.
+
+        Args:
+            predictions (np.ndarray): The predictions to filter.
+            min_score (float): The minimum score threshold.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: Filtered predictions and their corresponding scores.
+        """
         predictions = predictions.T
 
         scores = np.max(predictions[:, 4:4 + len(self.labels)], axis=1)
@@ -48,6 +79,15 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         return predictions, scores[valid_indices]
 
     def process(self, image: np.ndarray) -> ResultList[InstanceSegmentationResult]:
+        """
+        Processes an image to perform instance segmentation.
+
+        Args:
+            image (np.ndarray): The input image.
+
+        Returns:
+            ResultList[InstanceSegmentationResult]: The results of the instance segmentation.
+        """
         ih, iw = image.shape[:2]
         output = self.engine.process(image)
 
@@ -115,6 +155,16 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
 
     @staticmethod
     def _crop(bbox, shape):
+        """
+        Crops a bounding box to fit within the given shape.
+
+        Args:
+            bbox: The bounding box coordinates.
+            shape: The shape of the area to crop.
+
+        Returns:
+            slice: Slices for the cropped area.
+        """
         x1 = int(max(bbox[0] * shape[1], 0))
         y1 = int(max(bbox[1] * shape[0], 0))
         x2 = int(max(bbox[2] * shape[1], 0))
@@ -124,5 +174,14 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
     @staticmethod
     def create(
             config: YOLOv8SegmentationConfig = YOLOv8SegmentationConfig.YOLOv8_SEG_S) -> "YOLOv8SegmentationEstimator":
+        """
+        Creates an instance of YOLOv8SegmentationEstimator using the specified configuration.
+
+        Args:
+            config (YOLOv8SegmentationConfig, optional): The configuration for the estimator. Defaults to YOLOv8SegmentationConfig.YOLOv8_SEG_S.
+
+        Returns:
+            YOLOv8SegmentationEstimator: An instance of the YOLOv8SegmentationEstimator.
+        """
         model, labels = config.value
         return YOLOv8SegmentationEstimator(model, labels=labels)
