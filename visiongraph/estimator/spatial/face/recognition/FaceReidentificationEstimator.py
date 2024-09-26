@@ -14,13 +14,29 @@ from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResul
 
 
 class FaceReidentificationConfig(Enum):
+    """
+    Enumerates possible face re-identification configurations.
+    """
+
     Retail_0095_FP16_INT8 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16-int8")
     Retail_0095_FP16 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16")
     Retail_0095_FP32 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp32")
 
 
 class FaceReidentificationEstimator(FaceRecognitionEstimator):
+    """
+    Estimator for face re-identification tasks.
+    """
+
     def __init__(self, model: Asset, weights: Asset, device: str = "AUTO"):
+        """
+        Initializes the estimator with a given model and weights.
+
+        Args:
+            model (Asset): The OpenVINO model to use.
+            weights (Asset): The OpenVINO weights to use.
+            device (str, optional): The target device for inference. Defaults to "AUTO".
+        """
         super().__init__()
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
 
@@ -34,9 +50,22 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
                                               ], dtype=np.float32)
 
     def setup(self):
+        """
+        Sets up the estimator for inference.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
+        """
+        Processes a given image and optional face landmarks.
+
+        Args:
+            image (np.ndarray): The input image.
+            landmarks (Optional[FaceLandmarkResult], optional): Face landmarks. Defaults to None.
+
+        Returns:
+            EmbeddingResult: The extracted face embedding.
+        """
         image, landmarks = self._pre_process_input(image, landmarks)
         aligned_face, landmark_overlap = self._align_face(image, landmarks, self.normalized_keypoints)
 
@@ -47,17 +76,35 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         return EmbeddingResult(flat_data)
 
     def release(self):
+        """
+        Releases the estimator's resources.
+        """
         self.engine.release()
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator based on given arguments.
+
+        Args:
+            args (Namespace): The input arguments.
+        """
         pass
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters for the estimator to an argument parser.
+        """
         pass
 
     @staticmethod
     def create(config: FaceReidentificationConfig = FaceReidentificationConfig.Retail_0095_FP32) -> \
             "FaceReidentificationEstimator":
+        """
+        Creates a new instance of the estimator based on a given configuration.
+
+        Args:
+            config (FaceReidentificationConfig, optional): The configuration to use. Defaults to FaceReidentificationConfig.Retail_0095_FP32.
+        """
         model, weights = config.value
         return FaceReidentificationEstimator(model, weights)

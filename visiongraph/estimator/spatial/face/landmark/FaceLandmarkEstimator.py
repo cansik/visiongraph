@@ -12,6 +12,23 @@ OutputType = TypeVar('OutputType', bound=FaceLandmarkResult)
 
 
 class FaceLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):
+    """
+    An abstract class to estimate face landmarks from images.
+    
+    This class inherits from both LandmarkEstimator and RoiEstimator,
+    which are not shown in this snippet. It is intended to be subclassed
+    for specific face landmark estimation tasks.
+    """
+
     @abstractmethod
     def process(self, image: np.ndarray) -> ResultList[OutputType]:
+        """
+        Processes the input image to extract face landmarks.
+
+        Args:
+            image (np.ndarray): The input image to be processed.
+
+        Returns:
+            ResultList[OutputType]: A list of face landmark results.
+        """
         pass

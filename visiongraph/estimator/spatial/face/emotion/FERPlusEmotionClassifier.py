@@ -11,9 +11,21 @@ from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionC
 
 
 class FERPlusEmotionClassifier(FaceEmotionEstimator):
+    """
+    A class to represent an example object with a name and a status flag.
+    
+    Provides an implementation of the Face Emotion Estimator using FER+ models.
+    """
 
     def __init__(self, model: Asset = RepositoryAsset("emotion-ferplus-8.onnx"),
                  engine: InferenceEngine = InferenceEngine.ONNX):
+        """
+        Initializes the FERPlusEmotionClassifier object.
+
+        Args:
+            model (Asset): The ONNX model to be used for emotion classification.
+            engine (InferenceEngine): The inference engine type, e.g., ONNX or Tensorflow Lite.
+        """
         super().__init__(0.5)
 
         self.model = model
@@ -26,9 +38,22 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         self.labels = ["neutral", "happiness", "surprise", "sadness", "anger", "disgust", "fear", "contempt"]
 
     def setup(self):
+        """
+        Sets up the inference engine.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> EmotionClassificationResult:
+        """
+        Processes an input image and returns an EmotionClassificationResult object.
+
+        Args:
+            image (np.ndarray): The input image to be processed.
+
+        Returns:
+            EmotionClassificationResult: An object containing the best class index, label,
+                                         probability, and confidence.
+        """
         output = self.engine.process(image)
         probability = softmax(np.squeeze(output[self.engine.output_names[0]]))
         best_index = int(np.argmax(probability))
@@ -41,6 +66,9 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         pass
 
     def release(self):
+        """
+        Releases the inference engine resources.
+        """
         self.engine.release()
 
     def configure(self, args: Namespace):

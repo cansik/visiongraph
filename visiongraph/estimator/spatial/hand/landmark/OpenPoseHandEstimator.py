@@ -17,6 +17,12 @@ OPEN_POSE_KEYPOINT_COUNT = 21
 class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
 
     def __init__(self, min_score: float = 0.5):
+        """
+        Initializes the OpenPoseHandEstimator.
+
+        Args:
+            min_score (float): The minimum score required to detect a hand.
+        """
         super().__init__(min_score)
 
         self.model = RepositoryAsset("hand_pose_deploy.prototxt")
@@ -27,9 +33,24 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         self.network: Optional[cv2.dnn_Net] = None
 
     def setup(self):
+        """
+        Sets up the neural network for hand pose estimation.
+
+        This method initializes the convolutional neural network (CNN) with OpenPose.
+        The CNN is used to detect and estimate the 21 keypoints of the human hand from an input image.
+        """
         self.network = cv2.dnn.readNetFromCaffe(self.model.path, self.weights.path)
 
     def process(self, image: np.ndarray, **kwargs) -> ResultList[OpenPoseHand]:
+        """
+        Processes an input image to detect and estimate the 21 keypoints of a hand.
+
+        Args:
+            image (np.ndarray): The input image to be processed.
+
+        Returns:
+            ResultList[OpenPoseHand]: A list of detected hands with their corresponding pose scores.
+        """
         blob = cv2.dnn.blobFromImage(image, 1.0 / 255, (self.input_size, self.input_size), (0, 0, 0),
                                      swapRB=False, crop=False)
 
@@ -62,7 +83,16 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         return hands
 
     def release(self):
+        """
+        Releases the neural network and its resources.
+        """
         self.network = None
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator with command line arguments.
+
+        Args:
+            args (Namespace): The command line arguments to be used for configuration.
+        """
         super().configure(args)

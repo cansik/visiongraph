@@ -14,6 +14,10 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MediaPipeFaceModel(Enum):
+    """
+    Enum for MediaPipe face detection models.
+    """
+
     Short_Range = 0
     Full_Range = 1
 
@@ -22,18 +26,46 @@ _mp_face_detection = mp.solutions.face_detection
 
 
 class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
+    """
+    A class to represent a MediaPipe face detector.
+    """
 
     def __init__(self, model: MediaPipeFaceModel = MediaPipeFaceModel.Short_Range, min_score: float = 0.5):
+        """
+        Initializes the MediaPipeFaceDetector.
+
+        Args:
+            model (MediaPipeFaceModel): The model used for face detection. Defaults to MediaPipeFaceModel.Short_Range.
+            min_score (float): The minimum score for face detection. Defaults to 0.5.
+        """
+
         super().__init__(min_score)
 
         self.detector: Optional[_mp_face_detection.FaceDetection] = None
         self.model = model
 
     def setup(self):
+        """
+        Sets up the FaceDetection object.
+
+        Returns:
+            None
+        """
+
         self.detector = _mp_face_detection.FaceDetection(model_selection=self.model.value,
                                                          min_detection_confidence=self.min_score)
 
     def process(self, image: np.ndarray) -> ResultList[BlazeFace]:
+        """
+        Processes an image for face detection.
+
+        Args:
+            image (np.ndarray): The input image.
+
+        Returns:
+            ResultList[BlazeFace]: A list of detected faces.
+        """
+
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -57,9 +89,26 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         return faces
 
     def release(self):
+        """
+        Releases the FaceDetection object.
+
+        Returns:
+            None
+        """
+
         self.detector.close()
 
     def configure(self, args: Namespace):
+        """
+        Configures the MediaPipeFaceDetector.
+
+        Args:
+            args (Namespace): The input arguments.
+
+        Returns:
+            None
+        """
+
         super().configure(args)
 
         # todo: implement arg parse

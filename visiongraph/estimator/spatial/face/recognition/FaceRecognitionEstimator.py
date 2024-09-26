@@ -6,23 +6,42 @@ import cv2
 import numpy as np
 
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
-from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
-from visiongraph.result.spatial.face.RegressionFace import RegressionFace
 
 
 class FaceRecognitionEstimator(RoiEstimator, ABC):
-    def __init__(self):
+    """
+    An abstract class for face recognition estimators that process facial images and landmarks.
 
+    Inherits from RoiEstimator to utilize region of interest (ROI) estimation functionality.
+    """
+
+    def __init__(self):
+        """
+        Initializes the FaceRecognitionEstimator with default attributes.
+        """
         self.landmarks_key = "landmarks"
         self._landmarks: Optional[FaceLandmarkResult] = None
 
     def process_detection(self, image: np.ndarray,
                           detection: SpatialCascadeResult, rectified: bool = True) -> EmbeddingResult:
+        """
+        Processes a detected face in the image by extracting and mapping landmarks.
 
+        Args:
+            image (np.ndarray): The input image containing the face.
+            detection (SpatialCascadeResult): The result of a face detection containing bounding box and landmarks.
+            rectified (bool): A flag indicating if the image has been rectified.
+
+        Returns:
+            EmbeddingResult: The result of the embedding after processing the detection.
+
+        Raises:
+            Exception: If the landmarks key is not present in the detection results.
+        """
         if self.landmarks_key not in detection.results:
             raise Exception(f"Expecting landmarks in key '{self.landmarks_key}'")
 
@@ -39,11 +58,30 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
     @abstractmethod
     def process(self, image: np.ndarray,
                 landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
+        """
+        Processes the input image and landmarks to produce an embedding result.
+
+        Args:
+            image (np.ndarray): The input image to process.
+            landmarks (Optional[FaceLandmarkResult]): Optional landmarks to be used during processing.
+
+        Returns:
+            EmbeddingResult: The result of the embedding after processing.
+        """
         pass
 
     def _pre_process_input(self, data: np.ndarray,
                            landmarks: Optional[FaceLandmarkResult] = None) -> Tuple[np.ndarray, FaceLandmarkResult]:
+        """
+        Prepares the input data and landmarks for processing.
 
+        Args:
+            data (np.ndarray): The input data to preprocess.
+            landmarks (Optional[FaceLandmarkResult]): Optional landmarks for the input.
+
+        Returns:
+            Tuple[np.ndarray, FaceLandmarkResult]: The preprocessed data and associated landmarks.
+        """
         if landmarks is None:
             landmarks = self._landmarks
 
@@ -52,7 +90,17 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
     def _align_face(self, image: np.ndarray,
                     landmarks: FaceLandmarkResult,
                     normalized_keypoints: np.ndarray) -> Tuple[np.ndarray, float]:
-        # align face
+        """
+        Aligns the face in the image based on the provided landmarks and normalized keypoints.
+
+        Args:
+            image (np.ndarray): The input image containing the face to be aligned.
+            landmarks (FaceLandmarkResult): The landmarks of the detected face.
+            normalized_keypoints (np.ndarray): The desired normalized keypoints for alignment.
+
+        Returns:
+            Tuple[np.ndarray, float]: The aligned image and the overlap score of the landmarks.
+        """
         src_keypoints = np.array([
             [landmarks.left_eye.x, landmarks.left_eye.y],
             [landmarks.right_eye.x, landmarks.right_eye.y],
@@ -81,6 +129,16 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
     @staticmethod
     def _normalize(array, axis):
+        """
+        Normalizes the input array along the specified axis.
+
+        Args:
+            array (np.ndarray): The input array to normalize.
+            axis (int): The axis along which to normalize the array.
+
+        Returns:
+            Tuple[float, float]: The mean and standard deviation used for normalization.
+        """
         mean = array.mean(axis=axis)
         array -= mean
         std = array.std()
@@ -89,6 +147,19 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
     @staticmethod
     def _get_transform(src, dst):
+        """
+        Computes the transformation matrix to align two sets of points.
+
+        Args:
+            src (np.ndarray): The source points.
+            dst (np.ndarray): The destination points.
+
+        Returns:
+            np.ndarray: The transformation matrix for aligning the points.
+
+        Raises:
+            AssertionError: If the input arrays are not 2D or do not have equal shapes.
+        """
         assert np.array_equal(src.shape, dst.shape) and len(src.shape) == 2, \
             '2d input arrays are expected, got {}'.format(src.shape)
         src_col_mean, src_col_std = FaceRecognitionEstimator._normalize(src, axis=0)

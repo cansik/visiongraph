@@ -15,6 +15,9 @@ BOXES_NAME = "boxes"
 
 
 class OpenVinoFaceConfig(Enum):
+    """
+    Enumeration of available OpenVino face detection model configurations.
+    """
     MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8")
     MobileNetV2_256_FP16 = RepositoryAsset.openVino("face-detection-0200-fp16")
     MobileNetV2_256_FP32 = RepositoryAsset.openVino("face-detection-0200-fp32")
@@ -33,7 +36,22 @@ class OpenVinoFaceConfig(Enum):
 
 
 class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
+    """
+    OpenVino implementation of a face detector using pre-trained models.
+
+    Inherits from the FaceDetector class and uses OpenVino for inference.
+    """
+
     def __init__(self, model: Asset, weights: Asset, min_score: float = 0.5, device: str = "AUTO"):
+        """
+        Initializes the OpenVinoFaceDetector with the specified model and weights.
+
+        Args:
+            model (Asset): The model asset to be used for face detection.
+            weights (Asset): The weights asset associated with the model.
+            min_score (float): The minimum score threshold for detections. Defaults to 0.5.
+            device (str): The device to be used for inference. Defaults to "AUTO".
+        """
         super().__init__(min_score)
 
         self.width: Optional[int] = None
@@ -42,10 +60,22 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         self.engine = OpenVinoEngine(model, weights, device=device)
 
     def setup(self):
+        """
+        Sets up the OpenVino engine and retrieves the input dimensions.
+        """
         self.engine.setup()
         _, _, self.height, self.width = self.engine.first_input_shape
 
     def process(self, data: np.ndarray) -> ResultList[FaceDetectionResult]:
+        """
+        Processes the input data to detect faces and returns the results.
+
+        Args:
+            data (np.ndarray): The input image data in which faces need to be detected.
+
+        Returns:
+            ResultList[FaceDetectionResult]: A list of detected face results.
+        """
         output = self._get_results(self.engine.process(data))
 
         results = ResultList()
@@ -62,6 +92,9 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         return results
 
     def release(self):
+        """
+        Releases resources held by the OpenVino engine.
+        """
         self.engine.release()
 
     def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
@@ -85,5 +118,14 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
 
     @staticmethod
     def create(config: OpenVinoFaceConfig = OpenVinoFaceConfig.MobileNetV2_416_FP32) -> "OpenVinoFaceDetector":
+        """
+        Creates an instance of OpenVinoFaceDetector based on the specified configuration.
+
+        Args:
+            config (OpenVinoFaceConfig): The configuration to use for the face detector. Defaults to MobileNetV2_416_FP32.
+
+        Returns:
+            OpenVinoFaceDetector: An instance of OpenVinoFaceDetector.
+        """
         model, weights = config.value
         return OpenVinoFaceDetector(model, weights)

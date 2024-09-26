@@ -14,6 +14,9 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class HandModelComplexity(Enum):
+    """
+    Enum to represent the complexity of the hand model.
+    """
     Light = 0
     Normal = 1
 
@@ -22,12 +25,25 @@ _mp_hands = mp.solutions.hands
 
 
 class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
+    """
+    A class to estimate hands using MediaPipe hand tracking.
+    """
 
     def __init__(self, complexity: HandModelComplexity = HandModelComplexity.Normal,
                  min_score: float = 0.5,
                  min_tracking_confidence: float = 0.5,
                  static_image_mode: bool = False,
                  max_num_hands: int = 2):
+        """
+        Initializes the MediaPipe hand estimator.
+
+        Args:
+            complexity (HandModelComplexity): The model complexity.
+            min_score (float): The minimum detection confidence.
+            min_tracking_confidence (float): The minimum tracking confidence.
+            static_image_mode (bool): Whether the image mode is static.
+            max_num_hands (int): The maximum number of hands to track.
+        """
         super().__init__(min_score)
 
         self.static_image_mode = static_image_mode
@@ -37,6 +53,9 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         self.detector: Optional[_mp_hands.Hands] = None
 
     def setup(self):
+        """
+        Initializes the MediaPipe hand detector.
+        """
         self.detector = _mp_hands.Hands(static_image_mode=self.static_image_mode,
                                         model_complexity=self.complexity.value,
                                         min_detection_confidence=self.min_score,
@@ -44,6 +63,16 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
                                         max_num_hands=self.max_num_hands)
 
     def process(self, image: np.ndarray, **kwargs) -> ResultList[BlazeHand]:
+        """
+        Processes an image and returns a list of detected hands.
+
+        Args:
+            image (np.ndarray): The input image.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            ResultList[BlazeHand]: A list of detected BlazeHands.
+        """
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -57,6 +86,7 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
 
         hands: ResultList[BlazeHand] = ResultList()
         for landmarks, handedness in raw_hands:
+            # Convert landmarks to 3D vectors
             landmarks = [(lm.x, lm.y, lm.z, 1.0) for lm in landmarks.landmark]
             class_res = handedness.classification[0]
             handedness = Handedness.LEFT if class_res.label == "Left" else Handedness.RIGHT
@@ -65,9 +95,18 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         return hands
 
     def release(self):
+        """
+        Releases the MediaPipe hand detector.
+        """
         self.detector.close()
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator based on the provided arguments.
+
+        Args:
+            args (Namespace): The configuration namespace.
+        """
         super().configure(args)
 
         # todo: implement arg parse

@@ -11,6 +11,22 @@ OutputType = TypeVar('OutputType', bound=HandDetectionResult)
 
 
 class HandDetector(ObjectDetector[OutputType], ABC):
+    """
+    Abstract base class for hand detectors.
+    
+    This class provides a common interface for different hand detection algorithms, 
+    allowing users to easily switch between them based on their specific requirements.
+    """
+
     @abstractmethod
     def process(self, data: np.ndarray) -> ResultList[OutputType]:
+        """
+        Processes the input data using the detector's algorithm.
+
+        Args:
+            data (np.ndarray): The input data to be processed.
+
+        Returns:
+            ResultList[OutputType]: A list of detection results.
+        """
         pass

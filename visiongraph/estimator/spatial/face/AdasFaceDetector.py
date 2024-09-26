@@ -8,11 +8,23 @@ from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFace
 
 
 class AdasFaceConfig(Enum):
+    """
+    Enumerates possible configuration options for the Adas Face detector.
+    """
     MobileNet_672x384_FP32 = RepositoryAsset.openVino("face-detection-adas-0001")
 
 
 class AdasFaceDetector(OpenVinoFaceDetector):
     def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
+        """
+        Extracts face detection results from the output of the detector.
+
+        Args:
+            outputs (Dict[str, np.ndarray]): A dictionary containing the output of the model.
+
+        Returns:
+            List[Tuple[float, float, float, float, float]]: A list of tuples containing the score and bounding box coordinates.
+        """
         output = outputs[self.engine.output_names[0]]
 
         results = []
@@ -31,5 +43,14 @@ class AdasFaceDetector(OpenVinoFaceDetector):
 
     @staticmethod
     def create(config: AdasFaceConfig = AdasFaceConfig.MobileNet_672x384_FP32) -> "AdasFaceDetector":
+        """
+        Creates a new instance of the Adas Face detector.
+
+        Args:
+            config (AdasFaceConfig): The configuration for the detector. Defaults to MobileNet_672x384_FP32.
+
+        Returns:
+            "AdasFaceDetector": A new instance of the Adas Face detector.
+        """
         model, weights = config.value
         return AdasFaceDetector(model, weights)
