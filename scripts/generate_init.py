@@ -25,7 +25,7 @@ class GenerateInitPy(distutils.cmd.Command):
                 )
                 lines.append(line)
             else:
-                lines.append(import_line)
+                lines.append(f"{import_line}  # noqa")
 
         # append header, imports and empty line at the end
         lines.insert(0,
