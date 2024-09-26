@@ -28,6 +28,17 @@ class _RawMobileHumanPoseResult:
 
 
 class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
+    """
+    A class for estimating human poses in images using a top-down approach.
+
+    Args:
+        human_detector (ObjectDetector): An object detector for identifying humans in images.
+        model (Asset): The ONNX model asset for human pose estimation.
+        intrinsics (Optional[CameraIntrinsics]): Camera intrinsic parameters.
+        abs_depth (float): Absolute depth value for the 3D pose estimation.
+        min_score (float): Minimum score threshold for detected poses.
+    """
+
     def __init__(self,
                  human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
                  model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx"),
@@ -54,6 +65,10 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         self.output_height: Optional[int] = None
 
     def setup(self):
+        """
+        Sets up the inference session for the pose estimation model.
+        Initializes input and output parameters based on the model specifications.
+        """
         super().setup()
         self.session = rt.InferenceSession(self.model.path,
                                            providers=["CUDAExecutionProvider",
@@ -81,9 +96,30 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         self.output_width = output_shape[3]
 
     def _pre_landmark(self, image: np.ndarray) -> np.ndarray:
+        """
+        Prepares the image for landmark detection by converting it to RGB format.
+
+        Args:
+            image (np.ndarray): The input image in BGR format.
+
+        Returns:
+            np.ndarray: The image converted to RGB format.
+        """
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
     def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> ResultList[OutputType]:
+        """
+        Detects landmarks for a region of interest (ROI) in the given image.
+
+        Args:
+            image (np.ndarray): The input image.
+            roi (np.ndarray): The region of interest where landmarks need to be detected.
+            xs (int): The x-coordinate offset for the ROI.
+            ys (int): The y-coordinate offset for the ROI.
+
+        Returns:
+            ResultList[OutputType]: A list of detected human poses with their scores and coordinates.
+        """
         h, w = image.shape[:2]
         rh, rw = roi.shape[:2]
 
@@ -116,6 +152,15 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         return ResultList([MobileHumanPose(max_score, VectorUtils.list_of_vector4D(landmarks))])
 
     def _post_process(self, output: np.ndarray) -> _RawMobileHumanPoseResult:
+        """
+        Post-processes the model output to extract 2D and 3D pose data.
+
+        Args:
+            output (np.ndarray): The raw output from the model.
+
+        Returns:
+            _RawMobileHumanPoseResult: An object containing 2D poses, 3D poses, and scores.
+        """
         heatmaps = output.reshape((-1, MOBILE_HUMAN_POSE_JOINT_NUM,
                                    self.output_depth * self.output_height * self.output_width))
         heatmaps = softmax(heatmaps, 2)
@@ -163,5 +208,8 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         return _RawMobileHumanPoseResult(pose_2d, pose_3d, scores)
 
     def release(self):
+        """
+        Releases the resources used by the inference session.
+        """
         super().release()
         self.session = None

@@ -21,6 +21,9 @@ _BODY_PARTS = ['head_top', 'upper_neck', 'right_shoulder', 'right_elbow', 'right
 
 
 class EfficientPoseEstimatorConfig(Enum):
+    """
+    Enumeration for EfficientPose estimator configurations with associated model and weights.
+    """
     EFFICIENT_POSE_I_FP16 = RepositoryAsset.openVino("EfficientPoseI-fp16")
     EFFICIENT_POSE_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32")
     EFFICIENT_POSE_II_FP16 = RepositoryAsset.openVino("EfficientPoseII-fp16")
@@ -41,6 +44,16 @@ class EfficientPoseEstimatorConfig(Enum):
 
 
 class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
+    """
+    A pose estimator that utilizes the EfficientPose model for estimating human poses in images.
+
+    Args:
+        model (Asset): The model asset to be used for inference.
+        weights (Asset): The weights asset to be used for inference.
+        min_score (float): Minimum score threshold for detections. Defaults to 0.1.
+        device (str): The device to run the inference on. Defaults to "AUTO".
+    """
+
     def __init__(self, model: Asset, weights: Asset,
                  min_score: float = 0.1, device: str = "AUTO"):
         super().__init__(min_score)
@@ -51,9 +64,19 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         self.engine.order = InputShapeOrder.NWHC
 
     def setup(self):
+        """Sets up the inference engine."""
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
+        """
+        Processes the input image data to extract pose information.
+
+        Args:
+            data (np.ndarray): The input image data in the form of a numpy array.
+
+        Returns:
+            ResultList[EfficientPose]: A list containing detected poses and their scores.
+        """
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
         padding_box: BoundingBox2D = output_dict.padding_box
@@ -76,6 +99,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         return ResultList([EfficientPose(max_score, VectorUtils.list_of_vector4D(landmarks))])
 
     def release(self):
+        """Releases resources held by the inference engine."""
         self.engine.release()
 
     @staticmethod
@@ -122,5 +146,14 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     @staticmethod
     def create(config: EfficientPoseEstimatorConfig
                = EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32) -> "EfficientPoseEstimator":
+        """
+        Creates an instance of EfficientPoseEstimator with specified configuration.
+
+        Args:
+            config (EfficientPoseEstimatorConfig): Configuration for the estimator.
+
+        Returns:
+            EfficientPoseEstimator: An instance of the pose estimator.
+        """
         model, weights = config.value
         return EfficientPoseEstimator(model, weights)

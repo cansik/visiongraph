@@ -16,6 +16,10 @@ _mp_pose = mp.solutions.pose
 
 
 class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
+    """
+    A pose estimator using MediaPipe to detect and process human poses in images.
+    """
+
     def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
                  min_score: float = 0.5,
                  min_tracking_confidence: float = 0.5,
@@ -23,6 +27,18 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
                  smooth_landmarks: bool = True,
                  enable_segmentation: bool = False,
                  smooth_segmentation: bool = True):
+        """
+        Initializes the MediaPipePoseEstimator with specified parameters.
+
+        Args:
+            complexity (PoseModelComplexity): Complexity of the pose model.
+            min_score (float): Minimum score threshold for valid detections.
+            min_tracking_confidence (float): Confidence threshold for tracking landmarks.
+            static_image_mode (bool): Indicates if the input images are static.
+            smooth_landmarks (bool): If True, applies smoothing to the detected landmarks.
+            enable_segmentation (bool): If True, enables segmentation for the pose.
+            smooth_segmentation (bool): If True, applies smoothing to the segmentation mask.
+        """
         super().__init__(min_score)
 
         self.smooth_landmarks = smooth_landmarks
@@ -36,6 +52,9 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         self.detector: Optional[_mp_pose.Pose] = None
 
     def setup(self):
+        """
+        Sets up the MediaPipe pose detector with the specified configuration.
+        """
         self.detector = _mp_pose.Pose(static_image_mode=self.static_image_mode,
                                       model_complexity=self.complexity.value,
                                       min_detection_confidence=self.min_score,
@@ -44,6 +63,15 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
                                       smooth_segmentation=self.smooth_segmentation)
 
     def process(self, data: np.ndarray) -> ResultList[BlazePose]:
+        """
+        Processes an input image to detect poses and return results.
+
+        Args:
+            data (np.ndarray): The input image in BGR format.
+
+        Returns:
+            ResultList[BlazePose]: A list of detected BlazePose objects.
+        """
         # pre-process image
         image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
 
@@ -64,12 +92,30 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         return ResultList([BlazePoseSegmentation(score, landmarks, mask_uint8)])
 
     def release(self):
+        """
+        Releases resources used by the pose detector.
+        """
         self.detector.close()
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator with command-line arguments.
+
+        Args:
+            args (Namespace): The command-line arguments.
+        """
         super().configure(args)
         # todo: implement arg parse
 
     @staticmethod
     def create(complexity: PoseModelComplexity = PoseModelComplexity.Normal) -> "MediaPipePoseEstimator":
+        """
+        Creates a new instance of MediaPipePoseEstimator with the specified complexity.
+
+        Args:
+            complexity (PoseModelComplexity): The complexity level for the new instance.
+
+        Returns:
+            MediaPipePoseEstimator: A new instance of MediaPipePoseEstimator.
+        """
         return MediaPipePoseEstimator(complexity)

@@ -16,6 +16,9 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class YOLOv8PoseConfig(Enum):
+    """
+    Configuration options for the YOLOv8 pose estimation models.
+    """
     YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), InferenceEngine.ONNX, 17
     YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), InferenceEngine.ONNX, 17
     YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx"), InferenceEngine.ONNX, 17
@@ -27,10 +30,30 @@ class YOLOv8PoseConfig(Enum):
 
 
 class YOLOv8PoseEstimator(PoseEstimator):
+    """
+    A class for performing pose estimation using the YOLOv8 model.
+
+    Inherits from:
+        PoseEstimator: Base class for pose estimation algorithms.
+    """
+
     def __init__(self, *assets: Asset, num_keypoints: int,
                  min_score: float = 0.7, nms: bool = True, nms_threshold: float = 0.5,
                  nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.OpenVINO2):
+        """
+        Initializes the YOLOv8PoseEstimator with the given parameters.
+
+        Args:
+            assets (Asset): Assets required for the pose estimation model.
+            num_keypoints (int): The number of keypoints to detect.
+            min_score (float): Minimum score threshold for keypoints detection.
+            nms (bool): Whether to apply non-maximum suppression.
+            nms_threshold (float): Threshold for non-maximum suppression.
+            nms_eta (Optional[float]): Eta parameter for non-maximum suppression.
+            nms_top_k (Optional[int]): Maximum number of detections to keep after non-maximum suppression.
+            engine (InferenceEngine): Inference engine to run the pose estimation model.
+        """
         super().__init__(min_score)
 
         self.nms_threshold: float = nms_threshold
@@ -48,9 +71,21 @@ class YOLOv8PoseEstimator(PoseEstimator):
         self.engine.padding_color = (114, 114, 114)
 
     def setup(self):
+        """
+        Prepares the inference engine for processing.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[COCOPose]:
+        """
+        Processes an image and performs pose estimation.
+
+        Args:
+            image (np.ndarray): Input image in which poses are to be detected.
+
+        Returns:
+            ResultList[COCOPose]: A list of detected poses represented as COCOPose objects.
+        """
         h, w = self.engine.first_input_shape[2:]
 
         output = self.engine.process(image)
@@ -89,10 +124,22 @@ class YOLOv8PoseEstimator(PoseEstimator):
         return poses
 
     def release(self):
+        """
+        Releases the resources held by the inference engine.
+        """
         self.engine.release()
 
     @staticmethod
     def create(config: YOLOv8PoseConfig = YOLOv8PoseConfig.YOLOv8_S_640) -> "YOLOv8PoseEstimator":
+        """
+        Creates an instance of YOLOv8PoseEstimator based on the provided configuration.
+
+        Args:
+            config (YOLOv8PoseConfig): Configuration for the YOLOv8 pose estimator.
+
+        Returns:
+            YOLOv8PoseEstimator: An instance of the YOLOv8PoseEstimator.
+        """
         num_args = len(config.value) - 2
 
         assets = config.value[:num_args]

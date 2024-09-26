@@ -11,6 +11,21 @@ OutputType = TypeVar('OutputType', bound=PoseLandmarkResult)
 
 
 class PoseEstimator(LandmarkEstimator[OutputType], ABC):
+    """
+    Abstract base class for pose estimators.
+
+    Provides a common interface for different pose estimation algorithms.
+    """
+
     @abstractmethod
     def process(self, data: np.ndarray) -> ResultList[OutputType]:
+        """
+        Processes the input data to estimate poses.
+
+        Args:
+            data (np.ndarray): Input data containing spatial information.
+
+        Returns:
+            ResultList[OutputType]: A list of pose landmark results.
+        """
         pass

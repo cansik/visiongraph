@@ -12,6 +12,11 @@ from visiongraph.external.intel.models.model import Model
 
 
 class AEPoseConfig(Enum):
+    """
+    Enumeration of available configurations for the pose estimation models.
+
+    Each configuration corresponds to a specific pre-trained model and its weights.
+    """
     EfficientHRNet_288_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp16"),)
     EfficientHRNet_288_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp32"),)
     EfficientHRNet_352_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp16"),)
@@ -21,12 +26,37 @@ class AEPoseConfig(Enum):
 
 
 class AEPoseEstimator(OpenVinoPoseEstimator):
+    """
+    A pose estimator that utilizes OpenVINO for human pose estimation.
+
+    Inherits from OpenVinoPoseEstimator and provides additional functionality
+    specific to the AEPose model configurations.
+    """
+
     def __init__(self, model: Asset, weights: Asset,
                  target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.1,
                  auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
+        """
+        Initializes the AEPoseEstimator with specified parameters.
+
+        Args:
+            model (Asset): The asset representing the pose estimation model.
+            weights (Asset): The asset representing the weights of the model.
+            target_size (Optional[int]): The target size for the input image.
+            aspect_ratio (float): The aspect ratio for the input image.
+            min_score (float): The minimum confidence score for detected poses.
+            auto_adjust_aspect_ratio (bool): Whether to automatically adjust the aspect ratio.
+            device (str): The device to use for inference (e.g., "AUTO", "CPU", "GPU").
+        """
         super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
     def _create_ie_model(self) -> Model:
+        """
+        Creates the inference engine model for pose estimation.
+
+        Returns:
+            Model: The created model for inference.
+        """
         config = {
             'target_size': self.target_size,
             'aspect_ratio': self.aspect_ratio,
@@ -41,5 +71,14 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
 
     @staticmethod
     def create(config: AEPoseConfig = AEPoseConfig.EfficientHRNet_288_FP16) -> "AEPoseEstimator":
+        """
+        Creates an instance of AEPoseEstimator using the specified configuration.
+
+        Args:
+            config (AEPoseConfig): The configuration to use for model and weights.
+
+        Returns:
+            AEPoseEstimator: An instance of the AEPoseEstimator initialized with the specified configuration.
+        """
         model, weights = config.value
         return AEPoseEstimator(model, weights)

@@ -19,6 +19,10 @@ _mp_holistic = mp.solutions.holistic
 
 
 class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
+    """
+    Estimates holistic poses using MediaPipe framework.
+    """
+
     def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
                  min_score: float = 0.5,
                  min_tracking_confidence: float = 0.5,
@@ -27,6 +31,19 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
                  enable_segmentation: bool = False,
                  smooth_segmentation: bool = True,
                  refine_landmarks: bool = True):
+        """
+        Initializes the MediaPipeHolisticEstimator with specified parameters.
+
+        Args:
+            complexity (PoseModelComplexity): The complexity of the pose model to be used.
+            min_score (float): Minimum score threshold for detection.
+            min_tracking_confidence (float): Minimum confidence threshold for tracking.
+            static_image_mode (bool): Whether to use static image mode.
+            smooth_landmarks (bool): Whether to smooth landmarks.
+            enable_segmentation (bool): Whether to enable segmentation.
+            smooth_segmentation (bool): Whether to smooth segmentation results.
+            refine_landmarks (bool): Whether to refine landmarks.
+        """
         super().__init__(min_score)
 
         self.smooth_landmarks = smooth_landmarks
@@ -42,6 +59,9 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         self.detector: Optional[_mp_holistic.Holistic] = None
 
     def setup(self):
+        """
+        Sets up the MediaPipe Holistic detector with the specified parameters.
+        """
         self.detector = _mp_holistic.Holistic(static_image_mode=self.static_image_mode,
                                               model_complexity=self.complexity.value,
                                               min_detection_confidence=self.min_score,
@@ -51,7 +71,15 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
                                               refine_face_landmarks=self.refine_landmarks)
 
     def process(self, data: np.ndarray) -> ResultList[BlazePose]:
-        # pre-process image
+        """
+        Processes an input image to extract pose landmarks and additional features.
+
+        Args:
+            data (np.ndarray): Input image in BGR format.
+
+        Returns:
+            ResultList[BlazePose]: List of detected poses with associated features.
+        """
         image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
 
         image.flags.writeable = False
@@ -90,11 +118,29 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         return ResultList([pose])
 
     def release(self):
+        """
+        Releases the resources used by the MediaPipe Holistic detector.
+        """
         self.detector.close()
 
     def configure(self, args: Namespace):
+        """
+        Configures the estimator with command-line arguments.
+
+        Args:
+            args (Namespace): Namespace containing configuration parameters.
+        """
         super().configure(args)
 
     @staticmethod
     def create(complexity: PoseModelComplexity = PoseModelComplexity.Normal) -> "MediaPipeHolisticEstimator":
+        """
+        Creates an instance of MediaPipeHolisticEstimator.
+
+        Args:
+            complexity (PoseModelComplexity): The complexity of the pose model to be used.
+
+        Returns:
+            MediaPipeHolisticEstimator: Instance of the estimator.
+        """
         return MediaPipeHolisticEstimator(complexity)

@@ -14,6 +14,10 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MoveNetConfig(Enum):
+    """
+    Enumeration for different configurations of the MoveNet model, including
+    different architectures and precision levels.
+    """
     MoveNet_Single_Lightning_FP16 = (*RepositoryAsset.openVino("movenet-single-lightning-fp16"), False)
     MoveNet_Single_Lightning_FP32 = (*RepositoryAsset.openVino("movenet-single-lightning-fp32"), False)
 
@@ -31,12 +35,31 @@ class MoveNetConfig(Enum):
 
 
 MOVE_NET_KEY_POINT_COUNT = 17
+"""
+Constant representing the number of key points used in the MoveNet model for pose estimation.
+"""
 
 
 class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
+    """
+    MoveNetPoseEstimator is responsible for estimating poses using the MoveNet model.
+    """
+
     def __init__(self, model: Asset, weights: Asset, multi_pose: bool = False,
                  min_score: float = 0.3, enable_nms: bool = False, iou_threshold: float = 0.4,
                  device: str = "AUTO"):
+        """
+        Initializes the MoveNetPoseEstimator with the given parameters.
+
+        Args:
+            model (Asset): The model asset to be used for pose estimation.
+            weights (Asset): The weights asset for the model.
+            multi_pose (bool): Flag to indicate if multi-pose estimation is enabled.
+            min_score (float): Minimum score threshold for valid pose detection.
+            enable_nms (bool): Flag to enable Non-Maximum Suppression.
+            iou_threshold (float): IOU threshold for NMS.
+            device (str): The device to run the model on (e.g., "AUTO").
+        """
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
@@ -45,9 +68,21 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         self.multi_pose = multi_pose
 
     def setup(self):
+        """
+        Sets up the engine for the pose estimator.
+        """
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
+        """
+        Processes the input data and estimates poses.
+
+        Args:
+            data (np.ndarray): The input data for pose estimation.
+
+        Returns:
+            ResultList[COCOPose]: A list of detected poses with their associated scores.
+        """
         outputs = self.engine.process(data)
         output = outputs[self.engine.output_names[0]]
 
@@ -89,9 +124,21 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         return poses
 
     def release(self):
+        """
+        Releases resources held by the engine.
+        """
         self.engine.release()
 
     @staticmethod
     def create(config: MoveNetConfig = MoveNetConfig.MoveNet_MultiPose_256x320_FP32) -> "MoveNetPoseEstimator":
+        """
+        Creates an instance of MoveNetPoseEstimator based on the provided configuration.
+
+        Args:
+            config (MoveNetConfig): The configuration for the MoveNet model.
+
+        Returns:
+            MoveNetPoseEstimator: An instance of the MoveNetPoseEstimator.
+        """
         model, weights, multi_pose = config.value
         return MoveNetPoseEstimator(model, weights, multi_pose=multi_pose)

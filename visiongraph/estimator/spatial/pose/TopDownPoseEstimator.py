@@ -15,10 +15,21 @@ OutputType = TypeVar('OutputType', bound=PoseLandmarkResult)
 
 
 class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
+    """
+    A top-down pose estimator that uses a human detector to detect people and then estimates their pose.
+    """
+
     def __init__(self,
                  human_detector: ObjectDetector[ObjectDetectionResult] = SSDDetector.create(
                      SSDConfig.PersonDetection_0200_256x256_FP32),
                  min_score: float = 0.5):
+        """
+        Initializes the TopDownPoseEstimator.
+
+        Args:
+            human_detector (ObjectDetector[ObjectDetectionResult]): The human detector used to detect people.
+            min_score (float): The minimum score required for a detection to be considered valid.
+        """
         super().__init__(min_score)
 
         self.human_detector = human_detector
@@ -29,9 +40,21 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         self.roi_rectified = True
 
     def setup(self):
+        """
+        Sets up the human detector.
+        """
         self.human_detector.setup()
 
     def process(self, data: np.ndarray) -> ResultList[OutputType]:
+        """
+        Processes an image to detect people and estimate their pose.
+
+        Args:
+            data (np.ndarray): The input image.
+
+        Returns:
+            ResultList[OutputType]: A list of pose landmark results.
+        """
         detections: List[ObjectDetectionResult] = self.human_detector.process(data)
 
         # filter non-human classes
@@ -52,11 +75,35 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         return results
 
     def _pre_landmark(self, image: np.ndarray) -> np.ndarray:
+        """
+        Pre-processes an image by doing nothing in this implementation.
+
+        Args:
+            image (np.ndarray): The input image.
+
+        Returns:
+            np.ndarray: The pre-processed image.
+        """
         return image
 
     @abstractmethod
     def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[OutputType]:
+        """
+        Detects landmarks in a region of interest (ROI).
+
+        Args:
+            image (np.ndarray): The input image.
+            roi (np.ndarray): The region of interest.
+            xs (int): The x-coordinate of the ROI center.
+            ys (int): The y-coordinate of the ROI center.
+
+        Returns:
+            List[OutputType]: A list of pose landmark results.
+        """
         pass
 
     def release(self):
+        """
+        Releases any resources used by the estimator.
+        """
         self.human_detector.release()

@@ -16,6 +16,9 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class LiteHRNetConfig(Enum):
+    """
+    Enumeration for LiteHRNet model configurations with corresponding assets.
+    """
     LiteHRNet_18_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp16")
     LiteHRNet_18_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp32")
     LiteHRNet_18_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp16")
@@ -28,14 +31,33 @@ class LiteHRNetConfig(Enum):
 
 
 LITE_HRNET_KEY_POINT_COUNT = 17
+"""
+Constant representing the number of key points for the LiteHRNet model.
+"""
 
 
 class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
+    """
+    A pose estimator based on the LiteHRNet architecture for detecting human poses.
+    """
+
     def __init__(self,
                  model: Asset, weights: Asset,
                  human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
                  min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
                  device: str = "AUTO"):
+        """
+        Initializes the LiteHRNetPoseEstimator with the specified model, weights, and parameters.
+
+        Args:
+            model (Asset): The model asset for pose estimation.
+            weights (Asset): The weights asset for pose estimation.
+            human_detector (ObjectDetector, optional): An object detector for detecting humans. Defaults to SSDDetector.
+            min_score (float, optional): The minimum score for detected poses. Defaults to 0.3.
+            enable_nms (bool, optional): Flag to enable non-maximum suppression. Defaults to True.
+            iou_threshold (float, optional): The IoU threshold for NMS. Defaults to 0.4.
+            device (str, optional): The device to use for inference. Defaults to "AUTO".
+        """
         super().__init__(human_detector, min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, scale=255, device=device)
@@ -45,10 +67,25 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         self.roi_rectified = False
 
     def setup(self):
+        """
+        Sets up the pose estimator and the underlying engine.
+        """
         super().setup()
         self.engine.setup()
 
     def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[COCOPose]:
+        """
+        Detects key points in the provided region of interest (ROI) of the image.
+
+        Args:
+            image (np.ndarray): The input image in which to detect poses.
+            roi (np.ndarray): The region of interest for detection.
+            xs (int): The x-coordinate offset of the ROI in the image.
+            ys (int): The y-coordinate offset of the ROI in the image.
+
+        Returns:
+            List[COCOPose]: A list of detected poses, each represented by COCOPose objects.
+        """
         h, w = image.shape[:2]
         rh, rw = roi.shape[:2]
 
@@ -60,7 +97,6 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
             key_points: List[Tuple[float, float, float, float]] = []
             max_score = 0.0
 
-            # keypoint
             for index in range(LITE_HRNET_KEY_POINT_COUNT):
                 heatmap = raw_result[index]
                 hh, hw = heatmap.shape[:2]
@@ -86,10 +122,22 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         return poses
 
     def release(self):
+        """
+        Releases resources used by the pose estimator and the engine.
+        """
         super().release()
         self.engine.release()
 
     @staticmethod
     def create(config: LiteHRNetConfig = LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP32) -> "LiteHRNetPoseEstimator":
+        """
+        Creates an instance of LiteHRNetPoseEstimator based on the specified configuration.
+
+        Args:
+            config (LiteHRNetConfig, optional): The configuration to use for creating the estimator. Defaults to LiteHRNet_30_COCO_384x288_FP32.
+
+        Returns:
+            LiteHRNetPoseEstimator: An instance of the LiteHRNetPoseEstimator.
+        """
         model, weights = config.value
         return LiteHRNetPoseEstimator(model, weights)

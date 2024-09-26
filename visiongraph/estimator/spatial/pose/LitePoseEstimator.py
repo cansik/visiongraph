@@ -16,22 +16,53 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class LitePoseEstimatorConfig(Enum):
+    """
+    Enum representing different configurations for the LitePoseEstimator model.
+    Each option corresponds to a specific OpenVINO model asset.
+    """
     LitePose_S_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-s-coco-fp32")
     LitePose_M_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-m-coco-fp32")
     LitePose_L_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-l-coco-fp32")
 
 
 class LitePoseEstimator(PoseEstimator[COCOPose]):
+    """
+    A class to estimate poses using the LitePose model based on COCO dataset.
+
+    Inherits from the PoseEstimator class and utilizes an OpenVINO engine for model inference.
+    """
+
     def __init__(self, model: Asset, weights: Asset,
                  min_score: float = 0.2, device: str = "AUTO"):
+        """
+        Initializes the LitePoseEstimator with the specified model and weights.
+
+        Args:
+            model (Asset): The model asset to use for pose estimation.
+            weights (Asset): The weights asset associated with the model.
+            min_score (float): The minimum score threshold for a valid pose. Default is 0.2.
+            device (str): The device to run the inference on. Default is "AUTO".
+        """
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, padding=True, device=device)
 
     def setup(self):
+        """
+        Prepares the OpenVINO engine for inference by performing necessary setup operations.
+        """
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[COCOPose]:
+        """
+        Processes the input image data to estimate poses.
+
+        Args:
+            data (np.ndarray): Input image data in the form of a numpy array.
+
+        Returns:
+            ResultList[COCOPose]: A list of estimated poses with their associated scores.
+        """
         output_dict = self.engine.process(data)
         padding_box: BoundingBox2D = output_dict.padding_box
         keypoints = output_dict[self.engine.output_names[1]]
@@ -66,10 +97,22 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         return poses
 
     def release(self):
+        """
+        Releases the resources held by the OpenVINO engine, cleaning up any allocated memory.
+        """
         self.engine.release()
 
     @staticmethod
     def create(config: LitePoseEstimatorConfig
                = LitePoseEstimatorConfig.LitePose_S_COCO_FP32) -> "LitePoseEstimator":
+        """
+        Creates an instance of LitePoseEstimator based on the specified configuration.
+
+        Args:
+            config (LitePoseEstimatorConfig): The configuration to create the estimator. Default is LitePose_S_COCO_FP32.
+
+        Returns:
+            LitePoseEstimator: An instance of LitePoseEstimator initialized with the model and weights from the config.
+        """
         model, weights = config.value
         return LitePoseEstimator(model, weights)
