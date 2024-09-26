@@ -4,6 +4,21 @@ import numpy as np
 
 
 class BaseFilterNumpy(ABC):
+    """
+    Abstract base class for filter implementations using NumPy.
+
+    This class defines the interface that must be implemented by concrete filters.
+    """
+
     @abstractmethod
     def __call__(self, x: np.ndarray) -> np.ndarray:
+        """
+        Applies the filter to a given input array.
+
+        Args:
+            x (np.ndarray): The input array to be filtered.
+
+        Returns:
+            np.ndarray: The filtered output array.
+        """
         pass

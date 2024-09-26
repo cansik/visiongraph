@@ -13,7 +13,19 @@ OutputType = TypeVar('OutputType', bound=List[LandmarkDetectionResult])
 
 
 class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
+    """
+    A class to smooth landmark detections using OneEuro filter and VectorNumpySmoothFilter.
+    """
+
     def __init__(self, min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0):
+        """
+        Initializes the LandmarkSmoothFilter object with default parameters.
+
+        Args:
+            min_cutoff (float): The minimum cutoff value for the OneEuro filter.
+            beta (float): The parameter value for the OneEuro filter.
+            d_cutoff (float): The cutoff value for the VectorNumpySmoothFilter.
+        """
         self.min_cutoff = min_cutoff
         self.beta = beta
         self.d_cutoff = d_cutoff
@@ -21,9 +33,20 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         self.filters: Dict[int, VectorNumpySmoothFilter] = {}
 
     def setup(self):
-        pass
+        """
+        Sets up the filters by creating a new OneEuroFilterNumpy and VectorNumpySmoothFilter for each tracking id.
+        """
 
     def process(self, data: InputType) -> OutputType:
+        """
+        Smooths the landmark detections in the input data using the stored filters.
+
+        Args:
+            data (InputType): The input data containing landmark detections.
+
+        Returns:
+            OutputType: The smoothed landmark detections.
+        """
         for detection in data:
             # smoothing only works on tracked landmark detections
             if detection.tracking_id < 0:
@@ -53,11 +76,23 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         return data
 
     def release(self):
-        pass
+        """
+        Releases the resources used by the LandmarkSmoothFilter object.
+        """
 
     def configure(self, args: Namespace):
-        pass
+        """
+        Configures the LandmarkSmoothFilter object based on the provided command-line arguments.
+
+        Args:
+            args (Namespace): The command-line arguments passed to the LandmarkSmoothFilter constructor.
+        """
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        pass
+        """
+        Adds parameters for the LandmarkSmoothFilter class to the provided argument parser.
+
+        Args:
+            parser (ArgumentParser): The argument parser used to define the command-line interface.
+        """

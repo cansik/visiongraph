@@ -14,19 +14,57 @@ EPS = 1e-7
 
 
 def _smoothing_factor(t_e, cutoff):
+    """
+    Compute the smoothing factor.
+
+    Args:
+        t_e (float): The time difference.
+        cutoff (float): The cutoff frequency.
+
+    Returns:
+        float: The smoothing factor.
+    """
     r = 2 * np.pi * cutoff * t_e
     return r / (r + 1)
 
 
 def _exponential_smoothing(a, x, x_prev):
+    """
+    Compute the exponential smoothing of a signal.
+
+    Args:
+        a (float): The smoothing factor.
+        x (float or numpy array): The input signal.
+        x_prev (float or numpy array): The previous value of the signal.
+
+    Returns:
+        float: The smoothed signal.
+    """
     return a * x + (1 - a) * x_prev
 
 
 class OneEuroFilterNumpy(BaseFilterNumpy):
+    """
+    A class to implement the OneEuro filter, which is used for filtering
+    time-series data. It combines an exponential smoothing with a least-squares
+    estimation of the acceleration signal.
+    """
+
     def __init__(self, x0: np.ndarray, t0: Optional[float] = None, dx0: float = 0.0,
                  min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0,
                  invalid_value: Optional[float] = None):
-        """Initialize the one euro filter."""
+        """
+        Initialize the OneEuro filter.
+
+        Args:
+            x0 (numpy array): The initial signal.
+            t0 (float or None, optional): The initial time. Defaults to None.
+            dx0 (float, optional): The initial derivative of the signal. Defaults to 0.0.
+            min_cutoff (float, optional): The minimum cutoff frequency. Defaults to 1.0.
+            beta (float, optional): The smoothing factor for the acceleration. Defaults to 0.0.
+            d_cutoff (float, optional): The cutoff frequency for the derivative. Defaults to 1.0.
+            invalid_value (float or None, optional): The value that indicates an invalid data point. Defaults to None.
+        """
         # The parameters.
         self.data_shape = x0.shape
         self.min_cutoff = np.full(x0.shape, min_cutoff)
@@ -41,6 +79,12 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         self.invalid_value = invalid_value
 
     def re_init(self, x: np.ndarray):
+        """
+        Re-initialize the filter with a new input signal.
+
+        Args:
+            x (numpy array): The new input signal.
+        """
         self.data_shape = x.shape
         self.min_cutoff = np.full(self.data_shape, self.min_cutoff.flat[0])
         self.beta = np.full(self.data_shape, self.beta.flat[0])
@@ -52,7 +96,16 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         self.t_prev = time()
 
     def __call__(self, x: np.ndarray, t: Optional[float] = None) -> np.ndarray:
-        """Compute the filtered signal."""
+        """
+        Compute the filtered signal.
+
+        Args:
+            x (numpy array): The input signal.
+            t (float or None, optional): The current time. Defaults to None.
+
+        Returns:
+            numpy array: The filtered signal.
+        """
         if x.shape != self.data_shape:
             self.re_init(x)
             return x
