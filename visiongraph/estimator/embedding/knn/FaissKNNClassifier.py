@@ -9,10 +9,23 @@ from visiongraph.estimator.embedding.knn.BaseKNNClassifier import BaseKNNClassif
 
 
 class FaissKNNClassifier(BaseKNNClassifier):
+    """
+    A knn classifier using the Faiss library.
+
+    https://github.com/facebookresearch/faiss
+    """
 
     def __init__(self, index_dimensions: Optional[int] = None,
                  store_training_data: bool = True,
                  data_path: Optional[Union[str, os.PathLike]] = None):
+        """
+        Initializes the FaissKNNClassifier object.
+
+        Args:
+            index_dimensions (Optional[int]): The dimensions for the index. Defaults to None.
+            store_training_data (bool): Whether to store the training data. Defaults to True.
+            data_path (Optional[Union[str, os.PathLike]]): The path to the data. Defaults to None.
+        """
         super().__init__(min_score=0.5,
                          store_training_data=store_training_data,
                          data_path=data_path)
@@ -20,11 +33,21 @@ class FaissKNNClassifier(BaseKNNClassifier):
         self.index_dimensions = index_dimensions
 
     def setup(self):
+        """
+        Sets up the classifier by resetting the index if it exists and the specified dimensions are provided.
+        """
         if self.index_dimensions is not None and self.index is not None:
             self.reset_index(self.index_dimensions)
         super().setup()
 
     def add_samples(self, x: np.ndarray, y: np.ndarray):
+        """
+        Adds samples to the classifier.
+
+        Args:
+            x (np.ndarray): The input data.
+            y (np.ndarray): The corresponding labels.
+        """
         super().add_samples(x, y)
 
         #  lazy init index
@@ -34,6 +57,15 @@ class FaissKNNClassifier(BaseKNNClassifier):
         self.index.add(x.astype(np.float32))
 
     def predict_all(self, x: np.ndarray) -> np.ndarray:
+        """
+        Predicts all classes for a given input.
+
+        Args:
+            x (np.ndarray): The input data.
+
+        Returns:
+            np.ndarray: A matrix with the predicted class labels and distances.
+        """
         #  lazy init index
         if self.index is None:
             self.reset_index(x.shape[1])
@@ -53,6 +85,12 @@ class FaissKNNClassifier(BaseKNNClassifier):
         return np.hstack((classes, best_distances))
 
     def reset_index(self, index_dimensions: int):
+        """
+        Resets the index with the specified dimensions.
+
+        Args:
+            index_dimensions (int): The dimensions for the index.
+        """
         if self.index is None:
             self.index = IndexFlatL2(index_dimensions)
         else:
@@ -67,4 +105,7 @@ class FaissKNNClassifier(BaseKNNClassifier):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
+        """
+        Adds parameters for the classifier to the parser.
+        """
         pass

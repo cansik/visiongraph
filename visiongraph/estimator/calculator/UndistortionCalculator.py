@@ -9,7 +9,19 @@ from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 
 
 class UndistortionCalculator(VisionEstimator[np.ndarray]):
+    """
+    Calculates the optimal camera matrix for undistortion and applies rectification.
+    """
+
     def __init__(self, intrinsics: CameraIntrinsics, width: int = 0, height: int = 0):
+        """
+        Initializes the UndistortionCalculator with camera intrinsics and image dimensions.
+
+        Args:
+            intrinsics (CameraIntrinsics): The intrinsic camera parameters.
+            width (int, optional): The image width. Defaults to 0.
+            height (int, optional): The image height. Defaults to 0.
+        """
         self.intrinsics = intrinsics
 
         self.width = width
@@ -22,10 +34,22 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         self.rectify_map_y: Optional[Any] = None
 
     def setup(self):
+        """
+        Sets up the calculator by calculating the optimal camera matrix if the image dimensions are known.
+        """
         if self.width > 0 and self.height > 0:
             self.calculate_optimal_camera_matrix()
 
     def process(self, data: np.ndarray) -> np.ndarray:
+        """
+        Applies undistortion to the input data.
+
+        Args:
+            data (np.ndarray): The input image data.
+
+        Returns:
+            np.ndarray: The undistorted image data.
+        """
         h, w = data.shape[:2]
 
         if h != self.height or w != self.width:
@@ -35,21 +59,24 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
 
         dst = cv2.remap(data, self.rectify_map_x, self.rectify_map_y, cv2.INTER_LINEAR)
 
-        # dst = cv2.undistort(data,
-        #                     self.intrinsics.intrinsic_matrix,
-        #                     self.intrinsics.distortion_coefficients,
-        #                     None,
-        #                     self.new_camera_matrix)
-
         # crop the image
         x, y, w, h = self.roi
         dst = dst[y:y + h, x:x + w]
         return dst
 
     def release(self):
+        """
+        Releases any resources used by the calculator.
+        """
         pass
 
-    def calculate_optimal_camera_matrix(self):
+    def calculate_optimal_camera_matrix(self) -> None:
+        """
+        Calculates the optimal camera matrix using OpenCV's getOptimalNewCameraMatrix function.
+
+        Returns:
+            None
+        """
         w = self.width
         h = self.height
         mat, roi = cv2.getOptimalNewCameraMatrix(self.intrinsics.intrinsic_matrix,
@@ -62,9 +89,21 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
                                                                              self.intrinsics.distortion_coefficients,
                                                                              None, self.new_camera_matrix, (w, h), 5)
 
-    def configure(self, args: Namespace):
+    def configure(self, args: Namespace) -> None:
+        """
+        Configures the calculator based on command line arguments.
+
+        Args:
+            args (Namespace): The parsed command line arguments.
+        """
         pass
 
     @staticmethod
-    def add_params(parser: ArgumentParser):
+    def add_params(parser: ArgumentParser) -> None:
+        """
+        Adds parameters to the parser for configuring the calculator.
+
+        Args:
+            parser (ArgumentParser): The parser to add parameters to.
+        """
         pass
