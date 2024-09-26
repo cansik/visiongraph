@@ -15,13 +15,28 @@ _PERSON_LABELS = ["person"]
 
 
 def _person_net(name: str) -> Tuple:
+    """
+    Helper function to create a person detection model based on the input name.
+
+    Args:
+        name (str): The name of the person detection model.
+
+    Returns:
+        Tuple: A tuple containing model and labels for the person detection.
+    """
     return (*RepositoryAsset.openVino(name), _PERSON_LABELS)
 
 
 class SSDConfig(Enum):
+    """
+    An enumeration of SSD configurations with pre-defined settings for specific models.
+    """
+
     SSDLiteMobileNetV2_FP32 = (*RepositoryAsset.openVino("ssdlite_mobilenet_v2_fp32"), COCO_90_LABELS)
 
     PersonDetection_0200_256x256_FP16_INT8 = _person_net("person-detection-0200-fp16-int8")
+
+    # Series of predefined person detection models for different resolutions and precisions
     PersonDetection_0200_256x256_FP16 = _person_net("person-detection-0200-fp16")
     PersonDetection_0200_256x256_FP32 = _person_net("person-detection-0200-fp32")
 
@@ -43,10 +58,30 @@ class SSDConfig(Enum):
 
 
 class SSDDetector(OpenVinoObjectDetector):
+    """
+    A class representing an SSD detector based on OpenVino.
+    """
+
     def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
+        """
+        Initializes the SSDDetector with the model, weights, labels, minimum score, and device.
+
+        Args:
+            model (Asset): The model asset to be used.
+            weights (Asset): The weights asset for the model.
+            labels (List[str]): The list of labels for detection.
+            min_score (float): The minimum score threshold for detection.
+            device (str): The device to run the detector on (default is "AUTO").
+        """
         super().__init__(model, weights, labels, min_score, device)
 
     def _create_ie_model(self) -> DetectionModel:
+        """
+        Creates the Inference Engine model for the detector.
+
+        Returns:
+            DetectionModel: The created detection model.
+        """
         config = {
             'resize_type': None,
             'mean_values': None,
@@ -64,8 +99,26 @@ class SSDDetector(OpenVinoObjectDetector):
 
     @staticmethod
     def create(config: SSDConfig = SSDConfig.SSDLiteMobileNetV2_FP32) -> "SSDDetector":
+        """
+        Creates an instance of SSDDetector based on the provided config.
+
+        Args:
+            config (SSDConfig): The configuration for the detector model (default is SSDLiteMobileNetV2_FP32).
+
+        Returns:
+            SSDDetector: An instance of the SSDDetector class.
+        """
         model, weights, labels = config.value
         return SSDDetector(model, weights, labels)
 
     def _get_label(self, index: int):
+        """
+        Gets the label based on the index.
+
+        Args:
+            index (int): The index of the label.
+
+        Returns:
+            str: The label corresponding to the index.
+        """
         return super()._get_label(index - 1)

@@ -11,6 +11,27 @@ OutputType = TypeVar('OutputType', bound=InstanceSegmentationResult)
 
 
 class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC):
+    """
+    Abstract base class for instance segmentation estimators that detect objects in spatial images.
+
+    This class extends ObjectDetector and provides an abstract method for processing data and returning a ResultList of OutputType.
+
+    Type Parameters:
+        - OutputType: Type of the output result, bound to InstanceSegmentationResult.
+    
+    Attributes:
+        OutputType: TypeVar bound to InstanceSegmentationResult for defining the output type.
+    """
+
     @abstractmethod
     def process(self, data: np.ndarray) -> ResultList[OutputType]:
+        """
+        Abstract method to process input data and return a list of instance segmentation results of type OutputType.
+
+        Args:
+            data (np.ndarray): Input data in the form of a numpy array.
+
+        Returns:
+            ResultList[OutputType]: A list of instance segmentation results of type OutputType.
+        """
         pass

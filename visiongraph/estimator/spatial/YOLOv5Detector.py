@@ -9,6 +9,9 @@ from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOL
 
 
 class YOLOv5Config(Enum):
+    """
+    An enumeration of YOLOv5 model configurations including the model asset and labels.
+    """
     YOLOv5_N = RepositoryAsset("yolov5n.onnx"), COCO_80_LABELS
     YOLOv5_S = RepositoryAsset("yolov5s.onnx"), COCO_80_LABELS
     YOLOv5_M = RepositoryAsset("yolov5m.onnx"), COCO_80_LABELS
@@ -17,17 +20,48 @@ class YOLOv5Config(Enum):
 
 
 class YOLOv5Detector(UltralyticsYOLODetector):
+    """
+    A detector class for YOLOv5 models based on UltralyticsYOLODetector.
+    """
 
-    def _filter_predictions(self, predictions: np.ndarray, min_score: float):
+    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Filters the predictions based on a minimum score.
+
+        Args:
+            predictions (np.ndarray): An array of predictions to filter.
+            min_score (float): The minimum score threshold for valid predictions.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: A tuple of filtered predictions and corresponding scores.
+        """
         valid_predictions = np.where(predictions[:, 4] > min_score)
         predictions = predictions[valid_predictions]
         scores = predictions[:, 4]
         return predictions, scores
 
     def _unpack_box_prediction(self, prediction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Unpacks the box prediction.
+
+        Args:
+            prediction (np.ndarray): The prediction to unpack.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: A tuple of the box coordinates and additional data.
+        """
         return prediction[0:4], prediction[5:]
 
     @staticmethod
     def create(config: YOLOv5Config = YOLOv5Config.YOLOv5_S) -> "YOLOv5Detector":
+        """
+        Creates a YOLOv5Detector object based on a given configuration.
+
+        Args:
+            config (YOLOv5Config): The configuration for the YOLOv5 model.
+
+        Returns:
+            YOLOv5Detector: A YOLOv5Detector object initialized with the specified configuration.
+        """
         model, labels = config.value
         return YOLOv5Detector(model, labels=labels)

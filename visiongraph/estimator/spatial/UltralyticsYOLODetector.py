@@ -16,10 +16,40 @@ R = TypeVar("R", bound=ObjectDetectionResult)
 
 
 class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
+    """
+    A generic class representing an Ultralytics YOLO detector for object detection.
+
+    Args:
+        ObjectDetector: A class for detecting objects.
+        Generic[R]: A generic type for object detection results.
+        ABC: Abstract Base Class for defining abstract methods.
+
+    Attributes:
+        engine (InferenceEngine): The inference engine for processing object detection.
+        labels (List[str]): List of labels.
+        nms_threshold (float): Threshold for non-maximum suppression.
+        nms (bool): Flag indicating whether to perform non-maximum suppression.
+        nms_eta (Optional[float]): Epsilon value for non-maximum suppression.
+        nms_top_k (Optional[int]): Top K value for non-maximum suppression.
+    """
+
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
                  nms: bool = True, nms_threshold: float = 0.5,
                  nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.ONNX):
+        """
+        Initializes the UltralyticsYOLODetector instance.
+
+        Args:
+            *assets (Asset): Variable number of assets.
+            labels (List[str]): List of labels.
+            min_score (float): Minimum score for predictions.
+            nms (bool): Flag to enable non-maximum suppression.
+            nms_threshold (float): Threshold for non-maximum suppression.
+            nms_eta (Optional[float]): Epsilon value for non-maximum suppression.
+            nms_top_k (Optional[int]): Top K value for non-maximum suppression.
+            engine (InferenceEngine): Inference engine type.
+        """
         super().__init__(min_score)
         self.engine = InferenceEngineFactory.create(engine, assets,
                                                     flip_channels=True,
@@ -35,9 +65,21 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         self.nms_top_k = nms_top_k
 
     def setup(self):
+        """
+        Sets up the Ultralytics YOLO detector.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[R]:
+        """
+        Processes the input image for object detection.
+
+        Args:
+            image (np.ndarray): Input image for detection.
+
+        Returns:
+            ResultList[R]: List of object detection results.
+        """
         output = self.engine.process(image)
 
         predictions = output[self.engine.output_names[0]]
@@ -59,6 +101,16 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         return results
 
     def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Filters the predictions based on the minimum score.
+
+        Args:
+            predictions (np.ndarray): Predicted values.
+            min_score (float): Minimum score to consider.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: Filtered predictions and corresponding scores.
+        """
         predictions = predictions.T
 
         scores = np.max(predictions[:, 4:4 + len(self.labels)], axis=1)
@@ -67,9 +119,28 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         return predictions, scores[valid_indices]
 
     def _unpack_box_prediction(self, prediction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        Extracts and unpacks box predictions.
+
+        Args:
+            prediction (np.ndarray): Predicted values.
+
+        Returns:
+            Tuple[np.ndarray, np.ndarray]: Unpacked box predictions.
+        """
         return prediction[0:4], prediction[4:]
 
     def _decode_prediction(self, prediction: np.ndarray, score: float) -> R:
+        """
+        Decodes the prediction results to an ObjectDetectionResult.
+
+        Args:
+            prediction (np.ndarray): Predicted values.
+            score (float): Prediction score.
+
+        Returns:
+            R: ObjectDetectionResult based on the prediction.
+        """
         h, w = self.engine.first_input_shape[2:]
         pred_bbox, pred_label = self._unpack_box_prediction(prediction)
 
@@ -86,4 +157,7 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         return ObjectDetectionResult(label_index, self.labels[label_index], float(score), bbox)
 
     def release(self):
+        """
+        Releases the resources used by the Ultralytics YOLO detector.
+        """
         self.engine.release()

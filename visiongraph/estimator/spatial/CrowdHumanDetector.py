@@ -16,6 +16,9 @@ from visiongraph.util.VectorUtils import vector_as_list, lerp_vector_2d
 
 
 class CrowdHumanConfig(Enum):
+    """
+    Enumeration of different CrowdHuman model configurations.
+    """
     YOLOv5_N_640 = RepositoryAsset("crowdhuman-yolov5n-640.onnx")
     YOLOv5_N_P34_640 = RepositoryAsset("crowdhuman-yolov5n-p34-640.onnx")
     YOLOv5_N_P2_640 = RepositoryAsset("crowdhuman-yolov5n-p2-640.onnx")
@@ -25,14 +28,33 @@ class CrowdHumanConfig(Enum):
 
 
 class CrowdHumanDetector(YOLOv5Detector):
+    """
+    Detector class specifically designed for CrowdHuman object detection.
+    """
 
     def __init__(self, *assets: Asset, assign_head_to_person: bool = True):
+        """
+        Initializes the CrowdHumanDetector.
+
+        Args:
+            *assets (Asset): Sequence of asset objects.
+            assign_head_to_person (bool): A flag to determine if assigning head to person is enabled.
+        """
         super().__init__(*assets, labels=["person", "head"], nms=True)
 
         self.assign_head_to_person = assign_head_to_person
         self.assignment_solver = ObjectAssignmentSolver(self.crowd_human_l2_cost_function)
 
     def process(self, image: np.ndarray) -> ResultList[Union[CrowdHumanResult, ObjectDetectionResult]]:
+        """
+        Processes the input image for object detection and assignment.
+
+        Args:
+            image (np.ndarray): Input image for detection.
+
+        Returns:
+            ResultList[Union[CrowdHumanResult, ObjectDetectionResult]]: List of detection results.
+        """
         results = super().process(image)
 
         if not self.assign_head_to_person:
@@ -64,12 +86,31 @@ class CrowdHumanDetector(YOLOv5Detector):
 
     @staticmethod
     def create(config: CrowdHumanConfig = CrowdHumanConfig.YOLOv5_N_640) -> "CrowdHumanDetector":
+        """
+        Creates a CrowdHumanDetector based on the specified configuration.
+
+        Args:
+            config (CrowdHumanConfig): Configuration for the CrowdHumanDetector.
+
+        Returns:
+            CrowdHumanDetector: Instance of the CrowdHumanDetector.
+        """
         model = config.value
         return CrowdHumanDetector(model)
 
     @staticmethod
     def crowd_human_l2_cost_function(tracks: List[ObjectDetectionResult],
                                      detections: List[ObjectDetectionResult]) -> np.ndarray:
+        """
+        Calculates the L2 cost matrix for object tracking.
+
+        Args:
+            tracks (List[ObjectDetectionResult]): List of detected object tracks.
+            detections (List[ObjectDetectionResult]): List of detected objects.
+
+        Returns:
+            np.ndarray: L2 distance matrix between tracks and detections.
+        """
 
         def get_centers(results: List[ObjectDetectionResult]) -> np.ndarray:
             return np.array([vector_as_list(lerp_vector_2d(r.bounding_box.top_left, r.bounding_box.top_right, 0.5))

@@ -13,10 +13,27 @@ from visiongraph.util.ResultUtils import non_maximum_suppression
 
 
 class YOLOXE2EDetector(ObjectDetector):
+    """
+    YOLOXE2EDetector class represents an object detector using YOLO-X vision engine.
+    """
+
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
                  nms: bool = True, nms_threshold: float = 0.3,
                  nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.ONNX):
+        """
+        Initialize the YOLOXE2EDetector object with specified parameters.
+
+        Args:
+            *assets (Asset): Variable length argument list of assets.
+            labels (List[str]): List of label names.
+            min_score (float): Minimum score for detected objects (default is 0.3).
+            nms (bool): Flag indicating whether to apply non-maximum suppression (default is True).
+            nms_threshold (float): Threshold value for non-maximum suppression (default is 0.3).
+            nms_eta (Optional[float]): Optional parameter for non-maximum suppression.
+            nms_top_k (Optional[int]): Optional parameter for non-maximum suppression.
+            engine (InferenceEngine): Inference engine to be used (default is InferenceEngine.ONNX).
+        """
         super().__init__(min_score)
         self.engine = InferenceEngineFactory.create(engine, assets,
                                                     flip_channels=True,
@@ -32,9 +49,21 @@ class YOLOXE2EDetector(ObjectDetector):
         self.nms_top_k = nms_top_k
 
     def setup(self):
+        """
+        Setup the inference engine before processing.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[ObjectDetectionResult]:
+        """
+        Process the input image to detect objects and return the results.
+
+        Args:
+            image (np.ndarray): Input image to be processed.
+
+        Returns:
+            ResultList[ObjectDetectionResult]: List of object detection results.
+        """
         output = self.engine.process(image)
         boxes = output["boxes"]
         labels = output["labels"]
@@ -74,4 +103,7 @@ class YOLOXE2EDetector(ObjectDetector):
         return results
 
     def release(self):
+        """
+        Release any resources held by the inference engine.
+        """
         self.engine.release()

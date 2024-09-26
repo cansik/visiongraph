@@ -13,6 +13,10 @@ from visiongraph.util.ResultUtils import non_maximum_suppression
 
 
 class YOLOv8OBBConfig(Enum):
+    """
+    An enumeration of YOLOv8 OBB model configurations.
+    Each configuration includes the model asset and the dataset version.
+    """
     YOLOv8_OBB_N = RepositoryAsset("yolov8n-obb.onnx"), DOTA_v1_0
     YOLOv8_OBB_S = RepositoryAsset("yolov8s-obb.onnx"), DOTA_v1_0
     YOLOv8_OBB_M = RepositoryAsset("yolov8m-obb.onnx"), DOTA_v1_0
@@ -21,8 +25,24 @@ class YOLOv8OBBConfig(Enum):
 
 
 class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
+    """
+    YOLOv8 Oriented Bounding Box Detector.
+    Performs object detection and orients the detected bounding boxes.
+
+    Args:
+        UltralyticsYOLODetector: The Ultralytics YOLO Object Detector class.
+    """
 
     def process(self, image: np.ndarray) -> ResultList[OrientedObjectDetectionResult]:
+        """
+        Processes detection on the input image and returns a list of oriented object detection results.
+
+        Args:
+            image (np.ndarray): The input image as a NumPy array.
+
+        Returns:
+            ResultList[OrientedObjectDetectionResult]: A list of oriented object detection results.
+        """
         output = self.engine.process(image)
 
         predictions = output[self.engine.output_names[0]]
@@ -63,5 +83,14 @@ class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
 
     @staticmethod
     def create(config: YOLOv8OBBConfig = YOLOv8OBBConfig.YOLOv8_OBB_S) -> "YOLOv8OBBDetector":
+        """
+        Instantiates a YOLOv8 Oriented Bounding Box Detector based on the provided configuration.
+
+        Args:
+            config (YOLOv8OBBConfig, optional): The configuration for the detector. Defaults to YOLOv8_OBB_S.
+
+        Returns:
+            YOLOv8OBBDetector: An instance of YOLOv8 Oriented Bounding Box Detector.
+        """
         model, labels = config.value
         return YOLOv8OBBDetector(model, labels=labels)
