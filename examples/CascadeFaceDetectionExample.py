@@ -6,13 +6,11 @@ import cv2
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
-from visiongraph.estimator.spatial.face.emotion.AffectNetEmotionClassifier import AffectNetEmotionClassifier
 from visiongraph.estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
-from visiongraph.model.types.ModelPrecision import ModelPrecision
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 

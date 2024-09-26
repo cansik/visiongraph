@@ -7,10 +7,7 @@ from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanDetector, CrowdHumanConfig
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
-from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector, YOLOv5Config
 from visiongraph.estimator.spatial.YOLOv8Detector import YOLOv8Detector, YOLOv8Config
-from visiongraph.estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBConfig
-from visiongraph.estimator.spatial.YOLOv8OBBDetector import YOLOv8OBBDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.tracker.CentroidTracker import CentroidTracker

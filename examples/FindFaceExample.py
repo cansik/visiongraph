@@ -1,4 +1,6 @@
 import argparse
+import glob
+import os
 import os.path
 from argparse import ArgumentParser
 from typing import Optional, List
@@ -19,9 +21,6 @@ from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
-
-import glob
-import os
 
 
 def get_images_in_path(path: str) -> [str]:

@@ -7,11 +7,11 @@ import numpy as np
 from tqdm import tqdm
 
 from visiongraph.BaseGraph import BaseGraph
+from visiongraph.dsp.OneEuroFilterNumba import OneEuroFilterNumba
+from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from visiongraph.input import add_input_step_choices, VideoCaptureInput
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.recorder.CV2VideoRecorder import CV2VideoRecorder
-from visiongraph.dsp.OneEuroFilterNumba import OneEuroFilterNumba
-from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from visiongraph.util.LoggingUtils import add_logging_parameter
 from visiongraph.util.TimeUtils import FPSTracer
 

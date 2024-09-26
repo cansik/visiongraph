@@ -4,8 +4,8 @@ from argparse import ArgumentParser
 import cv2
 import numpy as np
 
-from visiongraph import vg
 from visiongraph import add_logging_parameter
+from visiongraph import vg
 from visiongraph.input import add_input_step_choices
 
 

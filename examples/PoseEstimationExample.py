@@ -3,9 +3,9 @@ from argparse import ArgumentParser
 
 import cv2
 
+from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
-from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.pose import add_pose_estimation_step_choices
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.input import add_input_step_choices
