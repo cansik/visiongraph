@@ -54,7 +54,7 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         self.ie_model = self._create_ie_model()
         self.ie_model.labels = self.labels
 
-        self.pipeline = SyncInferencePipeline(self - ie_model, self.device)
+        self.pipeline = SyncInferencePipeline(self.ie_model, self.device)
         self.pipeline.setup()
 
     def process(self, data: np.ndarray) -> ResultList[ObjectDetectionResult]:
