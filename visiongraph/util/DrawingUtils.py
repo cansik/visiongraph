@@ -6,6 +6,9 @@ import vector
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 
+"""
+A sequence of color tuples representing different color codes used in visualizations.
+"""
 COLOR_SEQUENCE = [
     (230, 25, 75),
     (60, 180, 75),
@@ -28,6 +31,9 @@ COLOR_SEQUENCE = [
     (255, 255, 255)
 ]
 
+"""
+A sequence of colors defined for the COCO dataset to represent different classes.
+"""
 COCO80_COLORS = [
     (0, 113, 188),
     (216, 82, 24),
@@ -110,6 +116,9 @@ COCO80_COLORS = [
     (255, 255, 255)
 ]
 
+"""
+Colors used for drawing axes: blue for x-axis, green for y-axis, and red for z-axis.
+"""
 AXIS_COLORS = [
     (0, 0, 255),
     (0, 255, 0),
@@ -125,6 +134,19 @@ def draw_text(image: np.ndarray,
               color: Sequence[int] = (255, 255, 255),
               thickness: int = 1,
               **kwargs):
+    """
+    Draws text on an image at a specified position.
+
+    Args:
+        image (np.ndarray): The image on which to draw the text.
+        text (str): The text string to be drawn.
+        position (Sequence[int]): The (x, y) coordinates for the text position.
+        font (int): The font type to use.
+        font_scale (float): Scale factor for the font size.
+        color (Sequence[int]): The color of the text in BGR format.
+        thickness (int): Thickness of the text lines.
+        **kwargs: Additional parameters for text rendering.
+    """
     cv2.putText(image, text, position, font, font_scale, color, thickness, **kwargs)
 
 
@@ -136,6 +158,19 @@ def draw_text_normalized(image: np.ndarray,
                          color: Sequence[int] = (255, 255, 255),
                          thickness: int = 1,
                          **kwargs):
+    """
+    Draws normalized text on an image, converting (0, 1) coordinate range to pixel coordinates.
+
+    Args:
+        image (np.ndarray): The image on which to draw the text.
+        text (str): The text string to be drawn.
+        position (Union[vector.Vector2D, vector._methods.VectorProtocol]): The normalized (x, y) coordinates.
+        font (int): The font type to use.
+        font_scale (float): Scale factor for the font size.
+        color (Sequence[int]): The color of the text in BGR format.
+        thickness (int): Thickness of the text lines.
+        **kwargs: Additional parameters for text rendering.
+    """
     h, w = image.shape[:2]
     x = int(round(position.x * w))
     y = int(round(position.y * h))
@@ -145,6 +180,15 @@ def draw_text_normalized(image: np.ndarray,
 
 def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
               center: vector.Vector2D, length: float = 0.1):
+    """
+    Draws 3D axes on a 2D image based on the given rotation and center.
+
+    Args:
+        image (np.ndarray): The image on which to draw the axes.
+        rotation (vector.Vector3D): The rotation angles (in degrees) around the x, y, and z axes.
+        center (vector.Vector2D): The center (origin) of the axes in normalized coordinates.
+        length (float): The length of the axes to be drawn.
+    """
     h, w = image.shape[:2]
     rays = [vector.obj(x=length, y=0, z=0),
             vector.obj(x=0, y=length, z=0),
@@ -162,6 +206,15 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
 
 
 def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thickness: int = 2):
+    """
+    Draws a bounding box on the image.
+
+    Args:
+        image (np.ndarray): The image on which to draw the bounding box.
+        bbox (BoundingBox2D): The bounding box to be drawn.
+        color (Sequence[int]): The color of the rectangle in BGR format.
+        thickness (int): Thickness of the rectangle edges.
+    """
     h, w = image.shape[:2]
     cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
                   (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
@@ -174,6 +227,18 @@ def draw_landmark(image: np.ndarray, landmark: vector.Vector4D,
                   thickness: int = 1,
                   draw_marker: bool = True,
                   marker_type: int = cv2.MARKER_CROSS):
+    """
+    Draws a landmark point on the image.
+
+    Args:
+        image (np.ndarray): The image on which to draw the landmark.
+        landmark (vector.Vector4D): The landmark position represented as (x, y, z, score).
+        color (Sequence[int]): Color of the landmark point in BGR format.
+        size (int): Size of the landmark point.
+        thickness (int): Thickness of the landmark marker.
+        draw_marker (bool): Whether to draw a marker or a circle.
+        marker_type (int): The type of marker to use if drawing a marker.
+    """
     h, w = image.shape[:2]
     x = int(round(landmark.x * w))
     y = int(round(landmark.y * h))

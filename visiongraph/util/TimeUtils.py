@@ -4,64 +4,157 @@ from visiongraph.util.MathUtils import StreamingMovingAverage
 
 
 def current_millis() -> int:
+    """
+    Retrieves the current time in milliseconds.
+
+    Returns:
+        int: Current time in milliseconds since the epoch.
+    """
     return time.time_ns() // 1_000_000
 
 
 class Watch:
+    """
+    A class to measure elapsed time with start and stop functionalities.
+    """
+
     def __init__(self, name: str = "Watch"):
+        """
+        Initializes the Watch instance with a name.
+
+        Args:
+            name (str): The name of the watch instance.
+        """
         self.name = name
         self.start_time: int = 0
         self.end_time: int = 0
         self.running = False
 
     def start(self):
+        """
+        Starts the timer by recording the current time.
+        """
         self.start_time = current_millis()
         self.running = True
 
     def stop(self):
+        """
+        Stops the timer and records the end time.
+        """
         self.end_time = current_millis()
         self.running = False
 
     def elapsed(self) -> int:
+        """
+        Calculates the elapsed time since the timer started.
+
+        Returns:
+            int: Elapsed time in milliseconds.
+        """
         if self.running:
             return current_millis() - self.start_time
         return self.end_time - self.start_time
 
     def time_str(self, time_format: str = "%Hh %Mm %Ss {}ms") -> str:
+        """
+        Formats the elapsed time into a readable string format.
+
+        Args:
+            time_format (str): The format for presenting the time.
+
+        Returns:
+            str: Formatted elapsed time as a string.
+        """
         delta = self.elapsed()
         return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
 
     def print(self):
+        """
+        Prints the name of the watch along with the formatted elapsed time.
+        """
         print(f"{self.name}: {self.time_str()}")
 
     def __enter__(self):
+        """
+        Starts the timer when entering a context.
+
+        Returns:
+            Watch: The current Watch instance.
+        """
         self.start()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        """
+        Stops the timer and prints the elapsed time when exiting a context.
+
+        Args:
+            exc_type: Exception type.
+            exc_val: Exception value.
+            exc_tb: Exception traceback.
+        """
         self.stop()
         self.print()
 
 
 class ProfileWatch(Watch):
+    """
+    A subclass of Watch that computes the average elapsed time using a moving average.
+    """
+
     def __init__(self, name: str = "Watch", window_size: int = 10):
+        """
+        Initializes the ProfileWatch instance with a name and window size for moving average.
+
+        Args:
+            name (str): The name of the profile watch instance.
+            window_size (int): The size of the window for moving average computation.
+        """
         super().__init__(name)
         self._moving_average = StreamingMovingAverage(window_size)
 
     def stop(self):
+        """
+        Stops the timer, records the elapsed time, and processes it for the moving average.
+        """
         super().stop()
         self._moving_average.process(self.elapsed())
 
     def average(self):
+        """
+        Retrieves the current average of the recorded elapsed times.
+
+        Returns:
+            float: The average elapsed time.
+        """
         return self._moving_average.average()
 
     def time_str(self, time_format: str = "%Hh %Mm %Ss {}ms") -> str:
+        """
+        Formats the elapsed time into a readable string format.
+
+        Args:
+            time_format (str): The format for presenting the time.
+
+        Returns:
+            str: Formatted elapsed time as a string.
+        """
         delta = self.elapsed()
         return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
 
 
 class FPSTracer:
+    """
+    A class to track frames per second (FPS) with smoothing options.
+    """
+
     def __init__(self, alpha=0.1):
+        """
+        Initializes the FPSTracer instance with a smoothing factor.
+
+        Args:
+            alpha (float): The smoothing factor for FPS calculation.
+        """
         self.fps = -1
         self.prev_frame_time = 0
 
@@ -69,10 +162,11 @@ class FPSTracer:
         self.smooth_fps = -1
 
     def update(self):
-        # update fps
+        """
+        Updates the FPS based on the time since the last frame and smooths the result.
+        """
         current_time = time.time()
         self.fps = 1 / max(0.0001, (current_time - self.prev_frame_time))
         self.prev_frame_time = current_time
 
-        # update smooth
         self.smooth_fps += (self.fps - self.smooth_fps) * self.alpha

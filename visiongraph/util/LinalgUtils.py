@@ -5,6 +5,16 @@ from visiongraph.model.CameraIntrinsics import CameraIntrinsics
 
 
 def project_point_to_pixel(point: vector.Vector3D, intrinsics: CameraIntrinsics) -> vector.Vector2D:
+    """
+    Projects a 3D point in world coordinates to a 2D pixel in image space.
+
+    Args:
+        point (vector.Vector3D): The 3D point to project.
+        intrinsics (CameraIntrinsics): The camera intrinsics for projection.
+
+    Returns:
+        vector.Vector2D: The resulting 2D pixel position.
+    """
     x = point.x / point.z
     y = point.y / point.z
 
@@ -19,13 +29,14 @@ def project_point_to_pixel(point: vector.Vector3D, intrinsics: CameraIntrinsics)
 
 def project_points_to_pixels(points: np.ndarray, intrinsics: CameraIntrinsics) -> np.ndarray:
     """
-    Project 3d points into 2d image space.
+    Project 3D points into 2D image space.
 
-    Parameters:
-        points: Numpy array of pixels (n, 3)
-        intrinsics: Camera intrinsics
-    Return:
-        Numpy array of 2d positions (n, 2)
+    Args:
+        points (np.ndarray): Numpy array of 3D points with shape (n, 3).
+        intrinsics (CameraIntrinsics): The camera intrinsics for projection.
+
+    Returns:
+        np.ndarray: Numpy array of 2D pixel positions with shape (n, 2).
     """
     pixels = np.zeros((points.shape[0], 3), dtype=float)
 
@@ -42,6 +53,17 @@ def project_points_to_pixels(points: np.ndarray, intrinsics: CameraIntrinsics) -
 
 
 def project_pixel_to_point(pixel: vector.Vector2D, depth: float, intrinsics: CameraIntrinsics) -> vector.Vector3D:
+    """
+    Projects a 2D pixel in image space to a 3D point in world coordinates.
+
+    Args:
+        pixel (vector.Vector2D): The 2D pixel to project.
+        depth (float): The depth value corresponding to the pixel.
+        intrinsics (CameraIntrinsics): The camera intrinsics for projection.
+
+    Returns:
+        vector.Vector3D: The resulting 3D point in world coordinates.
+    """
     x = (pixel.x - intrinsics.px) / intrinsics.fx
     y = (pixel.y - intrinsics.py) / intrinsics.fy
 
@@ -53,14 +75,15 @@ def project_pixel_to_point(pixel: vector.Vector2D, depth: float, intrinsics: Cam
 
 def project_pixels_to_points(pixels: np.ndarray, depth: np.ndarray, intrinsics: CameraIntrinsics) -> np.ndarray:
     """
-    Project 2d pixels into 3d camera space.
+    Projects 2D pixels in image space to 3D points in camera space.
 
-    Parameters:
-        pixels: Numpy array of pixels (n, 2)
-        depth: Numpy array of depth values (n)
-        intrinsics: Camera intrinsics
-    Return:
-        Numpy array of 3d positions (n, 3)
+    Args:
+        pixels (np.ndarray): Numpy array of 2D pixels with shape (n, 2).
+        depth (np.ndarray): Numpy array of depth values with shape (n,).
+        intrinsics (CameraIntrinsics): The camera intrinsics for projection.
+
+    Returns:
+        np.ndarray: Numpy array of 3D points with shape (n, 3).
     """
     points = np.zeros((pixels.shape[0], 3), dtype=float)
 

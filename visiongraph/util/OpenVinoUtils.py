@@ -4,6 +4,16 @@ from openvino.runtime import Core
 
 
 def get_inference_engine_device() -> str:
+    """
+    Retrieves the preferred OpenVINO inference engine device.
+
+    This function initializes the OpenVINO Core, checks for available devices,
+    and selects the first GPU device if available. It logs all available devices 
+    along with their full names and marks the default device.
+
+    Returns:
+        str: The identifier of the preferred inference engine device.
+    """
     core = Core()
 
     device_id = 0

@@ -5,8 +5,8 @@ import cv2
 import numpy as np
 import vector
 
-from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
+from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.util import ImageUtils
 
@@ -15,6 +15,19 @@ ODR = TypeVar("ODR", bound=ObjectDetectionResult)
 
 def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold: float,
                             eta: Optional[float] = None, top_k: Optional[int] = None) -> List[ODR]:
+    """
+    Applies Non-Maximum Suppression (NMS) to filter out overlapping bounding boxes.
+
+    Args:
+        results (List[ODR]): List of object detection results.
+        min_score (float): Minimum score threshold to consider a box.
+        iou_threshold (float): IOU threshold for merging boxes.
+        eta (Optional[float]): Optional parameter for adjusting NMS.
+        top_k (Optional[int]): Optional parameter to limit the number of boxes.
+
+    Returns:
+        List[ODR]: List of filtered object detection results after NMS.
+    """
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
     indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold, eta, top_k)
@@ -23,6 +36,16 @@ def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold:
 
 def extract_object_detection_roi(image: np.ndarray,
                                  detection: ODR) -> Tuple[np.ndarray, ODR]:
+    """
+    Extracts the region of interest (ROI) from an image based on the detected bounding box.
+
+    Args:
+        image (np.ndarray): Input image from which to extract the ROI.
+        detection (ODR): Object detection result containing the bounding box.
+
+    Returns:
+        Tuple[np.ndarray, ODR]: A tuple containing the extracted ROI and the modified detection result.
+    """
     box: BoundingBox2D = detection.bounding_box.scale_with(Size2D.from_image(image))
     roi = ImageUtils.roi(image, box)
 
@@ -32,6 +55,15 @@ def extract_object_detection_roi(image: np.ndarray,
 
 
 def bbox_from_landmarks(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
+    """
+    Creates a bounding box from a set of landmarks.
+
+    Args:
+        landmarks (vector.VectorNumpy4D): A set of landmarks containing 'x' and 'y' coordinates.
+
+    Returns:
+        BoundingBox2D: The bounding box encompassing the provided landmarks.
+    """
     xs = np.ma.masked_equal(landmarks["x"], 0.0, copy=False)
     ys = np.ma.masked_equal(landmarks["y"], 0.0, copy=False)
 

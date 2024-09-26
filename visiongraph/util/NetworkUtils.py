@@ -13,6 +13,15 @@ PUBLIC_DATA_URL = "https://github.com/cansik/data-storage/releases/download/sarm
 
 
 def download_file(url: str, path: str, description: str = "download", with_progress: bool = True):
+    """
+    Downloads a file from the specified URL and saves it to the given path.
+
+    Args:
+        url (str): The URL to download the file from.
+        path (str): The local path where the file will be saved.
+        description (str, optional): A description for the download progress. Defaults to "download".
+        with_progress (bool, optional): Indicates whether to show a progress bar. Defaults to True.
+    """
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
     if not with_progress:
@@ -48,12 +57,32 @@ def download_file(url: str, path: str, description: str = "download", with_progr
 
 
 def prepare_openvino_model(model_name, url: str = None) -> Tuple[str, str]:
+    """
+    Prepares the OpenVINO model files by downloading the model and weights.
+
+    Args:
+        model_name (str): The name of the model.
+        url (str, optional): Optional URL for downloading the model files. If None, defaults to the public data URL.
+
+    Returns:
+        Tuple[str, str]: A tuple containing the paths to the model XML and weights BIN files.
+    """
     model_path = prepare_data_file(f"{model_name}.xml", url)
     weights_path = prepare_data_file(f"{model_name}.bin", url)
     return model_path, weights_path
 
 
 def prepare_data_file(file_name: str, url: str = None) -> str:
+    """
+    Prepares a data file by downloading it if it does not already exist.
+
+    Args:
+        file_name (str): The name of the file to prepare.
+        url (str, optional): Optional URL for downloading the file. If None, defaults to the public data URL.
+
+    Returns:
+        str: The path to the prepared data file.
+    """
     if url is None:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 

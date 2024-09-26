@@ -2,6 +2,15 @@ import argparse
 
 
 def add_source_argument(parser: argparse.ArgumentParser):
+    """
+    Adds a source argument to the provided argument parser.
+
+    Args:
+        parser (argparse.ArgumentParser): The argument parser to which the source argument will be added.
+
+    Raises:
+        argparse.ArgumentError: If there is a conflicting argument when adding the source argument.
+    """
     try:
         parser.add_argument("-src", "--source", type=str, help="Generic input source for all inputs.")
     except argparse.ArgumentError as ex:

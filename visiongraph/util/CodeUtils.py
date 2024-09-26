@@ -6,9 +6,13 @@ import warnings
 
 def deprecated(message: str = ""):
     """
-    This is a decorator which can be used to mark functions
-    as deprecated. It will result in a warning being emitted
-    when the function is used first time and filter is set for show DeprecationWarning.
+    A decorator to mark functions as deprecated.
+
+    Args:
+        message (str): An optional message indicating the reason for deprecation.
+
+    This will emit a warning when the decorated function is called for the first time,
+    provided that the filter is set to show DeprecationWarning.
     """
 
     def decorator_wrapper(func):
