@@ -11,8 +11,24 @@ from visiongraph.GraphNode import GraphNode
 
 
 class BaseGraph(ArgumentConfigurable, ABC):
-    def __init__(self, multi_threaded: bool = False, daemon: bool = False,
-                 handle_signals: bool = False, new_process: bool = False):
+    """
+    Abstract base class for a graph in VisionGraph.
+    """
+
+    def __init__(self, 
+                 multi_threaded: bool = False, 
+                 daemon: bool = False, 
+                 handle_signals: bool = False, 
+                 new_process: bool = False):
+        """
+        Initializes the BaseGraph object.
+
+        Args:
+            multi_threaded (bool): Whether to run in multiple threads. Defaults to False.
+            daemon (bool): Whether the process should be a daemon. Defaults to False.
+            handle_signals (bool): Whether to catch and handle signals. Defaults to False.
+            new_process (bool): Whether to create a new process for execution. Defaults to False.
+        """
         self._open = False
         self.multi_threaded = multi_threaded
         self.new_process = new_process
@@ -26,9 +42,21 @@ class BaseGraph(ArgumentConfigurable, ABC):
             signal.signal(signal.SIGINT, self._signal_handler)
 
     def add_nodes(self, *nodes: GraphNode):
+        """
+        Adds nodes to the graph.
+
+        Args:
+            *nodes (GraphNode): The nodes to be added.
+        """
         self.nodes += nodes
 
     def open(self):
+        """
+        Opens the pipeline and starts execution.
+
+        Raises:
+            RuntimeError: If the pipeline is already running.
+        """
         if self._open:
             logging.warning("is already running")
             return
@@ -47,6 +75,12 @@ class BaseGraph(ArgumentConfigurable, ABC):
             self._loop()
 
     def close(self, wait_time: int = 60 * 1000):
+        """
+        Closes the pipeline and waits for the process to finish.
+
+        Args:
+            wait_time (int): The amount of time to wait for the process to finish. Defaults to 60 seconds.
+        """
         if not self._open:
             logging.warning("is not running")
             return
@@ -60,6 +94,9 @@ class BaseGraph(ArgumentConfigurable, ABC):
         logging.info("has been closed")
 
     def _loop(self):
+        """
+        Runs the pipeline loop.
+        """
         try:
             self._init()
             logging.info("is setup and running")
@@ -74,23 +111,45 @@ class BaseGraph(ArgumentConfigurable, ABC):
             self.on_exception(self, ex)
 
     def _init(self):
-        """Runs before pipeline loop."""
+        """
+        Runs before the pipeline loop.
+        """
         for node in self.nodes:
             node.setup()
 
     @abstractmethod
     def _process(self):
-        """Runs inside pipeline loop."""
+        """
+        Runs inside the pipeline loop.
+
+        Raises:
+            NotImplementedError: This method must be implemented by subclasses.
+        """
         pass
 
     def _release(self):
-        """Runs after pipeline loop"""
+        """
+        Runs after the pipeline loop.
+        """
         for node in self.nodes:
             node.release()
 
     def configure(self, args: Namespace):
+        """
+        Configures the nodes with the provided arguments.
+
+        Args:
+            args (Namespace): The configuration arguments.
+        """
         for node in self.nodes:
             node.configure(args)
 
     def _signal_handler(self, signal, frame):
+        """
+        Handles signals and closes the pipeline.
+
+        Args:
+            signal (int): The signal received.
+            frame: The current frame.
+        """
         self.close()
