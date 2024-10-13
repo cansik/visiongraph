@@ -38,7 +38,7 @@ def _normalize_pose_landmarks(pose: PoseLandmarkResult, torso_size_multiplier: f
 
     # Normalize translation.
     pose_center = _get_pose_center(normalized_pose)
-    normalized_pose.landmarks = normalized_pose.landmarks.subtract(pose_center)
+    normalized_pose.landmarks = normalized_pose.landmarks.subtract(pose_center.to_4D(t=0))
 
     # Normalize scale.
     pose_size = _get_pose_size(pose, torso_size_multiplier)
@@ -148,12 +148,12 @@ def _get_pose_distance_embedding(pose: PoseLandmarkResult) -> np.ndarray:
 
         # Body bent direction.
         vector_distance(
-            lerp_vector_2d(pose.left_wrist.to_xyz(), pose.left_ankle.to_xyz(), 0.5),
+            lerp_vector_3d(pose.left_wrist.to_xyz(), pose.left_ankle.to_xyz(), 0.5),
             pose.left_hip.to_xyz()
         ),
 
         vector_distance(
-            lerp_vector_2d(pose.right_wrist.to_xyz(), pose.right_ankle.to_xyz(), 0.5),
+            lerp_vector_3d(pose.right_wrist.to_xyz(), pose.right_ankle.to_xyz(), 0.5),
             pose.right_hip.to_xyz()
         )
     ])
