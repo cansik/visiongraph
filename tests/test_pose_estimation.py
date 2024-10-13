@@ -1,8 +1,15 @@
 import unittest
 
 import cv2
+import numpy as np
+from vector import VectorNumpy4D
+
 from visiongraph import vg
-from visiongraph.util import OSUtils
+from visiongraph.estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
+from visiongraph.result.ResultList import ResultList
+from visiongraph.result.spatial.pose.COCOPose import COCOPose
+from visiongraph.util import PoseUtils
+from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class PoseEstimationTests(unittest.TestCase):
@@ -86,6 +93,17 @@ class PoseEstimationTests(unittest.TestCase):
 
     def test_kapao_l_coco_1280_estimator(self):
         self._test_model(vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_L_COCO_1280))
+
+    def test_pose_embedding(self):
+        data = list(np.abs(np.random.sample((17, 4))))
+        data = [tuple(d) for d in data]
+        landmarks: VectorNumpy4D = list_of_vector4D(data)
+        pose = COCOPose(1.0, landmarks)
+
+        embedder = LandmarkEmbedder(PoseUtils.embed_pose)
+        embedder.setup()
+        _ = embedder.process(ResultList([pose]))
+        embedder.release()
 
 
 if __name__ == '__main__':
