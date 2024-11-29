@@ -109,7 +109,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
                 assert isinstance(doc, pdoc.doc.Module)
                 doc = doc.get(qualname)
             target_exists_and_public = (
-                    doc is not None and context["is_public"](doc).strip()
+                doc is not None and context["is_public"](doc).strip()
             )
             if target_exists_and_public:
                 assert doc is not None  # mypy

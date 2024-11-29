@@ -92,16 +92,20 @@ except ImportError as ex:
     logging.info(f"ONNX not installed: {ex}")
 
 try:
-    from visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseEstimator, YOLOv8PoseConfig
+    from visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator import UltralyticsPoseEstimator, \
+        UltralyticsPoseConfig
 
-    PoseEstimators["yolov8-n"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_N_640)
-    PoseEstimators["yolov8-s"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_S_640)
-    PoseEstimators["yolov8-m"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_M_640)
-    PoseEstimators["yolov8-l"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_L_640)
-    PoseEstimators["yolov8-x"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_X_640)
+    PoseEstimators["yolov8-n"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_N_640)
+    PoseEstimators["yolov8-s"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_S_640)
+    PoseEstimators["yolov8-m"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_M_640)
+    PoseEstimators["yolov8-l"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_L_640)
+    PoseEstimators["yolov8-x"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_X_640)
 
-    PoseEstimators["yolov8-n-int8"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_N_640_INT8)
-    PoseEstimators["yolov8-s-int8"] = partial(YOLOv8PoseEstimator.create, YOLOv8PoseConfig.YOLOv8_S_640_INT8)
+    PoseEstimators["yolov8-n-int8"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_N_640_INT8)
+    PoseEstimators["yolov8-s-int8"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_S_640_INT8)
+
+    PoseEstimators["yolov11-n"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv11_N_640)
+    PoseEstimators["yolov11-s"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv11_S_640)
 
 except ImportError as ex:
     logging.info(f"Could not import YOLOv8 - dependencies not installed: {ex}")

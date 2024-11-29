@@ -272,8 +272,8 @@ if TYPE_CHECKING:
         from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
     except ModuleNotFoundError as ex:
         logging.info(f"Module TopDownPoseEstimator not found")
-    from visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseConfig  # noqa
-    from visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator import YOLOv8PoseEstimator  # noqa
+    from visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator import UltralyticsPoseConfig  # noqa
+    from visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator import UltralyticsPoseEstimator  # noqa
     from visiongraph.estimator.spatial.pose.__init__ import add_pose_estimation_step_choices  # noqa
     from visiongraph.estimator.spatial.segmentation.MODNetEstimator import ModNetConfig  # noqa
     from visiongraph.estimator.spatial.segmentation.MODNetEstimator import ModNetEstimator  # noqa
@@ -661,8 +661,8 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "OpenPoseEstimator": _LazyImport("OpenPoseEstimator", "visiongraph.estimator.spatial.pose.OpenPoseEstimator", True),
     "PoseEstimator": _LazyImport("PoseEstimator", "visiongraph.estimator.spatial.pose.PoseEstimator", False),
     "TopDownPoseEstimator": _LazyImport("TopDownPoseEstimator", "visiongraph.estimator.spatial.pose.TopDownPoseEstimator", True),
-    "YOLOv8PoseConfig": _LazyImport("YOLOv8PoseConfig", "visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator", False),
-    "YOLOv8PoseEstimator": _LazyImport("YOLOv8PoseEstimator", "visiongraph.estimator.spatial.pose.YOLOv8PoseEstimator", False),
+    "UltralyticsPoseConfig": _LazyImport("UltralyticsPoseConfig", "visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator", False),
+    "UltralyticsPoseEstimator": _LazyImport("UltralyticsPoseEstimator", "visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator", False),
     "add_pose_estimation_step_choices": _LazyImport("add_pose_estimation_step_choices", "visiongraph.estimator.spatial.pose.__init__", False),
     "ModNetConfig": _LazyImport("ModNetConfig", "visiongraph.estimator.spatial.segmentation.MODNetEstimator", False),
     "ModNetEstimator": _LazyImport("ModNetEstimator", "visiongraph.estimator.spatial.segmentation.MODNetEstimator", False),

@@ -15,9 +15,9 @@ from visiongraph.util.ResultUtils import non_maximum_suppression
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
-class YOLOv8PoseConfig(Enum):
+class UltralyticsPoseConfig(Enum):
     """
-    Configuration options for the YOLOv8 pose estimation models.
+    Configuration options for the Ultralytics pose estimation models.
     """
     YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), InferenceEngine.ONNX, 17
     YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), InferenceEngine.ONNX, 17
@@ -28,10 +28,13 @@ class YOLOv8PoseConfig(Enum):
     YOLOv8_N_640_INT8 = *RepositoryAsset.openVino("yolov8n-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
     YOLOv8_S_640_INT8 = *RepositoryAsset.openVino("yolov8s-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
 
+    YOLOv11_N_640 = RepositoryAsset("yolo11n-pose.onnx"), InferenceEngine.ONNX, 17
+    YOLOv11_S_640 = RepositoryAsset("yolo11s-pose.onnx"), InferenceEngine.ONNX, 17
 
-class YOLOv8PoseEstimator(PoseEstimator):
+
+class UltralyticsPoseEstimator(PoseEstimator):
     """
-    A class for performing pose estimation using the YOLOv8 model.
+    A class for performing pose estimation using the Ultralytics Pose models (YOLOv8, YOLO11, ...).
 
     Inherits from:
         PoseEstimator: Base class for pose estimation algorithms.
@@ -42,7 +45,7 @@ class YOLOv8PoseEstimator(PoseEstimator):
                  nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
                  engine: InferenceEngine = InferenceEngine.OpenVINO2):
         """
-        Initializes the YOLOv8PoseEstimator with the given parameters.
+        Initializes the UltralyticsPoseEstimator with the given parameters.
 
         Args:
             assets (Asset): Assets required for the pose estimation model.
@@ -130,15 +133,15 @@ class YOLOv8PoseEstimator(PoseEstimator):
         self.engine.release()
 
     @staticmethod
-    def create(config: YOLOv8PoseConfig = YOLOv8PoseConfig.YOLOv8_S_640) -> "YOLOv8PoseEstimator":
+    def create(config: UltralyticsPoseConfig = UltralyticsPoseConfig.YOLOv8_S_640) -> "UltralyticsPoseEstimator":
         """
-        Creates an instance of YOLOv8PoseEstimator based on the provided configuration.
+        Creates an instance of UltralyticsPoseEstimator based on the provided configuration.
 
         Args:
-            config (YOLOv8PoseConfig): Configuration for the YOLOv8 pose estimator.
+            config (UltralyticsPoseConfig): Configuration for the Ultralytics pose estimator.
 
         Returns:
-            YOLOv8PoseEstimator: An instance of the YOLOv8PoseEstimator.
+            UltralyticsPoseEstimator: An instance of the UltralyticsPoseEstimator.
         """
         num_args = len(config.value) - 2
 
@@ -149,4 +152,4 @@ class YOLOv8PoseEstimator(PoseEstimator):
         if type(assets) is not tuple:
             assets = (assets,)
 
-        return YOLOv8PoseEstimator(*assets, num_keypoints=num_keypoints, engine=engine)
+        return UltralyticsPoseEstimator(*assets, num_keypoints=num_keypoints, engine=engine)
