@@ -49,9 +49,8 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           pip install uv
-          uv venv
-          uv pip install -r dev-requirements.txt
-          uv pip install .[all]
+          uv pip install --system -r dev-requirements.txt
+          uv pip install --system .[all]
 
       - name: "Download all networks from ${{ github.event.inputs.tag }}"
         uses: robinraju/release-downloader@v1.8

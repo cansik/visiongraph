@@ -38,8 +38,7 @@ jobs:
       run: |
           pip install --upgrade pip
           pip install uv
-          uv venv
-          uv pip install -r dev-requirements.txt
+          uv pip install --system -r dev-requirements.txt
           python setup.py generate_init
           python setup.py bdist_wheel
 
