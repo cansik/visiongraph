@@ -26,6 +26,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           pip install uv
+          uv venv
 
       # install relevant files
       - run: uv pip install -r dev-requirements.txt

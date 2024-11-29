@@ -49,7 +49,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           pip install uv
-          pip cache purge
+          uv venv
           uv pip install -r dev-requirements.txt
           uv pip install .[all]
 
