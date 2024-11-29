@@ -15,7 +15,7 @@ jobs:
             args:
 
           - name: macos-intel
-            host: macos-12
+            host: macos-13
             args:
 
           - name: macos-silicon
