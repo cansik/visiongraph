@@ -17,7 +17,7 @@ vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
 Get started with `visiongraph` by reading the **[documentation](https://cansik.github.io/visiongraph/visiongraph.html#documentation)**.
 
 ## Installation
-Visiongraph supports python `3.10` and `3.11`. Other versions might work as well but are not officially supported.
+Visiongraph supports Python 3.10 and 3.11. Other versions may also work, but are not officially supported. Usually this is a third-party dependency problem: for example, [pyrealsense2](https://pypi.org/project/pyrealsense2/#files) does not have wheel packages for `3.12`.
 
 To install visiongraph with all dependencies call [pip](https://pypi.org/project/pip/) like this:
 
