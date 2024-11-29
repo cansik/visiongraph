@@ -1,12 +1,11 @@
 # base packages
-wheel
 opencv-python~=4.7.0; python_version <= "3.9"
 opencv-python~=4.10.0; python_version > "3.9"
 requests
 tqdm
-vector~=1.5.0
+vector~=1.5.2
 scipy
-filterpy
+numpy
 
 # extra realsense
 pyrealsense2-macosx; platform_system == "Darwin"
@@ -16,24 +15,24 @@ pyrealsense2; platform_system != "Darwin"
 pyk4a-bundle~=1.5; platform_system == "Windows" or platform_system == "Linux"
 
 # extra depthai
-depthai~=2.28; platform_system != "Darwin" or platform.machine == "arm64"
+depthai~=2.29; platform_system != "Darwin" or platform.machine == "arm64"
 
 # extra openvino
-openvino~=2024.4.0
+openvino~=2024.5.0
 
 # extra mediapipe
-mediapipe~=0.10.14
+mediapipe~=0.10.18
 
 # extra onnx
-onnxruntime~=1.19.0
+onnxruntime~=1.20.1
 
 # extra onnx-gpu
-onnxruntime~=1.19.0; platform_system == "Darwin"
-onnxruntime-gpu~=1.19.0; platform_system != "Darwin"
+onnxruntime~=1.20.1; platform_system == "Darwin"
+onnxruntime-gpu~=1.20.1; platform_system != "Darwin"
 
 # extra onnx-directml
-onnxruntime~=1.19.0; platform_system == "Darwin" or platform_system == "Linux"
-onnxruntime-directml~=1.19.0; platform_system == "Windows"
+onnxruntime~=1.20.1; platform_system == "Darwin" or platform_system == "Linux"
+onnxruntime-directml~=1.20.1; platform_system == "Windows"
 
 # extra media
 moviepy
@@ -49,3 +48,6 @@ SpoutGL~=0.1.0; platform_system == "Windows"
 
 # extra faiss
 faiss-cpu
+
+# extra mot
+filterpy

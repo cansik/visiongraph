@@ -156,6 +156,7 @@ class VisiongraphAnalyzer:
             "OpenGL",
             "syphon",
             "SpoutGL",
+            "filterpy"
         }
         self.module_with_methods = {
             "visiongraph.util",

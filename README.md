@@ -25,11 +25,14 @@ To install visiongraph with all dependencies call [pip](https://pypi.org/project
 pip install "visiongraph[all]"
 ```
 
-It is also possible to only install certain packages depending on your needs:
+It is also possible to only install certain packages depending on your needs (recommended):
 
 ```bash
-pip install "visiongraph[realsense, openvino, mediapipe, onnx, media, azure, numba, opencv-contrib]"
+# example on how to install realsense and openvino support only
+pip install "visiongraph[realsense, openvino]"
 ```
+
+Please read more about the extra packages in the [documentation](https://cansik.github.io/visiongraph/visiongraph.html#extras).
 
 ## Examples
 To demonstrate the possibilities of visiongraph there are already implemented [examples](examples) ready for you to try out. Here is a list of the current examples:
