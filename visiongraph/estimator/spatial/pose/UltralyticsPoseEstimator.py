@@ -36,6 +36,8 @@ class UltralyticsPoseEstimator(PoseEstimator):
     """
     A class for performing pose estimation using the Ultralytics Pose models (YOLOv8, YOLO11, ...).
 
+    Please be aware that Ultralytics publishes their models under AGPLv3 license.
+
     Inherits from:
         PoseEstimator: Base class for pose estimation algorithms.
     """
