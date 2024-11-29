@@ -5,8 +5,9 @@ from typing import TypeVar
 from visiongraph.Processable import Processable
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType')
+NodeType = TypeVar("NodeType", bound="GraphNode")
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType")
 
 
 class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC):
@@ -49,3 +50,10 @@ class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC):
         """
         self.configure(args)
         self.setup()
+
+    def __enter__(self) -> NodeType:
+        self.setup()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.release()

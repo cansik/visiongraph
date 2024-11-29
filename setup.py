@@ -5,7 +5,6 @@ from typing import Set
 
 from setuptools import find_packages, Command
 from setuptools import setup
-from setuptools.command.install import install
 
 # define required packages
 required_packages: List[str] = find_packages(exclude=["tests", "examples", "snippets", "assets", "tools"])
@@ -15,7 +14,7 @@ ALL_NAME = "all"
 
 NAME = "visiongraph"
 PACKAGE_NAME = NAME
-PACKAGE_VERSION = "1.0.0b3"
+PACKAGE_VERSION = "1.0.0"
 PACKAGE_URL = "https://github.com/cansik/visiongraph"
 PACKAGE_DOC_MODULES = ["visiongraph", "!visiongraph.external"]
 
