@@ -89,3 +89,20 @@ set VISIONGRAPH_LOGLEVEL=INFO
 # powershell
 $env:VISIONGRAPH_LOGLEVEL="INFO"
 ```
+
+### Extras
+It is possible to install extra module to visiongraph by specifying them when installing visiongraph. Here is a list of currently supported extras:
+
+- `realsense` - Support for Intel RealSense cameras
+- `azure` - Support for Microsoft Azure Kinect cameras
+- `depthai` - Support for the Luxonis cameras
+- `openvino` - Support for the Intel openVINO machine learning framework
+- `mediapipe` - Support for the Google MediaPipe machine learning framework
+- `onnxruntime` - Support for the ONNX machine learning framework (CPU)
+- `onnxruntime-gpu` - Support for the ONNX machine learning framework (CUDA GPU)
+- `onnxruntime-directml` - Support for the ONNX machine learning framework (DirctML GPU)
+- `media` - Support for VidGear and MoviePy video reading and writing
+- `numba` - Improved performance for smoothing and tracking algorithms
+- `fbs` - Support for framebuffer sharing (SpoutGL or Syphon)
+- `faiss` - Support for fast pose classification
+- `mot` - Support for multi-object-tracking using motpy
