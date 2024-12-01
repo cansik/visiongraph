@@ -33,11 +33,9 @@ class BreakpointNode(GraphNode[Union[np.ndarray, ResultDict], Optional[Union[np.
         """
         Processes the input data and returns an optional result.
 
-        Args:
-            data (Union[np.ndarray, ResultDict]): The data to be processed.
+        :param data: The data to be processed.
 
-        Returns:
-            Optional[Union[np.ndarray, ResultDict]]: The processed result.
+        :return: The processed result.
         """
         breakpoint()
         return data
@@ -52,8 +50,7 @@ class BreakpointNode(GraphNode[Union[np.ndarray, ResultDict], Optional[Union[np.
         """
         Configures the node based on the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing the command-line arguments.
+        :param args: The namespace containing the command-line arguments.
         """
         pass
 
@@ -62,7 +59,6 @@ class BreakpointNode(GraphNode[Union[np.ndarray, ResultDict], Optional[Union[np.
         """
         Adds parameters to the parser for this node type.
 
-        Args:
-            parser (ArgumentParser): The parser to be updated.
+        :param parser: The parser to be updated.
         """
         pass

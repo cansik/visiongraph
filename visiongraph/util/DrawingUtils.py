@@ -137,15 +137,14 @@ def draw_text(image: np.ndarray,
     """
     Draws text on an image at a specified position.
 
-    Args:
-        image (np.ndarray): The image on which to draw the text.
-        text (str): The text string to be drawn.
-        position (Sequence[int]): The (x, y) coordinates for the text position.
-        font (int): The font type to use.
-        font_scale (float): Scale factor for the font size.
-        color (Sequence[int]): The color of the text in BGR format.
-        thickness (int): Thickness of the text lines.
-        **kwargs: Additional parameters for text rendering.
+    :param image: The image on which to draw the text.
+    :param text: The text string to be drawn.
+    :param position: The (x, y) coordinates for the text position.
+    :param font: The font type to use.
+    :param font_scale: Scale factor for the font size.
+    :param color: The color of the text in BGR format.
+    :param thickness: Thickness of the text lines.
+    :param **kwargs: Additional parameters for text rendering.
     """
     cv2.putText(image, text, position, font, font_scale, color, thickness, **kwargs)
 
@@ -161,15 +160,14 @@ def draw_text_normalized(image: np.ndarray,
     """
     Draws normalized text on an image, converting (0, 1) coordinate range to pixel coordinates.
 
-    Args:
-        image (np.ndarray): The image on which to draw the text.
-        text (str): The text string to be drawn.
-        position (Union[vector.Vector2D, vector._methods.VectorProtocol]): The normalized (x, y) coordinates.
-        font (int): The font type to use.
-        font_scale (float): Scale factor for the font size.
-        color (Sequence[int]): The color of the text in BGR format.
-        thickness (int): Thickness of the text lines.
-        **kwargs: Additional parameters for text rendering.
+    :param image: The image on which to draw the text.
+    :param text: The text string to be drawn.
+    :param position: The normalized (x, y) coordinates.
+    :param font: The font type to use.
+    :param font_scale: Scale factor for the font size.
+    :param color: The color of the text in BGR format.
+    :param thickness: Thickness of the text lines.
+    :param **kwargs: Additional parameters for text rendering.
     """
     h, w = image.shape[:2]
     x = int(round(position.x * w))
@@ -183,11 +181,10 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
     """
     Draws 3D axes on a 2D image based on the given rotation and center.
 
-    Args:
-        image (np.ndarray): The image on which to draw the axes.
-        rotation (vector.Vector3D): The rotation angles (in degrees) around the x, y, and z axes.
-        center (vector.Vector2D): The center (origin) of the axes in normalized coordinates.
-        length (float): The length of the axes to be drawn.
+    :param image: The image on which to draw the axes.
+    :param rotation: The rotation angles (in degrees) around the x, y, and z axes.
+    :param center: The center (origin) of the axes in normalized coordinates.
+    :param length: The length of the axes to be drawn.
     """
     h, w = image.shape[:2]
     rays = [vector.obj(x=length, y=0, z=0),
@@ -209,11 +206,10 @@ def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thic
     """
     Draws a bounding box on the image.
 
-    Args:
-        image (np.ndarray): The image on which to draw the bounding box.
-        bbox (BoundingBox2D): The bounding box to be drawn.
-        color (Sequence[int]): The color of the rectangle in BGR format.
-        thickness (int): Thickness of the rectangle edges.
+    :param image: The image on which to draw the bounding box.
+    :param bbox: The bounding box to be drawn.
+    :param color: The color of the rectangle in BGR format.
+    :param thickness: Thickness of the rectangle edges.
     """
     h, w = image.shape[:2]
     cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
@@ -230,14 +226,13 @@ def draw_landmark(image: np.ndarray, landmark: vector.Vector4D,
     """
     Draws a landmark point on the image.
 
-    Args:
-        image (np.ndarray): The image on which to draw the landmark.
-        landmark (vector.Vector4D): The landmark position represented as (x, y, z, score).
-        color (Sequence[int]): Color of the landmark point in BGR format.
-        size (int): Size of the landmark point.
-        thickness (int): Thickness of the landmark marker.
-        draw_marker (bool): Whether to draw a marker or a circle.
-        marker_type (int): The type of marker to use if drawing a marker.
+    :param image: The image on which to draw the landmark.
+    :param landmark: The landmark position represented as (x, y, z, score).
+    :param color: Color of the landmark point in BGR format.
+    :param size: Size of the landmark point.
+    :param thickness: Thickness of the landmark marker.
+    :param draw_marker: Whether to draw a marker or a circle.
+    :param marker_type: The type of marker to use if drawing a marker.
     """
     h, w = image.shape[:2]
     x = int(round(landmark.x * w))

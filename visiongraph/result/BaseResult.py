@@ -13,8 +13,7 @@ class BaseResult(ABC):
         """
         Applies annotations to the given image.
 
-        Args:
-            image (np.ndarray): The input image array.
-            **kwargs: Additional keyword arguments for customizing the annotation process.
+        :param image: The input image array.
+        :param **kwargs: Additional keyword arguments for customizing the annotation process.
         """
         pass

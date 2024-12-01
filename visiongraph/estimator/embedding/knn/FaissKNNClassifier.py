@@ -21,10 +21,9 @@ class FaissKNNClassifier(BaseKNNClassifier):
         """
         Initializes the FaissKNNClassifier object.
 
-        Args:
-            index_dimensions (Optional[int]): The dimensions for the index. Defaults to None.
-            store_training_data (bool): Whether to store the training data. Defaults to True.
-            data_path (Optional[Union[str, os.PathLike]]): The path to the data. Defaults to None.
+        :param index_dimensions: The dimensions for the index. Defaults to None.
+        :param store_training_data: Whether to store the training data. Defaults to True.
+        :param data_path: The path to the data. Defaults to None.
         """
         super().__init__(min_score=0.5,
                          store_training_data=store_training_data,
@@ -44,9 +43,8 @@ class FaissKNNClassifier(BaseKNNClassifier):
         """
         Adds samples to the classifier.
 
-        Args:
-            x (np.ndarray): The input data.
-            y (np.ndarray): The corresponding labels.
+        :param x: The input data.
+        :param y: The corresponding labels.
         """
         super().add_samples(x, y)
 
@@ -60,11 +58,9 @@ class FaissKNNClassifier(BaseKNNClassifier):
         """
         Predicts all classes for a given input.
 
-        Args:
-            x (np.ndarray): The input data.
+        :param x: The input data.
 
-        Returns:
-            np.ndarray: A matrix with the predicted class labels and distances.
+        :return: A matrix with the predicted class labels and distances.
         """
         #  lazy init index
         if self.index is None:
@@ -88,8 +84,7 @@ class FaissKNNClassifier(BaseKNNClassifier):
         """
         Resets the index with the specified dimensions.
 
-        Args:
-            index_dimensions (int): The dimensions for the index.
+        :param index_dimensions: The dimensions for the index.
         """
         if self.index is None:
             self.index = IndexFlatL2(index_dimensions)

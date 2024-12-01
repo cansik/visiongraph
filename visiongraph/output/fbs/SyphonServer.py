@@ -19,8 +19,7 @@ class SyphonServer(FrameBufferSharingServer):
         """
         Initializes the SyphonServer object.
 
-        Args:
-            name (str): The name of the server. Defaults to "SyphonServer".
+        :param name: The name of the server. Defaults to "SyphonServer".
         """
         super().__init__(name)
 
@@ -38,9 +37,8 @@ class SyphonServer(FrameBufferSharingServer):
         """
         Publishes a frame to the Syphon server.
 
-        Args:
-            frame (np.ndarray): The frame to be published.
-            flip_texture (bool): Whether to flip the texture. Defaults to False.
+        :param frame: The frame to be published.
+        :param flip_texture: Whether to flip the texture. Defaults to False.
         """
         h, w = frame.shape[:2]
 
@@ -57,10 +55,9 @@ class SyphonServer(FrameBufferSharingServer):
         """
         Converts a numpy array to a texture.
 
-        Args:
-            image (np.ndarray): The numpy array to be converted.
-            w (int): The width of the image.
-            h (int): The height of the image.
+        :param image: The numpy array to be converted.
+        :param w: The width of the image.
+        :param h: The height of the image.
         """
         if len(image.shape) == 2 or (len(image.shape) == 3 and image.shape[2] == 1):
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2RGBA)
@@ -77,8 +74,7 @@ class SyphonServer(FrameBufferSharingServer):
         """
         Configures the SyphonServer object based on the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing configuration options.
+        :param args: The namespace containing configuration options.
         """
         pass
 
@@ -87,7 +83,6 @@ class SyphonServer(FrameBufferSharingServer):
         """
         Adds parameters to the ArgumentParser for configuration.
 
-        Args:
-            parser (ArgumentParser): The parser to be updated.
+        :param parser: The parser to be updated.
         """
         pass

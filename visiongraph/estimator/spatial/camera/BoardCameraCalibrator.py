@@ -19,10 +19,9 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         Initializes the BoardCameraCalibrator with the number of columns and rows on the board,
         as well as an optional maximum number of samples to collect.
 
-        Args:
-            columns (int): The number of columns on the board.
-            rows (int): The number of rows on the board.
-            max_samples (int, optional): The maximum number of samples to collect. Defaults to -1, which means no limit.
+        :param columns: The number of columns on the board.
+        :param rows: The number of rows on the board.
+        :param max_samples: The maximum number of samples to collect. Defaults to -1, which means no limit.
         """
         self.max_samples = max_samples
 
@@ -44,11 +43,9 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         """
         Processes a batch of image data from the board camera.
 
-        Args:
-            data (np.ndarray): The input image data.
+        :param data: The input image data.
 
-        Returns:
-            Optional[CameraPoseResult]: The result of the processing, or None if no result is available.
+        :return: The result of the processing, or None if no result is available.
         """
         pass
 
@@ -60,8 +57,7 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         This method should be implemented by concrete classes to perform the actual calibration process,
         which may involve collecting multiple samples and computing the pose of each sample.
 
-        Returns:
-            Optional[CameraPoseResult]: The calibrated pose result, or None if no result is available.
+        :return: The calibrated pose result, or None if no result is available.
         """
         pass
 
@@ -77,7 +73,6 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         """
         Gets the total number of samples collected.
 
-        Returns:
-            int: The total number of samples collected, or -1 if no samples have been collected.
+        :return: The total number of samples collected, or -1 if no samples have been collected.
         """
         pass

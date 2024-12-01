@@ -22,10 +22,8 @@ class VisionEstimator(BaseEstimator[np.ndarray, OutputType], ABC):
         """
         Processes the input data using the estimator's logic.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The result of processing the input data.
+        :return: The result of processing the input data.
         """
         pass

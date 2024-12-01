@@ -14,7 +14,7 @@ class HandDetector(ObjectDetector[OutputType], ABC):
     """
     Abstract base class for hand detectors.
 
-    This class provides a common interface for different hand detection algorithms, 
+    This class provides a common interface for different hand detection algorithms,
     allowing users to easily switch between them based on their specific requirements.
     """
 
@@ -23,10 +23,8 @@ class HandDetector(ObjectDetector[OutputType], ABC):
         """
         Processes the input data using the detector's algorithm.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            ResultList[OutputType]: A list of detection results.
+        :return: A list of detection results.
         """
         pass

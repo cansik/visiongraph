@@ -17,8 +17,7 @@ class AsyncFrameSetRecorder(FrameSetRecorder):
         """
         Initializes the AsyncFrameSetRecorder object with an output path.
 
-        Args:
-            output_path (str): The directory where recorded frames will be saved. Defaults to "recordings".
+        :param output_path: The directory where recorded frames will be saved. Defaults to "recordings".
         """
         super().__init__(output_path)
         self._running = True
@@ -41,8 +40,7 @@ class AsyncFrameSetRecorder(FrameSetRecorder):
         """
         Adds an image to the recording.
 
-        Args:
-            image (np.ndarray): The image to be added.
+        :param image: The image to be added.
         """
         super().add_image(image)
 

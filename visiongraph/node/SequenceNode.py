@@ -16,8 +16,7 @@ class SequenceNode(GraphNode[InputType, OutputType]):
         """
         Initializes the SequenceNode with a list of child nodes.
 
-        Args:
-            *nodes (GraphNode): The child nodes to be initialized.
+        :param *nodes: The child nodes to be initialized.
         """
         self.nodes = nodes
 
@@ -32,11 +31,9 @@ class SequenceNode(GraphNode[InputType, OutputType]):
         """
         Processes the input data through each node in the sequence.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The output data after processing.
+        :return: The output data after processing.
         """
         temp = data
         for node in self.nodes:
@@ -54,8 +51,7 @@ class SequenceNode(GraphNode[InputType, OutputType]):
         """
         Configures all the child nodes in the sequence based on the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing the configuration arguments.
+        :param args: The namespace containing the configuration arguments.
         """
         for node in self.nodes:
             node.configure(args)
@@ -65,7 +61,6 @@ class SequenceNode(GraphNode[InputType, OutputType]):
         """
         Adds parameters to the parser that are specific to this sequence node.
 
-        Args:
-            parser (ArgumentParser): The parser to be updated.
+        :param parser: The parser to be updated.
         """
         pass

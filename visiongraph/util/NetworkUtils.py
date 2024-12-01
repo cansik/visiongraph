@@ -16,11 +16,10 @@ def download_file(url: str, path: str, description: str = "download", with_progr
     """
     Downloads a file from the specified URL and saves it to the given path.
 
-    Args:
-        url (str): The URL to download the file from.
-        path (str): The local path where the file will be saved.
-        description (str, optional): A description for the download progress. Defaults to "download".
-        with_progress (bool, optional): Indicates whether to show a progress bar. Defaults to True.
+    :param url: The URL to download the file from.
+    :param path: The local path where the file will be saved.
+    :param description: A description for the download progress. Defaults to "download".
+    :param with_progress: Indicates whether to show a progress bar. Defaults to True.
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
@@ -60,12 +59,10 @@ def prepare_openvino_model(model_name, url: str = None) -> Tuple[str, str]:
     """
     Prepares the OpenVINO model files by downloading the model and weights.
 
-    Args:
-        model_name (str): The name of the model.
-        url (str, optional): Optional URL for downloading the model files. If None, defaults to the public data URL.
+    :param model_name: The name of the model.
+    :param url: Optional URL for downloading the model files. If None, defaults to the public data URL.
 
-    Returns:
-        Tuple[str, str]: A tuple containing the paths to the model XML and weights BIN files.
+    :return: A tuple containing the paths to the model XML and weights BIN files.
     """
     model_path = prepare_data_file(f"{model_name}.xml", url)
     weights_path = prepare_data_file(f"{model_name}.bin", url)
@@ -76,12 +73,10 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
     """
     Prepares a data file by downloading it if it does not already exist.
 
-    Args:
-        file_name (str): The name of the file to prepare.
-        url (str, optional): Optional URL for downloading the file. If None, defaults to the public data URL.
+    :param file_name: The name of the file to prepare.
+    :param url: Optional URL for downloading the file. If None, defaults to the public data URL.
 
-    Returns:
-        str: The path to the prepared data file.
+    :return: The path to the prepared data file.
     """
     if url is None:
         url = f"{PUBLIC_DATA_URL}{file_name}"

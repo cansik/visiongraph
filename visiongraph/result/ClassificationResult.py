@@ -12,10 +12,9 @@ class ClassificationResult(BaseResult):
         """
         Initializes the ClassificationResult object.
 
-        Args:
-            class_id (int): The ID of the classified class.
-            class_name (str): The name of the classified class.
-            score (float): The confidence score of the classification result.
+        :param class_id: The ID of the classified class.
+        :param class_name: The name of the classified class.
+        :param score: The confidence score of the classification result.
         """
         self.class_id = class_id
         self.class_name = class_name
@@ -25,8 +24,7 @@ class ClassificationResult(BaseResult):
         """
         Adds an annotation to the given image.
 
-        Args:
-            image (np.ndarray): The input image.
-            **kwargs: Additional keyword arguments to be passed to the super class's annotate method.
+        :param image: The input image.
+        :param **kwargs: Additional keyword arguments to be passed to the super class's annotate method.
         """
         super().annotate(image, **kwargs)

@@ -19,11 +19,10 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Initializes an ObjectDetectionResult instance.
 
-        Args:
-            class_id (int): The ID of the detected class.
-            class_name (str): The name of the detected class.
-            score (float): The confidence score of the detection.
-            bounding_box (BoundingBox2D): The bounding box enclosing the detected object.
+        :param class_id: The ID of the detected class.
+        :param class_name: The name of the detected class.
+        :param score: The confidence score of the detection.
+        :param bounding_box: The bounding box enclosing the detected object.
         """
         super().__init__(class_id, class_name, score)
 
@@ -36,12 +35,11 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Annotates an image with the object detection result.
 
-        Args:
-            image (np.ndarray): The image to annotate.
-            show_info (bool): Flag indicating whether to display additional information.
-            info_text (Optional[str]): Custom text to display on the annotation.
-            color (Optional[Sequence[int]]): Color for the annotation box.
-            **kwargs: Additional keyword arguments for annotation.
+        :param image: The image to annotate.
+        :param show_info: Flag indicating whether to display additional information.
+        :param info_text: Custom text to display on the annotation.
+        :param color: Color for the annotation box.
+        :param **kwargs: Additional keyword arguments for annotation.
         """
         super().annotate(image, **kwargs)
 
@@ -72,8 +70,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Gets the bounding box of the detected object.
 
-        Returns:
-            BoundingBox2D: The bounding box enclosing the detected object.
+        :return: The bounding box enclosing the detected object.
         """
         return self._bounding_box
 
@@ -82,8 +79,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Sets the bounding box of the detected object.
 
-        Args:
-            box (BoundingBox2D): The new bounding box to set.
+        :param box: The new bounding box to set.
         """
         self._bounding_box = box
 
@@ -92,8 +88,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Gets the color used for annotation based on the tracking ID.
 
-        Returns:
-            Sequence[int]: The color RGB values for annotation.
+        :return: The color RGB values for annotation.
         """
         return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
 
@@ -102,8 +97,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Gets the tracking ID of the object.
 
-        Returns:
-            int: The tracking ID of the object.
+        :return: The tracking ID of the object.
         """
         return self._tracking_id
 
@@ -112,8 +106,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Sets the tracking ID of the object.
 
-        Args:
-            value (int): The new tracking ID to set.
+        :param value: The new tracking ID to set.
         """
         self._tracking_id = value
 
@@ -122,8 +115,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Gets the staleness of the object.
 
-        Returns:
-            int: The staleness value indicating how outdated the detection is.
+        :return: The staleness value indicating how outdated the detection is.
         """
         return self._staleness
 
@@ -132,8 +124,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Sets the staleness of the object.
 
-        Args:
-            value (int): The new staleness value to set.
+        :param value: The new staleness value to set.
         """
         self._staleness = value
 
@@ -142,8 +133,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Checks whether the object detection result is considered stale.
 
-        Returns:
-            bool: True if the staleness is greater than 0, otherwise False.
+        :return: True if the staleness is greater than 0, otherwise False.
         """
         return self._staleness > 0
 
@@ -152,11 +142,10 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         Maps the coordinates of the bounding box from source size to destination size.
 
-        Args:
-            src_size (Union[Sequence[float], Size2D]): The size of the source.
-            dest_size (Union[Sequence[float], Size2D]): The size of the destination.
-            src_roi (Optional[BoundingBox2D]): The region of interest in the source.
-            dest_roi (Optional[BoundingBox2D]): The region of interest in the destination.
+        :param src_size: The size of the source.
+        :param dest_size: The size of the destination.
+        :param src_roi: The region of interest in the source.
+        :param dest_roi: The region of interest in the destination.
         """
         bbox = self._bounding_box
 

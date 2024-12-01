@@ -7,8 +7,7 @@ def current_millis() -> int:
     """
     Retrieves the current time in milliseconds.
 
-    Returns:
-        int: Current time in milliseconds since the epoch.
+    :return: Current time in milliseconds since the epoch.
     """
     return time.time_ns() // 1_000_000
 
@@ -22,8 +21,7 @@ class Watch:
         """
         Initializes the Watch instance with a name.
 
-        Args:
-            name (str): The name of the watch instance.
+        :param name: The name of the watch instance.
         """
         self.name = name
         self.start_time: int = 0
@@ -48,8 +46,7 @@ class Watch:
         """
         Calculates the elapsed time since the timer started.
 
-        Returns:
-            int: Elapsed time in milliseconds.
+        :return: Elapsed time in milliseconds.
         """
         if self.running:
             return current_millis() - self.start_time
@@ -59,11 +56,9 @@ class Watch:
         """
         Formats the elapsed time into a readable string format.
 
-        Args:
-            time_format (str): The format for presenting the time.
+        :param time_format: The format for presenting the time.
 
-        Returns:
-            str: Formatted elapsed time as a string.
+        :return: Formatted elapsed time as a string.
         """
         delta = self.elapsed()
         return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
@@ -78,8 +73,7 @@ class Watch:
         """
         Starts the timer when entering a context.
 
-        Returns:
-            Watch: The current Watch instance.
+        :return: The current Watch instance.
         """
         self.start()
         return self
@@ -88,10 +82,9 @@ class Watch:
         """
         Stops the timer and prints the elapsed time when exiting a context.
 
-        Args:
-            exc_type: Exception type.
-            exc_val: Exception value.
-            exc_tb: Exception traceback.
+        :param exc_type: Exception type.
+        :param exc_val: Exception value.
+        :param exc_tb: Exception traceback.
         """
         self.stop()
         self.print()
@@ -106,9 +99,8 @@ class ProfileWatch(Watch):
         """
         Initializes the ProfileWatch instance with a name and window size for moving average.
 
-        Args:
-            name (str): The name of the profile watch instance.
-            window_size (int): The size of the window for moving average computation.
+        :param name: The name of the profile watch instance.
+        :param window_size: The size of the window for moving average computation.
         """
         super().__init__(name)
         self._moving_average = StreamingMovingAverage(window_size)
@@ -124,8 +116,7 @@ class ProfileWatch(Watch):
         """
         Retrieves the current average of the recorded elapsed times.
 
-        Returns:
-            float: The average elapsed time.
+        :return: The average elapsed time.
         """
         return self._moving_average.average()
 
@@ -133,11 +124,9 @@ class ProfileWatch(Watch):
         """
         Formats the elapsed time into a readable string format.
 
-        Args:
-            time_format (str): The format for presenting the time.
+        :param time_format: The format for presenting the time.
 
-        Returns:
-            str: Formatted elapsed time as a string.
+        :return: Formatted elapsed time as a string.
         """
         delta = self.elapsed()
         return time.strftime(time_format.format(delta % 1000), time.gmtime(delta / 1000.0))
@@ -152,8 +141,7 @@ class FPSTracer:
         """
         Initializes the FPSTracer instance with a smoothing factor.
 
-        Args:
-            alpha (float): The smoothing factor for FPS calculation.
+        :param alpha: The smoothing factor for FPS calculation.
         """
         self.fps = -1
         self.prev_frame_time = 0

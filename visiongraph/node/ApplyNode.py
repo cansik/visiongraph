@@ -16,8 +16,7 @@ class ApplyNode(GraphNode[InputType, ResultDict]):
         """
         Initializes an ApplyNode with a dictionary of child nodes.
 
-        Args:
-            nodes (dict): A dictionary mapping node names to their corresponding GraphNode instances.
+        :param nodes: A dictionary mapping node names to their corresponding GraphNode instances.
         """
         self.nodes = nodes
 
@@ -32,11 +31,9 @@ class ApplyNode(GraphNode[InputType, ResultDict]):
         """
         Applies the transformations defined in this node to the input data and returns the results.
 
-        Args:
-            data (InputType): The input data to be transformed.
+        :param data: The input data to be transformed.
 
-        Returns:
-            ResultDict: A dictionary containing the transformation results.
+        :return: A dictionary containing the transformation results.
         """
         results = ResultDict()
         for name, node in self.nodes.items():
@@ -54,8 +51,7 @@ class ApplyNode(GraphNode[InputType, ResultDict]):
         """
         Configures the transformation parameters based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         for node in self.nodes.values():
             node.configure(args)
@@ -65,7 +61,6 @@ class ApplyNode(GraphNode[InputType, ResultDict]):
         """
         Adds command-line parameters to the parser that can be used to configure this node's behavior.
 
-        Args:
-            parser (ArgumentParser): The parser instance to which parameters are being added.
+        :param parser: The parser instance to which parameters are being added.
         """
         pass

@@ -47,11 +47,10 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     """
     A pose estimator that utilizes the EfficientPose model for estimating human poses in images.
 
-    Args:
-        model (Asset): The model asset to be used for inference.
-        weights (Asset): The weights asset to be used for inference.
-        min_score (float): Minimum score threshold for detections. Defaults to 0.1.
-        device (str): The device to run the inference on. Defaults to "AUTO".
+    :param model: The model asset to be used for inference.
+    :param weights: The weights asset to be used for inference.
+    :param min_score: Minimum score threshold for detections. Defaults to 0.1.
+    :param device: The device to run the inference on. Defaults to "AUTO".
     """
 
     def __init__(self, model: Asset, weights: Asset,
@@ -64,18 +63,18 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         self.engine.order = InputShapeOrder.NWHC
 
     def setup(self):
-        """Sets up the inference engine."""
+        """
+Sets up the inference engine.
+"""
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
         """
         Processes the input image data to extract pose information.
 
-        Args:
-            data (np.ndarray): The input image data in the form of a numpy array.
+        :param data: The input image data in the form of a numpy array.
 
-        Returns:
-            ResultList[EfficientPose]: A list containing detected poses and their scores.
+        :return: A list containing detected poses and their scores.
         """
         output_dict = self.engine.process(data)
         outputs = output_dict[self.engine.output_names[0]]
@@ -99,7 +98,9 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         return ResultList([EfficientPose(max_score, VectorUtils.list_of_vector4D(landmarks))])
 
     def release(self):
-        """Releases resources held by the inference engine."""
+        """
+Releases resources held by the inference engine.
+"""
         self.engine.release()
 
     @staticmethod
@@ -107,14 +108,9 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         """
         Extract coordinates from supplied confidence maps.
 
-        Args:
-            frame_output: ndarray
-                Numpy array of shape (h, w, c)
-            blur: boolean
-                Adds blur to the confidence map
+        :param frame_output: ndarray
+        :param blur: boolean
 
-        Returns:
-            List of predicted coordinates for all c body parts in the frame the outputs are computed from.
         """
         # Fetch output resolution
         output_height, output_width = frame_output.shape[2:]
@@ -149,11 +145,9 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         """
         Creates an instance of EfficientPoseEstimator with specified configuration.
 
-        Args:
-            config (EfficientPoseEstimatorConfig): Configuration for the estimator.
+        :param config: Configuration for the estimator.
 
-        Returns:
-            EfficientPoseEstimator: An instance of the pose estimator.
+        :return: An instance of the pose estimator.
         """
         model, weights = config.value
         return EfficientPoseEstimator(model, weights)

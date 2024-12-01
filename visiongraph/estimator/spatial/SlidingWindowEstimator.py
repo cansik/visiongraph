@@ -26,12 +26,11 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
         """
         Initializes the Sliding Window Estimator.
 
-        Args:
-            network (ObjectDetector[OutputType]): The object detection network.
-            step_size (int): The step size for sliding the window.
-            window_size (Tuple[int, int]): The size of the sliding window.
-            min_score (float): The minimum score threshold for detections (default is 0.5).
-            iou_threshold (float): The Intersection over Union threshold for non-maximum suppression (default is 0.3).
+        :param network: The object detection network.
+        :param step_size: The step size for sliding the window.
+        :param window_size: The size of the sliding window.
+        :param min_score: The minimum score threshold for detections (default is 0.5).
+        :param iou_threshold: The Intersection over Union threshold for non-maximum suppression (default is 0.3).
         """
         super().__init__(min_score)
 
@@ -50,11 +49,9 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
         """
         Process the input frame using sliding window object detection.
 
-        Args:
-            frame (np.ndarray): The input frame for object detection.
+        :param frame: The input frame for object detection.
 
-        Returns:
-            ResultList[OutputType]: A list of detected object results.
+        :return: A list of detected object results.
         """
         detections: List[OutputType] = []
         ih, iw = frame.shape[:2]
@@ -82,8 +79,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
         """
         Configure the internal network with the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing configuration arguments.
+        :param args: The namespace containing configuration arguments.
         """
         self.network.configure(args)
 
@@ -92,13 +88,11 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
         """
         Generate sliding windows over an input image.
 
-        Args:
-            image: The input image.
-            step_size: The step size for sliding the window.
-            window_size: The size of the sliding window.
+        :param image: The input image.
+        :param step_size: The step size for sliding the window.
+        :param window_size: The size of the sliding window.
 
-        Yields:
-            Tuple[int, int, np.ndarray]: A tuple of window coordinates and the cropped region.
+:param Yields: 
         """
         for y in range(0, image.shape[0], step_size):
             for x in range(0, image.shape[1], step_size):

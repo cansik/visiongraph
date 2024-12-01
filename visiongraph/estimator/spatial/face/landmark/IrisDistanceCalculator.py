@@ -21,10 +21,9 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         """
         Initializes the IrisDistanceCalculator object with input dimensions and camera intrinsics.
 
-        Args:
-            input_width (int): The width of the input image.
-            input_height (int): The height of the input image.
-            camera_intrinsics (CameraIntrinsics): The camera intrinsics.
+        :param input_width: The width of the input image.
+        :param input_height: The height of the input image.
+        :param camera_intrinsics: The camera intrinsics.
         """
 
         self.average_iris_diameter = 11.7  # ranges between 10.2 - 13.0
@@ -44,11 +43,9 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         """
         Processes a list of face detection results and calculates the iris distance.
 
-        Args:
-            faces (ResultList[BlazeFaceMesh]): A list of BlazeFaceMesh objects representing face detections.
+        :param faces: A list of BlazeFaceMesh objects representing face detections.
 
-        Returns:
-            ResultList[IrisDistanceResult]: A list of IrisDistanceResult objects containing iris distances.
+        :return: A list of IrisDistanceResult objects containing iris distances.
         """
 
         results = ResultList()
@@ -65,12 +62,10 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         """
         Measures the distance between iris in a face and calculates the corresponding z-distance.
 
-        Args:
-            face (BlazeFaceMesh): The face detection result.
-            iris_indices (Sequence[int]): A list of indices representing the iris landmarks.
+        :param face: The face detection result.
+        :param iris_indices: A list of indices representing the iris landmarks.
 
-        Returns:
-            IrisParameter: An object containing the average z-distance, iris size, and position.
+        :return: An object containing the average z-distance, iris size, and position.
         """
 
         iris_landmarks = np.array([[face.landmarks[i].x, face.landmarks[i].y] for i in iris_indices])
@@ -93,12 +88,10 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         """
         Calculates the z-distance between the iris and the camera.
 
-        Args:
-            iris_size (float): The size of the iris.
-            focal_parameter (float): The focal parameter of the camera.
+        :param iris_size: The size of the iris.
+        :param focal_parameter: The focal parameter of the camera.
 
-        Returns:
-            float: The calculated z-distance in meters.
+        :return: The calculated z-distance in meters.
         """
 
         return (focal_parameter * (self.average_iris_diameter / iris_size)) / 1000.0
@@ -114,8 +107,7 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         """
         Configures the node with command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments.
+        :param args: The command-line arguments.
         """
 
         pass

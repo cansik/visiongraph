@@ -28,8 +28,7 @@ class ObjectAssignmentResult(Generic[T]):
         """
         Returns a list of source objects that were not assigned to any destination.
 
-        Returns:
-            List[T]: A list of unassigned source objects.
+        :return: A list of unassigned source objects.
         """
         return [k for k, v in self.assignments.items() if v is None]
 
@@ -43,9 +42,8 @@ class ObjectAssignmentSolver(Generic[T]):
         """
         Initializes the ObjectAssignmentSolver with a given cost function and maximum cost.
 
-        Args:
-            cost_function (Optional[CostFunctionType]): The cost function to use for assignment. Defaults to L2 cost function.
-            max_cost (float): The maximum allowable cost for an assignment to be considered valid. Defaults to sys.maxsize.
+        :param cost_function: The cost function to use for assignment. Defaults to L2 cost function.
+        :param max_cost: The maximum allowable cost for an assignment to be considered valid. Defaults to sys.maxsize.
         """
         self.cost_function: CostFunctionType = self.l2_cost_function if cost_function is None else cost_function
         self.max_cost = max_cost
@@ -54,12 +52,10 @@ class ObjectAssignmentSolver(Generic[T]):
         """
         Solves the assignment problem for the given lists of source and destination objects.
 
-        Args:
-            source_list (List[T]): The list of source objects.
-            destination_list (List[T]): The list of destination objects.
+        :param source_list: The list of source objects.
+        :param destination_list: The list of destination objects.
 
-        Returns:
-            ObjectAssignmentResult[T]: The result of the assignment process.
+        :return: The result of the assignment process.
         """
         # create cost matrix
         if len(source_list) == 0 or len(destination_list) == 0:
@@ -111,12 +107,10 @@ class ObjectAssignmentSolver(Generic[T]):
         """
         Computes the L2 (Euclidean) distance cost matrix between source and destination objects.
 
-        Args:
-            tracks (List[T]): The list of source objects.
-            detections (List[T]): The list of destination objects.
+        :param tracks: The list of source objects.
+        :param detections: The list of destination objects.
 
-        Returns:
-            np.ndarray: The cost matrix based on L2 distances.
+        :return: The cost matrix based on L2 distances.
         """
         track_centers = np.array([vector_as_list(h.bounding_box.center) for h in tracks], dtype=float)
         detection_centers = np.array([vector_as_list(h.bounding_box.center) for h in detections], dtype=float)
@@ -129,13 +123,11 @@ class ObjectAssignmentSolver(Generic[T]):
         """
         Computes the Intersection-over-Union (IoU) cost matrix between source and destination objects.
 
-        Args:
-            tracks (List[T]): The list of source objects.
-            detections (List[T]): The list of destination objects.
-            class_exclusive (bool): Whether to only consider matches between objects of the same class. Defaults to False.
+        :param tracks: The list of source objects.
+        :param detections: The list of destination objects.
+        :param class_exclusive: Whether to only consider matches between objects of the same class. Defaults to False.
 
-        Returns:
-            np.ndarray: The cost matrix based on IoU values.
+        :return: The cost matrix based on IoU values.
         """
         cost_mat = np.zeros((len(tracks), len(detections)), dtype=float)
 

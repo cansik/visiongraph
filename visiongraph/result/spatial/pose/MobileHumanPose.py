@@ -9,14 +9,14 @@ MOBILE_HUMAN_POSE_CONNECTIONS = frozenset([
     (1, 2), (2, 3), (3, 4), (4, 17), (1, 5), (5, 6), (6, 7), (7, 18)
 ])
 """
-A frozen set of tuples representing the connections between key points 
+A frozen set of tuples representing the connections between key points
 of a mobile human pose model.
 """
 
 
 class MobileHumanPose(PoseLandmarkResult):
     """
-    A class that represents a mobile human pose model and provides access 
+    A class that represents a mobile human pose model and provides access
     to specific landmark positions in a 3D space.
     """
 
@@ -25,9 +25,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Provides the connections between key points of the mobile human pose.
 
-        Returns:
-            FrozenSet[Tuple[int, int]]: A set of tuples representing the 
-            connections between landmark indices.
+        :return: A set of tuples representing the
         """
         return MOBILE_HUMAN_POSE_CONNECTIONS
 
@@ -36,9 +34,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The position of the nose in the format 
-            (x, y, z, t).
+        :return: The position of the nose in the format
         """
         return self.landmarks[16]
 
@@ -47,9 +43,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left eye in the format 
-            (x, y, z, t).
+        :return: The position of the left eye in the format
         """
         return vector.obj(x=0.0, y=0.0, z=0.0, t=0.0)
 
@@ -58,9 +52,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right eye in the format 
-            (x, y, z, t).
+        :return: The position of the right eye in the format
         """
         return vector.obj(x=0.0, y=0.0, z=0.0, t=0.0)
 
@@ -69,9 +61,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left shoulder in the format 
-            (x, y, z, t).
+        :return: The position of the left shoulder in the format
         """
         return self.landmarks[5]
 
@@ -80,9 +70,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right shoulder in the format 
-            (x, y, z, t).
+        :return: The position of the right shoulder in the format
         """
         return self.landmarks[2]
 
@@ -91,9 +79,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left elbow landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left elbow in the format 
-            (x, y, z, t).
+        :return: The position of the left elbow in the format
         """
         return self.landmarks[6]
 
@@ -102,9 +88,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right elbow landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right elbow in the format 
-            (x, y, z, t).
+        :return: The position of the right elbow in the format
         """
         return self.landmarks[3]
 
@@ -113,9 +97,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left wrist landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left wrist in the format 
-            (x, y, z, t).
+        :return: The position of the left wrist in the format
         """
         return self.landmarks[7]
 
@@ -124,9 +106,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right wrist landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right wrist in the format 
-            (x, y, z, t).
+        :return: The position of the right wrist in the format
         """
         return self.landmarks[4]
 
@@ -135,9 +115,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left hip landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left hip in the format 
-            (x, y, z, t).
+        :return: The position of the left hip in the format
         """
         return self.landmarks[11]
 
@@ -146,9 +124,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right hip landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right hip in the format 
-            (x, y, z, t).
+        :return: The position of the right hip in the format
         """
         return self.landmarks[8]
 
@@ -157,9 +133,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left knee landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left knee in the format 
-            (x, y, z, t).
+        :return: The position of the left knee in the format
         """
         return self.landmarks[12]
 
@@ -168,9 +142,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right knee landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right knee in the format 
-            (x, y, z, t).
+        :return: The position of the right knee in the format
         """
         return self.landmarks[9]
 
@@ -179,9 +151,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left ankle landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left ankle in the format 
-            (x, y, z, t).
+        :return: The position of the left ankle in the format
         """
         return self.landmarks[13]
 
@@ -190,9 +160,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right ankle landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right ankle in the format 
-            (x, y, z, t).
+        :return: The position of the right ankle in the format
         """
         return self.landmarks[10]
 
@@ -201,9 +169,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the top of the head landmark.
 
-        Returns:
-            vector.Vector4D: The position of the head top in the format 
-            (x, y, z, t).
+        :return: The position of the head top in the format
         """
         return self.landmarks[0]
 
@@ -212,9 +178,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the thorax landmark.
 
-        Returns:
-            vector.Vector4D: The position of the thorax in the format 
-            (x, y, z, t).
+        :return: The position of the thorax in the format
         """
         return self.landmarks[1]
 
@@ -223,9 +187,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the pelvis landmark.
 
-        Returns:
-            vector.Vector4D: The position of the pelvis in the format 
-            (x, y, z, t).
+        :return: The position of the pelvis in the format
         """
         return self.landmarks[14]
 
@@ -234,9 +196,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the spine landmark.
 
-        Returns:
-            vector.Vector4D: The position of the spine in the format 
-            (x, y, z, t).
+        :return: The position of the spine in the format
         """
         return self.landmarks[15]
 
@@ -245,9 +205,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right hand landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right hand in the format 
-            (x, y, z, t).
+        :return: The position of the right hand in the format
         """
         return self.landmarks[17]
 
@@ -256,9 +214,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left hand landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left hand in the format 
-            (x, y, z, t).
+        :return: The position of the left hand in the format
         """
         return self.landmarks[18]
 
@@ -267,9 +223,7 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the right toe landmark.
 
-        Returns:
-            vector.Vector4D: The position of the right toe in the format 
-            (x, y, z, t).
+        :return: The position of the right toe in the format
         """
         return self.landmarks[19]
 
@@ -278,8 +232,6 @@ class MobileHumanPose(PoseLandmarkResult):
         """
         Retrieves the 3D position vector of the left toe landmark.
 
-        Returns:
-            vector.Vector4D: The position of the left toe in the format 
-            (x, y, z, t).
+        :return: The position of the left toe in the format
         """
         return self.landmarks[20]

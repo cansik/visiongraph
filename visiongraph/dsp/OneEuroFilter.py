@@ -7,12 +7,10 @@ def _smoothing_factor(t_e, cutoff):
     """
     Calculates the smoothing factor used in OneEuro filter.
 
-    Args:
-        t_e (float): Time elapsed since last measurement.
-        cutoff (float): Minimum cutoff frequency.
+    :param t_e: Time elapsed since last measurement.
+    :param cutoff: Minimum cutoff frequency.
 
-    Returns:
-        float: Smoothing factor.
+    :return: Smoothing factor.
     """
     r = 2 * math.pi * cutoff * t_e
     return r / (r + 1)
@@ -22,13 +20,11 @@ def _exponential_smoothing(a, x, x_prev):
     """
     Applies exponential smoothing to a signal.
 
-    Args:
-        a (float): Smoothing factor.
-        x (float): New measurement value.
-        x_prev (float): Previous measurement value.
+    :param a: Smoothing factor.
+    :param x: New measurement value.
+    :param x_prev: Previous measurement value.
 
-    Returns:
-        float: Smoothed measurement value.
+    :return: Smoothed measurement value.
     """
     return a * x + (1 - a) * x_prev
 
@@ -46,13 +42,12 @@ class OneEuroFilter:
         """
         Initializes the OneEuro filter.
 
-        Args:
-            x0 (float): Initial measurement value.
-            t0 (Optional[float]): Initial time value. If None, uses current time.
-            dx0 (float): Initial derivative of the signal.
-            min_cutoff (float): Minimum cutoff frequency.
-            beta (float): Parameter used in the cutoff calculation.
-            d_cutoff (float): Minimum derivative cutoff frequency.
+        :param x0: Initial measurement value.
+        :param t0: Initial time value. If None, uses current time.
+        :param dx0: Initial derivative of the signal.
+        :param min_cutoff: Minimum cutoff frequency.
+        :param beta: Parameter used in the cutoff calculation.
+        :param d_cutoff: Minimum derivative cutoff frequency.
         """
         # The parameters.
         self.min_cutoff = float(min_cutoff)
@@ -67,12 +62,10 @@ class OneEuroFilter:
         """
         Computes the filtered signal.
 
-        Args:
-            x (float): New measurement value.
-            t (Optional[float]): Time of new measurement. If None, uses current time.
+        :param x: New measurement value.
+        :param t: Time of new measurement. If None, uses current time.
 
-        Returns:
-            float: Filtered measurement value.
+        :return: Filtered measurement value.
         """
         if t is None:
             t = time()

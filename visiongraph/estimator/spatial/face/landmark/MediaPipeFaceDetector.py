@@ -34,9 +34,8 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         """
         Initializes the MediaPipeFaceDetector.
 
-        Args:
-            model (MediaPipeFaceModel): The model used for face detection. Defaults to MediaPipeFaceModel.Short_Range.
-            min_score (float): The minimum score for face detection. Defaults to 0.5.
+        :param model: The model used for face detection. Defaults to MediaPipeFaceModel.Short_Range.
+        :param min_score: The minimum score for face detection. Defaults to 0.5.
         """
 
         super().__init__(min_score)
@@ -48,8 +47,6 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         """
         Sets up the FaceDetection object.
 
-        Returns:
-            None
         """
 
         self.detector = _mp_face_detection.FaceDetection(model_selection=self.model.value,
@@ -59,11 +56,9 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         """
         Processes an image for face detection.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
 
-        Returns:
-            ResultList[BlazeFace]: A list of detected faces.
+        :return: A list of detected faces.
         """
 
         # pre-process image
@@ -92,8 +87,6 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         """
         Releases the FaceDetection object.
 
-        Returns:
-            None
         """
 
         self.detector.close()
@@ -102,11 +95,8 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
         """
         Configures the MediaPipeFaceDetector.
 
-        Args:
-            args (Namespace): The input arguments.
+        :param args: The input arguments.
 
-        Returns:
-            None
         """
 
         super().configure(args)

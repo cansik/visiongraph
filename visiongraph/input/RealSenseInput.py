@@ -189,9 +189,6 @@ class RealSenseInput(BaseDepthCamera):
         """
         Reads the next frame from the camera.
 
-        Returns:
-            (int, Optional[np.ndarray]): A tuple where the first element is a timestamp and
-                                         the second is the captured image data as a numpy array.
         """
         success, self.frames = self.pipeline.try_wait_for_frames(timeout_ms=self.frame_read_timeout)
         time_stamp = current_millis()
@@ -234,11 +231,9 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def depth_frame(self):
         """
-        Returns:
-            rs.depth_frame: The current depth frame from the RealSense camera.
+        :return: The current depth frame from the RealSense camera.
 
-        Raises:
-            Exception: If depth is not enabled for RealSense input.
+        :raises Exception: If depth is not enabled for RealSense input.
         """
         if self._depth_frame is None:
             raise Exception("Depth is not enabled for RealSense input.")
@@ -249,15 +244,12 @@ class RealSenseInput(BaseDepthCamera):
         """
         Finds the current RealSense device.
 
-        Args:
-            ctx (rs.context): The RealSense context.
-            serial (Optional[str]): The serial number of the device to find.
+        :param ctx: The RealSense context.
+        :param serial: The serial number of the device to find.
 
-        Returns:
-            rs.device: The device found.
+        :return: The device found.
 
-        Raises:
-            Exception: If no RealSense device is connected or specified device cannot be found.
+        :raises Exception: If no RealSense device is connected or specified device cannot be found.
         """
         devices: List[rs.device] = ctx.devices
 
@@ -278,12 +270,10 @@ class RealSenseInput(BaseDepthCamera):
         """
         Computes the distance to the point (x, y) in the depth frame.
 
-        Args:
-            x (float): The x-coordinate in the depth frame.
-            y (float): The y-coordinate in the depth frame.
+        :param x: The x-coordinate in the depth frame.
+        :param y: The y-coordinate in the depth frame.
 
-        Returns:
-            float: The distance to the point in meters.
+        :return: The distance to the point in meters.
         """
         depth_frame = self.depth_frame
         ix, iy = self._calculate_depth_coordinates(x, y, depth_frame.width, depth_frame.height)
@@ -294,13 +284,11 @@ class RealSenseInput(BaseDepthCamera):
         """
         Converts pixel coordinates to a 3D point in space.
 
-        Args:
-            x (float): The x-coordinate of the pixel.
-            y (float): The y-coordinate of the pixel.
-            depth_kernel_size (int): The size of the kernel for depth averaging.
+        :param x: The x-coordinate of the pixel.
+        :param y: The y-coordinate of the pixel.
+        :param depth_kernel_size: The size of the kernel for depth averaging.
 
-        Returns:
-            vector.Vector3D: The corresponding 3D point in space.
+        :return: The corresponding 3D point in space.
         """
         depth_frame: rs.depth_frame = self.depth_frame
         ix, iy = self._calculate_depth_coordinates(x, y, depth_frame.width, depth_frame.height)
@@ -320,8 +308,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def depth_map(self) -> np.ndarray:
         """
-        Returns:
-            np.ndarray: The depth map as a colorized numpy array.
+        :return: The depth map as a colorized numpy array.
         """
         depth_frame = self.depth_frame
         depth_colormap = np.asanyarray(self.colorizer.colorize(depth_frame).get_data())
@@ -330,8 +317,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def depth_buffer(self) -> np.ndarray:
         """
-        Returns:
-            np.ndarray: The raw depth data as a numpy array.
+        :return: The raw depth data as a numpy array.
         """
         return np.asarray(self.depth_frame.data, dtype=float)
 
@@ -354,8 +340,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         Loads the JSON configuration from a specified file.
 
-        Args:
-            json_path (str): The path to the JSON configuration file.
+        :param json_path: The path to the JSON configuration file.
         """
         json_config = json.load(open(json_path, "r"))
         self.load_json_config(json_config)
@@ -364,8 +349,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         Applies the given JSON configuration to the RealSense device.
 
-        Args:
-            json_config (str): The JSON configuration data as a string.
+        :param json_config: The JSON configuration data as a string.
         """
         if self.device is None:
             logging.warning(f"No device available to apply json config.")
@@ -386,8 +370,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         Serializes the current configuration of the RealSense device to a JSON string.
 
-        Returns:
-            str: The serialized JSON configuration of the device.
+        :return: The serialized JSON configuration of the device.
         """
         if self.device is None:
             logging.warning(f"No device available to apply json config.")
@@ -405,12 +388,10 @@ class RealSenseInput(BaseDepthCamera):
         """
         Retrieves the intrinsics of the selected stream type.
 
-        Args:
-            stream_type (Optional[rs.stream]): The type of stream to get intrinsics for.
-            stream_index (int): The index of the stream, defaults to -1.
+        :param stream_type: The type of stream to get intrinsics for.
+        :param stream_index: The index of the stream, defaults to -1.
 
-        Returns:
-            rs.intrinsics: The camera intrinsics for the specified stream.
+        :return: The camera intrinsics for the specified stream.
         """
         profiles = self.pipeline.get_active_profile()
 
@@ -431,14 +412,11 @@ class RealSenseInput(BaseDepthCamera):
         """
         Converts a CameraStreamType to the corresponding RealSense stream type.
 
-        Args:
-            stream (CameraStreamType): The stream type to convert.
+        :param stream: The stream type to convert.
 
-        Returns:
-            rs.stream: The corresponding RealSense stream type.
+        :return: The corresponding RealSense stream type.
 
-        Raises:
-            Exception: If the provided stream type is not available.
+        :raises Exception: If the provided stream type is not available.
         """
         if stream == CameraStreamType.Color:
             return rs.stream.color
@@ -453,11 +431,9 @@ class RealSenseInput(BaseDepthCamera):
         """
         Retrieves the camera matrix for the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType): The type of stream (default is Color).
+        :param stream_type: The type of stream (default is Color).
 
-        Returns:
-            np.ndarray: The camera matrix as a 3x3 numpy array.
+        :return: The camera matrix as a 3x3 numpy array.
         """
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array([[intrinsics.fx, 0, intrinsics.ppx],
@@ -468,11 +444,9 @@ class RealSenseInput(BaseDepthCamera):
         """
         Retrieves the distortion coefficients for the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType): The type of stream (default is Color).
+        :param stream_type: The type of stream (default is Color).
 
-        Returns:
-            np.ndarray: The distortion coefficients as a numpy array.
+        :return: The distortion coefficients as a numpy array.
         """
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array(intrinsics.coeffs[:4])
@@ -482,12 +456,10 @@ class RealSenseInput(BaseDepthCamera):
         """
         Preprocesses the given image based on the stream type.
 
-        Args:
-            image (np.ndarray): The image to preprocess.
-            stream_type (CameraStreamType): The type of stream (default is Color).
+        :param image: The image to preprocess.
+        :param stream_type: The type of stream (default is Color).
 
-        Returns:
-            Optional[np.ndarray]: The preprocessed image or None.
+        :return: The preprocessed image or None.
         """
         if stream_type == CameraStreamType.Depth:
             return np.asanyarray(self.colorizer.colorize(self.depth_frame).get_data())
@@ -498,11 +470,9 @@ class RealSenseInput(BaseDepthCamera):
         """
         Retrieves the raw image data for the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType): The type of stream (default is Color).
+        :param stream_type: The type of stream (default is Color).
 
-        Returns:
-            Optional[np.ndarray]: The raw image data as a numpy array or None.
+        :return: The raw image data as a numpy array or None.
         """
         if stream_type == CameraStreamType.Depth:
             return self.depth_buffer
@@ -516,8 +486,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def device_count(self) -> int:
         """
-        Returns:
-            int: The number of connected RealSense devices.
+        :return: The number of connected RealSense devices.
         """
         ctx = rs.context()
         return len(ctx.query_devices())
@@ -526,15 +495,12 @@ class RealSenseInput(BaseDepthCamera):
         """
         Retrieves the value of the specified option for the given sensor.
 
-        Args:
-            option (rs.option): The option to retrieve.
-            sensor (Optional[rs.sensor]): The sensor for which to get the option value.
+        :param option: The option to retrieve.
+        :param sensor: The sensor for which to get the option value.
 
-        Returns:
-            float: The value of the option.
+        :return: The value of the option.
 
-        Notes:
-            If no sensor is provided, it uses the default image sensor.
+:return: 
         """
         if sensor is None:
             sensor = self.image_sensor
@@ -553,13 +519,11 @@ class RealSenseInput(BaseDepthCamera):
         """
         Sets the specified option for the given sensor.
 
-        Args:
-            option (rs.option): The option to set.
-            value (float): The value to set for the option.
-            sensor (Optional[rs.sensor]): The sensor for which to set the option value.
+        :param option: The option to set.
+        :param value: The value to set for the option.
+        :param sensor: The sensor for which to set the option value.
 
-        Notes:
-            If no sensor is provided, it uses the default image sensor.
+:param Notes: 
         """
         if sensor is None:
             sensor = self.image_sensor
@@ -580,8 +544,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def device_name(self) -> str:
         """
-        Returns:
-            str: The name of the RealSense device.
+        :return: The name of the RealSense device.
         """
         if self.device is None:
             return "NoDevice"
@@ -590,8 +553,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def gain(self) -> int:
         """
-        Returns:
-            int: The current gain setting for the device.
+        :return: The current gain setting for the device.
         """
         return int(self.get_option(rs.option.gain))
 
@@ -602,8 +564,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def exposure(self) -> int:
         """
-        Returns:
-            int: The current exposure setting for the device.
+        :return: The current exposure setting for the device.
         """
         return int(self.get_option(rs.option.exposure))
 
@@ -614,8 +575,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def enable_auto_exposure(self) -> bool:
         """
-        Returns:
-            bool: Whether auto exposure is enabled.
+        :return: Whether auto exposure is enabled.
         """
         return bool(self.get_option(rs.option.enable_auto_exposure))
 
@@ -626,8 +586,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def enable_auto_white_balance(self) -> bool:
         """
-        Returns:
-            bool: Whether auto white balance is enabled.
+        :return: Whether auto white balance is enabled.
         """
         return bool(self.get_option(rs.option.enable_auto_white_balance))
 
@@ -638,8 +597,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def white_balance(self) -> int:
         """
-        Returns:
-            int: The current white balance setting for the device.
+        :return: The current white balance setting for the device.
         """
         return int(self.get_option(rs.option.white_balance))
 
@@ -651,8 +609,7 @@ class RealSenseInput(BaseDepthCamera):
     @property
     def serial(self) -> str:
         """
-        Returns:
-            str: The serial number of the RealSense device.
+        :return: The serial number of the RealSense device.
         """
         return str(self.device.get_info(rs.camera_info.serial_number))
 
@@ -660,8 +617,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         Configures the RealSense input object based on provided command line arguments.
 
-        Args:
-            args (Namespace): The command line arguments.
+        :param args: The command line arguments.
         """
         super().configure(args)
 
@@ -694,8 +650,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         Adds command line argument parameters for configuring RealSense input.
 
-        Args:
-            parser (ArgumentParser): The ArgumentParser instance to add parameters to.
+        :param parser: The ArgumentParser instance to add parameters to.
         """
         super(RealSenseInput, RealSenseInput).add_params(parser)
 

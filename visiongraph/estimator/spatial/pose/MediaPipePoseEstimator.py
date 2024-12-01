@@ -30,14 +30,13 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         """
         Initializes the MediaPipePoseEstimator with specified parameters.
 
-        Args:
-            complexity (PoseModelComplexity): Complexity of the pose model.
-            min_score (float): Minimum score threshold for valid detections.
-            min_tracking_confidence (float): Confidence threshold for tracking landmarks.
-            static_image_mode (bool): Indicates if the input images are static.
-            smooth_landmarks (bool): If True, applies smoothing to the detected landmarks.
-            enable_segmentation (bool): If True, enables segmentation for the pose.
-            smooth_segmentation (bool): If True, applies smoothing to the segmentation mask.
+        :param complexity: Complexity of the pose model.
+        :param min_score: Minimum score threshold for valid detections.
+        :param min_tracking_confidence: Confidence threshold for tracking landmarks.
+        :param static_image_mode: Indicates if the input images are static.
+        :param smooth_landmarks: If True, applies smoothing to the detected landmarks.
+        :param enable_segmentation: If True, enables segmentation for the pose.
+        :param smooth_segmentation: If True, applies smoothing to the segmentation mask.
         """
         super().__init__(min_score)
 
@@ -66,11 +65,9 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         """
         Processes an input image to detect poses and return results.
 
-        Args:
-            data (np.ndarray): The input image in BGR format.
+        :param data: The input image in BGR format.
 
-        Returns:
-            ResultList[BlazePose]: A list of detected BlazePose objects.
+        :return: A list of detected BlazePose objects.
         """
         # pre-process image
         image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
@@ -101,8 +98,7 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         """
         Configures the estimator with command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments.
+        :param args: The command-line arguments.
         """
         super().configure(args)
         # todo: implement arg parse
@@ -112,10 +108,8 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
         """
         Creates a new instance of MediaPipePoseEstimator with the specified complexity.
 
-        Args:
-            complexity (PoseModelComplexity): The complexity level for the new instance.
+        :param complexity: The complexity level for the new instance.
 
-        Returns:
-            MediaPipePoseEstimator: A new instance of MediaPipePoseEstimator.
+        :return: A new instance of MediaPipePoseEstimator.
         """
         return MediaPipePoseEstimator(complexity)

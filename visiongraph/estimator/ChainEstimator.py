@@ -15,7 +15,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
     """
     A base class for chain estimators in the VisionGraph framework.
 
-    Provides a common interface for chaining multiple estimators together, 
+    Provides a common interface for chaining multiple estimators together,
     allowing for modular and extensible vision graph processing pipelines.
     """
 
@@ -23,8 +23,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
         """
         Initializes the ChainEstimator with a list of linked nodes.
 
-        Args:
-            links (GraphNode): The nodes to be linked in the chain.
+        :param links: The nodes to be linked in the chain.
         """
         self.links = links
 
@@ -42,11 +41,9 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
         """
         Processes an input image through the chain of linked nodes.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            OutputType: The output result from the final node in the chain.
+        :return: The output result from the final node in the chain.
         """
         current_data = image
         for link in self.links:
@@ -67,8 +64,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
         """
         Configures the estimator with command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         super().configure(args)
         for link in self.links:
@@ -81,7 +77,6 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
 
         This is typically called from a setup function or class method to define command-line arguments.
 
-        Args:
-            parser (ArgumentParser): The parser instance to add parameters to.
+        :param parser: The parser instance to add parameters to.
         """
         super().add_params(parser)

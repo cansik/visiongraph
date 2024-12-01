@@ -22,15 +22,14 @@ class VisionGraph(BaseGraph):
         """
         Initializes the VisionGraph object.
 
-        Args:
-            input (BaseInput, optional): The input to the pipeline. Defaults to None.
-            name (str): The name of the graph.
-            skip_none_frame (bool): Whether to skip frames with no output. Defaults to True.
-            multi_threaded (bool): Whether to run in multiple threads. Defaults to False.
-            daemon (bool): Whether to run as a daemon process. Defaults to False.
-            handle_signals (bool): Whether to handle signals. Defaults to False.
-            new_process (bool): Whether to create a new process. Defaults to False.
-            *nodes: The nodes to add to the graph.
+        :param input: The input to the pipeline. Defaults to None.
+        :param name: The name of the graph.
+        :param skip_none_frame: Whether to skip frames with no output. Defaults to True.
+        :param multi_threaded: Whether to run in multiple threads. Defaults to False.
+        :param daemon: Whether to run as a daemon process. Defaults to False.
+        :param handle_signals: Whether to handle signals. Defaults to False.
+        :param new_process: Whether to create a new process. Defaults to False.
+        :param *nodes: The nodes to add to the graph.
         """
         super().__init__(multi_threaded, daemon, handle_signals, new_process)
 
@@ -58,8 +57,7 @@ class VisionGraph(BaseGraph):
         """
         Processes the graph by calling each node's process method.
 
-        Returns:
-            Optional[BaseResult]: The result of the graph processing.
+        :return: The result of the graph processing.
         """
         result: Optional[BaseResult] = self._inference()
         self.fps.update()
@@ -68,8 +66,7 @@ class VisionGraph(BaseGraph):
         """
         Performs inference on the graph by calling each node's process method.
 
-        Returns:
-            Optional[BaseResult]: The result of the graph processing.
+        :return: The result of the graph processing.
         """
         result = None
         for i, node in enumerate(self.nodes):
@@ -85,8 +82,7 @@ class VisionGraph(BaseGraph):
         """
         Configures the graph based on the provided arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         super().configure(args)
 
@@ -99,8 +95,7 @@ class VisionGraph(BaseGraph):
         """
         Adds parameters to the parser for logging and input provider.
 
-        Args:
-            parser (ArgumentParser): The parser to add parameters to.
+        :param parser: The parser to add parameters to.
         """
         add_logging_parameter(parser)
         input_group = parser.add_argument_group("input provider")

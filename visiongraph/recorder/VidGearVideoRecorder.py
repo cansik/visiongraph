@@ -12,11 +12,10 @@ class VidGearVideoRecorder(BaseFrameRecorder):
         """
         Initializes the VidGearVideoRecorder.
 
-        Args:
-            output_path (str): The path where the video will be saved. Defaults to "video.mp4".
-            width (Optional[int]): The width of the video in pixels. Defaults to None.
-            height (Optional[int]): The height of the video in pixels. Defaults to None.
-            fps (float): The frames per second for the video. Defaults to 30.
+        :param output_path: The path where the video will be saved. Defaults to "video.mp4".
+        :param width: The width of the video in pixels. Defaults to None.
+        :param height: The height of the video in pixels. Defaults to None.
+        :param fps: The frames per second for the video. Defaults to 30.
 
         """
         super().__init__()
@@ -53,8 +52,7 @@ class VidGearVideoRecorder(BaseFrameRecorder):
         If width or height is not provided, it will automatically detect them from the image and create a WriteGear object.
         Otherwise, it will write the image using the existing writer.
 
-        Args:
-            image (np.ndarray): The image to be added to the video.
+        :param image: The image to be added to the video.
         """
         if self.width is None or self.height is None:
             h, w = image.shape[:2]

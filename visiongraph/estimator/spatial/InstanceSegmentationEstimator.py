@@ -25,10 +25,8 @@ class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC):
         """
         Abstract method to process input data and return a list of instance segmentation results of type OutputType.
 
-        Args:
-            data (np.ndarray): Input data in the form of a numpy array.
+        :param data: Input data in the form of a numpy array.
 
-        Returns:
-            ResultList[OutputType]: A list of instance segmentation results of type OutputType.
+        :return: A list of instance segmentation results of type OutputType.
         """
         pass

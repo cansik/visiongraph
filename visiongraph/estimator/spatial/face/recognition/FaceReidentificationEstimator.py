@@ -31,10 +31,9 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         """
         Initializes the estimator with a given model and weights.
 
-        Args:
-            model (Asset): The OpenVINO model to use.
-            weights (Asset): The OpenVINO weights to use.
-            device (str, optional): The target device for inference. Defaults to "AUTO".
+        :param model: The OpenVINO model to use.
+        :param weights: The OpenVINO weights to use.
+        :param device: The target device for inference. Defaults to "AUTO".
         """
         super().__init__()
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
@@ -58,12 +57,10 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         """
         Processes a given image and optional face landmarks.
 
-        Args:
-            image (np.ndarray): The input image.
-            landmarks (Optional[FaceLandmarkResult], optional): Face landmarks. Defaults to None.
+        :param image: The input image.
+        :param landmarks: Face landmarks. Defaults to None.
 
-        Returns:
-            EmbeddingResult: The extracted face embedding.
+        :return: The extracted face embedding.
         """
         image, landmarks = self._pre_process_input(image, landmarks)
         aligned_face, landmark_overlap = self._align_face(image, landmarks, self.normalized_keypoints)
@@ -84,8 +81,7 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         """
         Configures the estimator based on given arguments.
 
-        Args:
-            args (Namespace): The input arguments.
+        :param args: The input arguments.
         """
         pass
 
@@ -102,8 +98,7 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         """
         Creates a new instance of the estimator based on a given configuration.
 
-        Args:
-            config (FaceReidentificationConfig, optional): The configuration to use. Defaults to FaceReidentificationConfig.Retail_0095_FP32.
+        :param config: The configuration to use. Defaults to FaceReidentificationConfig.Retail_0095_FP32.
         """
         model, weights = config.value
         return FaceReidentificationEstimator(model, weights)

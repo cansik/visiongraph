@@ -20,8 +20,7 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         """
         Initializes the AdasHeadPoseEstimator with the given device.
 
-        Args:
-            device (str): The device to use for inference. Defaults to "AUTO".
+        :param device: The device to use for inference. Defaults to "AUTO".
         """
         model, weights = RepositoryAsset.openVino("head-pose-estimation-adas-0001")
         self.engine = OpenVinoEngine(model, weights, device=device)
@@ -36,11 +35,9 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         """
         Processes the input data and returns the head pose result.
 
-        Args:
-            data (np.ndarray): The input data to process.
+        :param data: The input data to process.
 
-        Returns:
-            HeadPoseResult: The head pose result containing the estimated position.
+        :return: The head pose result containing the estimated position.
         """
         output = self.engine.process(data)
         return HeadPoseResult(vector.obj(
@@ -53,12 +50,11 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         """
         Transforms the head pose result.
 
-        Args:
-            result (HeadPoseResult): The head pose result to transform.
-            image (np.ndarray): The input image.
-            roi (np.ndarray): The region of interest.
-            xs (float): The x-coordinate.
-            ys (float): The y-coordinate.
+        :param result: The head pose result to transform.
+        :param image: The input image.
+        :param roi: The region of interest.
+        :param xs: The x-coordinate.
+        :param ys: The y-coordinate.
         """
         pass
 
@@ -72,8 +68,7 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         """
         Configures the estimator with the given arguments.
 
-        Args:
-            args (Namespace): The parser arguments.
+        :param args: The parser arguments.
         """
         pass
 
@@ -82,7 +77,6 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         """
         Adds parameters to the parser.
 
-        Args:
-            parser (ArgumentParser): The parser to add parameters to.
+        :param parser: The parser to add parameters to.
         """
         pass

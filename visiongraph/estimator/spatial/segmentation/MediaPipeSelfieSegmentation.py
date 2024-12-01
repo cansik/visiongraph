@@ -33,8 +33,7 @@ class MediaPipeSelfieSegmentation(InstanceSegmentationEstimator[InstanceSegmenta
         """
         Initializes the MediaPipeSelfieSegmentation estimator.
 
-        Args:
-            model_type (SelfieSegmentationModel): The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
+        :param model_type: The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
         """
         super().__init__(0.5)
         self.model_type = model_type
@@ -55,11 +54,9 @@ class MediaPipeSelfieSegmentation(InstanceSegmentationEstimator[InstanceSegmenta
         """
         Processes the input image using the MediaPipe selfie segmentation model.
 
-        Args:
-            data (np.ndarray): The input image as a numpy array.
+        :param data: The input image as a numpy array.
 
-        Returns:
-            ResultList[BlazePose]: A list of instance segmentation results.
+        :return: A list of instance segmentation results.
         """
         # pre-process image
         image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
@@ -83,8 +80,7 @@ class MediaPipeSelfieSegmentation(InstanceSegmentationEstimator[InstanceSegmenta
         """
         Configures the estimator with the provided arguments.
 
-        Args:
-            args (Namespace): The configuration arguments.
+        :param args: The configuration arguments.
         """
         super().configure(args)
 
@@ -93,10 +89,8 @@ class MediaPipeSelfieSegmentation(InstanceSegmentationEstimator[InstanceSegmenta
         """
         Creates a new instance of the MediaPipe selfie segmentation estimator.
 
-        Args:
-            model_type (SelfieSegmentationModel): The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
+        :param model_type: The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
 
-        Returns:
-            MediaPipeSelfieSegmentation: A new instance of the MediaPipe selfie segmentation estimator.
+        :return: A new instance of the MediaPipe selfie segmentation estimator.
         """
         return MediaPipeSelfieSegmentation(model_type)

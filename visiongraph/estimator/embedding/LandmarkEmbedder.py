@@ -17,8 +17,7 @@ class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResu
         """
         Initializes the LandmarkEmbedder node with a given embedding function.
 
-        Args:
-            embedding_function (Callable[[T], Optional[np.ndarray]]): A function that takes a landmark detection result and returns an optional numpy array representing the embedding.
+        :param embedding_function: A function that takes a landmark detection result and returns an optional numpy array representing the embedding.
         """
         self.embedding_function = embedding_function
 
@@ -32,11 +31,9 @@ class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResu
         """
         Processes a list of landmark detection results and computes their embeddings using the provided embedding function.
 
-        Args:
-            detections (ResultList[T]): A list of landmark detection results.
+        :param detections: A list of landmark detection results.
 
-        Returns:
-            ResultList[LandmarkEmbeddingResult]: A list of landmark embedding results.
+        :return: A list of landmark embedding results.
         """
         results = ResultList()
         for detection in detections:
@@ -59,8 +56,7 @@ class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResu
         """
         Configures the LandmarkEmbedder node based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): A namespace containing command-line arguments.
+        :param args: A namespace containing command-line arguments.
         """
         pass
 

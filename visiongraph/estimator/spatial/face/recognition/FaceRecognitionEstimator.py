@@ -31,16 +31,13 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Processes a detected face in the image by extracting and mapping landmarks.
 
-        Args:
-            image (np.ndarray): The input image containing the face.
-            detection (SpatialCascadeResult): The result of a face detection containing bounding box and landmarks.
-            rectified (bool): A flag indicating if the image has been rectified.
+        :param image: The input image containing the face.
+        :param detection: The result of a face detection containing bounding box and landmarks.
+        :param rectified: A flag indicating if the image has been rectified.
 
-        Returns:
-            EmbeddingResult: The result of the embedding after processing the detection.
+        :return: The result of the embedding after processing the detection.
 
-        Raises:
-            Exception: If the landmarks key is not present in the detection results.
+        :raises Exception: If the landmarks key is not present in the detection results.
         """
         if self.landmarks_key not in detection.results:
             raise Exception(f"Expecting landmarks in key '{self.landmarks_key}'")
@@ -61,12 +58,10 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Processes the input image and landmarks to produce an embedding result.
 
-        Args:
-            image (np.ndarray): The input image to process.
-            landmarks (Optional[FaceLandmarkResult]): Optional landmarks to be used during processing.
+        :param image: The input image to process.
+        :param landmarks: Optional landmarks to be used during processing.
 
-        Returns:
-            EmbeddingResult: The result of the embedding after processing.
+        :return: The result of the embedding after processing.
         """
         pass
 
@@ -75,12 +70,10 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Prepares the input data and landmarks for processing.
 
-        Args:
-            data (np.ndarray): The input data to preprocess.
-            landmarks (Optional[FaceLandmarkResult]): Optional landmarks for the input.
+        :param data: The input data to preprocess.
+        :param landmarks: Optional landmarks for the input.
 
-        Returns:
-            Tuple[np.ndarray, FaceLandmarkResult]: The preprocessed data and associated landmarks.
+        :return: The preprocessed data and associated landmarks.
         """
         if landmarks is None:
             landmarks = self._landmarks
@@ -93,13 +86,11 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Aligns the face in the image based on the provided landmarks and normalized keypoints.
 
-        Args:
-            image (np.ndarray): The input image containing the face to be aligned.
-            landmarks (FaceLandmarkResult): The landmarks of the detected face.
-            normalized_keypoints (np.ndarray): The desired normalized keypoints for alignment.
+        :param image: The input image containing the face to be aligned.
+        :param landmarks: The landmarks of the detected face.
+        :param normalized_keypoints: The desired normalized keypoints for alignment.
 
-        Returns:
-            Tuple[np.ndarray, float]: The aligned image and the overlap score of the landmarks.
+        :return: The aligned image and the overlap score of the landmarks.
         """
         src_keypoints = np.array([
             [landmarks.left_eye.x, landmarks.left_eye.y],
@@ -132,12 +123,10 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Normalizes the input array along the specified axis.
 
-        Args:
-            array (np.ndarray): The input array to normalize.
-            axis (int): The axis along which to normalize the array.
+        :param array: The input array to normalize.
+        :param axis: The axis along which to normalize the array.
 
-        Returns:
-            Tuple[float, float]: The mean and standard deviation used for normalization.
+        :return: The mean and standard deviation used for normalization.
         """
         mean = array.mean(axis=axis)
         array -= mean
@@ -150,15 +139,12 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         Computes the transformation matrix to align two sets of points.
 
-        Args:
-            src (np.ndarray): The source points.
-            dst (np.ndarray): The destination points.
+        :param src: The source points.
+        :param dst: The destination points.
 
-        Returns:
-            np.ndarray: The transformation matrix for aligning the points.
+        :return: The transformation matrix for aligning the points.
 
-        Raises:
-            AssertionError: If the input arrays are not 2D or do not have equal shapes.
+        :raises AssertionError: If the input arrays are not 2D or do not have equal shapes.
         """
         assert np.array_equal(src.shape, dst.shape) and len(src.shape) == 2, \
             '2d input arrays are expected, got {}'.format(src.shape)

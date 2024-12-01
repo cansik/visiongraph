@@ -14,15 +14,13 @@ from visiongraph.util.VectorUtils import lerp_vector_3d, lerp_vector_2d, \
 
 
 def embed_pose(pose: PoseLandmarkResult, torso_size_multiplier: float = 2.5) -> Optional[np.ndarray]:
-    """Normalizes pose landmarks and converts to embedding.
+    """
+Normalizes pose landmarks and converts to embedding.
 
-    Args:
-        pose (PoseLandmarkResult): PoseLandmarkResult with 3D landmarks.
-        torso_size_multiplier (float): Multiplier to apply to the torso to get minimal body size.
+    :param pose: PoseLandmarkResult with 3D landmarks.
+    :param torso_size_multiplier: Multiplier to apply to the torso to get minimal body size.
 
-    Returns:
-        Optional[np.ndarray]: Numpy array with pose embedding of shape (M, 3) where `M` is the number of
-        pairwise distances defined in `_get_pose_distance_embedding`.
+    :return: Numpy array with pose embedding of shape (M, 3) where `M` is the number of
     """
     normalized_pose = _normalize_pose_landmarks(pose, torso_size_multiplier)
 
@@ -33,7 +31,9 @@ def embed_pose(pose: PoseLandmarkResult, torso_size_multiplier: float = 2.5) -> 
 
 
 def _normalize_pose_landmarks(pose: PoseLandmarkResult, torso_size_multiplier: float) -> PoseLandmarkResult:
-    """Normalizes landmarks translation and scale."""
+    """
+Normalizes landmarks translation and scale.
+"""
     normalized_pose = copy.deepcopy(pose)
 
     # Normalize translation.
@@ -48,30 +48,28 @@ def _normalize_pose_landmarks(pose: PoseLandmarkResult, torso_size_multiplier: f
 
 
 def _get_pose_center(pose: PoseLandmarkResult) -> vector.Vector3D:
-    """Calculates pose center as point between hips.
+    """
+Calculates pose center as point between hips.
 
-    Args:
-        pose (PoseLandmarkResult): PoseLandmarkResult to compute the center from.
+    :param pose: PoseLandmarkResult to compute the center from.
 
-    Returns:
-        vector.Vector3D: The 3D coordinates of the pose center calculated from the hips.
+    :return: The 3D coordinates of the pose center calculated from the hips.
     """
     return lerp_vector_3d(pose.left_hip.to_xyz(), pose.right_hip.to_xyz(), 0.5)
 
 
 def _get_pose_size(pose: PoseLandmarkResult, torso_size_multiplier: float) -> float:
-    """Calculates pose size.
+    """
+Calculates pose size.
 
     It is the maximum of two values:
       * Torso size multiplied by `torso_size_multiplier`
       * Maximum distance from pose center to any pose landmark
 
-    Args:
-        pose (PoseLandmarkResult): PoseLandmarkResult to compute the size from.
-        torso_size_multiplier (float): Multiplier to apply to torso size.
+    :param pose: PoseLandmarkResult to compute the size from.
+    :param torso_size_multiplier: Multiplier to apply to torso size.
 
-    Returns:
-        float: Calculated pose size.
+    :return: Calculated pose size.
     """
     # Hips center (2D)
     hips = lerp_vector_2d(pose.left_hip.to_xy(), pose.right_hip.to_xy(), 0.5)
@@ -90,18 +88,16 @@ def _get_pose_size(pose: PoseLandmarkResult, torso_size_multiplier: float) -> fl
 
 
 def _get_pose_distance_embedding(pose: PoseLandmarkResult) -> np.ndarray:
-    """Converts pose landmarks into 3D embedding.
+    """
+Converts pose landmarks into 3D embedding.
 
     We use several pairwise 3D distances to form pose embedding. All distances
     include X and Y components with sign. We different types of pairs to cover
     different pose classes. Feel free to remove some or add new.
 
-    Args:
-        pose (PoseLandmarkResult): Normalized PoseLandmarkResult with 3D landmarks.
+    :param pose: Normalized PoseLandmarkResult with 3D landmarks.
 
-    Returns:
-        np.ndarray: Numpy array with pose embedding of shape (M, 3) where `M` is the number of
-        pairwise distances.
+    :return: Numpy array with pose embedding of shape (M, 3) where `M` is the number of
     """
     embedding = np.array([
         # One joint.

@@ -20,10 +20,9 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         """
         Initializes the LandmarkSmoothFilter object with default parameters.
 
-        Args:
-            min_cutoff (float): The minimum cutoff value for the OneEuro filter.
-            beta (float): The parameter value for the OneEuro filter.
-            d_cutoff (float): The cutoff value for the VectorNumpySmoothFilter.
+        :param min_cutoff: The minimum cutoff value for the OneEuro filter.
+        :param beta: The parameter value for the OneEuro filter.
+        :param d_cutoff: The cutoff value for the VectorNumpySmoothFilter.
         """
         self.min_cutoff = min_cutoff
         self.beta = beta
@@ -40,11 +39,9 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         """
         Smooths the landmark detections in the input data using the stored filters.
 
-        Args:
-            data (InputType): The input data containing landmark detections.
+        :param data: The input data containing landmark detections.
 
-        Returns:
-            OutputType: The smoothed landmark detections.
+        :return: The smoothed landmark detections.
         """
         for detection in data:
             # smoothing only works on tracked landmark detections
@@ -83,8 +80,7 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         """
         Configures the LandmarkSmoothFilter object based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments passed to the LandmarkSmoothFilter constructor.
+        :param args: The command-line arguments passed to the LandmarkSmoothFilter constructor.
         """
 
     @staticmethod
@@ -92,6 +88,5 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
         """
         Adds parameters for the LandmarkSmoothFilter class to the provided argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser used to define the command-line interface.
+        :param parser: The argument parser used to define the command-line interface.
         """

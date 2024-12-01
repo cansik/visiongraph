@@ -22,9 +22,8 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         """
         Initializes the FERPlusEmotionClassifier object.
 
-        Args:
-            model (Asset): The ONNX model to be used for emotion classification.
-            engine (InferenceEngine): The inference engine type, e.g., ONNX or Tensorflow Lite.
+        :param model: The ONNX model to be used for emotion classification.
+        :param engine: The inference engine type, e.g., ONNX or Tensorflow Lite.
         """
         super().__init__(0.5)
 
@@ -47,12 +46,9 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         """
         Processes an input image and returns an EmotionClassificationResult object.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            EmotionClassificationResult: An object containing the best class index, label,
-                                         probability, and confidence.
+        :return: An object containing the best class index, label,
         """
         output = self.engine.process(image)
         probability = softmax(np.squeeze(output[self.engine.output_names[0]]))

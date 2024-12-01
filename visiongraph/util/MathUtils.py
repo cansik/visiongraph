@@ -9,14 +9,12 @@ def transform_coordinates(x: float, y: float, rotate: Optional[int], flip: Optio
     """
     Transforms the (x, y) coordinates based on specified rotation and flipping.
 
-    Args:
-        x (float): The x-coordinate to transform.
-        y (float): The y-coordinate to transform.
-        rotate (Optional[int]): The rotation value that determines how to rotate the coordinates.
-        flip (Optional[int]): The flip value that determines how to flip the coordinates.
+    :param x: The x-coordinate to transform.
+    :param y: The y-coordinate to transform.
+    :param rotate: The rotation value that determines how to rotate the coordinates.
+    :param flip: The flip value that determines how to flip the coordinates.
 
-    Returns:
-        Tuple[float, float]: The transformed (x, y) coordinates.
+    :return: The transformed (x, y) coordinates.
     """
     nx, ny = x, y
 
@@ -42,13 +40,11 @@ def constrain(value: float, lower: float = 0, upper: float = 1) -> float:
     """
     Constrains a value to be within the specified lower and upper bounds.
 
-    Args:
-        value (float): The value to constrain.
-        lower (float): The lower bound.
-        upper (float): The upper bound.
+    :param value: The value to constrain.
+    :param lower: The lower bound.
+    :param upper: The upper bound.
 
-    Returns:
-        float: The constrained value.
+    :return: The constrained value.
     """
     return max(min(value, upper), lower)
 
@@ -57,15 +53,13 @@ def map_value(value, istart, istop, ostart, ostop) -> float:
     """
     Maps a value from one range to another.
 
-    Args:
-        value: The input value to map.
-        istart: The start of the input range.
-        istop: The end of the input range.
-        ostart: The start of the output range.
-        ostop: The end of the output range.
+    :param value: The input value to map.
+    :param istart: The start of the input range.
+    :param istop: The end of the input range.
+    :param ostart: The start of the output range.
+    :param ostop: The end of the output range.
 
-    Returns:
-        float: The mapped value in the new range.
+    :return: The mapped value in the new range.
     """
     return ostart + (ostop - ostart) * ((value - istart) / (istop - istart))
 
@@ -76,13 +70,11 @@ def rotate_2d(origin, point, angle):
 
     The angle should be given in radians.
 
-    Args:
-        origin (tuple): The (x, y) coordinates of the origin point.
-        point (tuple): The (x, y) coordinates of the point to rotate.
-        angle (float): The angle in radians by which to rotate the point.
+    :param origin: The (x, y) coordinates of the origin point.
+    :param point: The (x, y) coordinates of the point to rotate.
+    :param angle: The angle in radians by which to rotate the point.
 
-    Returns:
-        tuple: The (x, y) coordinates of the rotated point.
+    :return: The (x, y) coordinates of the rotated point.
     """
     ox, oy = origin
     px, py = point
@@ -97,8 +89,7 @@ class StreamingMovingAverage:
         """
         Initializes the StreamingMovingAverage object with a specific window size.
 
-        Args:
-            window_size: The size of the moving average window.
+        :param window_size: The size of the moving average window.
         """
         self.window_size = window_size
         self.values = []
@@ -108,11 +99,9 @@ class StreamingMovingAverage:
         """
         Processes a new value and updates the moving average.
 
-        Args:
-            value: The new value to process.
+        :param value: The new value to process.
 
-        Returns:
-            float: The updated moving average.
+        :return: The updated moving average.
         """
         self.values.append(value)
         self.sum += value
@@ -124,14 +113,13 @@ class StreamingMovingAverage:
         """
         Calculates the current moving average.
 
-        Returns:
-            float: The moving average value.
+        :return: The moving average value.
         """
         return float(self.sum) / max(len(self.values), 1)
 
 
 def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: float = 1e-5) -> float:
-    """ 
+    """
     Given two boxes `a` and `b` defined as a list of four numbers:
         [x1,y1,x2,y2]
     where:
@@ -141,13 +129,11 @@ def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: flo
 
     Source: http://ronny.rest/tutorials/module/localization_001/iou/
 
-    Args:
-        a (Sequence[float]): The first box defined by [x1,y1,x2,y2].
-        b (Sequence[float]): The second box defined by [x1,y1,x2,y2].
-        epsilon (float, optional): Small value to prevent division by zero. Defaults to 1e-5.
+    :param a: The first box defined by [x1,y1,x2,y2].
+    :param b: The second box defined by [x1,y1,x2,y2].
+    :param epsilon: Small value to prevent division by zero. Defaults to 1e-5.
 
-    Returns:
-        float: The Intersection over Union score.
+    :return: The Intersection over Union score.
     """
     # COORDINATES OF THE INTERSECTION BOX
     x1 = max(a[0], b[0])
@@ -177,10 +163,7 @@ def sigmoid(x):
     """
     Applies the sigmoid function to a given value.
 
-    Args:
-        x: The input value to apply the sigmoid function to.
+    :param x: The input value to apply the sigmoid function to.
 
-    Returns:
-        The result of applying the sigmoid function.
     """
     return 1 / (1 + np.exp(-x))

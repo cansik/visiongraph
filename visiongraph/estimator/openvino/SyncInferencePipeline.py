@@ -14,9 +14,8 @@ class SyncInferencePipeline:
         """
         Initializes the SyncInferencePipeline object.
 
-        Args:
-            model (Model): The model to be used in the pipeline.
-            device (str, optional): The target device. Defaults to "AUTO".
+        :param model: The model to be used in the pipeline.
+        :param device: The target device. Defaults to "AUTO".
         """
         self.device = device
         self.model = model
@@ -25,8 +24,6 @@ class SyncInferencePipeline:
         """
         Loads the model if it's not already loaded.
 
-        Returns:
-            None
         """
         if not self.model.model_loaded:
             self.model.load()
@@ -35,11 +32,9 @@ class SyncInferencePipeline:
         """
         Processes the given input data through the synchronized inference pipeline.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            List: A list of output results.
+        :return: A list of output results.
         """
         inputs, preprocessing_meta = self.model.preprocess(data)
         raw_result = self.model.infer_sync(inputs)
@@ -50,7 +45,5 @@ class SyncInferencePipeline:
         """
         Releases the pipeline resources.
 
-        Returns:
-            None
         """
         pass

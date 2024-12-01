@@ -19,10 +19,8 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
     """
     A generic class representing an Ultralytics YOLO detector for object detection.
 
-    Args:
-        ObjectDetector: A class for detecting objects.
-        Generic[R]: A generic type for object detection results.
-        ABC: Abstract Base Class for defining abstract methods.
+    :param ObjectDetector: A class for detecting objects.
+    :param ABC: Abstract Base Class for defining abstract methods.
     """
 
     def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
@@ -32,15 +30,14 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         Initializes the UltralyticsYOLODetector instance.
 
-        Args:
-            *assets (Asset): Variable number of assets.
-            labels (List[str]): List of labels.
-            min_score (float): Minimum score for predictions.
-            nms (bool): Flag to enable non-maximum suppression.
-            nms_threshold (float): Threshold for non-maximum suppression.
-            nms_eta (Optional[float]): Epsilon value for non-maximum suppression.
-            nms_top_k (Optional[int]): Top K value for non-maximum suppression.
-            engine (InferenceEngine): Inference engine type.
+        :param *assets: Variable number of assets.
+        :param labels: List of labels.
+        :param min_score: Minimum score for predictions.
+        :param nms: Flag to enable non-maximum suppression.
+        :param nms_threshold: Threshold for non-maximum suppression.
+        :param nms_eta: Epsilon value for non-maximum suppression.
+        :param nms_top_k: Top K value for non-maximum suppression.
+        :param engine: Inference engine type.
         """
         super().__init__(min_score)
         self.engine = InferenceEngineFactory.create(engine, assets,
@@ -66,11 +63,9 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         Processes the input image for object detection.
 
-        Args:
-            image (np.ndarray): Input image for detection.
+        :param image: Input image for detection.
 
-        Returns:
-            ResultList[R]: List of object detection results.
+        :return: List of object detection results.
         """
         output = self.engine.process(image)
 
@@ -96,12 +91,10 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         Filters the predictions based on the minimum score.
 
-        Args:
-            predictions (np.ndarray): Predicted values.
-            min_score (float): Minimum score to consider.
+        :param predictions: Predicted values.
+        :param min_score: Minimum score to consider.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]: Filtered predictions and corresponding scores.
+        :return: Filtered predictions and corresponding scores.
         """
         predictions = predictions.T
 
@@ -114,11 +107,9 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         Extracts and unpacks box predictions.
 
-        Args:
-            prediction (np.ndarray): Predicted values.
+        :param prediction: Predicted values.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]: Unpacked box predictions.
+        :return: Unpacked box predictions.
         """
         return prediction[0:4], prediction[4:]
 
@@ -126,12 +117,10 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         Decodes the prediction results to an ObjectDetectionResult.
 
-        Args:
-            prediction (np.ndarray): Predicted values.
-            score (float): Prediction score.
+        :param prediction: Predicted values.
+        :param score: Prediction score.
 
-        Returns:
-            R: ObjectDetectionResult based on the prediction.
+        :return: ObjectDetectionResult based on the prediction.
         """
         h, w = self.engine.first_input_shape[2:]
         pred_bbox, pred_label = self._unpack_box_prediction(prediction)

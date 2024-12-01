@@ -14,8 +14,7 @@ class LocalAsset(Asset):
         """
         Initializes the LocalAsset object with a given file path.
 
-        Args:
-            file_path (Union[str, os.PathLike]): The absolute or relative path to the file.
+        :param file_path: The absolute or relative path to the file.
         """
         self._file_path = str(Path(file_path))
 
@@ -24,8 +23,7 @@ class LocalAsset(Asset):
         """
         Checks if the local asset file exists at its specified path.
 
-        Returns:
-            bool: True if the file exists, False otherwise.
+        :return: True if the file exists, False otherwise.
         """
         return os.path.exists(self._file_path)
 
@@ -34,8 +32,7 @@ class LocalAsset(Asset):
         """
         Returns the absolute path of the local asset file.
 
-        Returns:
-            str: The absolute path to the file.
+        :return: The absolute path to the file.
         """
         return self._file_path
 
@@ -43,7 +40,6 @@ class LocalAsset(Asset):
         """
         Returns a string representation of the LocalAsset object, in the form of its file path.
 
-        Returns:
-            str: A string containing the path to the local asset file.
+        :return: A string containing the path to the local asset file.
         """
         return self._file_path

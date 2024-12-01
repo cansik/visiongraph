@@ -12,8 +12,7 @@ class Asset(ABC):
         """
         Determines whether the asset exists.
 
-        Returns:
-            bool: True if the asset exists, False otherwise.
+        :return: True if the asset exists, False otherwise.
         """
         pass
 
@@ -23,8 +22,7 @@ class Asset(ABC):
         """
         Retrieves the file or directory path of the asset.
 
-        Returns:
-            str: The file or directory path of the asset.
+        :return: The file or directory path of the asset.
         """
         pass
 
@@ -33,8 +31,7 @@ class Asset(ABC):
         Prepares the asset for use. This method may raise an exception if
         the asset is invalid or cannot be prepared.
 
-        Returns:
-            bool: True if the asset can be prepared, False otherwise.
+        :return: True if the asset can be prepared, False otherwise.
         """
         pass
 
@@ -44,8 +41,7 @@ class Asset(ABC):
         Prepares a list of assets for use. Each asset's prepare method is
         called until all assets are successfully prepared or an exception is raised.
 
-        Args:
-            *assets (Asset): A variable number of assets to be prepared.
+        :param *assets: A variable number of assets to be prepared.
         """
         for asset in assets:
             asset.prepare()

@@ -27,9 +27,8 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
     ModNetEstimator is a specific implementation of InstanceSegmentationEstimator
     tailored for the ModNet architecture.
 
-    Args:
-        assets (Asset): Assets to be used for inference.
-        engine (InferenceEngine): The inference engine to be used. Default is ONNX.
+    :param assets: Assets to be used for inference.
+    :param engine: The inference engine to be used. Default is ONNX.
     """
 
     def __init__(self, *assets: Asset,
@@ -59,11 +58,9 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Processes an input image to perform instance segmentation.
 
-        Args:
-            image (np.ndarray): The input image for segmentation.
+        :param image: The input image for segmentation.
 
-        Returns:
-            ResultList[InstanceSegmentationResult]: A list of segmentation results containing masks and bounding boxes.
+        :return: A list of segmentation results containing masks and bounding boxes.
         """
         h, w = image.shape[:2]
         im_rw, im_rh = self._get_scale_factor(h, w, self.reference_size)
@@ -93,13 +90,11 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Computes the scaling factors for the input image dimensions.
 
-        Args:
-            im_h (int): Height of the input image.
-            im_w (int): Width of the input image.
-            ref_size (int): Reference size for scaling.
+        :param im_h: Height of the input image.
+        :param im_w: Width of the input image.
+        :param ref_size: Reference size for scaling.
 
-        Returns:
-            Tuple[int, int]: Scaled width and height.
+        :return: Scaled width and height.
         """
         if max(im_h, im_w) < ref_size or min(im_h, im_w) > ref_size:
             if im_w >= im_h:
@@ -121,8 +116,7 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Configures the estimator with command line arguments.
 
-        Args:
-            args (Namespace): The parsed command line arguments.
+        :param args: The parsed command line arguments.
         """
         pass
 
@@ -131,8 +125,7 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Adds command line parameters for the estimator to the argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser to which parameters should be added.
+        :param parser: The argument parser to which parameters should be added.
         """
         pass
 
@@ -141,11 +134,9 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Creates an instance of ModNetEstimator with the specified configuration.
 
-        Args:
-            config (ModNetConfig): The configuration for the ModNet estimator.
+        :param config: The configuration for the ModNet estimator.
 
-        Returns:
-            ModNetEstimator: An instance of the ModNetEstimator.
+        :return: An instance of the ModNetEstimator.
         """
         model = config.value
         return ModNetEstimator(model)

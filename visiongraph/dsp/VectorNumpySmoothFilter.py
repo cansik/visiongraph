@@ -22,8 +22,7 @@ class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
         """
         Initializes the VectorNumpySmoothFilter node.
 
-        Args:
-            np_filter (BaseFilterNumpy): The filter to be used for smoothing. Defaults to an instance of OneEuroFilterNumpy with a zero-filled input.
+        :param np_filter: The filter to be used for smoothing. Defaults to an instance of OneEuroFilterNumpy with a zero-filled input.
         """
         self._filter = np_filter
 
@@ -37,11 +36,9 @@ class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
         """
         Applies the smoothing operation to the input data.
 
-        Args:
-            data (InputType): The input data to be smoothed.
+        :param data: The input data to be smoothed.
 
-        Returns:
-            OutputType: The smoothed output data as a VectorNumpy instance.
+        :return: The smoothed output data as a VectorNumpy instance.
         """
         array = vector_to_array(data)
         result = self._filter(array)
@@ -57,8 +54,7 @@ class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
         """
         Configures the node based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -67,7 +63,6 @@ class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
         """
         Adds parameters to the parser for configuring the VectorNumpySmoothFilter node.
 
-        Args:
-            parser (ArgumentParser): The argument parser instance.
+        :param parser: The argument parser instance.
         """
         pass

@@ -16,10 +16,9 @@ class RegressionFace(FaceLandmarkResult):
         """
         Initializes the RegressionFace object.
 
-        Args:
-            score (float): The face detection confidence score.
-            landmarks (vector.VectorNumpy4D): A vector of facial landmarks as Numpy arrays.
-            bounding_box (BoundingBox2D, optional): The bounding box enclosing the face. Defaults to None.
+        :param score: The face detection confidence score.
+        :param landmarks: A vector of facial landmarks as Numpy arrays.
+        :param bounding_box: The bounding box enclosing the face. Defaults to None.
         """
         super().__init__(score, landmarks, bounding_box)
 
@@ -28,8 +27,6 @@ class RegressionFace(FaceLandmarkResult):
         """
         Gets the 3D position of the left eye.
 
-        Returns:
-            vector(Vector4D): The 3D position of the left eye as a Vector4D.
         """
         return self.landmarks[0]
 
@@ -38,8 +35,6 @@ class RegressionFace(FaceLandmarkResult):
         """
         Gets the 3D position of the right eye.
 
-        Returns:
-            vector(Vector4D): The 3D position of the right eye as a Vector4D.
         """
         return self.landmarks[1]
 
@@ -48,8 +43,6 @@ class RegressionFace(FaceLandmarkResult):
         """
         Gets the 3D position of the nose tip.
 
-        Returns:
-            vector(Vector4D): The 3D position of the nose tip as a Vector4D.
         """
         return self.landmarks[2]
 
@@ -58,8 +51,6 @@ class RegressionFace(FaceLandmarkResult):
         """
         Gets the 2D position of the left mouth corner.
 
-        Returns:
-            vector(Vector4D): The 2D position of the left mouth corner as a Vector4D.
         """
         return self.landmarks[3]
 
@@ -68,7 +59,5 @@ class RegressionFace(FaceLandmarkResult):
         """
         Gets the 2D position of the right mouth corner.
 
-        Returns:
-            vector(Vector4D): The 2D position of the right mouth corner as a Vector4D.
         """
         return self.landmarks[4]

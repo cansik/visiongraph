@@ -15,10 +15,8 @@ class Processable(Generic[InputType, OutputType]):
         """
         Processes the given input data and returns the result.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The processed output.
+        :return: The processed output.
         """
         pass

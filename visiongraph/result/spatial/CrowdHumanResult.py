@@ -7,7 +7,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 
 class CrowdHumanResult(ObjectDetectionResult):
     """
-    Represents the result of detecting a crowd human, including information 
+    Represents the result of detecting a crowd human, including information
     about the person and their head if available.
     """
 
@@ -15,9 +15,8 @@ class CrowdHumanResult(ObjectDetectionResult):
         """
         Initializes the CrowdHumanResult with the detected person and an optional head detection.
 
-        Args:
-            person (ObjectDetectionResult): The result of the object detection for the person.
-            head (Optional[ObjectDetectionResult]): The result of the object detection for the head, if detected.
+        :param person: The result of the object detection for the person.
+        :param head: The result of the object detection for the head, if detected.
         """
         super().__init__(person.class_id, person.class_name, person.score, person.bounding_box)
         self.head = head
@@ -27,12 +26,11 @@ class CrowdHumanResult(ObjectDetectionResult):
         """
         Annotates the given image with the detected person's and their head's information.
 
-        Args:
-            image (np.ndarray): The image to annotate.
-            show_info (bool): Whether to display additional info on the image.
-            info_text (Optional[str]): Custom text to display.
-            color (Optional[Sequence[int]]): Color for the annotations, specified as a sequence of RGB values.
-            **kwargs: Additional keyword arguments for customization.
+        :param image: The image to annotate.
+        :param show_info: Whether to display additional info on the image.
+        :param info_text: Custom text to display.
+        :param color: Color for the annotations, specified as a sequence of RGB values.
+        :param **kwargs: Additional keyword arguments for customization.
         """
         super().annotate(image, show_info, info_text, color, **kwargs)
 

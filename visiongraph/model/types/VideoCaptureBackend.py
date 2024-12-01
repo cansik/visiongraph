@@ -24,7 +24,7 @@ import cv2
     - opencv_mjpeg: Use Opencv MJPEG-2001 video codec.
     - intel_mfx: Use Intel Media SDK.
     - xine: Use Xine video player capture driver.
-"""
+    """
 # https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gga023786be1ee68a9105bf2e48c700294dacf10e9692c4166f74de62b7d00c377d0
 VideoCaptureBackend = {
     "any": cv2.CAP_ANY,

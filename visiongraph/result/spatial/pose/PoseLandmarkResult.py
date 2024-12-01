@@ -40,10 +40,9 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Initializes the PoseLandmarkResult with a score, landmarks, and an optional bounding box.
 
-        Args:
-            score (float): The score representing the confidence of the pose detection.
-            landmarks (vector.VectorNumpy4D): The detected landmarks in a 4D vector format.
-            bounding_box (Optional[BoundingBox2D]): An optional bounding box around the pose.
+        :param score: The score representing the confidence of the pose detection.
+        :param landmarks: The detected landmarks in a 4D vector format.
+        :param bounding_box: An optional bounding box around the pose.
         """
         super().__init__(POSE_DETECTION_ID, POSE_DETECTION_NAME, score, landmarks, bounding_box=bounding_box)
 
@@ -53,14 +52,13 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Annotates the image with the pose landmarks and optional information.
 
-        Args:
-            image (np.ndarray): The image to annotate.
-            show_info (bool): Flag to show additional information.
-            info_text (Optional[str]): Custom text to show on the image.
-            color (Optional[Sequence[int]]): Color for annotation.
-            show_bounding_box (bool): Whether to display the bounding box.
-            min_score (float): Minimum score threshold for displaying landmarks.
-            **kwargs: Additional keyword arguments for customization.
+        :param image: The image to annotate.
+        :param show_info: Flag to show additional information.
+        :param info_text: Custom text to show on the image.
+        :param color: Color for annotation.
+        :param show_bounding_box: Whether to display the bounding box.
+        :param min_score: Minimum score threshold for displaying landmarks.
+        :param **kwargs: Additional keyword arguments for customization.
         """
         super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
                          connections=self.connections, **kwargs)
@@ -70,8 +68,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the default landmarks for the pose.
 
-        Returns:
-            List[vector.Vector4D]: A list of default pose landmarks.
+        :return: A list of default pose landmarks.
         """
         return [getattr(self, lm_name) for lm_name in DEFAULT_POSE_LANDMARKS]
 
@@ -81,8 +78,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the connections between landmarks as a set of tuples.
 
-        Returns:
-            FrozenSet[Tuple[int, int]]: A frozen set containing pairs of landmark indices that are connected.
+        :return: A frozen set containing pairs of landmark indices that are connected.
         """
         pass
 
@@ -92,8 +88,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the nose.
+        :return: The vector position of the nose.
         """
         pass
 
@@ -103,8 +98,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left eye.
+        :return: The vector position of the left eye.
         """
         pass
 
@@ -114,8 +108,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right eye.
+        :return: The vector position of the right eye.
         """
         pass
 
@@ -125,8 +118,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left shoulder.
+        :return: The vector position of the left shoulder.
         """
         pass
 
@@ -136,8 +128,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right shoulder.
+        :return: The vector position of the right shoulder.
         """
         pass
 
@@ -147,8 +138,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left elbow landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left elbow.
+        :return: The vector position of the left elbow.
         """
         pass
 
@@ -158,8 +148,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right elbow landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right elbow.
+        :return: The vector position of the right elbow.
         """
         pass
 
@@ -169,8 +158,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left wrist landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left wrist.
+        :return: The vector position of the left wrist.
         """
         pass
 
@@ -180,8 +168,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right wrist landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right wrist.
+        :return: The vector position of the right wrist.
         """
         pass
 
@@ -191,8 +178,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left hip landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left hip.
+        :return: The vector position of the left hip.
         """
         pass
 
@@ -202,8 +188,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right hip landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right hip.
+        :return: The vector position of the right hip.
         """
         pass
 
@@ -213,8 +198,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left knee landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left knee.
+        :return: The vector position of the left knee.
         """
         pass
 
@@ -224,8 +208,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right knee landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right knee.
+        :return: The vector position of the right knee.
         """
         pass
 
@@ -235,8 +218,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the left ankle landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the left ankle.
+        :return: The vector position of the left ankle.
         """
         pass
 
@@ -246,7 +228,6 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Abstract property that must return the position of the right ankle landmark.
 
-        Returns:
-            vector.Vector4D: The vector position of the right ankle.
+        :return: The vector position of the right ankle.
         """
         pass

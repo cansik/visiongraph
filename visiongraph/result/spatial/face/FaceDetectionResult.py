@@ -20,8 +20,7 @@ class FaceDetectionResult(ObjectDetectionResult):
         """
         Initializes the FaceDetectionResult object with a given score and bounding box.
 
-        Args:
-            score (float): The confidence score of the detected face.
-            bounding_box (BoundingBox2D): The bounding box of the detected face.
+        :param score: The confidence score of the detected face.
+        :param bounding_box: The bounding box of the detected face.
         """
         super().__init__(FACE_DETECTION_ID, FACE_DETECTION_LABEL, score, bounding_box)

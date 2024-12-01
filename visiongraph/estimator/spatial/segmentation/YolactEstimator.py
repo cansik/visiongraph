@@ -32,10 +32,9 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Initializes the Yolcat estimator.
 
-        Args:
-            model (Asset): The ONNX model to be used for inference.
-            labels (List[str]): A list of class names corresponding to each label index.
-            min_score (float, optional): The minimum score required for a detected instance to be considered. Defaults to 0.1.
+        :param model: The ONNX model to be used for inference.
+        :param labels: A list of class names corresponding to each label index.
+        :param min_score: The minimum score required for a detected instance to be considered. Defaults to 0.1.
         """
         super().__init__(min_score)
 
@@ -52,11 +51,9 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Processes the input image and returns a list of instance segmentation results.
 
-        Args:
-            data (np.ndarray): The input image to be processed.
+        :param data: The input image to be processed.
 
-        Returns:
-            ResultList[InstanceSegmentationResult]: A list of instance segmentation results.
+        :return: A list of instance segmentation results.
         """
         ih, iw = data.shape[:2]
         outputs = self.engine.process(data)
@@ -110,12 +107,10 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Crops a region of interest from an image.
 
-        Args:
-            bbox (list): A list containing the coordinates of the top-left and bottom-right corners of the ROI.
-            shape (tuple): The size of the input image.
+        :param bbox: A list containing the coordinates of the top-left and bottom-right corners of the ROI.
+        :param shape: The size of the input image.
 
-        Returns:
-            tuple: A tuple containing two slice objects representing the cropped region.
+        :return: A tuple containing two slice objects representing the cropped region.
         """
         x1 = int(max(bbox[0] * shape[1], 0))
         y1 = int(max(bbox[1] * shape[0], 0))
@@ -128,8 +123,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         """
         Creates a new instance of the Yolcat estimator.
 
-        Args:
-            config (YolcatConfig, optional): The configuration option to be used for the estimator. Defaults to YolcatConfig.YolactEdge_MobileNetV2_550.
+        :param config: The configuration option to be used for the estimator. Defaults to YolcatConfig.YolactEdge_MobileNetV2_550.
         """
         model, labels = config.value
         return YolcatEstimator(model, labels)

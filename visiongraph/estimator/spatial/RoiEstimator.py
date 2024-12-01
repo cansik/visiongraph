@@ -20,16 +20,14 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
         """
         Processes a region of interest (ROI) in an image.
 
-        Args:
-            image (np.ndarray): The input image.
-            xmin (float): The minimum x-coordinate of the ROI.
-            ymin (float): The minimum y-coordinate of the ROI.
-            xmax (float): The maximum x-coordinate of the ROI.
-            ymax (float): The maximum y-coordinate of the ROI.
-            rectified (bool, optional): A flag to specify if the ROI is rectified. Defaults to True.
+        :param image: The input image.
+        :param xmin: The minimum x-coordinate of the ROI.
+        :param ymin: The minimum y-coordinate of the ROI.
+        :param xmax: The maximum x-coordinate of the ROI.
+        :param ymax: The maximum y-coordinate of the ROI.
+        :param rectified: A flag to specify if the ROI is rectified. Defaults to True.
 
-        Returns:
-            BaseResult: The result of processing the ROI.
+        :return: The result of processing the ROI.
         """
         roi, xs, ys = extract_roi_safe(image, xmin, ymin, xmax, ymax, rectified=rectified)
         result = self.process(roi)
@@ -44,13 +42,11 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
         """
         Processes an object detection result within the image.
 
-        Args:
-            image (np.ndarray): The input image.
-            detection (ObjectDetectionResult): The object detection result.
-            rectified (bool, optional): A flag to specify if the ROI is rectified. Defaults to True.
+        :param image: The input image.
+        :param detection: The object detection result.
+        :param rectified: A flag to specify if the ROI is rectified. Defaults to True.
 
-        Returns:
-            BaseResult: The result of processing the object detection result.
+        :return: The result of processing the object detection result.
         """
         bbox = detection.bounding_box
         return self.process_roi(image, bbox.x_min, bbox.y_min,
@@ -60,11 +56,10 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
         """
         Transforms a result back to the original image coordinates.
 
-        Args:
-            result (BaseResult): The result to be transformed.
-            image (np.ndarray): The original image.
-            roi (np.ndarray): The region of interest in the image.
-            xs (float): The x coordinate scale factor.
-            ys (float): The y coordinate scale factor.
+        :param result: The result to be transformed.
+        :param image: The original image.
+        :param roi: The region of interest in the image.
+        :param xs: The x coordinate scale factor.
+        :param ys: The y coordinate scale factor.
         """
         pass

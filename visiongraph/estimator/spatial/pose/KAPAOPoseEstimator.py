@@ -29,14 +29,13 @@ class KAPAOPoseEstimator(PoseEstimator):
         """
         Initializes the KAPAOPoseEstimator with the given parameters.
 
-        Args:
-            assets (Asset): The assets to be used by the estimator.
-            num_keypoints (int): The number of keypoints to detect.
-            min_score (float): The minimum score threshold for detection.
-            nms_threshold (float): The threshold for Non-Maximum Suppression.
-            kp_min_score (float): The minimum score threshold for keypoints.
-            kp_nms_threshold (float): The threshold for NMS on keypoints.
-            engine (InferenceEngine): The inference engine to be used.
+        :param assets: The assets to be used by the estimator.
+        :param num_keypoints: The number of keypoints to detect.
+        :param min_score: The minimum score threshold for detection.
+        :param nms_threshold: The threshold for Non-Maximum Suppression.
+        :param kp_min_score: The minimum score threshold for keypoints.
+        :param kp_nms_threshold: The threshold for NMS on keypoints.
+        :param engine: The inference engine to be used.
         """
         super().__init__(min_score)
 
@@ -56,18 +55,18 @@ class KAPAOPoseEstimator(PoseEstimator):
         self.engine.padding_color = (114, 114, 114)
 
     def setup(self):
-        """Sets up the inference engine."""
+        """
+Sets up the inference engine.
+"""
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[COCOPose]:
         """
         Processes the input image and returns detected poses.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            ResultList[COCOPose]: A list of detected poses.
+        :return: A list of detected poses.
         """
         h, w = self.engine.first_input_shape[2:]
 
@@ -97,7 +96,9 @@ class KAPAOPoseEstimator(PoseEstimator):
         return poses
 
     def release(self):
-        """Releases resources held by the inference engine."""
+        """
+Releases resources held by the inference engine.
+"""
         self.engine.release()
 
     def _nms_predictions(self, prediction: np.ndarray, threshold: float, nms_threshold: float,
@@ -105,14 +106,12 @@ class KAPAOPoseEstimator(PoseEstimator):
         """
         Applies Non-Maximum Suppression (NMS) to filter predictions.
 
-        Args:
-            prediction (np.ndarray): The predictions to filter.
-            threshold (float): The score threshold for detections.
-            nms_threshold (float): The threshold for NMS.
-            classes (Optional[List[int]]): The classes to consider for filtering.
+        :param prediction: The predictions to filter.
+        :param threshold: The score threshold for detections.
+        :param nms_threshold: The threshold for NMS.
+        :param classes: The classes to consider for filtering.
 
-        Returns:
-            List[np.ndarray]: The filtered predictions after applying NMS.
+        :return: The filtered predictions after applying NMS.
         """
         xc = prediction[..., 4] > threshold
 
@@ -151,11 +150,9 @@ class KAPAOPoseEstimator(PoseEstimator):
         """
         Converts bounding boxes from [x, y, w, h] format to [x1, y1, x2, y2] format.
 
-        Args:
-            x (np.ndarray): The bounding boxes in [x, y, w, h] format.
+        :param x: The bounding boxes in [x, y, w, h] format.
 
-        Returns:
-            np.ndarray: The bounding boxes in [x1, y1, x2, y2] format.
+        :return: The bounding boxes in [x1, y1, x2, y2] format.
         """
         y = np.copy(x)
         y[:, 0] = x[:, 0] - x[:, 2] / 2  # top left x
@@ -168,13 +165,11 @@ class KAPAOPoseEstimator(PoseEstimator):
         """
         Post-processes batch detections to refine keypoints and bounding boxes.
 
-        Args:
-            person_dets: The detections of persons.
-            kp_dets: The detections of keypoints.
-            origins (Optional): The origins for each detection.
+        :param person_dets: The detections of persons.
+        :param kp_dets: The detections of keypoints.
+        :param origins: The origins for each detection.
 
-        Returns:
-            Tuple: A tuple containing refined bounding boxes, poses, scores, IDs, and fused counts.
+        :return: A tuple containing refined bounding boxes, poses, scores, IDs, and fused counts.
         """
         num_coords = self.num_keypoints * 2
 
@@ -225,11 +220,9 @@ class KAPAOPoseEstimator(PoseEstimator):
         """
         Creates an instance of KAPAOPoseEstimator using the specified configuration.
 
-        Args:
-            config (KAPAOPoseConfig): The configuration to use for the estimator.
+        :param config: The configuration to use for the estimator.
 
-        Returns:
-            KAPAOPoseEstimator: An instance of the estimator configured with the specified model.
+        :return: An instance of the estimator configured with the specified model.
         """
         model, num_keypoints = config.value
         return KAPAOPoseEstimator(model, num_keypoints=num_keypoints)

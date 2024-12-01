@@ -35,8 +35,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the connections between keypoints defined in COCO OpenPose.
 
-        Returns:
-            FrozenSet[Tuple[int, int]]: A frozen set of tuples indicating the connections between keypoints.
+        :return: A frozen set of tuples indicating the connections between keypoints.
         """
         return COCO_OPEN_POSE_PAIRS
 
@@ -45,8 +44,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The nose landmark's position and score.
+        :return: The nose landmark's position and score.
         """
         return self.landmarks[0]
 
@@ -55,8 +53,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the neck landmark.
 
-        Returns:
-            vector.Vector4D: The neck landmark's position and score.
+        :return: The neck landmark's position and score.
         """
         return self.landmarks[1]
 
@@ -65,8 +62,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The right shoulder landmark's position and score.
+        :return: The right shoulder landmark's position and score.
         """
         return self.landmarks[2]
 
@@ -75,8 +71,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right elbow landmark.
 
-        Returns:
-            vector.Vector4D: The right elbow landmark's position and score.
+        :return: The right elbow landmark's position and score.
         """
         return self.landmarks[3]
 
@@ -85,8 +80,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right wrist landmark.
 
-        Returns:
-            vector.Vector4D: The right wrist landmark's position and score.
+        :return: The right wrist landmark's position and score.
         """
         return self.landmarks[4]
 
@@ -95,8 +89,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The left shoulder landmark's position and score.
+        :return: The left shoulder landmark's position and score.
         """
         return self.landmarks[5]
 
@@ -105,8 +98,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left elbow landmark.
 
-        Returns:
-            vector.Vector4D: The left elbow landmark's position and score.
+        :return: The left elbow landmark's position and score.
         """
         return self.landmarks[6]
 
@@ -115,8 +107,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left wrist landmark.
 
-        Returns:
-            vector.Vector4D: The left wrist landmark's position and score.
+        :return: The left wrist landmark's position and score.
         """
         return self.landmarks[7]
 
@@ -125,8 +116,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right hip landmark.
 
-        Returns:
-            vector.Vector4D: The right hip landmark's position and score.
+        :return: The right hip landmark's position and score.
         """
         return self.landmarks[8]
 
@@ -135,8 +125,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right knee landmark.
 
-        Returns:
-            vector.Vector4D: The right knee landmark's position and score.
+        :return: The right knee landmark's position and score.
         """
         return self.landmarks[9]
 
@@ -145,8 +134,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right ankle landmark.
 
-        Returns:
-            vector.Vector4D: The right ankle landmark's position and score.
+        :return: The right ankle landmark's position and score.
         """
         return self.landmarks[10]
 
@@ -155,8 +143,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left hip landmark.
 
-        Returns:
-            vector.Vector4D: The left hip landmark's position and score.
+        :return: The left hip landmark's position and score.
         """
         return self.landmarks[11]
 
@@ -165,8 +152,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left knee landmark.
 
-        Returns:
-            vector.Vector4D: The left knee landmark's position and score.
+        :return: The left knee landmark's position and score.
         """
         return self.landmarks[12]
 
@@ -175,8 +161,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left ankle landmark.
 
-        Returns:
-            vector.Vector4D: The left ankle landmark's position and score.
+        :return: The left ankle landmark's position and score.
         """
         return self.landmarks[13]
 
@@ -185,8 +170,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The right eye landmark's position and score.
+        :return: The right eye landmark's position and score.
         """
         return self.landmarks[14]
 
@@ -195,8 +179,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The left eye landmark's position and score.
+        :return: The left eye landmark's position and score.
         """
         return self.landmarks[15]
 
@@ -205,8 +188,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the right ear landmark.
 
-        Returns:
-            vector.Vector4D: The right ear landmark's position and score.
+        :return: The right ear landmark's position and score.
         """
         return self.landmarks[16]
 
@@ -215,8 +197,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Gets the position of the left ear landmark.
 
-        Returns:
-            vector.Vector4D: The left ear landmark's position and score.
+        :return: The left ear landmark's position and score.
         """
         return self.landmarks[17]
 
@@ -224,8 +205,7 @@ class COCOOpenPose(PoseLandmarkResult):
         """
         Converts the COCO OpenPose landmark representation to a COCOPose instance.
 
-        Returns:
-            COCOPose: An instance of COCOPose representing the landmarks and score.
+        :return: An instance of COCOPose representing the landmarks and score.
         """
         # todo: fix this conversion
         coco_landmarks: List[Tuple[float, float, float, float]] = []

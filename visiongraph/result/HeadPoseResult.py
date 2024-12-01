@@ -14,8 +14,7 @@ class HeadPoseResult(BaseResult):
         """
         Initializes the HeadPoseResult object with a specified rotation.
 
-        Args:
-            rotation (vector.Vector3D): The 3D rotation of the head.
+        :param rotation: The 3D rotation of the head.
         """
         self.rotation = rotation
 
@@ -23,15 +22,12 @@ class HeadPoseResult(BaseResult):
         """
         Draws a bounding box around the detected face on the provided image.
 
-        Args:
-            image (np.ndarray): The input image.
-            x (float, optional): The x-coordinate of the center of the axis. Defaults to 0.
-            y (float, optional): The y-coordinate of the center of the axis. Defaults to 0.
-            length (float, optional): The length of the axis. Defaults to 0.2.
+        :param image: The input image.
+        :param x: The x-coordinate of the center of the axis. Defaults to 0.
+        :param y: The y-coordinate of the center of the axis. Defaults to 0.
+        :param length: The length of the axis. Defaults to 0.2.
 
-        Draws:
-            - A bounding box around the detected face on the image.
-            - An axis from the specified point to the top of the head.
+:param Draws: 
         """
         super().annotate(image, **kwargs)
         draw_axis(image, self.rotation, vector.obj(x=x, y=y), length)

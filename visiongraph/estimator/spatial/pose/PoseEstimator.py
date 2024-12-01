@@ -22,10 +22,8 @@ class PoseEstimator(LandmarkEstimator[OutputType], ABC):
         """
         Processes the input data to estimate poses.
 
-        Args:
-            data (np.ndarray): Input data containing spatial information.
+        :param data: Input data containing spatial information.
 
-        Returns:
-            ResultList[OutputType]: A list of pose landmark results.
+        :return: A list of pose landmark results.
         """
         pass

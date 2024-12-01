@@ -19,10 +19,8 @@ class SpatialCascadeResult(ObjectDetectionResult):
         Initializes the SpatialCascadeResult with a root object detection result
         and any additional results.
 
-        Args:
-            root_result (ObjectDetectionResult): The primary result object 
-                                                  from which details are obtained.
-            **results (BaseResult): Additional results associated with this cascade.
+        :param root_result: The primary result object
+        :param **results: Additional results associated with this cascade.
         """
         super().__init__(root_result.class_id, root_result.class_name, root_result.score, root_result.bounding_box)
         self.root_result = root_result
@@ -32,11 +30,10 @@ class SpatialCascadeResult(ObjectDetectionResult):
         """
         Annotates the given image with the results of the object detection.
 
-        Args:
-            image (np.ndarray): The image to be annotated.
-            show_info (bool, optional): Flag to determine if additional info should be displayed. Defaults to True.
-            info_text (Optional[str], optional): Additional text info to show on the image. Defaults to None.
-            **kwargs: Additional keyword arguments for further customization.
+        :param image: The image to be annotated.
+        :param show_info: Flag to determine if additional info should be displayed. Defaults to True.
+        :param info_text: Additional text info to show on the image. Defaults to None.
+        :param **kwargs: Additional keyword arguments for further customization.
         """
         self.root_result.annotate(image, show_info, info_text, **kwargs)
         center = self.root_result.bounding_box.center

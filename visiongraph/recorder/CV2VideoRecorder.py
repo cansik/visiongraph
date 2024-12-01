@@ -11,11 +11,10 @@ class CV2VideoRecorder(BaseFrameRecorder):
         """
         Initializes the CV2VideoRecorder.
 
-        Args:
-            width (Optional[int]): The video frame width.
-            height (Optional[int]): The video frame height.
-            output_path (str, optional): The video file path. Defaults to "video.mp4".
-            fps (float, optional): The video frames per second. Defaults to 30.
+        :param width: The video frame width.
+        :param height: The video frame height.
+        :param output_path: The video file path. Defaults to "video.mp4".
+        :param fps: The video frames per second. Defaults to 30.
         """
         super().__init__()
         self.output_path = output_path
@@ -42,8 +41,7 @@ class CV2VideoRecorder(BaseFrameRecorder):
         If `width` or `height` is not provided, calculates it from the image.
         Writes the image to the writer.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
         """
         if self.width is None or self.height is None:
             h, w = image.shape[:2]

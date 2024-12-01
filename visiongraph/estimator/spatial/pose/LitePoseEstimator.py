@@ -37,11 +37,10 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         """
         Initializes the LitePoseEstimator with the specified model and weights.
 
-        Args:
-            model (Asset): The model asset to use for pose estimation.
-            weights (Asset): The weights asset associated with the model.
-            min_score (float): The minimum score threshold for a valid pose. Default is 0.2.
-            device (str): The device to run the inference on. Default is "AUTO".
+        :param model: The model asset to use for pose estimation.
+        :param weights: The weights asset associated with the model.
+        :param min_score: The minimum score threshold for a valid pose. Default is 0.2.
+        :param device: The device to run the inference on. Default is "AUTO".
         """
         super().__init__(min_score)
 
@@ -57,11 +56,9 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         """
         Processes the input image data to estimate poses.
 
-        Args:
-            data (np.ndarray): Input image data in the form of a numpy array.
+        :param data: Input image data in the form of a numpy array.
 
-        Returns:
-            ResultList[COCOPose]: A list of estimated poses with their associated scores.
+        :return: A list of estimated poses with their associated scores.
         """
         output_dict = self.engine.process(data)
         padding_box: BoundingBox2D = output_dict.padding_box
@@ -108,11 +105,9 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         """
         Creates an instance of LitePoseEstimator based on the specified configuration.
 
-        Args:
-            config (LitePoseEstimatorConfig): The configuration to create the estimator. Default is LitePose_S_COCO_FP32.
+        :param config: The configuration to create the estimator. Default is LitePose_S_COCO_FP32.
 
-        Returns:
-            LitePoseEstimator: An instance of LitePoseEstimator initialized with the model and weights from the config.
+        :return: An instance of LitePoseEstimator initialized with the model and weights from the config.
         """
         model, weights = config.value
         return LitePoseEstimator(model, weights)

@@ -17,7 +17,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
     """
     Abstract base class for DepthAI camera input handling.
 
-    This class provides basic functionalities to manage camera properties, settings, 
+    This class provides basic functionalities to manage camera properties, settings,
     and data streams for DepthAI-compatible cameras.
     """
 
@@ -129,8 +129,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Reads the next RGB frame from the camera queue and updates internal properties.
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: The timestamp of the frame and the frame image as a NumPy array.
+        :return: The timestamp of the frame and the frame image as a NumPy array.
         """
         frame = typing.cast(dai.ImgFrame, self.rgb_queue.get())
 
@@ -156,8 +155,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Raises an exception indicating that gain adjustment is not supported.
 
-        Raises:
-            Exception: Gain is not supported.
+        :raises Exception: Gain is not supported.
         """
         raise Exception("Gain is not supported.")
 
@@ -166,8 +164,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Raises an exception indicating that gain adjustment is not supported.
 
-        Raises:
-            Exception: Gain is not supported.
+        :raises Exception: Gain is not supported.
         """
         raise Exception("Gain is not supported.")
 
@@ -176,8 +173,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets the ISO sensitivity setting for the camera.
 
-        Returns:
-            int: The current ISO sensitivity value.
+        :return: The current ISO sensitivity value.
         """
         return self._iso_sensitivity
 
@@ -186,8 +182,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Sets the ISO sensitivity for the camera, if the camera is running.
 
-        Args:
-            value (int): The ISO sensitivity value to set.
+        :param value: The ISO sensitivity value to set.
         """
         if not self.is_running:
             return
@@ -202,8 +197,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets the current exposure time in microseconds.
 
-        Returns:
-            int: The current exposure time in microseconds.
+        :return: The current exposure time in microseconds.
         """
         return int(self._exposure.total_seconds() * 1000 * 1000)
 
@@ -212,8 +206,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Sets the exposure time for the camera, if the camera is running.
 
-        Args:
-            value (int): The exposure time in microseconds to set.
+        :param value: The exposure time in microseconds to set.
         """
         if not self.is_running:
             return
@@ -229,8 +222,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Checks if auto exposure is enabled.
 
-        Returns:
-            bool: True if auto exposure is enabled, otherwise False.
+        :return: True if auto exposure is enabled, otherwise False.
         """
         return self._auto_exposure
 
@@ -239,8 +231,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Enables or disables auto exposure for the camera, if the camera is running.
 
-        Args:
-            value (bool): Set to True to enable auto exposure, or False to disable.
+        :param value: Set to True to enable auto exposure, or False to disable.
         """
         if not self.is_running:
             return
@@ -258,8 +249,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Checks if auto white balance is enabled.
 
-        Returns:
-            bool: True if auto white balance is enabled, otherwise False.
+        :return: True if auto white balance is enabled, otherwise False.
         """
         return self._auto_white_balance
 
@@ -268,8 +258,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Enables or disables auto white balance for the camera, if the camera is running.
 
-        Args:
-            value (bool): Set to True to enable auto white balance, or False to disable.
+        :param value: Set to True to enable auto white balance, or False to disable.
         """
         if not self.is_running:
             return
@@ -287,8 +276,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets the current white balance setting for the camera.
 
-        Returns:
-            int: The current white balance value.
+        :return: The current white balance value.
         """
         return self._white_balance
 
@@ -297,8 +285,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Sets the white balance for the camera, if the camera is running.
 
-        Args:
-            value (int): The white balance value to set.
+        :param value: The white balance value to set.
         """
         if not self.is_running:
             return
@@ -313,8 +300,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Checks if auto focus is enabled.
 
-        Returns:
-            bool: True if auto focus is enabled, otherwise False.
+        :return: True if auto focus is enabled, otherwise False.
         """
         return self._focus_mode == dai.RawCameraControl.AutoFocusMode.AUTO
 
@@ -323,8 +309,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Enables or disables auto focus for the camera, if the camera is running.
 
-        Args:
-            value (bool): Set to True to enable auto focus, or False to disable.
+        :param value: Set to True to enable auto focus, or False to disable.
         """
         if not self.is_running:
             return
@@ -344,8 +329,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets the current manual focus distance setting for the camera.
 
-        Returns:
-            int: The current focus distance as an integer.
+        :return: The current focus distance as an integer.
         """
         return self._manual_lens_pos
 
@@ -354,8 +338,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Sets the manual focus distance for the camera, if the camera is running.
 
-        Args:
-            position (int): The focus distance to set.
+        :param position: The focus distance to set.
         """
         if not self.is_running:
             return
@@ -369,11 +352,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Retrieves the camera intrinsic matrix for the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            np.ndarray: The intrinsic matrix as a NumPy array.
+        :return: The intrinsic matrix as a NumPy array.
         """
         calibration_data = self.device.readCalibration()
         intrinsics = calibration_data.getCameraIntrinsics(self.color_board_socket)
@@ -383,11 +364,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Retrieves the distortion coefficients for fisheye distortion for the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            np.ndarray: The distortion coefficients as a NumPy array.
+        :return: The distortion coefficients as a NumPy array.
         """
         calibration_data = self.device.readCalibration()
         distortion = calibration_data.getDistortionCoefficients(self.color_board_socket)
@@ -398,8 +377,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets the serial number of the device.
 
-        Returns:
-            str: The serial number associated with the device.
+        :return: The serial number associated with the device.
         """
         info = self.device.getDeviceInfo()
         return info.mxid
@@ -409,8 +387,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Retrieves a list of connected camera features.
 
-        Returns:
-            List[CameraFeatures]: A list of features for the connected camera.
+        :return: A list of features for the connected camera.
         """
         return self.device.getConnectedCameraFeatures()
 
@@ -419,8 +396,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Gets information about the device hardware.
 
-        Returns:
-            dai.DeviceInfo: The device information object containing hardware details.
+        :return: The device information object containing hardware details.
         """
         return self.device.getDeviceInfo()
 
@@ -429,7 +405,6 @@ class DepthAIBaseInput(BaseCamera, ABC):
         """
         Checks if the device pipeline is currently running.
 
-        Returns:
-            bool: True if the pipeline is running, otherwise False.
+        :return: True if the pipeline is running, otherwise False.
         """
         return self.device is not None and self.device.isPipelineRunning()

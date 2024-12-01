@@ -15,8 +15,7 @@ class ModelPrecision(Enum):
         """
         Returns the corresponding suffix to use with OpenVINO models for the given precision.
 
-        Raises:
-            Exception: If the model precision is not supported by OpenVINO.
+        :raises Exception: If the model precision is not supported by OpenVINO.
         """
         if self == ModelPrecision.INT8:
             return "fp16-int8"

@@ -28,9 +28,8 @@ class IrisDistanceResult(BaseResult):
         """
         Initializes the IrisDistanceResult object with the given irises.
 
-        Args:
-            right_iris (IrisParameter): The parameters of the right iris.
-            left_iris (IrisParameter): The parameters of the left iris.
+        :param right_iris: The parameters of the right iris.
+        :param left_iris: The parameters of the left iris.
         """
         self.right_iris: IrisParameter = right_iris
         self.left_iris: IrisParameter = left_iris
@@ -39,8 +38,7 @@ class IrisDistanceResult(BaseResult):
         """
         Calculates and returns the average distance between the camera and both irises.
 
-        Returns:
-            float: The average distance as a float.
+        :return: The average distance as a float.
         """
         return float(np.mean([self.right_iris.distance, self.left_iris.distance]))
 
@@ -48,8 +46,7 @@ class IrisDistanceResult(BaseResult):
         """
         Calculates and returns the center position of the face by interpolating between the positions of the left and right irises.
 
-        Returns:
-            Vector4D: The interpolated 3D position as a vector.
+        :return: The interpolated 3D position as a vector.
         """
         return lerp_vector_4d(self.left_iris.position, self.right_iris.position, 0.5)
 
@@ -58,12 +55,11 @@ class IrisDistanceResult(BaseResult):
         """
         Draws a circle at the given position on the image with the specified radius.
 
-        Args:
-            image (np.ndarray): The input image.
-            point (Vector2D): The 2D position to draw the circle at.
-            radius (float): The radius of the circle.
-            w (float): The width of the image.
-            h (float): The height of the image.
+        :param image: The input image.
+        :param point: The 2D position to draw the circle at.
+        :param radius: The radius of the circle.
+        :param w: The width of the image.
+        :param h: The height of the image.
         """
         x = int(point.x * w)
         y = int(point.y * h)
@@ -74,8 +70,7 @@ class IrisDistanceResult(BaseResult):
         """
         Annotates the given image with the positions of both irises.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
         """
         h, w = image.shape[:2]
 

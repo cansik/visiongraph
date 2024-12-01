@@ -17,7 +17,6 @@ class ScoreThresholdEstimator(BaseEstimator[InputType, OutputType], ABC):
         """
         Initializes the ScoreThresholdEstimator with a minimum score threshold.
 
-        Args:
-            min_score (float): The minimum score required to pass through the estimator.
+        :param min_score: The minimum score required to pass through the estimator.
         """
         self.min_score = min_score

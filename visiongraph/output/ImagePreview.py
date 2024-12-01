@@ -24,11 +24,10 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         """
         Initializes the ImagePreview node.
 
-        Args:
-            title (str, optional): The window title. Defaults to "Image".
-            image_key (str, optional): The key of the image result. Defaults to DEFAULT_IMAGE_KEY.
-            wait_time (int, optional): The time to wait for user input in milliseconds. Defaults to 1.
-            handle_key_callback (Optional[Callable[[int], None]], optional): A callback function to handle the pressed key. Defaults to None.
+        :param title: The window title. Defaults to "Image".
+        :param image_key: The key of the image result. Defaults to DEFAULT_IMAGE_KEY.
+        :param wait_time: The time to wait for user input in milliseconds. Defaults to 1.
+        :param handle_key_callback: A callback function to handle the pressed key. Defaults to None.
         """
         self.title = title
         self.image_key = image_key
@@ -45,11 +44,9 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         """
         Processes the input data and displays the image.
 
-        Args:
-            data (Optional[Union[np.ndarray, ResultDict, ImageResult]]): The input data.
+        :param data: The input data.
 
-        Returns:
-            InputType: The processed data.
+        :return: The processed data.
         """
         image = data
 
@@ -83,8 +80,7 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         """
         Configures the node with the given arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -93,7 +89,6 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
         """
         Adds parameters to the parser.
 
-        Args:
-            parser (ArgumentParser): The parser object.
+        :param parser: The parser object.
         """
         pass

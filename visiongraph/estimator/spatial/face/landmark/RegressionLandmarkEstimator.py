@@ -19,9 +19,8 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         """
         Initializes the RegressionLandmarkEstimator with the given minimum score and device.
 
-        Args:
-            min_score (float, optional): The minimum confidence score for face detection. Defaults to 0.0.
-            device (str, optional): The device to use for inference. Defaults to "AUTO".
+        :param min_score: The minimum confidence score for face detection. Defaults to 0.0.
+        :param device: The device to use for inference. Defaults to "AUTO".
         """
         super().__init__(min_score)
         model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
@@ -37,11 +36,9 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         """
         Processes the input data through the engine.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            RegressionFace: The estimated regression face with landmarks.
+        :return: The estimated regression face with landmarks.
         """
         outputs = self.engine.process(data)
         output = outputs[self.engine.output_names[0]].reshape((-1, 2))
@@ -56,12 +53,11 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         """
         Transforms the estimated landmarks based on the ROI and image.
 
-        Args:
-            result (RegressionFace): The estimated regression face with landmarks.
-            image (np.ndarray): The input image.
-            roi (np.ndarray): The region of interest.
-            xs (float): The x-coordinate offset.
-            ys (float): The y-coordinate offset.
+        :param result: The estimated regression face with landmarks.
+        :param image: The input image.
+        :param roi: The region of interest.
+        :param xs: The x-coordinate offset.
+        :param ys: The y-coordinate offset.
         """
         hi, wi = image.shape[:2]
         hr, wr = roi.shape[:2]
@@ -82,8 +78,7 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         """
         Configures the estimator based on the given arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -92,7 +87,6 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         """
         Adds parameters to the parser for configuring the estimator.
 
-        Args:
-            parser (ArgumentParser): The parser instance.
+        :param parser: The parser instance.
         """
         pass

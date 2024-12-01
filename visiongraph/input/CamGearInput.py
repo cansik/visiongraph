@@ -20,12 +20,11 @@ class CamGearInput(VideoCaptureInput):
         """
         Initializes the CamGearInput with the given parameters.
 
-        Args:
-            channel (Union[str, int], optional): The input channel for video capture (default is 0).
-            input_skip (int, optional): The milliseconds to skip in the video stream (default is -1).
-            loop (bool, optional): Indicates whether to loop the video (default is True).
-            fps_lock (bool, optional): Indicates whether to lock to a specific frames per second (default is False).
-            stream_mode (bool, optional): Indicates whether the capture is in stream mode (default is False).
+        :param channel: The input channel for video capture (default is 0).
+        :param input_skip: The milliseconds to skip in the video stream (default is -1).
+        :param loop: Indicates whether to loop the video (default is True).
+        :param fps_lock: Indicates whether to lock to a specific frames per second (default is False).
+        :param stream_mode: Indicates whether the capture is in stream mode (default is False).
         """
         super().__init__(channel, input_skip, loop, fps_lock)
         self.stream_mode: bool = stream_mode
@@ -71,8 +70,7 @@ class CamGearInput(VideoCaptureInput):
         """
         Checks if the video capture device is open.
 
-        Returns:
-            bool: True if the capture device is open, False otherwise.
+        :return: True if the capture device is open, False otherwise.
         """
         return self._cap is not None and self._cap.stream.isOpened()
 
@@ -80,9 +78,7 @@ class CamGearInput(VideoCaptureInput):
         """
         Reads the next frame from the video capture.
 
-        Returns:
-            Tuple[bool, Optional[np.ndarray]]: A tuple containing a boolean indicating
-            if the frame was read successfully and the frame as a NumPy array if successful.
+        :return: A tuple containing a boolean indicating
         """
         frame = self._cap.read()
         return frame is not None, frame
@@ -91,7 +87,6 @@ class CamGearInput(VideoCaptureInput):
         """
         Skips to a specific frame position in the video stream.
 
-        Args:
-            frame_position (int): The position of the frame to skip to.
+        :param frame_position: The position of the frame to skip to.
         """
         self._cap.stream.set(cv2.CAP_PROP_POS_FRAMES, frame_position)

@@ -23,11 +23,9 @@ class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, O
         """
         Processes the input data and returns a classification result.
 
-        Args:
-            data (np.ndarray): Input data to be processed.
+        :param data: Input data to be processed.
 
-        Returns:
-            OutputType: Classification result.
+        :return: Classification result.
         """
         pass
 

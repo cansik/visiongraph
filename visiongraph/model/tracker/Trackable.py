@@ -16,8 +16,7 @@ class Trackable(ABC):
         """
         Gets the tracking ID assigned to this trackable object.
 
-        Returns:
-            int: The unique identifier for this trackable object.
+        :return: The unique identifier for this trackable object.
         """
         pass
 
@@ -27,8 +26,7 @@ class Trackable(ABC):
         """
         Sets the tracking ID for this trackable object.
 
-        Args:
-            value (int): The new tracking ID.
+        :param value: The new tracking ID.
         """
         pass
 
@@ -38,7 +36,6 @@ class Trackable(ABC):
         """
         Gets the 2D bounding box of this trackable object.
 
-        Returns:
-            visiongraph.model.geometry.BoundingBox2D: The bounding box containing the location and size information.
+        :return: The bounding box containing the location and size information.
         """
         pass

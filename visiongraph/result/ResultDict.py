@@ -29,9 +29,8 @@ class ResultDict(Dict[str, ResultType], BaseResult):
         """
         Annotates the given image using the results stored in the dictionary.
 
-        Args:
-            image (np.ndarray): The image to be annotated.
-            **kwargs: Additional keyword arguments to be passed to the annotate method of BaseResult.
+        :param image: The image to be annotated.
+        :param **kwargs: Additional keyword arguments to be passed to the annotate method of BaseResult.
         """
         for result in self.values():
             if isinstance(result, BaseResult):

@@ -16,8 +16,7 @@ class CameraPoseResult(BaseResult):
         """
         Initializes the CameraPoseResult object with the given camera intrinsics.
 
-        Args:
-            intrinsics (CameraIntrinsics): The intrinsics of the camera used for pose estimation.
+        :param intrinsics: The intrinsics of the camera used for pose estimation.
         """
         self.intrinsics = intrinsics
 
@@ -25,13 +24,10 @@ class CameraPoseResult(BaseResult):
         """
         Adds annotations to the given image with the estimated camera pose.
 
-        Args:
-            image (np.ndarray): The input image.
-            x (float, optional): The x-coordinate of the annotation point. Defaults to 0.
-            y (float, optional): The y-coordinate of the annotation point. Defaults to 0.
-            length (float, optional): The size of the annotation box. Defaults to 0.2.
+        :param image: The input image.
+        :param x: The x-coordinate of the annotation point. Defaults to 0.
+        :param y: The y-coordinate of the annotation point. Defaults to 0.
+        :param length: The size of the annotation box. Defaults to 0.2.
 
-        Returns:
-            None
         """
         super().annotate(image, **kwargs)

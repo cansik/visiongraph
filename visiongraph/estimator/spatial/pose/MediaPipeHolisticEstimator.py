@@ -34,15 +34,14 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         """
         Initializes the MediaPipeHolisticEstimator with specified parameters.
 
-        Args:
-            complexity (PoseModelComplexity): The complexity of the pose model to be used.
-            min_score (float): Minimum score threshold for detection.
-            min_tracking_confidence (float): Minimum confidence threshold for tracking.
-            static_image_mode (bool): Whether to use static image mode.
-            smooth_landmarks (bool): Whether to smooth landmarks.
-            enable_segmentation (bool): Whether to enable segmentation.
-            smooth_segmentation (bool): Whether to smooth segmentation results.
-            refine_landmarks (bool): Whether to refine landmarks.
+        :param complexity: The complexity of the pose model to be used.
+        :param min_score: Minimum score threshold for detection.
+        :param min_tracking_confidence: Minimum confidence threshold for tracking.
+        :param static_image_mode: Whether to use static image mode.
+        :param smooth_landmarks: Whether to smooth landmarks.
+        :param enable_segmentation: Whether to enable segmentation.
+        :param smooth_segmentation: Whether to smooth segmentation results.
+        :param refine_landmarks: Whether to refine landmarks.
         """
         super().__init__(min_score)
 
@@ -74,11 +73,9 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         """
         Processes an input image to extract pose landmarks and additional features.
 
-        Args:
-            data (np.ndarray): Input image in BGR format.
+        :param data: Input image in BGR format.
 
-        Returns:
-            ResultList[BlazePose]: List of detected poses with associated features.
+        :return: List of detected poses with associated features.
         """
         image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
 
@@ -127,8 +124,7 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         """
         Configures the estimator with command-line arguments.
 
-        Args:
-            args (Namespace): Namespace containing configuration parameters.
+        :param args: Namespace containing configuration parameters.
         """
         super().configure(args)
 
@@ -137,10 +133,8 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         """
         Creates an instance of MediaPipeHolisticEstimator.
 
-        Args:
-            complexity (PoseModelComplexity): The complexity of the pose model to be used.
+        :param complexity: The complexity of the pose model to be used.
 
-        Returns:
-            MediaPipeHolisticEstimator: Instance of the estimator.
+        :return: Instance of the estimator.
         """
         return MediaPipeHolisticEstimator(complexity)

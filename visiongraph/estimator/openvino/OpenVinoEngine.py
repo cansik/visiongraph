@@ -23,14 +23,13 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Initializes the OpenVINO engine.
 
-        Args:
-            model (Asset): The model to be used for inference.
-            weights (Optional[Asset], optional): The weights file. Defaults to None.
-            flip_channels (bool, optional): Whether to flip channels. Defaults to True.
-            scale (Optional[Union[float, Sequence[float]]], optional): Scaling factor(s). Defaults to None.
-            mean (Optional[Union[float, Sequence[float]]], optional): Mean value(s). Defaults to None.
-            padding (bool, optional): Padding configuration. Defaults to False.
-            device (str, optional): Device name. Defaults to "AUTO".
+        :param model: The model to be used for inference.
+        :param weights: The weights file. Defaults to None.
+        :param flip_channels: Whether to flip channels. Defaults to True.
+        :param scale: Scaling factor(s). Defaults to None.
+        :param mean: Mean value(s). Defaults to None.
+        :param padding: Padding configuration. Defaults to False.
+        :param device: Device name. Defaults to "AUTO".
         """
         super().__init__(flip_channels, scale, mean, padding)
 
@@ -70,12 +69,10 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Performs inference on the input image.
 
-        Args:
-            image (np.ndarray): The input image.
-            inputs (Optional[Dict[str, Any]], optional): Input data. Defaults to None.
+        :param image: The input image.
+        :param inputs: Input data. Defaults to None.
 
-        Returns:
-            VisionEngineOutput: The output of the model.
+        :return: The output of the model.
         """
         request: ov.InferRequest = self.compiled_model.create_infer_request()
         request.infer(inputs=inputs)
@@ -86,11 +83,9 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Gets the shape of an input layer.
 
-        Args:
-            input_name (str): The name of the input layer.
+        :param input_name: The name of the input layer.
 
-        Returns:
-            Sequence[int]: The shape of the input layer.
+        :return: The shape of the input layer.
         """
         if input_name in self.dynamic_input_shapes:
             return self.dynamic_input_shapes[input_name]
@@ -104,8 +99,7 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Gets the device name.
 
-        Returns:
-            str: The device name.
+        :return: The device name.
         """
         device_name = self.ie.get_property(self.device, "FULL_DEVICE_NAME")
         return f"{device_name}"
@@ -114,8 +108,7 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Gets the input layers of the model.
 
-        Returns:
-            List[VisionEngineModelLayer]: The input layers.
+        :return: The input layers.
         """
         return self._get_model_layer(self.compiled_model.inputs)
 
@@ -123,8 +116,7 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Gets the output layers of the model.
 
-        Returns:
-            List[VisionEngineModelLayer]: The output layers.
+        :return: The output layers.
         """
         return self._get_model_layer(self.compiled_model.outputs)
 
@@ -133,11 +125,9 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         Gets a list of VisionEngineModelLayer objects from compiled layers.
 
-        Args:
-            compiled_layers (List): The compiled layers.
+        :param compiled_layers: The compiled layers.
 
-        Returns:
-            List[VisionEngineModelLayer]: The VisionEngineModelLayer objects.
+        :return: The VisionEngineModelLayer objects.
         """
         return [
             VisionEngineModelLayer(name=l.any_name,

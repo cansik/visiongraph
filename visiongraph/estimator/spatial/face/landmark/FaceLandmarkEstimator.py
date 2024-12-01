@@ -25,10 +25,8 @@ class FaceLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):
         """
         Processes the input image to extract face landmarks.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            ResultList[OutputType]: A list of face landmark results.
+        :return: A list of face landmark results.
         """
         pass

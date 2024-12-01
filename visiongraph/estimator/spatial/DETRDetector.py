@@ -30,12 +30,11 @@ class DETRDetector(OpenVinoObjectDetector):
         """
         Initializes the DETRDetector object with the provided model, weights, labels, minimum score, and device.
 
-        Args:
-            model (Asset): The model Asset for the detector.
-            weights (Asset): The weights Asset for the detector.
-            labels (List[str]): The list of labels for detection.
-            min_score (float): The minimum score threshold for detection (default is 0.5).
-            device (str): The device to run inference on (default is "AUTO").
+        :param model: The model Asset for the detector.
+        :param weights: The weights Asset for the detector.
+        :param labels: The list of labels for detection.
+        :param min_score: The minimum score threshold for detection (default is 0.5).
+        :param device: The device to run inference on (default is "AUTO").
         """
 
         super().__init__(model, weights, labels, min_score, device)
@@ -44,8 +43,7 @@ class DETRDetector(OpenVinoObjectDetector):
         """
         Create an Inference Engine model for DETR detector.
 
-        Returns:
-            DetectionModel: The DetectionModel for DETR object detection.
+        :return: The DetectionModel for DETR object detection.
         """
 
         config = {
@@ -68,11 +66,9 @@ class DETRDetector(OpenVinoObjectDetector):
         """
         Static method to create a DETRDetector object based on the given configuration.
 
-        Args:
-            config (DETRConfig): The configuration for the DETR detector (default is DETR_Resnet50_FP32).
+        :param config: The configuration for the DETR detector (default is DETR_Resnet50_FP32).
 
-        Returns:
-            DETRDetector: A new instance of DETRDetector based on the provided configuration.
+        :return: A new instance of DETRDetector based on the provided configuration.
         """
         model, weights, labels = config.value
         return DETRDetector(model, weights, labels)
@@ -81,10 +77,8 @@ class DETRDetector(OpenVinoObjectDetector):
         """
         Get the label for a given index.
 
-        Args:
-            index (int): The index of the label.
+        :param index: The index of the label.
 
-        Returns:
-            str: The label corresponding to the index.
+        :return: The label corresponding to the index.
         """
         return super()._get_label(index - 1)

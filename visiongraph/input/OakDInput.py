@@ -20,13 +20,13 @@ class OakDFrameAlignment(Enum):
 
 class OakDInput(DepthAIBaseInput, BaseDepthCamera):
     """
-    A class to handle input from the Oak-D camera, managing both infrared 
+    A class to handle input from the Oak-D camera, managing both infrared
     and depth camera functionalities.
     """
 
     def __init__(self):
         """
-        Initializes the OakDInput object, setting up camera properties and 
+        Initializes the OakDInput object, setting up camera properties and
         internal states.
         """
         super().__init__()
@@ -70,7 +70,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     def pre_start_setup(self):
         """
-        Performs setup procedures before starting the camera pipeline, 
+        Performs setup procedures before starting the camera pipeline,
         such as enabling depth and configuring infrared settings.
         """
         if self.use_depth_as_input:
@@ -143,9 +143,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Reads the most recent infrared and depth frames from the respective queues.
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the image 
-            data (either infrared or RGB), or depth data if enabled.
+        :return: A tuple containing the timestamp and the image
         """
         super().read()
 
@@ -171,12 +169,10 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Calculates the distance in meters from the camera to a certain point using the depth data.
 
-        Args:
-            x (float): The x-coordinate in the image.
-            y (float): The y-coordinate in the image.
+        :param x: The x-coordinate in the image.
+        :param y: The y-coordinate in the image.
 
-        Returns:
-            float: The distance in meters, or -1 if the device is not initialized.
+        :return: The distance in meters, or -1 if the device is not initialized.
         """
         if self.device is None:
             return -1
@@ -194,8 +190,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Provides access to the last captured depth frame.
 
-        Returns:
-            np.ndarray: The last depth frame.
+        :return: The last depth frame.
         """
         return self._last_depth_frame
 
@@ -204,8 +199,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Generates a color-mapped depth representation for visualization.
 
-        Returns:
-            np.ndarray: The colorized depth map.
+        :return: The colorized depth map.
         """
         dmap = self._colorize(self.depth_buffer, (0, 12000), cv2.COLORMAP_JET)
         return dmap
@@ -215,8 +209,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Gets the intensity of the infrared laser dot projector.
 
-        Returns:
-            float: The current intensity level.
+        :return: The current intensity level.
         """
         return self._ir_laser_dot_projector_intensity
 
@@ -225,8 +218,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Sets the intensity of the infrared laser dot projector.
 
-        Args:
-            value (int): The desired intensity level.
+        :param value: The desired intensity level.
         """
         if self.device is not None:
             self.device.setIrLaserDotProjectorIntensity(value)
@@ -237,8 +229,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Gets the intensity of the infrared flood light.
 
-        Returns:
-            float: The current intensity level.
+        :return: The current intensity level.
         """
         return self._ir_laser_dot_projector_intensity
 
@@ -247,8 +238,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Sets the intensity of the infrared flood light.
 
-        Args:
-            value (int): The desired intensity level.
+        :param value: The desired intensity level.
         """
         if self.device is not None:
             self.device.setIrFloodLightIntensity(value)
@@ -259,12 +249,10 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Pre-processes the input image based on the specified stream type.
 
-        Args:
-            image (np.ndarray): The raw image to be processed.
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param image: The raw image to be processed.
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            Optional[np.ndarray]: The processed image, or None if no processing is needed.
+        :return: The processed image, or None if no processing is needed.
         """
         if stream_type == CameraStreamType.Depth:
             return self._colorize(image, (0, 12000), cv2.COLORMAP_JET)
@@ -275,11 +263,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Retrieves the raw image data based on the specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            Optional[np.ndarray]: The raw image data, or None if the stream type is invalid.
+        :return: The raw image data, or None if the stream type is invalid.
         """
         if stream_type == CameraStreamType.Depth:
             return self.depth_buffer
@@ -294,8 +280,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         Configures the OakDInput settings based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments for configuration.
+        :param args: The command-line arguments for configuration.
         """
         super().configure(args)
 

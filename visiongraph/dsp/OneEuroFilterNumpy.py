@@ -16,12 +16,10 @@ def _smoothing_factor(t_e, cutoff):
     """
     Compute the smoothing factor.
 
-    Args:
-        t_e (float): The time difference.
-        cutoff (float): The cutoff frequency.
+    :param t_e: The time difference.
+    :param cutoff: The cutoff frequency.
 
-    Returns:
-        float: The smoothing factor.
+    :return: The smoothing factor.
     """
     r = 2 * np.pi * cutoff * t_e
     return r / (r + 1)
@@ -31,13 +29,11 @@ def _exponential_smoothing(a, x, x_prev):
     """
     Compute the exponential smoothing of a signal.
 
-    Args:
-        a (float): The smoothing factor.
-        x (float or numpy array): The input signal.
-        x_prev (float or numpy array): The previous value of the signal.
+    :param a: The smoothing factor.
+    :param x: The input signal.
+    :param x_prev: The previous value of the signal.
 
-    Returns:
-        float: The smoothed signal.
+    :return: The smoothed signal.
     """
     return a * x + (1 - a) * x_prev
 
@@ -55,14 +51,13 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         """
         Initialize the OneEuro filter.
 
-        Args:
-            x0 (numpy array): The initial signal.
-            t0 (float or None, optional): The initial time. Defaults to None.
-            dx0 (float, optional): The initial derivative of the signal. Defaults to 0.0.
-            min_cutoff (float, optional): The minimum cutoff frequency. Defaults to 1.0.
-            beta (float, optional): The smoothing factor for the acceleration. Defaults to 0.0.
-            d_cutoff (float, optional): The cutoff frequency for the derivative. Defaults to 1.0.
-            invalid_value (float or None, optional): The value that indicates an invalid data point. Defaults to None.
+        :param x0: The initial signal.
+        :param t0: The initial time. Defaults to None.
+        :param dx0: The initial derivative of the signal. Defaults to 0.0.
+        :param min_cutoff: The minimum cutoff frequency. Defaults to 1.0.
+        :param beta: The smoothing factor for the acceleration. Defaults to 0.0.
+        :param d_cutoff: The cutoff frequency for the derivative. Defaults to 1.0.
+        :param invalid_value: The value that indicates an invalid data point. Defaults to None.
         """
         # The parameters.
         self.data_shape = x0.shape
@@ -81,8 +76,7 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         """
         Re-initialize the filter with a new input signal.
 
-        Args:
-            x (numpy array): The new input signal.
+        :param x: The new input signal.
         """
         self.data_shape = x.shape
         self.min_cutoff = np.full(self.data_shape, self.min_cutoff.flat[0])
@@ -98,12 +92,10 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
         """
         Compute the filtered signal.
 
-        Args:
-            x (numpy array): The input signal.
-            t (float or None, optional): The current time. Defaults to None.
+        :param x: The input signal.
+        :param t: The current time. Defaults to None.
 
-        Returns:
-            numpy array: The filtered signal.
+        :return: The filtered signal.
         """
         if x.shape != self.data_shape:
             self.re_init(x)

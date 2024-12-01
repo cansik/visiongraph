@@ -18,15 +18,13 @@ def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold:
     """
     Applies Non-Maximum Suppression (NMS) to filter out overlapping bounding boxes.
 
-    Args:
-        results (List[ODR]): List of object detection results.
-        min_score (float): Minimum score threshold to consider a box.
-        iou_threshold (float): IOU threshold for merging boxes.
-        eta (Optional[float]): Optional parameter for adjusting NMS.
-        top_k (Optional[int]): Optional parameter to limit the number of boxes.
+    :param results: List of object detection results.
+    :param min_score: Minimum score threshold to consider a box.
+    :param iou_threshold: IOU threshold for merging boxes.
+    :param eta: Optional parameter for adjusting NMS.
+    :param top_k: Optional parameter to limit the number of boxes.
 
-    Returns:
-        List[ODR]: List of filtered object detection results after NMS.
+    :return: List of filtered object detection results after NMS.
     """
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
@@ -39,12 +37,10 @@ def extract_object_detection_roi(image: np.ndarray,
     """
     Extracts the region of interest (ROI) from an image based on the detected bounding box.
 
-    Args:
-        image (np.ndarray): Input image from which to extract the ROI.
-        detection (ODR): Object detection result containing the bounding box.
+    :param image: Input image from which to extract the ROI.
+    :param detection: Object detection result containing the bounding box.
 
-    Returns:
-        Tuple[np.ndarray, ODR]: A tuple containing the extracted ROI and the modified detection result.
+    :return: A tuple containing the extracted ROI and the modified detection result.
     """
     box: BoundingBox2D = detection.bounding_box.scale_with(Size2D.from_image(image))
     roi = ImageUtils.roi(image, box)
@@ -58,11 +54,9 @@ def bbox_from_landmarks(landmarks: vector.VectorNumpy4D) -> BoundingBox2D:
     """
     Creates a bounding box from a set of landmarks.
 
-    Args:
-        landmarks (vector.VectorNumpy4D): A set of landmarks containing 'x' and 'y' coordinates.
+    :param landmarks: A set of landmarks containing 'x' and 'y' coordinates.
 
-    Returns:
-        BoundingBox2D: The bounding box encompassing the provided landmarks.
+    :return: The bounding box encompassing the provided landmarks.
     """
     xs = np.ma.masked_equal(landmarks["x"], 0.0, copy=False)
     ys = np.ma.masked_equal(landmarks["y"], 0.0, copy=False)

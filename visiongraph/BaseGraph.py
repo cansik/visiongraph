@@ -23,11 +23,10 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Initializes the BaseGraph object.
 
-        Args:
-            multi_threaded (bool): Whether to run in multiple threads. Defaults to False.
-            daemon (bool): Whether the process should be a daemon. Defaults to False.
-            handle_signals (bool): Whether to catch and handle signals. Defaults to False.
-            new_process (bool): Whether to create a new process for execution. Defaults to False.
+        :param multi_threaded: Whether to run in multiple threads. Defaults to False.
+        :param daemon: Whether the process should be a daemon. Defaults to False.
+        :param handle_signals: Whether to catch and handle signals. Defaults to False.
+        :param new_process: Whether to create a new process for execution. Defaults to False.
         """
         self._open = False
         self.multi_threaded = multi_threaded
@@ -45,8 +44,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Adds nodes to the graph.
 
-        Args:
-            *nodes (GraphNode): The nodes to be added.
+        :param *nodes: The nodes to be added.
         """
         self.nodes += nodes
 
@@ -54,8 +52,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Opens the pipeline and starts execution.
 
-        Raises:
-            RuntimeError: If the pipeline is already running.
+        :raises RuntimeError: If the pipeline is already running.
         """
         if self._open:
             logging.warning("is already running")
@@ -78,8 +75,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Closes the pipeline and waits for the process to finish.
 
-        Args:
-            wait_time (int): The amount of time to wait for the process to finish. Defaults to 60 seconds.
+        :param wait_time: The amount of time to wait for the process to finish. Defaults to 60 seconds.
         """
         if not self._open:
             logging.warning("is not running")
@@ -122,8 +118,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Runs inside the pipeline loop.
 
-        Raises:
-            NotImplementedError: This method must be implemented by subclasses.
+        :raises NotImplementedError: This method must be implemented by subclasses.
         """
         pass
 
@@ -138,8 +133,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Configures the nodes with the provided arguments.
 
-        Args:
-            args (Namespace): The configuration arguments.
+        :param args: The configuration arguments.
         """
         for node in self.nodes:
             node.configure(args)
@@ -148,8 +142,7 @@ class BaseGraph(ArgumentConfigurable, ABC):
         """
         Handles signals and closes the pipeline.
 
-        Args:
-            signal (int): The signal received.
-            frame: The current frame.
+        :param signal: The signal received.
+        :param frame: The current frame.
         """
         self.close()

@@ -28,12 +28,10 @@ class YOLOv5Detector(UltralyticsYOLODetector):
         """
         Filters the predictions based on a minimum score.
 
-        Args:
-            predictions (np.ndarray): An array of predictions to filter.
-            min_score (float): The minimum score threshold for valid predictions.
+        :param predictions: An array of predictions to filter.
+        :param min_score: The minimum score threshold for valid predictions.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]: A tuple of filtered predictions and corresponding scores.
+        :return: A tuple of filtered predictions and corresponding scores.
         """
         valid_predictions = np.where(predictions[:, 4] > min_score)
         predictions = predictions[valid_predictions]
@@ -44,11 +42,9 @@ class YOLOv5Detector(UltralyticsYOLODetector):
         """
         Unpacks the box prediction.
 
-        Args:
-            prediction (np.ndarray): The prediction to unpack.
+        :param prediction: The prediction to unpack.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]: A tuple of the box coordinates and additional data.
+        :return: A tuple of the box coordinates and additional data.
         """
         return prediction[0:4], prediction[5:]
 
@@ -57,11 +53,9 @@ class YOLOv5Detector(UltralyticsYOLODetector):
         """
         Creates a YOLOv5Detector object based on a given configuration.
 
-        Args:
-            config (YOLOv5Config): The configuration for the YOLOv5 model.
+        :param config: The configuration for the YOLOv5 model.
 
-        Returns:
-            YOLOv5Detector: A YOLOv5Detector object initialized with the specified configuration.
+        :return: A YOLOv5Detector object initialized with the specified configuration.
         """
         model, labels = config.value
         return YOLOv5Detector(model, labels=labels)

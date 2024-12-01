@@ -17,10 +17,9 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         Initializes the UndistortionCalculator with camera intrinsics and image dimensions.
 
-        Args:
-            intrinsics (CameraIntrinsics): The intrinsic camera parameters.
-            width (int, optional): The image width. Defaults to 0.
-            height (int, optional): The image height. Defaults to 0.
+        :param intrinsics: The intrinsic camera parameters.
+        :param width: The image width. Defaults to 0.
+        :param height: The image height. Defaults to 0.
         """
         self.intrinsics = intrinsics
 
@@ -44,11 +43,9 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         Applies undistortion to the input data.
 
-        Args:
-            data (np.ndarray): The input image data.
+        :param data: The input image data.
 
-        Returns:
-            np.ndarray: The undistorted image data.
+        :return: The undistorted image data.
         """
         h, w = data.shape[:2]
 
@@ -74,8 +71,6 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         Calculates the optimal camera matrix using OpenCV's getOptimalNewCameraMatrix function.
 
-        Returns:
-            None
         """
         w = self.width
         h = self.height
@@ -93,8 +88,7 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         Configures the calculator based on command line arguments.
 
-        Args:
-            args (Namespace): The parsed command line arguments.
+        :param args: The parsed command line arguments.
         """
         pass
 
@@ -103,7 +97,6 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         Adds parameters to the parser for configuring the calculator.
 
-        Args:
-            parser (ArgumentParser): The parser to add parameters to.
+        :param parser: The parser to add parameters to.
         """
         pass

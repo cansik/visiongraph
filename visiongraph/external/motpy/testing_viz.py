@@ -13,7 +13,9 @@ except BaseException:
     logger.error(
         'Could not import opencv. Please install opencv-python package or some of the testing functionalities will not be available')
 
-""" methods below require opencv-python package installed """
+"""
+ methods below require opencv-python package installed
+ """
 
 
 def draw_rectangle(img, box, color, thickness: int = 3) -> None:

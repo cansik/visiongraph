@@ -20,8 +20,7 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         """
         Initializes the EyeOpenClosedEstimator object.
 
-        Args:
-            device (str): The target device. Defaults to "AUTO".
+        :param device: The target device. Defaults to "AUTO".
         """
         super().__init__(0.5)
         model, weights = RepositoryAsset.openVino("open-closed-eye-0001-fp32")
@@ -39,11 +38,9 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         """
         Processes a given image and returns an EyeOpenClosedResult object.
 
-        Args:
-            data (np.ndarray): The input image.
+        :param data: The input image.
 
-        Returns:
-            EyeOpenClosedResult: The result of the estimation.
+        :return: The result of the estimation.
         """
         output = self.engine.process(data)
 
@@ -57,12 +54,11 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         """
         Transforms the result of head pose estimation.
 
-        Args:
-            result (HeadPoseResult): The head pose result.
-            image (np.ndarray): The input image.
-            roi (np.ndarray): The region of interest.
-            xs (float): The x-coordinate of the ROI.
-            ys (float): The y-coordinate of the ROI.
+        :param result: The head pose result.
+        :param image: The input image.
+        :param roi: The region of interest.
+        :param xs: The x-coordinate of the ROI.
+        :param ys: The y-coordinate of the ROI.
         """
         pass
 
@@ -76,8 +72,7 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         """
         Configures the estimator based on the provided arguments.
 
-        Args:
-            args (Namespace): The parser namespace containing the command-line arguments.
+        :param args: The parser namespace containing the command-line arguments.
         """
         pass
 
@@ -86,7 +81,6 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         """
         Adds parameters to the argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser object.
+        :param parser: The argument parser object.
         """
         pass

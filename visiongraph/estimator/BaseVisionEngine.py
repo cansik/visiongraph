@@ -27,14 +27,13 @@ class BaseVisionEngine(ABC):
         """
         Initializes the BaseVisionEngine with specified parameters.
 
-        Args:
-            flip_channels (bool): Whether to flip the image channels.
-            scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
-            mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
-            padding (bool): Whether to apply padding to the image.
-            transpose (bool): Whether to transpose the image dimensions.
-            order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
-            dtype (np.dtype): The data type of the input images.
+        :param flip_channels: Whether to flip the image channels.
+        :param scale: Scale factor(s) for preprocessing.
+        :param mean: Mean value(s) to subtract during preprocessing.
+        :param padding: Whether to apply padding to the image.
+        :param transpose: Whether to transpose the image dimensions.
+        :param order: The order of input shapes (e.g., NCHW or NWHC).
+        :param dtype: The data type of the input images.
         """
         self.flip_channels = flip_channels
         self.scale = scale
@@ -61,12 +60,10 @@ class BaseVisionEngine(ABC):
         """
         Processes an input image and performs inference.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
-            inputs (Optional[Dict[str, Any]]): Optional additional inputs for inference.
+        :param image: The input image to be processed.
+        :param inputs: Optional additional inputs for inference.
 
-        Returns:
-            VisionEngineOutput: The output from the inference process.
+        :return: The output from the inference process.
         """
         in_frame, padding_box, image_size = self.pre_process_image(image, self.first_input_name,
                                                                    self.flip_channels, self.scale, self.mean,
@@ -90,12 +87,10 @@ class BaseVisionEngine(ABC):
         """
         Performs inference on the input image.
 
-        Args:
-            image (np.ndarray): The input image to be inferred.
-            inputs (Optional[Dict[str, Any]]): Optional additional inputs for inference.
+        :param image: The input image to be inferred.
+        :param inputs: Optional additional inputs for inference.
 
-        Returns:
-            VisionEngineOutput: The output from the inference process.
+        :return: The output from the inference process.
         """
         pass
 
@@ -109,20 +104,17 @@ class BaseVisionEngine(ABC):
         """
         Preprocesses the input image for inference.
 
-        Args:
-            image (np.ndarray): The input image to preprocess.
-            input_name (str): The name of the input to be processed.
-            flip_channels (bool): Whether to flip the image channels.
-            scale (Optional[Union[float, Sequence[float]]]): Scale factor(s) for preprocessing.
-            mean (Optional[Union[float, Sequence[float]]]): Mean value(s) to subtract during preprocessing.
-            padding (bool): Whether to apply padding to the image.
-            transpose (bool): Whether to transpose the image dimensions.
-            order (InputShapeOrder): The order of input shapes (e.g., NCHW or NWHC).
-            dtype (np.dtype): The data type of the input images.
+        :param image: The input image to preprocess.
+        :param input_name: The name of the input to be processed.
+        :param flip_channels: Whether to flip the image channels.
+        :param scale: Scale factor(s) for preprocessing.
+        :param mean: Mean value(s) to subtract during preprocessing.
+        :param padding: Whether to apply padding to the image.
+        :param transpose: Whether to transpose the image dimensions.
+        :param order: The order of input shapes (e.g., NCHW or NWHC).
+        :param dtype: The data type of the input images.
 
-        Returns:
-            Tuple[np.ndarray, BoundingBox2D, Size2D]: A tuple containing the preprocessed image,
-            the bounding box for padding, and the size of the image.
+        :return: A tuple containing the preprocessed image,
         """
         input_channels = image.shape[-1] if image.ndim == 3 else 1
 
@@ -177,12 +169,11 @@ class BaseVisionEngine(ABC):
         """
         Sets the dynamic input shape for a given input name.
 
-        Args:
-            name (str): The name of the input.
-            batch_size (int): The batch size.
-            channels (int): The number of channels.
-            height (int): The height of the input.
-            width (int): The width of the input.
+        :param name: The name of the input.
+        :param batch_size: The batch size.
+        :param channels: The number of channels.
+        :param height: The height of the input.
+        :param width: The width of the input.
         """
         self.dynamic_input_shapes[name] = [batch_size, channels, height, width]
 
@@ -191,8 +182,7 @@ class BaseVisionEngine(ABC):
         """
         Gets the name of the first input.
 
-        Returns:
-            str: The name of the first input.
+        :return: The name of the first input.
         """
         return self.input_names[0]
 
@@ -201,11 +191,9 @@ class BaseVisionEngine(ABC):
         """
         Gets the shape of the specified input.
 
-        Args:
-            input_name (str): The name of the input.
+        :param input_name: The name of the input.
 
-        Returns:
-            Sequence[int]: The shape of the input.
+        :return: The shape of the input.
         """
         pass
 
@@ -214,8 +202,7 @@ class BaseVisionEngine(ABC):
         """
         Gets the name of the device used for processing.
 
-        Returns:
-            str: The name of the processing device.
+        :return: The name of the processing device.
         """
         pass
 
@@ -224,8 +211,7 @@ class BaseVisionEngine(ABC):
         """
         Gets the shape of the first input.
 
-        Returns:
-            Sequence[int]: The shape of the first input.
+        :return: The shape of the first input.
         """
         return self.get_input_shape(self.first_input_name)
 
@@ -241,8 +227,7 @@ class BaseVisionEngine(ABC):
         """
         Gets the input layers of the model.
 
-        Returns:
-            List[VisionEngineModelLayer]: A list of input layers.
+        :return: A list of input layers.
         """
         pass
 
@@ -251,7 +236,6 @@ class BaseVisionEngine(ABC):
         """
         Gets the output layers of the model.
 
-        Returns:
-            List[VisionEngineModelLayer]: A list of output layers.
+        :return: A list of output layers.
         """
         pass

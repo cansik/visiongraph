@@ -18,8 +18,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Initializes a new instance of the CentroidTracker class.
 
-        Args:
-            tracker (Optional[Tracker]): The underlying object tracker. Defaults to None.
+        :param tracker: The underlying object tracker. Defaults to None.
         """
         self.tracker = tracker
         self.enabled = True
@@ -29,8 +28,6 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Sets up the tracker by creating a new instance if one does not already exist.
 
-        Returns:
-            None
         """
         if not self.tracker:
             self.tracker = Tracker(max_lost=self.max_lost, tracker_output_format='raw')
@@ -39,11 +36,9 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Tracks the given detections using the underlying object tracker.
 
-        Args:
-            detections (List[ObjectDetectionResult]): The list of detection results to be tracked.
+        :param detections: The list of detection results to be tracked.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: The list of tracked detection results.
+        :return: The list of tracked detection results.
         """
         if not self.enabled:
             return detections
@@ -64,11 +59,9 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Processes the given data by tracking the detections.
 
-        Args:
-            data (List[ObjectDetectionResult]): The list of detection results to be processed.
+        :param data: The list of detection results to be processed.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: The list of tracked detection results.
+        :return: The list of tracked detection results.
         """
         return self.track(data)
 
@@ -76,8 +69,6 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Releases the underlying object tracker.
 
-        Returns:
-            None
         """
         self.tracker = None
 
@@ -85,8 +76,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Configures the tracker based on the given command-line arguments.
 
-        Args:
-            args: The command-line arguments to be used for configuration.
+        :param args: The command-line arguments to be used for configuration.
         """
         self.max_lost = self._get_param(args, "tracker_max_lost", self.max_lost)
 
@@ -95,7 +85,6 @@ class CentroidTracker(BaseObjectDetectionTracker):
         """
         Adds parameters to the parser that control the behavior of the CentroidTracker.
 
-        Args:
-            parser (ArgumentParser): The parser to which the parameters will be added.
+        :param parser: The parser to which the parameters will be added.
         """
         parser.add_argument("--tracker-max-lost", type=int, default=5, help="Max frames trackable not visible.")

@@ -19,10 +19,9 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Initializes a HandLandmarkResult instance.
 
-        Args:
-            score (float): The confidence score of the detection.
-            landmarks (vector.VectorNumpy4D): The detected landmarks as a 4D vector.
-            handedness (Handedness): The handedness of the detected hand (left or right).
+        :param score: The confidence score of the detection.
+        :param landmarks: The detected landmarks as a 4D vector.
+        :param handedness: The handedness of the detected hand (left or right).
         """
         super().__init__(HAND_DETECTION_ID, HAND_DETECTION_LABEL, score, landmarks)
         self.handedness = handedness
@@ -33,8 +32,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the wrist landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the wrist landmark.
+        :return: The coordinates of the wrist landmark.
         """
         pass
 
@@ -44,8 +42,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the thumb carpometacarpal (CMC) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the thumb CMC landmark.
+        :return: The coordinates of the thumb CMC landmark.
         """
         pass
 
@@ -55,8 +52,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the thumb metacarpophalangeal (MCP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the thumb MCP landmark.
+        :return: The coordinates of the thumb MCP landmark.
         """
         pass
 
@@ -66,8 +62,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the thumb interphalangeal (IP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the thumb IP landmark.
+        :return: The coordinates of the thumb IP landmark.
         """
         pass
 
@@ -77,8 +72,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the thumb tip landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the thumb tip landmark.
+        :return: The coordinates of the thumb tip landmark.
         """
         pass
 
@@ -88,8 +82,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the index finger carpometacarpal (CMC) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the index finger CMC landmark.
+        :return: The coordinates of the index finger CMC landmark.
         """
         pass
 
@@ -99,8 +92,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the index finger metacarpophalangeal (MCP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the index finger MCP landmark.
+        :return: The coordinates of the index finger MCP landmark.
         """
         pass
 
@@ -110,8 +102,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the index finger interphalangeal (IP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the index finger IP landmark.
+        :return: The coordinates of the index finger IP landmark.
         """
         pass
 
@@ -121,8 +112,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the index finger tip landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the index finger tip landmark.
+        :return: The coordinates of the index finger tip landmark.
         """
         pass
 
@@ -132,8 +122,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the middle finger carpometacarpal (CMC) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the middle finger CMC landmark.
+        :return: The coordinates of the middle finger CMC landmark.
         """
         pass
 
@@ -143,8 +132,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the middle finger metacarpophalangeal (MCP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the middle finger MCP landmark.
+        :return: The coordinates of the middle finger MCP landmark.
         """
         pass
 
@@ -154,8 +142,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the middle finger interphalangeal (IP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the middle finger IP landmark.
+        :return: The coordinates of the middle finger IP landmark.
         """
         pass
 
@@ -165,8 +152,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the middle finger tip landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the middle finger tip landmark.
+        :return: The coordinates of the middle finger tip landmark.
         """
         pass
 
@@ -176,8 +162,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the ring finger carpometacarpal (CMC) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the ring finger CMC landmark.
+        :return: The coordinates of the ring finger CMC landmark.
         """
         pass
 
@@ -187,8 +172,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the ring finger metacarpophalangeal (MCP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the ring finger MCP landmark.
+        :return: The coordinates of the ring finger MCP landmark.
         """
         pass
 
@@ -198,8 +182,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the ring finger interphalangeal (IP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the ring finger IP landmark.
+        :return: The coordinates of the ring finger IP landmark.
         """
         pass
 
@@ -209,8 +192,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the ring finger tip landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the ring finger tip landmark.
+        :return: The coordinates of the ring finger tip landmark.
         """
         pass
 
@@ -220,8 +202,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the pinky carpometacarpal (CMC) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the pinky CMC landmark.
+        :return: The coordinates of the pinky CMC landmark.
         """
         pass
 
@@ -231,8 +212,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the pinky metacarpophalangeal (MCP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the pinky MCP landmark.
+        :return: The coordinates of the pinky MCP landmark.
         """
         pass
 
@@ -242,8 +222,7 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the pinky interphalangeal (IP) landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the pinky IP landmark.
+        :return: The coordinates of the pinky IP landmark.
         """
         pass
 
@@ -253,7 +232,6 @@ class HandLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Retrieves the 3D position of the pinky tip landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the pinky tip landmark.
+        :return: The coordinates of the pinky tip landmark.
         """
         pass

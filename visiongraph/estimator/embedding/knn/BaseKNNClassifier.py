@@ -21,10 +21,9 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Initializes the K-Nearest Neighbors classifier.
 
-        Args:
-            min_score (float): Minimum score for classification.
-            store_training_data (bool): Flag to store training data. Defaults to True.
-            data_path (Optional[Union[str, os.PathLike]], optional): Path to load data from. Defaults to None.
+        :param min_score: Minimum score for classification.
+        :param store_training_data: Flag to store training data. Defaults to True.
+        :param data_path: Path to load data from. Defaults to None.
         """
         super().__init__(min_score)
 
@@ -47,9 +46,8 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Adds a single sample to the classifier.
 
-        Args:
-            embedding_result (T): Embedding result of the sample.
-            label_index (int): Index of the corresponding label.
+        :param embedding_result: Embedding result of the sample.
+        :param label_index: Index of the corresponding label.
         """
         self.add_samples(np.array([embedding_result.embeddings]), np.array([label_index]))
 
@@ -58,9 +56,8 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Adds multiple samples to the classifier.
 
-        Args:
-            x (np.ndarray): Embeddings of the samples.
-            y (np.ndarray): Corresponding labels of the samples.
+        :param x: Embeddings of the samples.
+        :param y: Corresponding labels of the samples.
         """
         self._data_labels = np.append(self._data_labels, y.astype(int))
 
@@ -74,11 +71,9 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Predicts the class of a single sample.
 
-        Args:
-            embedding_result (T): Embedding result of the sample.
+        :param embedding_result: Embedding result of the sample.
 
-        Returns:
-            ClassificationResult: Classification result containing predicted index and score.
+        :return: Classification result containing predicted index and score.
         """
         results = self.predict_all(np.array([embedding_result.embeddings]))
         predicted_index = int(results[0][0])
@@ -90,11 +85,9 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Predicts the classes of multiple samples.
 
-        Args:
-            x (np.ndarray): Embeddings of the samples.
+        :param x: Embeddings of the samples.
 
-        Returns:
-            np.ndarray: Array containing predicted indexes and scores (n, 2).
+        :return: Array containing predicted indexes and scores (n, 2).
         """
         pass
 
@@ -102,11 +95,9 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Processes a list of embedding results and returns classification results.
 
-        Args:
-            embedding_results (ResultList[T]): List of embedding results.
+        :param embedding_results: List of embedding results.
 
-        Returns:
-            ResultList[ClassificationResult]: List of classification results.
+        :return: List of classification results.
         """
         results = self.predict_all(np.array(
             [r.embeddings for r in embedding_results]
@@ -124,8 +115,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Saves the training data to a file.
 
-        Args:
-            path (Union[str, os.PathLike]): Path to save the data.
+        :param path: Path to save the data.
         """
         if self.training_data is None:
             logging.warning("Training data is empty!")
@@ -138,8 +128,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Loads the training data from a file.
 
-        Args:
-            path (Union[str, os.PathLike]): Path to load the data.
+        :param path: Path to load the data.
         """
         path = Path(path)
         data = np.load(path)
@@ -160,7 +149,6 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         """
         Gets the training data labels.
 
-        Returns:
-            np.ndarray: Training data labels.
+        :return: Training data labels.
         """
         return self._data_labels

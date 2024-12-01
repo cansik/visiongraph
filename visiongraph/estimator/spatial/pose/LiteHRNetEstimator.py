@@ -49,14 +49,13 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         """
         Initializes the LiteHRNetPoseEstimator with the specified model, weights, and parameters.
 
-        Args:
-            model (Asset): The model asset for pose estimation.
-            weights (Asset): The weights asset for pose estimation.
-            human_detector (ObjectDetector, optional): An object detector for detecting humans. Defaults to SSDDetector.
-            min_score (float, optional): The minimum score for detected poses. Defaults to 0.3.
-            enable_nms (bool, optional): Flag to enable non-maximum suppression. Defaults to True.
-            iou_threshold (float, optional): The IoU threshold for NMS. Defaults to 0.4.
-            device (str, optional): The device to use for inference. Defaults to "AUTO".
+        :param model: The model asset for pose estimation.
+        :param weights: The weights asset for pose estimation.
+        :param human_detector: An object detector for detecting humans. Defaults to SSDDetector.
+        :param min_score: The minimum score for detected poses. Defaults to 0.3.
+        :param enable_nms: Flag to enable non-maximum suppression. Defaults to True.
+        :param iou_threshold: The IoU threshold for NMS. Defaults to 0.4.
+        :param device: The device to use for inference. Defaults to "AUTO".
         """
         super().__init__(human_detector, min_score)
 
@@ -77,14 +76,12 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         """
         Detects key points in the provided region of interest (ROI) of the image.
 
-        Args:
-            image (np.ndarray): The input image in which to detect poses.
-            roi (np.ndarray): The region of interest for detection.
-            xs (int): The x-coordinate offset of the ROI in the image.
-            ys (int): The y-coordinate offset of the ROI in the image.
+        :param image: The input image in which to detect poses.
+        :param roi: The region of interest for detection.
+        :param xs: The x-coordinate offset of the ROI in the image.
+        :param ys: The y-coordinate offset of the ROI in the image.
 
-        Returns:
-            List[COCOPose]: A list of detected poses, each represented by COCOPose objects.
+        :return: A list of detected poses, each represented by COCOPose objects.
         """
         h, w = image.shape[:2]
         rh, rw = roi.shape[:2]
@@ -133,11 +130,9 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         """
         Creates an instance of LiteHRNetPoseEstimator based on the specified configuration.
 
-        Args:
-            config (LiteHRNetConfig, optional): The configuration to use for creating the estimator. Defaults to LiteHRNet_30_COCO_384x288_FP32.
+        :param config: The configuration to use for creating the estimator. Defaults to LiteHRNet_30_COCO_384x288_FP32.
 
-        Returns:
-            LiteHRNetPoseEstimator: An instance of the LiteHRNetPoseEstimator.
+        :return: An instance of the LiteHRNetPoseEstimator.
         """
         model, weights = config.value
         return LiteHRNetPoseEstimator(model, weights)

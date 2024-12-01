@@ -16,8 +16,7 @@ class FrameSetRecorder(BaseFrameRecorder):
         """
         Initializes the FrameSetRecorder with a specified output path.
 
-        Args:
-            output_path (str): The path to the directory for storing recordings. Default is "recordings".
+        :param output_path: The path to the directory for storing recordings. Default is "recordings".
         """
         super().__init__()
         self.output_path = output_path
@@ -35,8 +34,7 @@ class FrameSetRecorder(BaseFrameRecorder):
         """
         Adds an image to the frame queue for later saving.
 
-        Args:
-            image (np.ndarray): The image to be added to the queue.
+        :param image: The image to be added to the queue.
         """
         self._frames.put(image)
 
@@ -62,9 +60,8 @@ class FrameSetRecorder(BaseFrameRecorder):
         """
         Writes a single image to the output directory with a formatted filename.
 
-        Args:
-            id (int): The identifier for the image to be saved.
-            image (np.ndarray): The image to be saved.
+        :param id: The identifier for the image to be saved.
+        :param image: The image to be saved.
         """
         output_path = os.path.join(self.output_path, f"{id:06d}.png")
         cv2.imwrite(output_path, image)

@@ -19,8 +19,6 @@ class PassThroughNode(GraphNode[InputType, OutputType]):
         """
         Initializes the PassThroughNode. No additional setup is required as this node passes through data without modification.
 
-        Returns:
-            None
         """
         pass
 
@@ -28,11 +26,9 @@ class PassThroughNode(GraphNode[InputType, OutputType]):
         """
         The forward pass operation of the PassThroughNode, where input data is returned as output.
 
-        Args:
-            data (InputType): The input data to be passed through.
+        :param data: The input data to be passed through.
 
-        Returns:
-            OutputType: The same type of data that was inputted.
+        :return: The same type of data that was inputted.
         """
         return data
 
@@ -40,8 +36,6 @@ class PassThroughNode(GraphNode[InputType, OutputType]):
         """
         Releases any resources held by the PassThroughNode. Since this node does not hold any resources, no action is required here.
 
-        Returns:
-            None
         """
         pass
 
@@ -49,11 +43,8 @@ class PassThroughNode(GraphNode[InputType, OutputType]):
         """
         Configures the PassThroughNode based on the provided arguments. This method does nothing as the PassThroughNode's behavior remains constant regardless of configuration.
 
-        Args:
-            args (Namespace): The namespace containing command-line arguments.
+        :param args: The namespace containing command-line arguments.
 
-        Returns:
-            None
         """
         pass
 
@@ -62,10 +53,7 @@ class PassThroughNode(GraphNode[InputType, OutputType]):
         """
         Adds parameters to the parser. This method is used by the GraphNode.add_params method and only adds an empty parameter to this specific node's parser.
 
-        Args:
-            parser (ArgumentParser): The parser to be extended with additional parameters.
+        :param parser: The parser to be extended with additional parameters.
 
-        Returns:
-            None
         """
         pass

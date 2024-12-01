@@ -19,10 +19,8 @@ class FaceEmotionEstimator(RoiEstimator, BaseClassifier):
         """
         Processes the given image to classify its face emotions.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            EmotionClassificationResult: The result of emotion classification.
+        :return: The result of emotion classification.
         """
         pass

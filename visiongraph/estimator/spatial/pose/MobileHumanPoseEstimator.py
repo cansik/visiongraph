@@ -31,12 +31,11 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
     """
     A class for estimating human poses in images using a top-down approach.
 
-    Args:
-        human_detector (ObjectDetector): An object detector for identifying humans in images.
-        model (Asset): The ONNX model asset for human pose estimation.
-        intrinsics (Optional[CameraIntrinsics]): Camera intrinsic parameters.
-        abs_depth (float): Absolute depth value for the 3D pose estimation.
-        min_score (float): Minimum score threshold for detected poses.
+    :param human_detector: An object detector for identifying humans in images.
+    :param model: The ONNX model asset for human pose estimation.
+    :param intrinsics: Camera intrinsic parameters.
+    :param abs_depth: Absolute depth value for the 3D pose estimation.
+    :param min_score: Minimum score threshold for detected poses.
     """
 
     def __init__(self,
@@ -99,11 +98,9 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         """
         Prepares the image for landmark detection by converting it to RGB format.
 
-        Args:
-            image (np.ndarray): The input image in BGR format.
+        :param image: The input image in BGR format.
 
-        Returns:
-            np.ndarray: The image converted to RGB format.
+        :return: The image converted to RGB format.
         """
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
@@ -111,14 +108,12 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         """
         Detects landmarks for a region of interest (ROI) in the given image.
 
-        Args:
-            image (np.ndarray): The input image.
-            roi (np.ndarray): The region of interest where landmarks need to be detected.
-            xs (int): The x-coordinate offset for the ROI.
-            ys (int): The y-coordinate offset for the ROI.
+        :param image: The input image.
+        :param roi: The region of interest where landmarks need to be detected.
+        :param xs: The x-coordinate offset for the ROI.
+        :param ys: The y-coordinate offset for the ROI.
 
-        Returns:
-            ResultList[OutputType]: A list of detected human poses with their scores and coordinates.
+        :return: A list of detected human poses with their scores and coordinates.
         """
         h, w = image.shape[:2]
         rh, rw = roi.shape[:2]
@@ -155,11 +150,9 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         """
         Post-processes the model output to extract 2D and 3D pose data.
 
-        Args:
-            output (np.ndarray): The raw output from the model.
+        :param output: The raw output from the model.
 
-        Returns:
-            _RawMobileHumanPoseResult: An object containing 2D poses, 3D poses, and scores.
+        :return: An object containing 2D poses, 3D poses, and scores.
         """
         heatmaps = output.reshape((-1, MOBILE_HUMAN_POSE_JOINT_NUM,
                                    self.output_depth * self.output_height * self.output_width))

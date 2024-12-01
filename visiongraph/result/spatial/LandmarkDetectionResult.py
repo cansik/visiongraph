@@ -24,12 +24,11 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         """
         Initializes the LandmarkDetectionResult with class ID, name, score, landmarks, and an optional bounding box.
 
-        Args:
-            class_id (int): The ID of the detected class.
-            class_name (str): The name of the detected class.
-            score (float): The confidence score of the detection.
-            landmarks (vector.VectorNumpy4D): A vector of detected landmarks.
-            bounding_box (Optional[BoundingBox2D]): An optional bounding box around the detected landmarks.
+        :param class_id: The ID of the detected class.
+        :param class_name: The name of the detected class.
+        :param score: The confidence score of the detection.
+        :param landmarks: A vector of detected landmarks.
+        :param bounding_box: An optional bounding box around the detected landmarks.
         """
         if bounding_box is None:
             bounding_box = bbox_from_landmarks(landmarks)
@@ -46,19 +45,18 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         """
         Annotates the given image with landmarks and optional bounding box.
 
-        Args:
-            image (np.ndarray): The image to annotate.
-            show_info (bool): Whether to show additional info.
-            info_text (Optional[str]): Text information to display.
-            color (Optional[Sequence[int]]): Color for drawing. Defaults to the annotation color.
-            show_bounding_box (bool): Whether to show the bounding box.
-            min_score (float): The minimum score for visible landmarks.
-            connections (Optional[List[Tuple[int, int]]]): Connections to draw between landmarks.
-            marker_size (int): Size of the landmark marker.
-            marker_type (Optional[int]): Type of marker for drawing.
-            stroke_width (int): Width of the lines connecting landmarks.
-            landmark_colors (Optional[Union[Sequence[int], Sequence[Sequence[int]]]]): Colors for landmarks.
-            kwargs: Additional parameters for the annotation.
+        :param image: The image to annotate.
+        :param show_info: Whether to show additional info.
+        :param info_text: Text information to display.
+        :param color: Color for drawing. Defaults to the annotation color.
+        :param show_bounding_box: Whether to show the bounding box.
+        :param min_score: The minimum score for visible landmarks.
+        :param connections: Connections to draw between landmarks.
+        :param marker_size: Size of the landmark marker.
+        :param marker_type: Type of marker for drawing.
+        :param stroke_width: Width of the lines connecting landmarks.
+        :param landmark_colors: Colors for landmarks.
+        :param kwargs: Additional parameters for the annotation.
         """
         if show_bounding_box:
             super().annotate(image, show_info, info_text, color, **kwargs)
@@ -104,11 +102,10 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         """
         Maps the landmark coordinates from source size to destination size optionally using regions of interest.
 
-        Args:
-            src_size (Union[Sequence[float], Size2D]): The size of the source image.
-            dest_size (Union[Sequence[float], Size2D]): The size of the destination image.
-            src_roi (Optional[BoundingBox2D]): The region of interest in the source image.
-            dest_roi (Optional[BoundingBox2D]): The region of interest in the destination image.
+        :param src_size: The size of the source image.
+        :param dest_size: The size of the destination image.
+        :param src_roi: The region of interest in the source image.
+        :param dest_roi: The region of interest in the destination image.
         """
         src_width, src_height = src_size
         dest_width, dest_height = dest_size

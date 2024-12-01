@@ -8,11 +8,9 @@ def dict_choice(table):
     """
     Create a checker function for argparse that ensures the provided key exists in the given dictionary.
 
-    Args:
-        table (dict): A dictionary of valid choices.
+    :param table: A dictionary of valid choices.
 
-    Returns:
-        Callable: A function that checks if a key is valid in the dictionary.
+    :return: A function that checks if a key is valid in the dictionary.
     """
 
     def dict_choice_checker(key):
@@ -28,14 +26,18 @@ def dict_choice(table):
 
 
 def float_range(mini, maxi):
-    """Return function handle of an argument type function for
+    """
+Return function handle of an argument type function for
        ArgumentParser checking a float range: mini <= arg <= maxi
          mini - minimum acceptable argument
-         maxi - maximum acceptable argument"""
+         maxi - maximum acceptable argument
+         """
 
     # Define the function with default arguments
     def float_range_checker(arg):
-        """New Type function for argparse - a float within predefined range."""
+        """
+New Type function for argparse - a float within predefined range.
+"""
 
         try:
             f = float(arg)
@@ -55,16 +57,13 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
     """
     Add an argument to the ArgumentParser that uses a dictionary of choices.
 
-    Args:
-        parser (argparse.ArgumentParser): The ArgumentParser to add the argument to.
-        source (dict): A mapping of choice names to their corresponding values.
-        name (str): The name of the argument.
-        help (str, optional): A help message for the argument.
-        default (Optional[Union[int, str]], optional): The default value for the argument.
-        nargs (Optional[Union[str, int]], optional): The number of arguments expected.
+    :param parser: The ArgumentParser to add the argument to.
+    :param source: A mapping of choice names to their corresponding values.
+    :param name: The name of the argument.
+    :param help: A help message for the argument.
+    :param default: The default value for the argument.
+    :param nargs: The number of arguments expected.
 
-    Returns:
-        None
     """
     items = list(source.keys())
     help_text = f"{help}"
@@ -91,16 +90,13 @@ def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, G
     """
     Add an argument to the ArgumentParser that allows for choosing a step from a dictionary of GraphNodes.
 
-    Args:
-        parser (argparse.ArgumentParser): The ArgumentParser to add the argument to.
-        steps (dict): A mapping of step names to GraphNode instances.
-        name (str): The name of the argument.
-        help (str, optional): A help message for the argument.
-        default (Optional[Union[int, str]], optional): The default value for the argument.
-        add_params (bool, optional): Whether to add parameters for the GraphNode.
+    :param parser: The ArgumentParser to add the argument to.
+    :param steps: A mapping of step names to GraphNode instances.
+    :param name: The name of the argument.
+    :param help: A help message for the argument.
+    :param default: The default value for the argument.
+    :param add_params: Whether to add parameters for the GraphNode.
 
-    Returns:
-        None
     """
     add_dict_choice_argument(parser, steps, name, help, default)
 
@@ -114,15 +110,12 @@ def add_enum_choice_argument(parser: argparse.ArgumentParser, enum_type: Any, na
     """
     Add an argument to the ArgumentParser that uses an enumeration type for choices.
 
-    Args:
-        parser (argparse.ArgumentParser): The ArgumentParser to add the argument to.
-        enum_type (enum): An enumeration type that provides valid choices.
-        name (str): The name of the argument.
-        help (str, optional): A help message for the argument.
-        default (Optional[Any], optional): The default value for the argument.
+    :param parser: The ArgumentParser to add the argument to.
+    :param enum_type: An enumeration type that provides valid choices.
+    :param name: The name of the argument.
+    :param help: A help message for the argument.
+    :param default: The default value for the argument.
 
-    Returns:
-        None
     """
     values = list(enum_type)
     items = {item.name: item for item in list(enum_type)}
@@ -139,20 +132,18 @@ class PipelineNodeFactory:
     """
     A factory class for creating pipeline nodes.
 
-    Args:
-        pipeline_node (GraphNode): The GraphNode associated with the pipeline.
-        method (Callable): The method to be called on the pipeline node.
-        params (Any): Additional parameters to pass to the method.
+    :param pipeline_node: The GraphNode associated with the pipeline.
+    :param method: The method to be called on the pipeline node.
+    :param params: Additional parameters to pass to the method.
     """
 
     def __init__(self, pipeline_node: GraphNode, method: Callable, *params: Any):
         """
         Initializes the PipelineNodeFactory with a specific GraphNode and method.
 
-        Args:
-            pipeline_node (GraphNode): The GraphNode associated with the pipeline.
-            method (Callable): The method to be called on the pipeline node.
-            params (Any): Additional parameters to pass to the method.
+        :param pipeline_node: The GraphNode associated with the pipeline.
+        :param method: The method to be called on the pipeline node.
+        :param params: Additional parameters to pass to the method.
         """
         self.pipeline_node = pipeline_node
         self.method = method

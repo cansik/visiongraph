@@ -23,11 +23,10 @@ class VideoCaptureInput(BaseInput):
         """
         Initializes the VideoCaptureInput with specified parameters.
 
-        Args:
-            channel (Union[str, int], optional): Input device channel. Defaults to 0.
-            input_skip (int, optional): Milliseconds to skip. Defaults to -1.
-            loop (bool, optional): Loop video playback. Defaults to True.
-            fps_lock (bool, optional): Lock to FPS. Defaults to False.
+        :param channel: Input device channel. Defaults to 0.
+        :param input_skip: Milliseconds to skip. Defaults to -1.
+        :param loop: Loop video playback. Defaults to True.
+        :param fps_lock: Lock to FPS. Defaults to False.
         """
         super().__init__()
         self.channel = channel
@@ -60,9 +59,7 @@ class VideoCaptureInput(BaseInput):
         """
         Reads the next frame from the video capture.
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the read image frame, 
-                                               or None if no frame was read.
+        :return: A tuple containing the timestamp and the read image frame,
         """
         if not self._is_cap_open():
             raise Exception(f"Could not open channel {self.channel}, please check path.")
@@ -99,8 +96,7 @@ class VideoCaptureInput(BaseInput):
         """
         Gets the total number of frames in the video capture.
 
-        Returns:
-            int: The frame count, or -1 if the capture is not opened.
+        :return: The frame count, or -1 if the capture is not opened.
         """
         if not self._cap.isOpened():
             return -1
@@ -110,8 +106,7 @@ class VideoCaptureInput(BaseInput):
         """
         Configures the VideoCaptureInput using command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments.
+        :param args: The command-line arguments.
         """
         super().configure(args)
 
@@ -131,8 +126,7 @@ class VideoCaptureInput(BaseInput):
         """
         Adds command-line parameters for the video capture input.
 
-        Args:
-            parser (ArgumentParser): The argument parser to add parameters to.
+        :param parser: The argument parser to add parameters to.
         """
         super(VideoCaptureInput, VideoCaptureInput).add_params(parser)
 
@@ -188,8 +182,7 @@ class VideoCaptureInput(BaseInput):
         """
         Checks if the video capture object is open.
 
-        Returns:
-            bool: True if the capture is open, False otherwise.
+        :return: True if the capture is open, False otherwise.
         """
         return self._cap is not None and self._cap.isOpened()
 
@@ -197,9 +190,7 @@ class VideoCaptureInput(BaseInput):
         """
         Reads the next frame from the video capture.
 
-        Returns:
-            Tuple[bool, Optional[np.ndarray]]: A tuple where the first element indicates success,
-                                                and the second element is the image frame or None.
+        :return: A tuple where the first element indicates success,
         """
         return self._cap.read()
 
@@ -207,7 +198,6 @@ class VideoCaptureInput(BaseInput):
         """
         Skips to a specified frame in the video capture.
 
-        Args:
-            frame_position (int): The position of the frame to skip to.
+        :param frame_position: The position of the frame to skip to.
         """
         self._cap.set(cv2.CAP_PROP_POS_FRAMES, frame_position)

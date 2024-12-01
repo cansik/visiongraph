@@ -16,7 +16,7 @@ A set of efficient pairs of landmark indices for pose connections.
 
 class EfficientPose(PoseLandmarkResult):
     """
-    A class to represent an efficient pose estimation model, 
+    A class to represent an efficient pose estimation model,
     extending the PoseLandmarkResult to provide specific landmark properties.
 
     Inherits:
@@ -28,8 +28,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the frozen set of connections representing efficient pairs of pose landmarks.
 
-        Returns:
-            FrozenSet[Tuple[int, int]]: Pairs of indices representing connections in the pose.
+        :return: Pairs of indices representing connections in the pose.
         """
         return EFFICIENT_POSE_PAIRS
 
@@ -38,8 +37,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the head top landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the head top position.
+        :return: The vector representing the head top position.
         """
         return self.landmarks[0]
 
@@ -49,8 +47,7 @@ class EfficientPose(PoseLandmarkResult):
         Returns the interpolated position of the nose landmark, computed as the midpoint
         between the head top and neck landmarks.
 
-        Returns:
-            vector.Vector4D: The vector representing the nose position.
+        :return: The vector representing the nose position.
         """
         return VectorUtils.lerp_vector_4d(self.head_top, self.neck, 0.5)
 
@@ -59,8 +56,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the neck landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the neck position.
+        :return: The vector representing the neck position.
         """
         return self.landmarks[1]
 
@@ -69,8 +65,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right shoulder position.
+        :return: The vector representing the right shoulder position.
         """
         return self.landmarks[2]
 
@@ -79,8 +74,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right elbow landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right elbow position.
+        :return: The vector representing the right elbow position.
         """
         return self.landmarks[3]
 
@@ -89,8 +83,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right wrist landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right wrist position.
+        :return: The vector representing the right wrist position.
         """
         return self.landmarks[4]
 
@@ -99,8 +92,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the thorax landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the thorax position.
+        :return: The vector representing the thorax position.
         """
         return self.landmarks[5]
 
@@ -109,8 +101,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left shoulder position.
+        :return: The vector representing the left shoulder position.
         """
         return self.landmarks[6]
 
@@ -119,8 +110,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left elbow landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left elbow position.
+        :return: The vector representing the left elbow position.
         """
         return self.landmarks[7]
 
@@ -129,8 +119,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left wrist landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left wrist position.
+        :return: The vector representing the left wrist position.
         """
         return self.landmarks[8]
 
@@ -139,8 +128,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the pelvis landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the pelvis position.
+        :return: The vector representing the pelvis position.
         """
         return self.landmarks[9]
 
@@ -149,8 +137,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right hip landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right hip position.
+        :return: The vector representing the right hip position.
         """
         return self.landmarks[10]
 
@@ -159,8 +146,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right knee landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right knee position.
+        :return: The vector representing the right knee position.
         """
         return self.landmarks[11]
 
@@ -169,8 +155,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the right ankle landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the right ankle position.
+        :return: The vector representing the right ankle position.
         """
         return self.landmarks[12]
 
@@ -179,8 +164,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left hip landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left hip position.
+        :return: The vector representing the left hip position.
         """
         return self.landmarks[13]
 
@@ -189,8 +173,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left knee landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left knee position.
+        :return: The vector representing the left knee position.
         """
         return self.landmarks[14]
 
@@ -199,8 +182,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns the position of the left ankle landmark.
 
-        Returns:
-            vector.Vector4D: The vector representing the left ankle position.
+        :return: The vector representing the left ankle position.
         """
         return self.landmarks[15]
 
@@ -209,8 +191,7 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns a placeholder vector representing the position of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The vector with default values representing the left eye position.
+        :return: The vector with default values representing the left eye position.
         """
         return vector.obj(x=0.0, y=0.0, z=0.0, t=0.0)
 
@@ -219,7 +200,6 @@ class EfficientPose(PoseLandmarkResult):
         """
         Returns a placeholder vector representing the position of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The vector with default values representing the right eye position.
+        :return: The vector with default values representing the right eye position.
         """
         return vector.obj(x=0.0, y=0.0, z=0.0, t=0.0)

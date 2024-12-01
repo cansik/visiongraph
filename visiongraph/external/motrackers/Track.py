@@ -5,17 +5,15 @@ class Track:
     """
     Track containing attributes to track various objects.
 
-    Args:
-        frame_id (int): Camera frame id.
-        track_id (int): Track Id
-        bbox (numpy.ndarray): Bounding box pixel coordinates as (xmin, ymin, width, height) of the track.
-        detection_confidence (float): Detection confidence of the object (probability).
-        class_id (str or int): Class label id.
-        lost (int): Number of times the object or track was not tracked by tracker in consecutive frames.
-        iou_score (float): Intersection over union score.
-        data_output_format (str): Output format for data in tracker.
-            Options include ``['mot_challenge', 'visdrone_challenge']``. Default is ``mot_challenge``.
-        kwargs (dict): Additional key word arguments.
+    :param frame_id: Camera frame id.
+    :param track_id: Track Id
+    :param bbox: Bounding box pixel coordinates as (xmin, ymin, width, height) of the track.
+    :param detection_confidence: Detection confidence of the object (probability).
+    :param class_id: Class label id.
+    :param lost: Number of times the object or track was not tracked by tracker in consecutive frames.
+    :param iou_score: Intersection over union score.
+    :param data_output_format: Output format for data in tracker.
+    :param kwargs: Additional key word arguments.
 
     """
 
@@ -63,14 +61,13 @@ class Track:
         """
         Update the track.
 
-        Args:
-            frame_id (int): Camera frame id.
-            bbox (numpy.ndarray): Bounding box pixel coordinates as (xmin, ymin, width, height) of the track.
-            detection_confidence (float): Detection confidence of the object (probability).
-            class_id (int or str): Class label id.
-            lost (int): Number of times the object or track was not tracked by tracker in consecutive frames.
-            iou_score (float): Intersection over union score.
-            kwargs (dict): Additional key word arguments.
+        :param frame_id: Camera frame id.
+        :param bbox: Bounding box pixel coordinates as (xmin, ymin, width, height) of the track.
+        :param detection_confidence: Detection confidence of the object (probability).
+        :param class_id: Class label id.
+        :param lost: Number of times the object or track was not tracked by tracker in consecutive frames.
+        :param iou_score: Intersection over union score.
+        :param kwargs: Additional key word arguments.
         """
         self.class_id = class_id
         self.bbox = np.array(bbox)
@@ -96,8 +93,7 @@ class Track:
         """
         Return the centroid of the bounding box.
 
-        Returns:
-            numpy.ndarray: Centroid (x, y) of bounding box.
+        :return: Centroid (x, y) of bounding box.
 
         """
         return np.array((self.bbox[0]+0.5*self.bbox[2], self.bbox[1]+0.5*self.bbox[3]))
@@ -110,8 +106,7 @@ class Track:
         References:
             - Website : https://motchallenge.net/
 
-        Returns:
-            tuple: Tuple of 10 elements representing `(frame, id, bb_left, bb_top, bb_width, bb_height, conf, x, y, z)`.
+        :return: Tuple of 10 elements representing `(frame, id, bb_left, bb_top, bb_width, bb_height, conf, x, y, z)`.
 
         """
         mot_tuple = (
@@ -135,9 +130,7 @@ class Track:
             - GitHub : https://github.com/VisDrone/VisDrone2018-MOT-toolkit
             - GitHub : https://github.com/VisDrone/
 
-        Returns:
-            tuple: Tuple containing the elements as `(frame_index, target_id, bbox_left, bbox_top, bbox_width, bbox_height,
-            score, object_category, truncation, occlusion)`.
+        :return: Tuple containing the elements as `(frame_index, target_id, bbox_left, bbox_top, bbox_width, bbox_height,
         """
         mot_tuple = (
             self.frame_id, self.id, self.bbox[0], self.bbox[1], self.bbox[2], self.bbox[3],

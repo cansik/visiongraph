@@ -20,8 +20,7 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         """
         Initializes the OpenPoseHandEstimator.
 
-        Args:
-            min_score (float): The minimum score required to detect a hand.
+        :param min_score: The minimum score required to detect a hand.
         """
         super().__init__(min_score)
 
@@ -45,11 +44,9 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         """
         Processes an input image to detect and estimate the 21 keypoints of a hand.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            ResultList[OpenPoseHand]: A list of detected hands with their corresponding pose scores.
+        :return: A list of detected hands with their corresponding pose scores.
         """
         blob = cv2.dnn.blobFromImage(image, 1.0 / 255, (self.input_size, self.input_size), (0, 0, 0),
                                      swapRB=False, crop=False)
@@ -92,7 +89,6 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         """
         Configures the estimator with command line arguments.
 
-        Args:
-            args (Namespace): The command line arguments to be used for configuration.
+        :param args: The command line arguments to be used for configuration.
         """
         super().configure(args)

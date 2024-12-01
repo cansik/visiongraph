@@ -17,10 +17,9 @@ class FaceLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Initializes the FaceLandmarkResult object with a score and detected landmarks.
 
-        Args:
-            score (float): The confidence of the detection.
-            landmarks (vector.VectorNumpy4D): The coordinates of the detected landmarks.
-            bounding_box (Optional[BoundingBox2D]): The bounding box of the face, if available. Defaults to None.
+        :param score: The confidence of the detection.
+        :param landmarks: The coordinates of the detected landmarks.
+        :param bounding_box: The bounding box of the face, if available. Defaults to None.
         """
         super().__init__(FACE_DETECTION_ID, FACE_DETECTION_LABEL, score, landmarks, bounding_box)
 
@@ -30,8 +29,7 @@ class FaceLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Gets the position of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the nose landmark.
+        :return: The coordinates of the nose landmark.
         """
         pass
 
@@ -41,8 +39,7 @@ class FaceLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Gets the position of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the left eye landmark.
+        :return: The coordinates of the left eye landmark.
         """
         pass
 
@@ -52,7 +49,6 @@ class FaceLandmarkResult(LandmarkDetectionResult, ABC):
         """
         Gets the position of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The coordinates of the right eye landmark.
+        :return: The coordinates of the right eye landmark.
         """
         pass

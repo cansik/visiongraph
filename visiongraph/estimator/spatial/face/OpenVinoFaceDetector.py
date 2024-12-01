@@ -46,11 +46,10 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         """
         Initializes the OpenVinoFaceDetector with the specified model and weights.
 
-        Args:
-            model (Asset): The model asset to be used for face detection.
-            weights (Asset): The weights asset associated with the model.
-            min_score (float): The minimum score threshold for detections. Defaults to 0.5.
-            device (str): The device to be used for inference. Defaults to "AUTO".
+        :param model: The model asset to be used for face detection.
+        :param weights: The weights asset associated with the model.
+        :param min_score: The minimum score threshold for detections. Defaults to 0.5.
+        :param device: The device to be used for inference. Defaults to "AUTO".
         """
         super().__init__(min_score)
 
@@ -70,11 +69,9 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         """
         Processes the input data to detect faces and returns the results.
 
-        Args:
-            data (np.ndarray): The input image data in which faces need to be detected.
+        :param data: The input image data in which faces need to be detected.
 
-        Returns:
-            ResultList[FaceDetectionResult]: A list of detected face results.
+        :return: A list of detected face results.
         """
         output = self._get_results(self.engine.process(data))
 
@@ -121,11 +118,9 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         """
         Creates an instance of OpenVinoFaceDetector based on the specified configuration.
 
-        Args:
-            config (OpenVinoFaceConfig): The configuration to use for the face detector. Defaults to MobileNetV2_416_FP32.
+        :param config: The configuration to use for the face detector. Defaults to MobileNetV2_416_FP32.
 
-        Returns:
-            OpenVinoFaceDetector: An instance of OpenVinoFaceDetector.
+        :return: An instance of OpenVinoFaceDetector.
         """
         model, weights = config.value
         return OpenVinoFaceDetector(model, weights)

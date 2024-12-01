@@ -13,9 +13,9 @@ class BaseCamera(BaseInput, ABC):
     """
     Abstract base class for camera input.
 
-    This class defines the interface and common functionality for camera 
-    input systems, including parameters for exposure, gain, and white 
-    balance settings. 
+    This class defines the interface and common functionality for camera
+    input systems, including parameters for exposure, gain, and white
+    balance settings.
     """
 
     def __init__(self):
@@ -53,8 +53,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Configures the camera settings based on command line arguments.
 
-        Args:
-            args (Namespace): Command line arguments parsed into a Namespace.
+        :param args: Command line arguments parsed into a Namespace.
         """
         super().configure(args)
 
@@ -67,8 +66,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Adds command line parameters specific to the camera settings.
 
-        Args:
-            parser (ArgumentParser): The argument parser to add parameters to.
+        :param parser: The argument parser to add parameters to.
         """
         super(BaseCamera, BaseCamera).add_params(parser)
 
@@ -90,8 +88,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the current gain setting of the camera.
 
-        Returns:
-            int: The current gain value.
+        :return: The current gain value.
         """
         pass
 
@@ -101,8 +98,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Sets the camera gain.
 
-        Args:
-            value (int): The gain value to set.
+        :param value: The gain value to set.
         """
         pass
 
@@ -112,8 +108,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the current exposure setting of the camera.
 
-        Returns:
-            int: The current exposure value.
+        :return: The current exposure value.
         """
         pass
 
@@ -123,8 +118,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Sets the camera exposure.
 
-        Args:
-            value (int): The exposure value to set.
+        :param value: The exposure value to set.
         """
         pass
 
@@ -134,8 +128,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Indicates whether auto-exposure is enabled.
 
-        Returns:
-            bool: True if auto-exposure is enabled, False otherwise.
+        :return: True if auto-exposure is enabled, False otherwise.
         """
         pass
 
@@ -145,8 +138,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Enables or disables auto-exposure.
 
-        Args:
-            value (bool): True to enable auto-exposure, False to disable.
+        :param value: True to enable auto-exposure, False to disable.
         """
         pass
 
@@ -156,8 +148,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Indicates whether auto-white balance is enabled.
 
-        Returns:
-            bool: True if auto-white balance is enabled, False otherwise.
+        :return: True if auto-white balance is enabled, False otherwise.
         """
         pass
 
@@ -167,8 +158,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Enables or disables auto-white balance.
 
-        Args:
-            value (bool): True to enable auto-white balance, False to disable.
+        :param value: True to enable auto-white balance, False to disable.
         """
         pass
 
@@ -178,8 +168,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the current white balance setting of the camera.
 
-        Returns:
-            int: The current white balance value.
+        :return: The current white balance value.
         """
         pass
 
@@ -189,8 +178,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Sets the camera white balance.
 
-        Args:
-            value (int): The white balance value to set.
+        :param value: The white balance value to set.
         """
         pass
 
@@ -199,8 +187,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the camera matrix.
 
-        Returns:
-            np.ndarray: The camera matrix.
+        :return: The camera matrix.
         """
         return self.get_camera_matrix()
 
@@ -209,8 +196,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the fisheye distortion parameters.
 
-        Returns:
-            np.ndarray: The fisheye distortion coefficients.
+        :return: The fisheye distortion coefficients.
         """
         return self.fisheye_distortion
 
@@ -219,8 +205,7 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the camera intrinsics.
 
-        Returns:
-            CameraIntrinsics: The camera intrinsics object.
+        :return: The camera intrinsics object.
         """
         return self.get_intrinsics()
 
@@ -229,11 +214,9 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the camera matrix for a specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            np.ndarray: The camera matrix.
+        :return: The camera matrix.
         """
         pass
 
@@ -242,11 +225,9 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the fisheye distortion coefficients for a specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            np.ndarray: The fisheye distortion coefficients.
+        :return: The fisheye distortion coefficients.
         """
         pass
 
@@ -254,11 +235,9 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the camera intrinsics for a specified stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of camera stream (default is Color).
+        :param stream_type: The type of camera stream (default is Color).
 
-        Returns:
-            CameraIntrinsics: The camera intrinsics object.
+        :return: The camera intrinsics object.
         """
         return CameraIntrinsics(self.get_camera_matrix(stream_type), self.get_fisheye_distortion(stream_type))
 
@@ -268,7 +247,6 @@ class BaseCamera(BaseInput, ABC):
         """
         Retrieves the serial number of the camera.
 
-        Returns:
-            str: The serial number of the camera.
+        :return: The serial number of the camera.
         """
         pass

@@ -24,10 +24,8 @@ class HandLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):
         """
         Processes the input data and returns a list of results.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            ResultList[OutputType]: A list of results, where each result is an instance of OutputType.
+        :return: A list of results, where each result is an instance of OutputType.
         """
         pass

@@ -29,12 +29,11 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         """
         Initializes the OpenVinoObjectDetector object.
 
-        Args:
-            model (Asset): The model to be used for detection.
-            weights (Asset): The weights for the model.
-            labels (List[str]): A list of labels corresponding to each class in the model.
-            min_score (float): The minimum score required for a detection to be considered valid.
-            device (str, optional): The device on which the pipeline will run. Defaults to "AUTO".
+        :param model: The model to be used for detection.
+        :param weights: The weights for the model.
+        :param labels: A list of labels corresponding to each class in the model.
+        :param min_score: The minimum score required for a detection to be considered valid.
+        :param device: The device on which the pipeline will run. Defaults to "AUTO".
         """
         super().__init__(min_score)
         self.model = model
@@ -61,11 +60,9 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         """
         Processes the input data using the OpenVino pipeline.
 
-        Args:
-            data (np.ndarray): The input image or video frame.
+        :param data: The input image or video frame.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: A list of object detection results.
+        :return: A list of object detection results.
         """
         h, w = data.shape[:2]
         output: List[Detection] = self.pipeline.process(data)
@@ -90,8 +87,7 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         """
         Creates an IE model from the provided detection model.
 
-        Returns:
-            DetectionModel: The created IE model.
+        :return: The created IE model.
         """
         pass
 
@@ -99,11 +95,9 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         """
         Retrieves the label corresponding to the given class index.
 
-        Args:
-            index (int): The class index.
+        :param index: The class index.
 
-        Returns:
-            str: The label for the given class index. If the index is out of range, returns "NoLabelFound".
+        :return: The label for the given class index. If the index is out of range, returns "NoLabelFound".
         """
         if index < len(self.labels):
             return self.labels[index]

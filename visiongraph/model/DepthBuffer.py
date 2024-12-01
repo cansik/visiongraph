@@ -17,12 +17,10 @@ class DepthBuffer(ABC):
         """
         Calculates the distance from a point to the depth buffer.
 
-        Args:
-            x (float): The x-coordinate of the point.
-            y (float): The y-coordinate of the point.
+        :param x: The x-coordinate of the point.
+        :param y: The y-coordinate of the point.
 
-        Returns:
-            float: The calculated distance.
+        :return: The calculated distance.
         """
         pass
 
@@ -30,11 +28,9 @@ class DepthBuffer(ABC):
         """
         Calculates the median distance from a list of points to the depth buffer.
 
-        Args:
-            points (List[Tuple[float, float]]): A list of 2D points.
+        :param points: A list of 2D points.
 
-        Returns:
-            float: The median calculated distance.
+        :return: The median calculated distance.
         """
         return median([self.distance(p[0], p[1]) for p in points])
 
@@ -44,8 +40,7 @@ class DepthBuffer(ABC):
         """
         Abstract property to retrieve the depth buffer data.
 
-        Returns:
-            np.ndarray: The underlying depth buffer as a NumPy array.
+        :return: The underlying depth buffer as a NumPy array.
         """
         pass
 
@@ -55,7 +50,6 @@ class DepthBuffer(ABC):
         """
         Abstract property to retrieve the depth map.
 
-        Returns:
-            np.ndarray: The depth map as a NumPy array.
+        :return: The depth map as a NumPy array.
         """
         pass

@@ -14,8 +14,7 @@ class HandDetectionResult(ObjectDetectionResult):
         """
         Initializes the HandDetectionResult object.
 
-        Args:
-            score (float): The confidence score of the detection.
-            bounding_box (BoundingBox2D): The bounding box of the detected object.
+        :param score: The confidence score of the detection.
+        :param bounding_box: The bounding box of the detected object.
         """
         super().__init__(HAND_DETECTION_ID, HAND_DETECTION_LABEL, score, bounding_box)

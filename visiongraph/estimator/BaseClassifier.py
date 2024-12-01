@@ -17,8 +17,7 @@ class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC):
         """
         Initializes the BaseClassifier with a specified minimum score.
 
-        Args:
-            min_score (float): The minimum score required to classify a sample as positive.
+        :param min_score: The minimum score required to classify a sample as positive.
         """
         super().__init__(min_score)
         self.labels: List[str] = []
@@ -28,11 +27,9 @@ class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC):
         """
         Processes the input data and returns a classification result.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: A ClassificationResult object containing the predicted label and score.
+        :return: A ClassificationResult object containing the predicted label and score.
         """
         pass
 
@@ -40,11 +37,9 @@ class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC):
         """
         Retrieves the label at the specified index. If the index is out of range, returns a string representation of the index.
 
-        Args:
-            index (int): The index of the label to be retrieved.
+        :param index: The index of the label to be retrieved.
 
-        Returns:
-            str: The label at the specified index or a string representation of the index.
+        :return: The label at the specified index or a string representation of the index.
         """
         if 0 <= index < len(self.labels):
             return self.labels[index]

@@ -36,9 +36,8 @@ class CrowdHumanDetector(YOLOv5Detector):
         """
         Initializes the CrowdHumanDetector.
 
-        Args:
-            *assets (Asset): Sequence of asset objects.
-            assign_head_to_person (bool): A flag to determine if assigning head to person is enabled.
+        :param *assets: Sequence of asset objects.
+        :param assign_head_to_person: A flag to determine if assigning head to person is enabled.
         """
         super().__init__(*assets, labels=["person", "head"], nms=True)
 
@@ -49,11 +48,9 @@ class CrowdHumanDetector(YOLOv5Detector):
         """
         Processes the input image for object detection and assignment.
 
-        Args:
-            image (np.ndarray): Input image for detection.
+        :param image: Input image for detection.
 
-        Returns:
-            ResultList[Union[CrowdHumanResult, ObjectDetectionResult]]: List of detection results.
+        :return: List of detection results.
         """
         results = super().process(image)
 
@@ -89,11 +86,9 @@ class CrowdHumanDetector(YOLOv5Detector):
         """
         Creates a CrowdHumanDetector based on the specified configuration.
 
-        Args:
-            config (CrowdHumanConfig): Configuration for the CrowdHumanDetector.
+        :param config: Configuration for the CrowdHumanDetector.
 
-        Returns:
-            CrowdHumanDetector: Instance of the CrowdHumanDetector.
+        :return: Instance of the CrowdHumanDetector.
         """
         model = config.value
         return CrowdHumanDetector(model)
@@ -104,12 +99,10 @@ class CrowdHumanDetector(YOLOv5Detector):
         """
         Calculates the L2 cost matrix for object tracking.
 
-        Args:
-            tracks (List[ObjectDetectionResult]): List of detected object tracks.
-            detections (List[ObjectDetectionResult]): List of detected objects.
+        :param tracks: List of detected object tracks.
+        :param detections: List of detected objects.
 
-        Returns:
-            np.ndarray: L2 distance matrix between tracks and detections.
+        :return: L2 distance matrix between tracks and detections.
         """
 
         def get_centers(results: List[ObjectDetectionResult]) -> np.ndarray:

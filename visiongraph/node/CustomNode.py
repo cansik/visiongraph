@@ -16,13 +16,10 @@ class CustomNode(GraphNode[InputType, OutputType]):
         """
         Initializes a new instance of CustomNode.
 
-        Args:
-            method (Callable[[InputType], OutputType]): The function to be executed on the input data.
-            *args: Additional positional arguments passed to the `method`.
-            **kwargs: Additional keyword arguments passed to the `method`.
+        :param method: The function to be executed on the input data.
+        :param *args: Additional positional arguments passed to the `method`.
+        :param **kwargs: Additional keyword arguments passed to the `method`.
 
-        Returns:
-            None
         """
         self.method = method
         self.args = args
@@ -38,11 +35,9 @@ class CustomNode(GraphNode[InputType, OutputType]):
         """
         Executes the `method` on the input data.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The result of executing the `method`.
+        :return: The result of executing the `method`.
         """
         result = self.method(data, *self.args, **self.kwargs)
 
@@ -61,8 +56,7 @@ class CustomNode(GraphNode[InputType, OutputType]):
         """
         Configures the node based on the provided arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -71,7 +65,6 @@ class CustomNode(GraphNode[InputType, OutputType]):
         """
         Adds parameters to the parser for this custom node.
 
-        Args:
-            parser (ArgumentParser): The parser to add parameters to.
+        :param parser: The parser to add parameters to.
         """
         pass

@@ -42,17 +42,16 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         Initializes the YOLOv8SegmentationEstimator.
 
-        Args:
-            assets (Asset): The model assets.
-            labels (List[str]): The list of class labels.
-            min_score (float, optional): Minimum score for detections. Defaults to 0.3.
-            nms (bool, optional): Whether to apply non-maximum suppression. Defaults to True.
-            nms_threshold (float, optional): Threshold for NMS. Defaults to 0.5.
-            nms_eta (Optional[float], optional): Eta parameter for NMS. Defaults to None.
-            nms_top_k (Optional[int], optional): Maximum number of boxes to keep after NMS. Defaults to None.
-            engine (InferenceEngine, optional): The inference engine to use. Defaults to InferenceEngine.ONNX.
-            allowed_classes (Optional[Set[int]], optional): Set of allowed class IDs. Defaults to None.
-            mask_threshold (float, optional): Threshold for mask predictions. Defaults to 0.5.
+        :param assets: The model assets.
+        :param labels: The list of class labels.
+        :param min_score: Minimum score for detections. Defaults to 0.3.
+        :param nms: Whether to apply non-maximum suppression. Defaults to True.
+        :param nms_threshold: Threshold for NMS. Defaults to 0.5.
+        :param nms_eta: Eta parameter for NMS. Defaults to None.
+        :param nms_top_k: Maximum number of boxes to keep after NMS. Defaults to None.
+        :param engine: The inference engine to use. Defaults to InferenceEngine.ONNX.
+        :param allowed_classes: Set of allowed class IDs. Defaults to None.
+        :param mask_threshold: Threshold for mask predictions. Defaults to 0.5.
         """
         super().__init__(*assets, labels=labels, min_score=min_score, nms=nms, nms_threshold=nms_threshold,
                          nms_eta=nms_eta, nms_top_k=nms_top_k, engine=engine)
@@ -64,12 +63,10 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         Filters predictions based on a minimum score.
 
-        Args:
-            predictions (np.ndarray): The predictions to filter.
-            min_score (float): The minimum score threshold.
+        :param predictions: The predictions to filter.
+        :param min_score: The minimum score threshold.
 
-        Returns:
-            Tuple[np.ndarray, np.ndarray]: Filtered predictions and their corresponding scores.
+        :return: Filtered predictions and their corresponding scores.
         """
         predictions = predictions.T
 
@@ -82,11 +79,9 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         Processes an image to perform instance segmentation.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
 
-        Returns:
-            ResultList[InstanceSegmentationResult]: The results of the instance segmentation.
+        :return: The results of the instance segmentation.
         """
         ih, iw = image.shape[:2]
         output = self.engine.process(image)
@@ -158,12 +153,10 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         Crops a bounding box to fit within the given shape.
 
-        Args:
-            bbox: The bounding box coordinates.
-            shape: The shape of the area to crop.
+        :param bbox: The bounding box coordinates.
+        :param shape: The shape of the area to crop.
 
-        Returns:
-            slice: Slices for the cropped area.
+        :return: Slices for the cropped area.
         """
         x1 = int(max(bbox[0] * shape[1], 0))
         y1 = int(max(bbox[1] * shape[0], 0))
@@ -177,11 +170,9 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         Creates an instance of YOLOv8SegmentationEstimator using the specified configuration.
 
-        Args:
-            config (YOLOv8SegmentationConfig, optional): The configuration for the estimator. Defaults to YOLOv8SegmentationConfig.YOLOv8_SEG_S.
+        :param config: The configuration for the estimator. Defaults to YOLOv8SegmentationConfig.YOLOv8_SEG_S.
 
-        Returns:
-            YOLOv8SegmentationEstimator: An instance of the YOLOv8SegmentationEstimator.
+        :return: An instance of the YOLOv8SegmentationEstimator.
         """
         model, labels = config.value
         return YOLOv8SegmentationEstimator(model, labels=labels)

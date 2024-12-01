@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-"""
+ """
 
 from time import perf_counter
 from typing import Dict, Set
@@ -36,7 +36,9 @@ def parse_devices(device_string):
 
 
 def parse_value_per_device(devices: Set[str], values_string: str) -> Dict[str, int]:
-    """Format: <device1>:<value1>,<device2>:<value2> or just <value>"""
+    """
+Format: <device1>:<value1>,<device2>:<value2> or just <value>
+"""
     values_string_upper = values_string.upper()
     result = {}
     device_value_strings = values_string_upper.split(',')

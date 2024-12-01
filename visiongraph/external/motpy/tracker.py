@@ -15,7 +15,8 @@ logger = setup_logger(__name__)
 
 
 def get_kalman_object_tracker(model: Model, x0: Optional[Vector] = None) -> KalmanFilter:
-    """ returns Kalman-based tracker based on a specified motion model spec.
+    """
+ returns Kalman-based tracker based on a specified motion model spec.
         e.g. for spec = {'order_pos': 1, 'dim_pos': 2, 'order_size': 0, 'dim_size': 1}
         we expect the following setup:
         state x, x', y, y', w, h
@@ -101,7 +102,9 @@ class SingleObjectTracker:
         self.steps_alive += 1
 
     def update_class_id(self, class_id: Optional[int]) -> Optional[int]:
-        """ find most frequent prediction of class_id in recent K class_ids """
+        """
+ find most frequent prediction of class_id in recent K class_ids
+ """
         if class_id is None:
             return None
 
@@ -145,7 +148,9 @@ class SingleObjectTracker:
 
 
 class KalmanTracker(SingleObjectTracker):
-    """ A single object tracker using Kalman filter with specified motion model specification """
+    """
+ A single object tracker using Kalman filter with specified motion model specification
+ """
 
     def __init__(self,
                  tracker_id: int,
@@ -185,7 +190,9 @@ class KalmanTracker(SingleObjectTracker):
 
 
 class SimpleTracker(SingleObjectTracker):
-    """ A simple single tracker with no motion modeling and box update using exponential moving average """
+    """
+ A simple single tracker with no motion modeling and box update using exponential moving average
+ """
 
     def __init__(self,
                  tracker_id: int,
@@ -216,7 +223,9 @@ class SimpleTracker(SingleObjectTracker):
             return True
 
 
-""" assignment cost calculation & matching methods """
+"""
+ assignment cost calculation & matching methods
+ """
 
 
 def _sequence_has_none(seq: Sequence[Any]) -> bool:
@@ -294,9 +303,11 @@ class BaseMatchingFunction:
 
 
 class IOUAndFeatureMatchingFunction(BaseMatchingFunction):
-    """ class implements the basic matching function, taking into account
-    detection boxes overlap measured using IOU metric and optional 
-    feature similarity measured with a specified metric """
+    """
+ class implements the basic matching function, taking into account
+    detection boxes overlap measured using IOU metric and optional
+    feature similarity measured with a specified metric
+    """
 
     def __init__(self, min_iou: float = 0.1,
                  multi_match_min_iou: float = 1. + EPS,
@@ -371,7 +382,9 @@ class MultiObjectTracker:
                       max_staleness_to_positive_ratio: float = 3.0,
                       max_staleness: float = 999,
                       min_steps_alive: int = -1) -> List[Track]:
-        """ returns all active tracks after optional filtering by tracker steps count and staleness """
+        """
+ returns all active tracks after optional filtering by tracker steps count and staleness
+ """
 
         tracks: List[Track] = []
         for tracker in self.trackers:
@@ -393,9 +406,11 @@ class MultiObjectTracker:
         logger.debug('deleted %s/%s trackers' % (count_before - count_after, count_before))
 
     def step(self, detections: Sequence[Detection]) -> List[Track]:
-        """ the method matches the new detections with existing trackers,
+        """
+ the method matches the new detections with existing trackers,
         creates new trackers if necessary and performs the cleanup.
-        Returns the active tracks after active filtering applied """
+        Returns the active tracks after active filtering applied
+        """
         t0 = time.time()
 
         # filter out empty detections

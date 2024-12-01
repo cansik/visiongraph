@@ -12,7 +12,9 @@ def _random_color():
 
 
 class Actor():
-    """ Actor is a box moving in 2d space """
+    """
+ Actor is a box moving in 2d space
+ """
 
     def __init__(self,
                  color=None,
@@ -52,7 +54,9 @@ class Actor():
         return (x, y)
 
     def detections(self, step: int):
-        """ returns ground truth and potentially missing detection for a given actor """
+        """
+ returns ground truth and potentially missing detection for a given actor
+ """
         xmin, ymin = self.position_at(step)
         box_gt = [xmin, ymin, xmin + self.width, ymin + self.height]
 

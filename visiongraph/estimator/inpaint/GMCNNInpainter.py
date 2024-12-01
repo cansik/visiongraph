@@ -31,10 +31,9 @@ class GMCNNInpainter(BaseInpainter):
         """
         Initializes the GMCNNInpainter object.
 
-        Args:
-            model (Asset): The repository asset containing the model.
-            weights (Asset): The repository asset containing the weights for the model.
-            device (str, optional): The device to use. Defaults to "AUTO".
+        :param model: The repository asset containing the model.
+        :param weights: The repository asset containing the weights for the model.
+        :param device: The device to use. Defaults to "AUTO".
         """
         super().__init__()
         self.engine = OpenVinoEngine(model, weights, device=device, flip_channels=False)
@@ -49,12 +48,10 @@ class GMCNNInpainter(BaseInpainter):
         """
         Performs inpainting on the given image using the provided mask.
 
-        Args:
-            image (np.ndarray): The input image.
-            mask (np.ndarray): The binary mask to use for inpainting.
+        :param image: The input image.
+        :param mask: The binary mask to use for inpainting.
 
-        Returns:
-            ImageResult: The resulting image after inpainting.
+        :return: The resulting image after inpainting.
         """
         # Prepare mask
         _, binary_mask = cv2.threshold(mask, 1, 1, cv2.THRESH_BINARY)
@@ -84,8 +81,7 @@ class GMCNNInpainter(BaseInpainter):
         """
         Configures the GMCNNInpainter object based on the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing the configuration arguments.
+        :param args: The namespace containing the configuration arguments.
         """
         pass
 
@@ -101,11 +97,9 @@ class GMCNNInpainter(BaseInpainter):
         """
         Creates a new instance of the GMCNNInpainter class.
 
-        Args:
-            config (GMCNNConfig, optional): The configuration to use for the model. Defaults to GMCNNConfig.GMCNN_Places2_FP32.
+        :param config: The configuration to use for the model. Defaults to GMCNNConfig.GMCNN_Places2_FP32.
 
-        Returns:
-            GMCNNInpainter: A new instance of the GMCNNInpainter class.
+        :return: A new instance of the GMCNNInpainter class.
         """
         model, weights = config.value
         return GMCNNInpainter(model, weights)

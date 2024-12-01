@@ -21,9 +21,8 @@ class ImageInput(BaseInput):
         """
         Initializes the ImageInput instance with a specified image path and delay.
 
-        Args:
-            path (Optional[str]): The file path to the input image.
-            delay (float): The delay time before reading the image, in seconds.
+        :param path: The file path to the input image.
+        :param delay: The delay time before reading the image, in seconds.
         """
         super().__init__()
 
@@ -36,8 +35,7 @@ class ImageInput(BaseInput):
         """
         Sets up the image input by loading the image from the specified path.
 
-        Raises:
-            Exception: If the specified image path does not exist.
+        :raises Exception: If the specified image path does not exist.
         """
         if not os.path.exists(self.path):
             raise Exception(f"Could not find input image path: '{self.path}'")
@@ -48,12 +46,8 @@ class ImageInput(BaseInput):
         """
         Reads the image and captures the current timestamp.
 
-        Args:
-            None
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: A tuple containing the current timestamp
-            in milliseconds and a copy of the loaded image.
+        :return: A tuple containing the current timestamp
         """
         image = self.image.copy()
         time_stamp = current_millis()
@@ -67,8 +61,6 @@ class ImageInput(BaseInput):
         """
         Releases any resources held by the image input.
 
-        Args:
-            None
         """
         pass
 
@@ -76,9 +68,7 @@ class ImageInput(BaseInput):
         """
         Configures the image input parameters from command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments containing input path 
-            and delay settings.
+        :param args: The command-line arguments containing input path
         """
         if args.source is not None:
             args.input_path = args.source
@@ -91,8 +81,7 @@ class ImageInput(BaseInput):
         """
         Adds command-line parameters for configuring the image input.
 
-        Args:
-            parser (ArgumentParser): The argument parser instance to add parameters to.
+        :param parser: The argument parser instance to add parameters to.
         """
         CommonArgs.add_source_argument(parser)
 

@@ -15,10 +15,8 @@ class BaseFilterNumpy(ABC):
         """
         Applies the filter to a given input array.
 
-        Args:
-            x (np.ndarray): The input array to be filtered.
+        :param x: The input array to be filtered.
 
-        Returns:
-            np.ndarray: The filtered output array.
+        :return: The filtered output array.
         """
         pass

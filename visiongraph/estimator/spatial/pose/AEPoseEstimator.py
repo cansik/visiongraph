@@ -39,14 +39,13 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
         """
         Initializes the AEPoseEstimator with specified parameters.
 
-        Args:
-            model (Asset): The asset representing the pose estimation model.
-            weights (Asset): The asset representing the weights of the model.
-            target_size (Optional[int]): The target size for the input image.
-            aspect_ratio (float): The aspect ratio for the input image.
-            min_score (float): The minimum confidence score for detected poses.
-            auto_adjust_aspect_ratio (bool): Whether to automatically adjust the aspect ratio.
-            device (str): The device to use for inference (e.g., "AUTO", "CPU", "GPU").
+        :param model: The asset representing the pose estimation model.
+        :param weights: The asset representing the weights of the model.
+        :param target_size: The target size for the input image.
+        :param aspect_ratio: The aspect ratio for the input image.
+        :param min_score: The minimum confidence score for detected poses.
+        :param auto_adjust_aspect_ratio: Whether to automatically adjust the aspect ratio.
+        :param device: The device to use for inference (e.g., "AUTO", "CPU", "GPU").
         """
         super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
@@ -54,8 +53,7 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
         """
         Creates the inference engine model for pose estimation.
 
-        Returns:
-            Model: The created model for inference.
+        :return: The created model for inference.
         """
         config = {
             'target_size': self.target_size,
@@ -74,11 +72,9 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
         """
         Creates an instance of AEPoseEstimator using the specified configuration.
 
-        Args:
-            config (AEPoseConfig): The configuration to use for model and weights.
+        :param config: The configuration to use for model and weights.
 
-        Returns:
-            AEPoseEstimator: An instance of the AEPoseEstimator initialized with the specified configuration.
+        :return: An instance of the AEPoseEstimator initialized with the specified configuration.
         """
         model, weights = config.value
         return AEPoseEstimator(model, weights)

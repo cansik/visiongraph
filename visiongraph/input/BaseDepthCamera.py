@@ -27,8 +27,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Configures the camera settings based on command line arguments.
 
-        Args:
-            args (Namespace): The command line arguments namespace.
+        :param args: The command line arguments namespace.
         """
         super().configure(args)
         self.use_infrared = args.infrared
@@ -37,14 +36,12 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Calculates depth coordinates from given normalized coordinates.
 
-        Args:
-            x (float): The x coordinate (normalized).
-            y (float): The y coordinate (normalized).
-            width (int): The width of the image.
-            height (int): The height of the image.
+        :param x: The x coordinate (normalized).
+        :param y: The y coordinate (normalized).
+        :param width: The width of the image.
+        :param height: The height of the image.
 
-        Returns:
-            Tuple[int, int]: The calculated pixel coordinates (ix, iy).
+        :return: The calculated pixel coordinates (ix, iy).
         """
         x, y = MathUtils.transform_coordinates(x, y, self.rotate, self.flip)
 
@@ -67,13 +64,11 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Colorizes a depth image within a specified clipping range.
 
-        Args:
-            image (np.ndarray): The image to colorize.
-            clipping_range (Tuple[Optional[int], Optional[int]]): The clipping range for normalization.
-            colormap (Optional[int]): The OpenCV colormap to apply.
+        :param image: The image to colorize.
+        :param clipping_range: The clipping range for normalization.
+        :param colormap: The OpenCV colormap to apply.
 
-        Returns:
-            np.ndarray: The colorized image.
+        :return: The colorized image.
         """
         if clipping_range[0] is not None and clipping_range[1] is not None:
             low, high = clipping_range
@@ -95,12 +90,10 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Pre-processes the input image based on the stream type.
 
-        Args:
-            image (np.ndarray): The image to be pre-processed.
-            stream_type (CameraStreamType, optional): The type of the camera stream (default is CameraStreamType.Color).
+        :param image: The image to be pre-processed.
+        :param stream_type: The type of the camera stream (default is CameraStreamType.Color).
 
-        Returns:
-            Optional[np.ndarray]: The pre-processed image or None if unprocessable.
+        :return: The pre-processed image or None if unprocessable.
         """
         return image
 
@@ -109,11 +102,9 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Retrieves the raw image from the camera based on the stream type.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of the camera stream (default is CameraStreamType.Color).
+        :param stream_type: The type of the camera stream (default is CameraStreamType.Color).
 
-        Returns:
-            Optional[np.ndarray]: The raw image or None if unavailable.
+        :return: The raw image or None if unavailable.
         """
         pass
 
@@ -122,13 +113,11 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Retrieves and processes the image from the camera stream.
 
-        Args:
-            stream_type (CameraStreamType, optional): The type of the camera stream (default is CameraStreamType.Color).
-            pre_processed (bool, optional): Whether to pre-process the image (default is True).
-            post_processed (bool, optional): Whether to post-process the image (default is True).
+        :param stream_type: The type of the camera stream (default is CameraStreamType.Color).
+        :param pre_processed: Whether to pre-process the image (default is True).
+        :param post_processed: Whether to post-process the image (default is True).
 
-        Returns:
-            Optional[np.ndarray]: The processed image or None if unavailable.
+        :return: The processed image or None if unavailable.
         """
         frame = self.get_raw_image(stream_type)
 
@@ -151,8 +140,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the processed color image.
 
-        Returns:
-            Optional[np.ndarray]: The processed color image or None if unavailable.
+        :return: The processed color image or None if unavailable.
         """
         return self.get_image(CameraStreamType.Color, True, True)
 
@@ -161,8 +149,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the processed depth image.
 
-        Returns:
-            Optional[np.ndarray]: The processed depth image or None if unavailable.
+        :return: The processed depth image or None if unavailable.
         """
         return self.get_image(CameraStreamType.Depth, True, True)
 
@@ -171,8 +158,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the processed infrared image.
 
-        Returns:
-            Optional[np.ndarray]: The processed infrared image or None if unavailable.
+        :return: The processed infrared image or None if unavailable.
         """
         return self.get_image(CameraStreamType.Infrared, True, True)
 
@@ -181,8 +167,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the raw color image from the camera.
 
-        Returns:
-            Optional[np.ndarray]: The raw color image or None if unavailable.
+        :return: The raw color image or None if unavailable.
         """
         return self.get_raw_image(CameraStreamType.Color)
 
@@ -191,8 +176,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the raw depth image from the camera.
 
-        Returns:
-            Optional[np.ndarray]: The raw depth image or None if unavailable.
+        :return: The raw depth image or None if unavailable.
         """
         return self.get_raw_image(CameraStreamType.Depth)
 
@@ -201,8 +185,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Returns the raw infrared image from the camera.
 
-        Returns:
-            Optional[np.ndarray]: The raw infrared image or None if unavailable.
+        :return: The raw infrared image or None if unavailable.
         """
         return self.get_raw_image(CameraStreamType.Infrared)
 
@@ -211,8 +194,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Adds camera-specific parameters to the argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser instance.
+        :param parser: The argument parser instance.
         """
         super(BaseDepthCamera, BaseDepthCamera).add_params(parser)
         BaseDepthInput.add_params(parser)
@@ -230,7 +212,6 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         Indicates whether the camera is in playback mode.
 
-        Returns:
-            bool: False since this is a real-time camera.
+        :return: False since this is a real-time camera.
         """
         return False

@@ -17,9 +17,8 @@ class SpatialCascadeEstimator(ObjectDetector[SpatialCascadeResult]):
         """
         Initializes the SpatialCascadeEstimator with a root detector and child detectors.
 
-        Args:
-            root_detector (ObjectDetector): The root detector used for processing.
-            **child_detectors (RoiEstimator): Child detectors for processing.
+        :param root_detector: The root detector used for processing.
+        :param **child_detectors: Child detectors for processing.
         """
         super().__init__(min_score=0)
         self.root_detector = root_detector
@@ -38,11 +37,9 @@ class SpatialCascadeEstimator(ObjectDetector[SpatialCascadeResult]):
         """
         Processes the input data using the cascade of detectors.
 
-        Args:
-            data (np.ndarray): Input data to be processed.
+        :param data: Input data to be processed.
 
-        Returns:
-            ResultList[SpatialCascadeResult]: List of spatial cascade results.
+        :return: List of spatial cascade results.
         """
         root_results = self.root_detector.process(data)
         results = ResultList()

@@ -24,15 +24,14 @@ class YOLOXE2EDetector(ObjectDetector):
         """
         Initialize the YOLOXE2EDetector object with specified parameters.
 
-        Args:
-            *assets (Asset): Variable length argument list of assets.
-            labels (List[str]): List of label names.
-            min_score (float): Minimum score for detected objects (default is 0.3).
-            nms (bool): Flag indicating whether to apply non-maximum suppression (default is True).
-            nms_threshold (float): Threshold value for non-maximum suppression (default is 0.3).
-            nms_eta (Optional[float]): Optional parameter for non-maximum suppression.
-            nms_top_k (Optional[int]): Optional parameter for non-maximum suppression.
-            engine (InferenceEngine): Inference engine to be used (default is InferenceEngine.ONNX).
+        :param *assets: Variable length argument list of assets.
+        :param labels: List of label names.
+        :param min_score: Minimum score for detected objects (default is 0.3).
+        :param nms: Flag indicating whether to apply non-maximum suppression (default is True).
+        :param nms_threshold: Threshold value for non-maximum suppression (default is 0.3).
+        :param nms_eta: Optional parameter for non-maximum suppression.
+        :param nms_top_k: Optional parameter for non-maximum suppression.
+        :param engine: Inference engine to be used (default is InferenceEngine.ONNX).
         """
         super().__init__(min_score)
         self.engine = InferenceEngineFactory.create(engine, assets,
@@ -58,11 +57,9 @@ class YOLOXE2EDetector(ObjectDetector):
         """
         Process the input image to detect objects and return the results.
 
-        Args:
-            image (np.ndarray): Input image to be processed.
+        :param image: Input image to be processed.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: List of object detection results.
+        :return: List of object detection results.
         """
         output = self.engine.process(image)
         boxes = output["boxes"]

@@ -16,9 +16,8 @@ class CameraIntrinsics:
         """
         Initializes the CameraIntrinsics object with the given intrinsic and distortion parameters.
 
-        Args:
-            intrinsic_matrix (np.ndarray): The 3x4 intrinsic matrix.
-            distortion_coefficients (np.ndarray): The distortion coefficients.
+        :param intrinsic_matrix: The 3x4 intrinsic matrix.
+        :param distortion_coefficients: The distortion coefficients.
         """
         self.intrinsic_matrix = intrinsic_matrix
         self.distortion_coefficients = distortion_coefficients
@@ -27,8 +26,7 @@ class CameraIntrinsics:
         """
         Saves the camera intrinsics to a JSON file.
 
-        Args:
-            path (str): The file path to save the data to.
+        :param path: The file path to save the data to.
         """
         data = {
             INTRINSIC_MATRIX_NAME: self.intrinsic_matrix.tolist(),
@@ -43,11 +41,9 @@ class CameraIntrinsics:
         """
         Loads the camera intrinsics from a JSON file.
 
-        Args:
-            path (str): The file path to load the data from.
+        :param path: The file path to load the data from.
 
-        Returns:
-            CameraIntrinsics: The loaded CameraIntrinsics object.
+        :return: The loaded CameraIntrinsics object.
         """
         with open(path, "r") as file:
             data = json.load(file)
@@ -62,11 +58,9 @@ class CameraIntrinsics:
         """
         Loads the camera intrinsics from a file stored in OpenCV's storage format.
 
-        Args:
-            path (str): The file path to load the data from.
+        :param path: The file path to load the data from.
 
-        Returns:
-            CameraIntrinsics: The loaded CameraIntrinsics object.
+        :return: The loaded CameraIntrinsics object.
         """
         storage = cv2.FileStorage(path, cv2.FILE_STORAGE_READ)
         intrinsic_mat = storage.getNode('Camera_Matrix').mat()
@@ -80,8 +74,7 @@ class CameraIntrinsics:
         """
         Gets the pixel distance from the principal point.
 
-        Returns:
-            float: The pixel distance.
+        :return: The pixel distance.
         """
         return self.intrinsic_matrix[0, 2]
 
@@ -90,8 +83,7 @@ class CameraIntrinsics:
         """
         Gets the pixel distance from the principal point (y-axis).
 
-        Returns:
-            float: The pixel distance.
+        :return: The pixel distance.
         """
         return self.intrinsic_matrix[1, 2]
 
@@ -100,8 +92,7 @@ class CameraIntrinsics:
         """
         Gets the focal length in the x-direction.
 
-        Returns:
-            float: The focal length.
+        :return: The focal length.
         """
         return self.intrinsic_matrix[0, 0]
 
@@ -110,8 +101,7 @@ class CameraIntrinsics:
         """
         Gets the focal length in the y-direction.
 
-        Returns:
-            float: The focal length.
+        :return: The focal length.
         """
         return self.intrinsic_matrix[1, 1]
 
@@ -119,7 +109,6 @@ class CameraIntrinsics:
         """
         Returns a string representation of the CameraIntrinsics object.
 
-        Returns:
-            str: A string representation of the object.
+        :return: A string representation of the object.
         """
         return f"{CameraIntrinsics.__name__} (fx: {self.fx:.3f}, fy: {self.fy:.3f} px: {self.px:.3f}, py: {self.py:.3f})"

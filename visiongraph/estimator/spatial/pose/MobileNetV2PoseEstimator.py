@@ -47,11 +47,10 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
     """
     Pose Estimator using MobileNetV2 architecture.
 
-    Args:
-        model (Asset): The model asset to be used.
-        weights (Asset): The weights asset for the model.
-        min_score (float, optional): Minimum score threshold for detected keypoints. Defaults to 0.2.
-        device (str, optional): Device type for running the model. Defaults to "AUTO".
+    :param model: The model asset to be used.
+    :param weights: The weights asset for the model.
+    :param min_score: Minimum score threshold for detected keypoints. Defaults to 0.2.
+    :param device: Device type for running the model. Defaults to "AUTO".
     """
 
     def __init__(self, model: Asset, weights: Asset,
@@ -72,11 +71,9 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         """
         Processes input data and returns detected poses.
 
-        Args:
-            data (np.ndarray): Input data for pose estimation.
+        :param data: Input data for pose estimation.
 
-        Returns:
-            ResultList[COCOOpenPose]: A list of detected poses with their corresponding keypoints.
+        :return: A list of detected poses with their corresponding keypoints.
         """
         output_dict = self.engine.process(data)
         outputs_nhwc = output_dict[self.engine.output_names[0]]
@@ -145,12 +142,10 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         """
         Extracts keypoints from the probability map.
 
-        Args:
-            probability_map (np.ndarray): The probability map from which to extract keypoints.
-            threshold (float, optional): Threshold to filter weak keypoints. Defaults to 0.1.
+        :param probability_map: The probability map from which to extract keypoints.
+        :param threshold: Threshold to filter weak keypoints. Defaults to 0.1.
 
-        Returns:
-            List[Tuple[int, int, float]]: List of detected keypoints with their (x, y) coordinates and confidence scores.
+        :return: List of detected keypoints with their (x, y) coordinates and confidence scores.
         """
         map_smooth = cv2.GaussianBlur(probability_map, (3, 3), 0, 0)
         map_mask = np.uint8(map_smooth > threshold)
@@ -172,14 +167,12 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         """
         Determines valid and invalid pairs of keypoints.
 
-        Args:
-            outputs (np.ndarray): The model's output.
-            w (int): Width of the output.
-            h (int): Height of the output.
-            detected_keypoints (List[List[Tuple]]): List of detected keypoints.
+        :param outputs: The model's output.
+        :param w: Width of the output.
+        :param h: Height of the output.
+        :param detected_keypoints: List of detected keypoints.
 
-        Returns:
-            Tuple[List[np.ndarray], List[int]]: A tuple containing valid pairs of keypoints and indices of invalid pairs.
+        :return: A tuple containing valid pairs of keypoints and indices of invalid pairs.
         """
         valid_pairs = []
         invalid_pairs = []
@@ -239,13 +232,11 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         """
         Aggregates keypoints for each detected person based on valid pairs.
 
-        Args:
-            valid_pairs (List[np.ndarray]): List of valid pairs of keypoints.
-            invalid_pairs (List[int]): List of indices for invalid pairs.
-            keypoints_list (np.ndarray): Array of keypoints.
+        :param valid_pairs: List of valid pairs of keypoints.
+        :param invalid_pairs: List of indices for invalid pairs.
+        :param keypoints_list: Array of keypoints.
 
-        Returns:
-            np.ndarray: Array of personwise keypoints, where each row corresponds to a person.
+        :return: Array of personwise keypoints, where each row corresponds to a person.
         """
         personwiseKeypoints = -1 * np.ones((0, 19))
 
@@ -283,11 +274,9 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         """
         Factory method to create a MobileNetV2PoseEstimator instance.
 
-        Args:
-            config (MobileNetV2PoseEstimatorConfig, optional): The configuration for the pose estimator. Defaults to MNV2PE_1_4_224_FP32.
+        :param config: The configuration for the pose estimator. Defaults to MNV2PE_1_4_224_FP32.
 
-        Returns:
-            MobileNetV2PoseEstimator: An instance of the MobileNetV2PoseEstimator.
+        :return: An instance of the MobileNetV2PoseEstimator.
         """
         model, weights = config.value
         return MobileNetV2PoseEstimator(model, weights)

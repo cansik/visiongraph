@@ -17,10 +17,9 @@ class ResultAnnotator(GraphNode[ResultDict, np.ndarray]):
         """
         Initializes the ResultAnnotator node.
 
-        Args:
-            image_key (str): The key of the image in the result dictionary. Defaults to DEFAULT_IMAGE_KEY.
-            result_keys (List[str]): A list of keys of the results to be annotated. Defaults to None.
-            annotation_args: Keyword arguments used for annotations.
+        :param image_key: The key of the image in the result dictionary. Defaults to DEFAULT_IMAGE_KEY.
+        :param result_keys: A list of keys of the results to be annotated. Defaults to None.
+        :param annotation_args: Keyword arguments used for annotations.
         """
         self.image_key = image_key
         self.result_keys = result_keys
@@ -36,11 +35,9 @@ class ResultAnnotator(GraphNode[ResultDict, np.ndarray]):
         """
         Annotates the results of a computation on an image.
 
-        Args:
-            data (ResultDict): The result dictionary to be processed.
+        :param data: The result dictionary to be processed.
 
-        Returns:
-            ResultDict: The annotated result dictionary.
+        :return: The annotated result dictionary.
         """
         image = data[self.image_key]
 
@@ -64,8 +61,7 @@ class ResultAnnotator(GraphNode[ResultDict, np.ndarray]):
         """
         Configures the node based on the provided arguments.
 
-        Args:
-            args (Namespace): The command-line arguments.
+        :param args: The command-line arguments.
         """
         pass
 
@@ -74,7 +70,6 @@ class ResultAnnotator(GraphNode[ResultDict, np.ndarray]):
         """
         Adds parameters to the parser for configuring this graph node.
 
-        Args:
-            parser (ArgumentParser): The argument parser to be configured.
+        :param parser: The argument parser to be configured.
         """
         pass

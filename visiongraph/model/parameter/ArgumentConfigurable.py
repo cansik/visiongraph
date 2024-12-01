@@ -13,8 +13,7 @@ class ArgumentConfigurable(ABC):
         """
         Configures the object with values parsed from command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line argument namespace.
+        :param args: The parsed command-line argument namespace.
         """
         pass
 
@@ -24,8 +23,7 @@ class ArgumentConfigurable(ABC):
         """
         Adds command-line parameters to a parser instance.
 
-        Args:
-            parser (ArgumentParser): The parser instance to be extended.
+        :param parser: The parser instance to be extended.
         """
         pass
 
@@ -34,13 +32,11 @@ class ArgumentConfigurable(ABC):
         """
         Retrieves the value of a parsed argument with a fallback to a default value if not found.
 
-        Args:
-            args (Namespace): The parsed command-line argument namespace.
-            key (str): The name of the argument to retrieve.
-            default (any, optional): The default value to return if the argument is not found. Defaults to None.
+        :param args: The parsed command-line argument namespace.
+        :param key: The name of the argument to retrieve.
+        :param default: The default value to return if the argument is not found. Defaults to None.
 
-        Returns:
-            any: The retrieved argument value or its default value if not found.
+        :return: The retrieved argument value or its default value if not found.
         """
         if not hasattr(args, key):
             logging.debug(f"Argument {key} has not been parsed, using default value: {default}")

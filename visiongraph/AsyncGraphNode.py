@@ -12,7 +12,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     """
     An asynchronous graph node that runs in a separate process.
 
-    This class provides an implementation of the graph node interface 
+    This class provides an implementation of the graph node interface
     with support for asynchronous execution.
     """
 
@@ -22,11 +22,10 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         """
         Initializes an instance of the AsyncGraphNode class.
 
-        Args:
-            node (GraphNode): The underlying graph node.
-            input_queue_size (int, optional): The maximum size of the input queue. Defaults to 1.
-            output_queue_size (int, optional): The maximum size of the output queue. Defaults to 1.
-            daemon (bool, optional): Whether the process should be a daemon. Defaults to True.
+        :param node: The underlying graph node.
+        :param input_queue_size: The maximum size of the input queue. Defaults to 1.
+        :param output_queue_size: The maximum size of the output queue. Defaults to 1.
+        :param daemon: Whether the process should be a daemon. Defaults to True.
         """
         self.node = node
 
@@ -42,7 +41,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         """
         Starts the process and begins the loop.
 
-        This method should be called before any other methods on the 
+        This method should be called before any other methods on the
         instance are invoked.
         """
         self._running = True
@@ -78,11 +77,9 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         """
         Processes input data and sends output to the output queue.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The output of the processing operation.
+        :return: The output of the processing operation.
         """
         self.input_queue.put(data)
         return self.output_queue.get()
@@ -100,8 +97,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         """
         Configures the underlying graph node based on the provided arguments.
 
-        Args:
-            args (Namespace): The namespace containing the configuration options.
+        :param args: The namespace containing the configuration options.
         """
         super().configure(args)
         self.node.configure(args)
@@ -111,7 +107,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         """
         Adds command-line parameters to the parser.
 
-        This method should be overridden by subclasses to provide custom 
+        This method should be overridden by subclasses to provide custom
         command-line options.
         """
         super().add_params(parser)

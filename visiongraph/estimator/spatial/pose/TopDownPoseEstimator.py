@@ -26,9 +26,8 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         """
         Initializes the TopDownPoseEstimator.
 
-        Args:
-            human_detector (ObjectDetector[ObjectDetectionResult]): The human detector used to detect people.
-            min_score (float): The minimum score required for a detection to be considered valid.
+        :param human_detector: The human detector used to detect people.
+        :param min_score: The minimum score required for a detection to be considered valid.
         """
         super().__init__(min_score)
 
@@ -49,11 +48,9 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         """
         Processes an image to detect people and estimate their pose.
 
-        Args:
-            data (np.ndarray): The input image.
+        :param data: The input image.
 
-        Returns:
-            ResultList[OutputType]: A list of pose landmark results.
+        :return: A list of pose landmark results.
         """
         detections: List[ObjectDetectionResult] = self.human_detector.process(data)
 
@@ -78,11 +75,9 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         """
         Pre-processes an image by doing nothing in this implementation.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
 
-        Returns:
-            np.ndarray: The pre-processed image.
+        :return: The pre-processed image.
         """
         return image
 
@@ -91,14 +86,12 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
         """
         Detects landmarks in a region of interest (ROI).
 
-        Args:
-            image (np.ndarray): The input image.
-            roi (np.ndarray): The region of interest.
-            xs (int): The x-coordinate of the ROI center.
-            ys (int): The y-coordinate of the ROI center.
+        :param image: The input image.
+        :param roi: The region of interest.
+        :param xs: The x-coordinate of the ROI center.
+        :param ys: The y-coordinate of the ROI center.
 
-        Returns:
-            List[OutputType]: A list of pose landmark results.
+        :return: A list of pose landmark results.
         """
         pass
 

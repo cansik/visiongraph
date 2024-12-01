@@ -27,11 +27,10 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         """
         Initializes the ArUcoCameraPoseEstimator object.
 
-        Args:
-            camera_matrix (np.ndarray): The camera intrinsic matrix.
-            fisheye_distortion (np.ndarray): The camera distortion coefficients.
-            aruco_config (int, optional): The configuration of the ArUco dictionary. Defaults to aruco.DICT_6X6_50.
-            marker_length_in_m (float, optional): The length of an ArUco marker in meters. Defaults to 0.1.
+        :param camera_matrix: The camera intrinsic matrix.
+        :param fisheye_distortion: The camera distortion coefficients.
+        :param aruco_config: The configuration of the ArUco dictionary. Defaults to aruco.DICT_6X6_50.
+        :param marker_length_in_m: The length of an ArUco marker in meters. Defaults to 0.1.
         """
         self.camera_matrix = camera_matrix
         self.fisheye_distortion = fisheye_distortion
@@ -56,11 +55,9 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         """
         Processes the input image or video frame to detect ArUco markers and estimate camera pose.
 
-        Args:
-            data (np.ndarray): The input image or video frame.
+        :param data: The input image or video frame.
 
-        Returns:
-            Optional[ArUcoCameraPose]: The estimated camera pose if an ArUco marker is detected, otherwise None.
+        :return: The estimated camera pose if an ArUco marker is detected, otherwise None.
         """
         # find ArUco markers
         (corners, ids, rejected) = self.aruco_detector.detectMarkers(data)
@@ -109,8 +106,7 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         """
         Configures the estimator based on the provided command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -119,7 +115,6 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         """
         Adds parameters to the parser for configuration.
 
-        Args:
-            parser (ArgumentParser): The parser to add parameters to.
+        :param parser: The parser to add parameters to.
         """
         pass

@@ -14,9 +14,8 @@ class RepositoryAsset(Asset):
         """
         Initializes a RepositoryAsset object.
 
-        Args:
-            name (str): The name of the asset.
-            repository_url (str): The URL of the repository containing the asset. Defaults to PUBLIC_DATA_URL.
+        :param name: The name of the asset.
+        :param repository_url: The URL of the repository containing the asset. Defaults to PUBLIC_DATA_URL.
         """
         self.name = name
         self._local_path: Optional[str] = None
@@ -27,8 +26,7 @@ class RepositoryAsset(Asset):
         """
         Checks if a local copy of the asset exists.
 
-        Returns:
-            bool: True if a local copy exists, False otherwise.
+        :return: True if a local copy exists, False otherwise.
         """
         return self._local_path is not None and os.path.exists(self._local_path)
 
@@ -39,8 +37,7 @@ class RepositoryAsset(Asset):
 
         If the asset does not exist locally, prepares it by downloading from the repository URL.
 
-        Returns:
-            str: The local or prepared path to the asset.
+        :return: The local or prepared path to the asset.
         """
         if self.exists:
             return self._local_path
@@ -62,11 +59,9 @@ class RepositoryAsset(Asset):
         """
         Helper method to download openVINO assets (XML and binary files).
 
-        Args:
-            name (str): The name of the asset.
-            repository_url (str): The URL of the repository containing the asset. Defaults to PUBLIC_DATA_URL.
+        :param name: The name of the asset.
+        :param repository_url: The URL of the repository containing the asset. Defaults to PUBLIC_DATA_URL.
 
-        Returns:
-            Tuple[RepositoryAsset, RepositoryAsset]: A tuple containing two RepositoryAsset objects representing the XML and binary files for the openVINO model.
+        :return: A tuple containing two RepositoryAsset objects representing the XML and binary files for the openVINO model.
         """
         return RepositoryAsset(f"{name}.xml", repository_url), RepositoryAsset(f"{name}.bin", repository_url)

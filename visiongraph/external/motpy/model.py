@@ -6,8 +6,10 @@ from scipy.linalg import block_diag
 
 from .core import Box, Vector
 
-""" The list of model presets below is not complete, more reasonable
-options will be added in the future """
+"""
+ The list of model presets below is not complete, more reasonable
+options will be added in the future
+"""
 
 
 class ModelPreset(Enum):
@@ -89,15 +91,19 @@ class Model:
         return np.array(pos_idxs), np.array(size_idxs), z_in_x_idxs, offset_idx
 
     def build_F(self):
-        """ returns constructed F matrix with specified positional
-            e.g. (x,y,z) and size e.g. (w,h) dimensions """
+        """
+ returns constructed F matrix with specified positional
+            e.g. (x,y,z) and size e.g. (w,h) dimensions
+            """
         block_pos = _base_dim_block(self.dt, self.order_pos)
         block_size = _base_dim_block(self.dt, self.order_size)
         diag_components = [block_pos] * self.dim_pos + [block_size] * self.dim_size
         return block_diag(*diag_components)
 
     def build_Q(self):
-        """ process noise """
+        """
+ process noise
+ """
         var_pos = self.q_var_pos
         var_size = self.q_var_size
 
@@ -111,13 +117,17 @@ class Model:
         return block_diag(*diag_components)
 
     def build_R(self):
-        """ measurement noise, expected order is positon first, then size """
+        """
+ measurement noise, expected order is positon first, then size
+ """
         block_pos = np.eye(self.dim_pos) * self.r_var_pos
         block_size = np.eye(self.dim_size) * self.r_var_size
         return block_diag(block_pos, block_size)
 
     def build_H(self):
-        """ measurement matrix """
+        """
+ measurement matrix
+ """
         # we only measure the first variable in each dimension
         def _base_block(order): return np.array([1] + [0] * order)
         diag_components = \
@@ -136,8 +146,10 @@ class Model:
         return np.concatenate((center, length))
 
     def box_to_x(self, box: Box) -> Vector:
-        """ box is expected to be in [xmin, ymin, zmin, ..., xmax, ymax, zmax, ...] format
-        for 2d-1ord+2d-0ord case returns np.array([cx, 0, 0, cy, 0, 0, w, h]) """
+        """
+ box is expected to be in [xmin, ymin, zmin, ..., xmax, ymax, zmax, ...] format
+        for 2d-1ord+2d-0ord case returns np.array([cx, 0, 0, cy, 0, 0, w, h])
+        """
         x = np.zeros((self.state_length,))
         x[self.z_in_x_idxs] = self.box_to_z(box)
         return x

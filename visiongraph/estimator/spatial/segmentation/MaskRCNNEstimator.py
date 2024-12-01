@@ -72,12 +72,11 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Initializes the MaskRCNNEstimator with the specified model, weights, and labels.
 
-        Args:
-            model (Asset): The model asset for instance segmentation.
-            weights (Asset): The weights asset for instance segmentation.
-            labels (List[str]): List of label names for segmentation results.
-            min_score (float, optional): Minimum score for filtering predictions. Defaults to 0.5.
-            device (str, optional): Device for inference (e.g., "AUTO"). Defaults to "AUTO".
+        :param model: The model asset for instance segmentation.
+        :param weights: The weights asset for instance segmentation.
+        :param labels: List of label names for segmentation results.
+        :param min_score: Minimum score for filtering predictions. Defaults to 0.5.
+        :param device: Device for inference (e.g., "AUTO"). Defaults to "AUTO".
         """
         super().__init__(min_score)
         self.model = model
@@ -121,11 +120,9 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Processes the input data through the model and returns segmentation results.
 
-        Args:
-            data (np.ndarray): The input image data as a NumPy array.
+        :param data: The input image data as a NumPy array.
 
-        Returns:
-            ResultList[InstanceSegmentationResult]: A list of instance segmentation results.
+        :return: A list of instance segmentation results.
         """
         h, w = data.shape[:2]
 
@@ -159,18 +156,16 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Post-processes the model outputs to extract bounding boxes, scores, classes, and masks.
 
-        Args:
-            outputs: The raw outputs from the model.
-            scale_x (float): Scaling factor for the x dimension.
-            scale_y (float): Scaling factor for the y dimension.
-            frame_height (int): Height of the input frame.
-            frame_width (int): Width of the input frame.
-            input_height (int): Height of the input image.
-            input_width (int): Width of the input image.
-            conf_threshold (float): Confidence threshold for filtering predictions.
+        :param outputs: The raw outputs from the model.
+        :param scale_x: Scaling factor for the x dimension.
+        :param scale_y: Scaling factor for the y dimension.
+        :param frame_height: Height of the input frame.
+        :param frame_width: Width of the input frame.
+        :param input_height: Height of the input image.
+        :param input_width: Width of the input image.
+        :param conf_threshold: Confidence threshold for filtering predictions.
 
-        Returns:
-            Tuple: A tuple containing scores, classes, boxes, and masks.
+        :return: A tuple containing scores, classes, boxes, and masks.
         """
         boxes_name = self.output_layer_mapping["boxes"].name
         scores_name = self.output_layer_mapping["scores"].name
@@ -206,12 +201,10 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Expands a bounding box by a specified scale factor.
 
-        Args:
-            box (np.ndarray): The bounding box to expand.
-            scale (float): The scale factor for expansion.
+        :param box: The bounding box to expand.
+        :param scale: The scale factor for expansion.
 
-        Returns:
-            np.ndarray: The expanded bounding box.
+        :return: The expanded bounding box.
         """
         w_half = (box[2] - box[0]) * .5
         h_half = (box[3] - box[1]) * .5
@@ -231,14 +224,12 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Processes the raw mask for segmentation and aligns it with the image.
 
-        Args:
-            box (np.ndarray): The bounding box for the object.
-            raw_cls_mask (np.ndarray): The raw mask for the object class.
-            im_h (int): The height of the original image.
-            im_w (int): The width of the original image.
+        :param box: The bounding box for the object.
+        :param raw_cls_mask: The raw mask for the object class.
+        :param im_h: The height of the original image.
+        :param im_w: The width of the original image.
 
-        Returns:
-            np.ndarray: The processed binary mask.
+        :return: The processed binary mask.
         """
         # Add zero border to prevent upsampling artifacts on segment borders.
         raw_cls_mask = np.pad(raw_cls_mask, ((1, 1), (1, 1)), 'constant', constant_values=0)
@@ -261,12 +252,9 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         Creates an instance of the MaskRCNNEstimator using the specified configuration.
 
-        Args:
-            config (MaskRCNNConfig, optional): The configuration to use for the estimator.
-            Defaults to MaskRCNNConfig.EfficientNet_480_FP32.
+        :param config: The configuration to use for the estimator.
 
-        Returns:
-            MaskRCNNEstimator: An instance of the MaskRCNNEstimator.
+        :return: An instance of the MaskRCNNEstimator.
         """
         model, weights, labels = config.value
         return MaskRCNNEstimator(model, weights, labels)

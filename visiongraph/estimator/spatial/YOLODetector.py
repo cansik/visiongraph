@@ -54,13 +54,12 @@ class YOLODetector(OpenVinoObjectDetector):
         """
         Initializes the YOLO detector with model-specific parameters.
 
-        Args:
-            model (Asset): The model asset for the detector.
-            weights (Asset): The weights asset for the detector.
-            labels (List[str]): A list of labels for the detector.
-            min_score (float): The minimum score threshold for detection (default is 0.5).
-            architecture (YOLOArchitecture): The YOLO architecture to utilize (default is YOLOv4).
-            device (str): The device to run inference on (default is "AUTO").
+        :param model: The model asset for the detector.
+        :param weights: The weights asset for the detector.
+        :param labels: A list of labels for the detector.
+        :param min_score: The minimum score threshold for detection (default is 0.5).
+        :param architecture: The YOLO architecture to utilize (default is YOLOv4).
+        :param device: The device to run inference on (default is "AUTO").
         """
         super().__init__(model, weights, labels, min_score, device)
         self.architecture = architecture
@@ -69,8 +68,7 @@ class YOLODetector(OpenVinoObjectDetector):
         """
         Creates an OpenVino DetectionModel based on the YOLO architecture.
 
-        Returns:
-            DetectionModel: The OpenVino model for object detection.
+        :return: The OpenVino model for object detection.
         """
         config = {
             'resize_type': None,
@@ -92,11 +90,9 @@ class YOLODetector(OpenVinoObjectDetector):
         """
         Creates a YOLO detector based on the given configuration.
 
-        Args:
-            config (YOLOConfig): The YOLO configuration to use (default is YOLOv4_Tiny_FP16).
+        :param config: The YOLO configuration to use (default is YOLOv4_Tiny_FP16).
 
-        Returns:
-            YOLODetector: An instance of the YOLODetector based on the provided config.
+        :return: An instance of the YOLODetector based on the provided config.
         """
         model, weights, labels, architecture = config.value
         return YOLODetector(model, weights, labels, architecture=architecture)

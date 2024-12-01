@@ -9,7 +9,7 @@ from visiongraph.model.DepthBuffer import DepthBuffer
 class BaseDepthInput(DepthBuffer, BaseInput, ABC):
     """
     Abstract base class for depth input handling, inheriting from DepthBuffer and BaseInput.
-    This class manages depth input configuration and parameters 
+    This class manages depth input configuration and parameters
     for processing depth data from sources like cameras.
     """
 
@@ -28,8 +28,7 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
         """
         Configures the depth input settings based on command line arguments.
 
-        Args:
-            args (Namespace): The namespace containing command line argument values.
+        :param args: The namespace containing command line argument values.
         """
         super().configure(args)
 
@@ -44,8 +43,7 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
         """
         Adds command line parameters for depth input configuration to the argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser to add parameters to.
+        :param parser: The argument parser to add parameters to.
         """
         super(BaseDepthInput, BaseDepthInput).add_params(parser)
 

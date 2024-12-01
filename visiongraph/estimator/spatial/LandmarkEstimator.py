@@ -22,10 +22,8 @@ class LandmarkEstimator(ObjectDetector[OutputType], ABC):
         """
         An abstract method to process input data and return a list of output type results.
 
-        Args:
-            data (np.ndarray): An input NumPy array representing the data to be processed.
+        :param data: An input NumPy array representing the data to be processed.
 
-        Returns:
-            ResultList[OutputType]: A list of output type results.
+        :return: A list of output type results.
         """
         pass

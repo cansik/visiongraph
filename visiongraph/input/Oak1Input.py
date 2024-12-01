@@ -15,12 +15,10 @@ class Oak1Input(DepthAIBaseInput):
         """
         Reads the latest timestamp and RGB frame from the Oak1 device.
 
-        This method overrides the read function in the base class to 
+        This method overrides the read function in the base class to
         incorporate post-processing of the retrieved data.
 
-        Returns:
-            tuple: A tuple containing the last timestamp (int) 
-                   and the last RGB frame (Optional[np.ndarray]).
+        :return: A tuple containing the last timestamp (int)
         """
         super().read()
         return self._post_process(self._last_ts, self._last_rgb_frame)

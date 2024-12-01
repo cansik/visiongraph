@@ -29,12 +29,11 @@ class CenterNetDetector(OpenVinoObjectDetector):
         """
         Initializes the CenterNetDetector with model, weights, labels, minimum score, and device.
 
-        Args:
-            model (Asset): The model asset.
-            weights (Asset): The weights asset.
-            labels (List[str]): List of label strings.
-            min_score (float): Minimum score threshold (default is 0.5).
-            device (str): Device to execute inference on (default is "AUTO").
+        :param model: The model asset.
+        :param weights: The weights asset.
+        :param labels: List of label strings.
+        :param min_score: Minimum score threshold (default is 0.5).
+        :param device: Device to execute inference on (default is "AUTO").
         """
         super().__init__(model, weights, labels, min_score, device)
 
@@ -42,8 +41,7 @@ class CenterNetDetector(OpenVinoObjectDetector):
         """
         Creates the Inference Engine model for CenterNetDetector.
 
-        Returns:
-            DetectionModel: The created detection model.
+        :return: The created detection model.
         """
         config = {
             'resize_type': None,
@@ -65,11 +63,9 @@ class CenterNetDetector(OpenVinoObjectDetector):
         """
         Creates a CenterNetDetector based on the specified CenterNet configuration.
 
-        Args:
-            config (CenterNetConfig): CenterNet configuration (default is CenterNet_FP32).
+        :param config: CenterNet configuration (default is CenterNet_FP32).
 
-        Returns:
-            CenterNetDetector: The created CenterNetDetector object.
+        :return: The created CenterNetDetector object.
         """
         model, weights, labels = config.value
         return CenterNetDetector(model, weights, labels)

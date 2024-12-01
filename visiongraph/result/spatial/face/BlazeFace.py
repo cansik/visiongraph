@@ -16,10 +16,9 @@ class BlazeFace(FaceLandmarkResult):
         """
         Initializes a BlazeFace object with the provided score, landmarks, and bounding box.
 
-        Args:
-            score (float): The confidence score of the detected face.
-            landmarks (vector.VectorNumpy4D): The 2D landmarks of the face.
-            bounding_box (BoundingBox2D): The bounding box around the detected face.
+        :param score: The confidence score of the detected face.
+        :param landmarks: The 2D landmarks of the face.
+        :param bounding_box: The bounding box around the detected face.
         """
         super().__init__(score, landmarks, bounding_box)
 
@@ -28,8 +27,7 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the right eye.
+        :return: The 2D coordinates of the right eye.
         """
         return self.landmarks[0]
 
@@ -38,8 +36,7 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the left eye.
+        :return: The 2D coordinates of the left eye.
         """
         return self.landmarks[1]
 
@@ -48,8 +45,7 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the nose.
+        :return: The 2D coordinates of the nose.
         """
         return self.landmarks[2]
 
@@ -58,8 +54,7 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the mouth center landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the mouth center.
+        :return: The 2D coordinates of the mouth center.
         """
         return self.landmarks[3]
 
@@ -68,8 +63,7 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the right ear tragion landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the right ear tragion.
+        :return: The 2D coordinates of the right ear tragion.
         """
         return self.landmarks[4]
 
@@ -78,7 +72,6 @@ class BlazeFace(FaceLandmarkResult):
         """
         Retrieves the coordinates of the left ear tragion landmark.
 
-        Returns:
-            vector.Vector4D: The 2D coordinates of the left ear tragion.
+        :return: The 2D coordinates of the left ear tragion.
         """
         return self.landmarks[5]

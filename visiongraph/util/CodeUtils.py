@@ -8,11 +8,8 @@ def deprecated(message: str = ""):
     """
     A decorator to mark functions as deprecated.
 
-    Args:
-        message (str): An optional message indicating the reason for deprecation.
+    :param message: An optional message indicating the reason for deprecation.
 
-    This will emit a warning when the decorated function is called for the first time,
-    provided that the filter is set to show DeprecationWarning.
     """
 
     def decorator_wrapper(func):

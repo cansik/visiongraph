@@ -23,17 +23,11 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         Initializes a MediaPipe FaceMeshEstimator.
 
-        Args:
-            static_image_mode (bool, optional): Whether to use the static image mode.
-                Defaults to False.
-            max_num_faces (int, optional): The maximum number of faces to detect.
-                Defaults to 1.
-            refine_landmarks (bool, optional): Whether to refine the landmarks.
-                Defaults to True.
-            min_score (float, optional): The minimum detection confidence score.
-                Defaults to 0.5.
-            min_tracking_confidence (float, optional): The minimum tracking confidence.
-                Defaults to 0.5.
+        :param static_image_mode: Whether to use the static image mode.
+        :param max_num_faces: The maximum number of faces to detect.
+        :param refine_landmarks: Whether to refine the landmarks.
+        :param min_score: The minimum detection confidence score.
+        :param min_tracking_confidence: The minimum tracking confidence.
         """
         super().__init__(min_score)
 
@@ -58,11 +52,9 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         Processes an image to detect faces and estimate landmarks.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
 
-        Returns:
-            ResultList[BlazeFaceMesh]: A list of detected faces with estimated landmarks.
+        :return: A list of detected faces with estimated landmarks.
         """
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -93,7 +85,6 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         Configures the estimator based on the provided arguments.
 
-        Args:
-            args (Namespace): The configuration arguments.
+        :param args: The configuration arguments.
         """
         super().configure(args)

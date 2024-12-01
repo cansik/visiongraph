@@ -19,14 +19,13 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
     """
     A class to estimate 2D pose from a single image using OpenVINO.
 
-    Args:
-        model (Asset): The model for inference.
-        weights (Asset): The weights for the model.
-        target_size (Optional[int]): The target size of the input image. Defaults to None.
-        aspect_ratio (float): The default aspect ratio. Defaults to 16/9.
-        min_score (float): The minimum score for pose estimation. Defaults to 0.5.
-        auto_adjust_aspect_ratio (bool): Whether to automatically adjust the aspect ratio. Defaults to True.
-        device (str): The device for inference. Defaults to "AUTO".
+    :param model: The model for inference.
+    :param weights: The weights for the model.
+    :param target_size: The target size of the input image. Defaults to None.
+    :param aspect_ratio: The default aspect ratio. Defaults to 16/9.
+    :param min_score: The minimum score for pose estimation. Defaults to 0.5.
+    :param auto_adjust_aspect_ratio: Whether to automatically adjust the aspect ratio. Defaults to True.
+    :param device: The device for inference. Defaults to "AUTO".
     """
 
     def __init__(self, model: Asset, weights: Asset,
@@ -58,11 +57,9 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         """
         Process the input image and estimate poses.
 
-        Args:
-            data (np.ndarray): The input image.
+        :param data: The input image.
 
-        Returns:
-            ResultList[COCOPose]: A list of estimated pose objects.
+        :return: A list of estimated pose objects.
         """
         h, w = data.shape[:2]
 
@@ -97,9 +94,8 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         """
         Adjust the aspect ratio of the input image.
 
-        Args:
-            ratio (float): The new aspect ratio.
-            timeout (float): The timeout for adjusting the aspect ratio. Defaults to 5.0.
+        :param ratio: The new aspect ratio.
+        :param timeout: The timeout for adjusting the aspect ratio. Defaults to 5.0.
         """
         logging.warning(f"auto-adjusting aspect ratio to {ratio:.2f}")
         self.aspect_ratio = ratio
@@ -120,7 +116,6 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         """
         Create the IE model for inference.
 
-        Returns:
-            Model: The created IE model.
+        :return: The created IE model.
         """
         pass

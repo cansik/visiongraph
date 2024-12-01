@@ -24,13 +24,12 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Initializes the ONNXVisionEngine object.
 
-        Args:
-            model (Asset): The ONNX model to be executed.
-            execution_providers (Optional[List[str]], optional): The list of execution providers. Defaults to None.
-            flip_channels (bool, optional): Whether to flip channels or not. Defaults to True.
-            scale (Optional[Union[float, Sequence[float]]], optional): The scaling factor for input data. Defaults to None.
-            mean (Optional[Union[float, Sequence[float]]], optional): The mean value for normalization. Defaults to None.
-            padding (bool, optional): Whether to pad input data or not. Defaults to False.
+        :param model: The ONNX model to be executed.
+        :param execution_providers: The list of execution providers. Defaults to None.
+        :param flip_channels: Whether to flip channels or not. Defaults to True.
+        :param scale: The scaling factor for input data. Defaults to None.
+        :param mean: The mean value for normalization. Defaults to None.
+        :param padding: Whether to pad input data or not. Defaults to False.
         """
         super().__init__(flip_channels, scale, mean, padding)
 
@@ -73,12 +72,10 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Performs inference on the input image using the ONNX model.
 
-        Args:
-            image (np.ndarray): The input image.
-            inputs (Optional[Dict[str, Any]], optional): The input data. Defaults to None.
+        :param image: The input image.
+        :param inputs: The input data. Defaults to None.
 
-        Returns:
-            VisionEngineOutput: The output of the ONNX model.
+        :return: The output of the ONNX model.
         """
         results = self.session.run(self.output_names, inputs)
         result_dict = VisionEngineOutput({n: r for n, r in zip(self.output_names, results)})
@@ -88,11 +85,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Gets the shape of a specific input.
 
-        Args:
-            input_name (str): The name of the input.
+        :param input_name: The name of the input.
 
-        Returns:
-            Sequence[int]: The shape of the input.
+        :return: The shape of the input.
         """
         if input_name in self.dynamic_input_shapes:
             return self.dynamic_input_shapes[input_name]
@@ -113,9 +108,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Returns a list of available execution providers, with preference given to user-specified providers if available.
 
-        Returns:
-            List[str]: A list of execution provider names. If user-specified preferred providers are available,
-            the list will contain only those. Otherwise, it will return all available providers.
+        :return: A list of execution provider names. If user-specified preferred providers are available,
         """
         providers = rt.get_available_providers()
         providers_set = set(providers)
@@ -132,8 +125,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Gets the name of the device used for execution.
 
-        Returns:
-            str: The name of the device.
+        :return: The name of the device.
         """
         return self.session.get_providers()[0]
 
@@ -141,8 +133,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Gets the input layers of the ONNX model.
 
-        Returns:
-            List[VisionEngineModelLayer]: The input layers.
+        :return: The input layers.
         """
         return self._get_model_layer(self.session.get_inputs())
 
@@ -150,8 +141,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Gets the output layers of the ONNX model.
 
-        Returns:
-            List[VisionEngineModelLayer]: The output layers.
+        :return: The output layers.
         """
         return self._get_model_layer(self.session.get_outputs())
 
@@ -159,11 +149,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Gets the model layers from a list of NodeArgs.
 
-        Args:
-            compiled_layers (List[rt.NodeArg]): The list of NodeArgs.
+        :param compiled_layers: The list of NodeArgs.
 
-        Returns:
-            List[VisionEngineModelLayer]: The model layers.
+        :return: The model layers.
         """
         return [
             VisionEngineModelLayer(name=l.name,
@@ -177,11 +165,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         Converts a ONNX type text to a NumPy dtype.
 
-        Args:
-            type_text (str): The ONNX type text.
+        :param type_text: The ONNX type text.
 
-        Returns:
-            np.dtype: The corresponding NumPy dtype.
+        :return: The corresponding NumPy dtype.
         """
         if type_text not in self.dtype_conversion_table:
             raise TypeError(f"Could not convert '{type_text}' into a numpy dtype.")

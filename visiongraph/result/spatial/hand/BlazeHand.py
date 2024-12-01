@@ -18,16 +18,14 @@ class BlazeHand(HandLandmarkResult):
         """
         Annotates the given image with hand landmarks.
 
-        Args:
-            image (np.ndarray): The input image.
-            show_info (bool, optional): Whether to display information. Defaults to True.
-            info_text (Optional[str], optional): Information text to be displayed. Defaults to None.
-            color (Optional[Sequence[int]], optional): Color to be used for annotation. Defaults to None.
-            show_bounding_box (bool, optional): Whether to display the bounding box. Defaults to False.
-            min_score (float, optional): Minimum score for hand landmarks. Defaults to 0.
+        :param image: The input image.
+        :param show_info: Whether to display information. Defaults to True.
+        :param info_text: Information text to be displayed. Defaults to None.
+        :param color: Color to be used for annotation. Defaults to None.
+        :param show_bounding_box: Whether to display the bounding box. Defaults to False.
+        :param min_score: Minimum score for hand landmarks. Defaults to 0.
 
-        Returns:
-            bool: Whether the annotation was successful.
+        :return: Whether the annotation was successful.
         """
         return super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
                                 connections=mp.solutions.hands.HAND_CONNECTIONS, **kwargs)
@@ -37,8 +35,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the wrist.
 
-        Returns:
-            vector.Vector4D: The position of the wrist.
+        :return: The position of the wrist.
         """
         return self.landmarks[0]
 
@@ -47,8 +44,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the thumb CMC (Distal Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the thumb CMC.
+        :return: The position of the thumb CMC.
         """
         return self.landmarks[1]
 
@@ -57,8 +53,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the thumb MCP (Metacarpophalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the thumb MCP.
+        :return: The position of the thumb MCP.
         """
         return self.landmarks[2]
 
@@ -67,8 +62,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the thumb IP (Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the thumb IP.
+        :return: The position of the thumb IP.
         """
         return self.landmarks[3]
 
@@ -77,8 +71,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the thumb tip.
 
-        Returns:
-            vector.Vector4D: The position of the thumb tip.
+        :return: The position of the thumb tip.
         """
         return self.landmarks[4]
 
@@ -87,8 +80,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the index finger CMC (Distal Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the index finger CMC.
+        :return: The position of the index finger CMC.
         """
         return self.landmarks[5]
 
@@ -97,8 +89,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the index finger MCP (Metacarpophalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the index finger MCP.
+        :return: The position of the index finger MCP.
         """
         return self.landmarks[6]
 
@@ -107,8 +98,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the index finger IP (Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the index finger IP.
+        :return: The position of the index finger IP.
         """
         return self.landmarks[7]
 
@@ -117,8 +107,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the index finger tip.
 
-        Returns:
-            vector.Vector4D: The position of the index finger tip.
+        :return: The position of the index finger tip.
         """
         return self.landmarks[8]
 
@@ -127,8 +116,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the middle finger CMC (Distal Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the middle finger CMC.
+        :return: The position of the middle finger CMC.
         """
         return self.landmarks[9]
 
@@ -137,8 +125,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the middle finger MCP (Metacarpophalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the middle finger MCP.
+        :return: The position of the middle finger MCP.
         """
         return self.landmarks[10]
 
@@ -147,8 +134,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the middle finger IP (Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the middle finger IP.
+        :return: The position of the middle finger IP.
         """
         return self.landmarks[11]
 
@@ -157,8 +143,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the middle finger tip.
 
-        Returns:
-            vector.Vector4D: The position of the middle finger tip.
+        :return: The position of the middle finger tip.
         """
         return self.landmarks[12]
 
@@ -167,8 +152,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the ring finger CMC (Distal Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the ring finger CMC.
+        :return: The position of the ring finger CMC.
         """
         return self.landmarks[13]
 
@@ -177,8 +161,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the ring finger MCP (Metacarpophalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the ring finger MCP.
+        :return: The position of the ring finger MCP.
         """
         return self.landmarks[14]
 
@@ -187,8 +170,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the ring finger IP (Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the ring finger IP.
+        :return: The position of the ring finger IP.
         """
         return self.landmarks[15]
 
@@ -197,8 +179,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the ring finger tip.
 
-        Returns:
-            vector.Vector4D: The position of the ring finger tip.
+        :return: The position of the ring finger tip.
         """
         return self.landmarks[16]
 
@@ -207,8 +188,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the pinky CMC (Distal Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the pinky CMC.
+        :return: The position of the pinky CMC.
         """
         return self.landmarks[17]
 
@@ -217,8 +197,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the pinky MCP (Metacarpophalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the pinky MCP.
+        :return: The position of the pinky MCP.
         """
         return self.landmarks[18]
 
@@ -227,8 +206,7 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the pinky IP (Interphalangeal joint).
 
-        Returns:
-            vector.Vector4D: The position of the pinky IP.
+        :return: The position of the pinky IP.
         """
         return self.landmarks[19]
 
@@ -237,7 +215,6 @@ class BlazeHand(HandLandmarkResult):
         """
         Gets the position of the pinky tip.
 
-        Returns:
-            vector.Vector4D: The position of the pinky tip.
+        :return: The position of the pinky tip.
         """
         return self.landmarks[20]

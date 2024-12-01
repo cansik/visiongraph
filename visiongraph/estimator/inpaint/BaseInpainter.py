@@ -20,11 +20,9 @@ class BaseInpainter(BaseEstimator[InpaintInputType, ImageResult], ABC):
         """
         Processes the input data and returns an image result.
 
-        Args:
-            data (InpaintInputType): The input data containing the image to be inpainted.
+        :param data: The input data containing the image to be inpainted.
 
-        Returns:
-            ImageResult: The output image after inpainting.
+        :return: The output image after inpainting.
         """
         return self.inpaint(**data)
 
@@ -33,12 +31,10 @@ class BaseInpainter(BaseEstimator[InpaintInputType, ImageResult], ABC):
         """
         Inpaints the given image using a specific strategy.
 
-        Args:
-            image (np.ndarray): The input image to be inpainted.
-            mask (np.ndarray): A binary mask indicating the region to be inpainted.
+        :param image: The input image to be inpainted.
+        :param mask: A binary mask indicating the region to be inpainted.
 
-        Returns:
-            ImageResult: The output image after inpainting.
+        :return: The output image after inpainting.
         """
 
         pass

@@ -31,14 +31,13 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
         """
         Initializes the OpenPoseEstimator with the specified parameters.
 
-        Args:
-            model (Asset): The model asset for pose estimation.
-            weights (Asset): The weights asset for pose estimation.
-            target_size (Optional[int]): The target size for the input images.
-            aspect_ratio (float): The aspect ratio for resizing.
-            min_score (float): The minimum score threshold for detections.
-            auto_adjust_aspect_ratio (bool): Whether to automatically adjust the aspect ratio.
-            device (str): The device to run the inference on (e.g., "AUTO", "CPU", "GPU").
+        :param model: The model asset for pose estimation.
+        :param weights: The weights asset for pose estimation.
+        :param target_size: The target size for the input images.
+        :param aspect_ratio: The aspect ratio for resizing.
+        :param min_score: The minimum score threshold for detections.
+        :param auto_adjust_aspect_ratio: Whether to automatically adjust the aspect ratio.
+        :param device: The device to run the inference on (e.g., "AUTO", "CPU", "GPU").
         """
         super().__init__(model, weights, target_size, aspect_ratio, min_score, auto_adjust_aspect_ratio, device)
 
@@ -46,8 +45,7 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
         """
         Creates the inference engine model for OpenPose.
 
-        Returns:
-            Model: The created OpenPose model.
+        :return: The created OpenPose model.
         """
         config = {
             'target_size': self.target_size,
@@ -66,11 +64,9 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
         """
         Factory method to create an instance of OpenPoseEstimator using the specified configuration.
 
-        Args:
-            config (OpenPoseConfig): The configuration to use for model and weights.
+        :param config: The configuration to use for model and weights.
 
-        Returns:
-            OpenPoseEstimator: An instance of OpenPoseEstimator.
+        :return: An instance of OpenPoseEstimator.
         """
         model, weights = config.value
         return OpenPoseEstimator(model, weights)

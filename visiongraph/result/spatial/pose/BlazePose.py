@@ -10,7 +10,7 @@ class BlazePose(PoseLandmarkResult):
     """
     A class to represent the BlazePose model for pose landmarks.
 
-    Inherits from PoseLandmarkResult and provides properties to access various 
+    Inherits from PoseLandmarkResult and provides properties to access various
     landmarks of the human body in a 3D space represented as Vector4D.
     """
 
@@ -21,8 +21,7 @@ class BlazePose(PoseLandmarkResult):
 
         Each tuple contains two integer indices representing connected landmarks.
 
-        Returns:
-            FrozenSet[Tuple[int, int]]: The connections defined in MediaPipe.
+        :return: The connections defined in MediaPipe.
         """
         return mp.solutions.pose.POSE_CONNECTIONS
 
@@ -31,8 +30,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the nose landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the nose.
+        :return: The 3D position of the nose.
         """
         return self.landmarks[0]
 
@@ -41,8 +39,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the inner left eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the inner left eye.
+        :return: The 3D position of the inner left eye.
         """
         return self.landmarks[1]
 
@@ -51,8 +48,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left eye.
+        :return: The 3D position of the left eye.
         """
         return self.landmarks[2]
 
@@ -61,8 +57,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the outer left eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the outer left eye.
+        :return: The 3D position of the outer left eye.
         """
         return self.landmarks[3]
 
@@ -71,8 +66,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the inner right eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the inner right eye.
+        :return: The 3D position of the inner right eye.
         """
         return self.landmarks[4]
 
@@ -81,8 +75,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right eye.
+        :return: The 3D position of the right eye.
         """
         return self.landmarks[5]
 
@@ -91,8 +84,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the outer right eye landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the outer right eye.
+        :return: The 3D position of the outer right eye.
         """
         return self.landmarks[6]
 
@@ -101,8 +93,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left ear landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left ear.
+        :return: The 3D position of the left ear.
         """
         return self.landmarks[7]
 
@@ -111,8 +102,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right ear landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right ear.
+        :return: The 3D position of the right ear.
         """
         return self.landmarks[8]
 
@@ -121,8 +111,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left mouth corner landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left mouth corner.
+        :return: The 3D position of the left mouth corner.
         """
         return self.landmarks[9]
 
@@ -131,8 +120,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right mouth corner landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right mouth corner.
+        :return: The 3D position of the right mouth corner.
         """
         return self.landmarks[10]
 
@@ -141,8 +129,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left shoulder.
+        :return: The 3D position of the left shoulder.
         """
         return self.landmarks[11]
 
@@ -151,8 +138,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right shoulder landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right shoulder.
+        :return: The 3D position of the right shoulder.
         """
         return self.landmarks[12]
 
@@ -161,8 +147,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left elbow landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left elbow.
+        :return: The 3D position of the left elbow.
         """
         return self.landmarks[13]
 
@@ -171,8 +156,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right elbow landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right elbow.
+        :return: The 3D position of the right elbow.
         """
         return self.landmarks[14]
 
@@ -181,8 +165,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left wrist landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left wrist.
+        :return: The 3D position of the left wrist.
         """
         return self.landmarks[15]
 
@@ -191,8 +174,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right wrist landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right wrist.
+        :return: The 3D position of the right wrist.
         """
         return self.landmarks[16]
 
@@ -201,8 +183,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left pinky landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left pinky.
+        :return: The 3D position of the left pinky.
         """
         return self.landmarks[17]
 
@@ -211,8 +192,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right pinky landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right pinky.
+        :return: The 3D position of the right pinky.
         """
         return self.landmarks[18]
 
@@ -221,8 +201,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left index finger landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left index finger.
+        :return: The 3D position of the left index finger.
         """
         return self.landmarks[19]
 
@@ -231,8 +210,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right index finger landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right index finger.
+        :return: The 3D position of the right index finger.
         """
         return self.landmarks[20]
 
@@ -241,8 +219,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left thumb landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left thumb.
+        :return: The 3D position of the left thumb.
         """
         return self.landmarks[21]
 
@@ -251,8 +228,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right thumb landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right thumb.
+        :return: The 3D position of the right thumb.
         """
         return self.landmarks[22]
 
@@ -261,8 +237,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left hip landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left hip.
+        :return: The 3D position of the left hip.
         """
         return self.landmarks[23]
 
@@ -271,8 +246,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right hip landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right hip.
+        :return: The 3D position of the right hip.
         """
         return self.landmarks[24]
 
@@ -281,8 +255,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left knee landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left knee.
+        :return: The 3D position of the left knee.
         """
         return self.landmarks[25]
 
@@ -291,8 +264,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right knee landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right knee.
+        :return: The 3D position of the right knee.
         """
         return self.landmarks[26]
 
@@ -301,8 +273,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left ankle landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left ankle.
+        :return: The 3D position of the left ankle.
         """
         return self.landmarks[27]
 
@@ -311,8 +282,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right ankle landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right ankle.
+        :return: The 3D position of the right ankle.
         """
         return self.landmarks[28]
 
@@ -321,8 +291,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left heel landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left heel.
+        :return: The 3D position of the left heel.
         """
         return self.landmarks[29]
 
@@ -331,8 +300,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right heel landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right heel.
+        :return: The 3D position of the right heel.
         """
         return self.landmarks[30]
 
@@ -341,8 +309,7 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the left foot index landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the left foot index.
+        :return: The 3D position of the left foot index.
         """
         return self.landmarks[31]
 
@@ -351,7 +318,6 @@ class BlazePose(PoseLandmarkResult):
         """
         Returns the position of the right foot index landmark.
 
-        Returns:
-            vector.Vector4D: The 3D position of the right foot index.
+        :return: The 3D position of the right foot index.
         """
         return self.landmarks[32]

@@ -24,14 +24,13 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         """
         Initializes the MOTPyTracker with given parameters.
 
-        Args:
-            delta_time (float): The time step for tracking.
-            min_steps_alive (int): Minimum steps required for an object to be considered active.
-            min_iou (float): Minimum IoU required for matching detections.
-            multi_match_min_iou (float): Minimum IoU required for multi-match detection.
-            max_staleness_to_positive_ratio (float): Maximum staleness ratio before dropping a track.
-            max_staleness (float): Maximum staleness value.
-            use_predicted_bounding_box (bool): Whether to use predicted bounding box.
+        :param delta_time: The time step for tracking.
+        :param min_steps_alive: Minimum steps required for an object to be considered active.
+        :param min_iou: Minimum IoU required for matching detections.
+        :param multi_match_min_iou: Minimum IoU required for multi-match detection.
+        :param max_staleness_to_positive_ratio: Maximum staleness ratio before dropping a track.
+        :param max_staleness: Maximum staleness value.
+        :param use_predicted_bounding_box: Whether to use predicted bounding box.
         """
         self.delta_time = delta_time
         self.min_steps_alive = min_steps_alive
@@ -60,11 +59,9 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         """
         Processes the given object detection results and returns the tracked objects.
 
-        Args:
-            data (List[ObjectDetectionResult]): The list of object detection results.
+        :param data: The list of object detection results.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: The list of tracked object detection results.
+        :return: The list of tracked object detection results.
         """
         detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True), reference=d)
                       for d in data]
@@ -98,7 +95,6 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         """
         Adds parameters to the parser for configuring the MOTPy tracker.
 
-        Args:
-            parser (ArgumentParser): The parser instance.
+        :param parser: The parser instance.
         """
         pass

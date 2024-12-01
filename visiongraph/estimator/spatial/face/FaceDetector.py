@@ -22,11 +22,9 @@ class FaceDetector(ObjectDetector[OutputType], ABC):
         """
         Processes an input image using the face detection algorithm.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            ResultList[OutputType]: A list of face detection results.
+        :return: A list of face detection results.
         """
 
         pass

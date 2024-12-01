@@ -18,12 +18,10 @@ def _smoothing_factor(t_e: float, cutoff: float) -> float:
     """
     Calculates the smoothing factor based on the time elapsed and cutoff frequency.
 
-    Args:
-        t_e (float): Time elapsed.
-        cutoff (float): Cutoff frequency.
+    :param t_e: Time elapsed.
+    :param cutoff: Cutoff frequency.
 
-    Returns:
-        float: Smoothing factor.
+    :return: Smoothing factor.
     """
     r = 2 * np.pi * cutoff * t_e
     return r / (r + 1)
@@ -34,13 +32,11 @@ def _exponential_smoothing(a: float, x: np.ndarray, x_prev: np.ndarray) -> np.nd
     """
     Applies exponential smoothing to the signal.
 
-    Args:
-        a (float): Smoothing factor.
-        x (np.ndarray): Signal values.
-        x_prev (np.ndarray): Previous signal value.
+    :param a: Smoothing factor.
+    :param x: Signal values.
+    :param x_prev: Previous signal value.
 
-    Returns:
-        np.ndarray: Exponentially smoothed signal.
+    :return: Exponentially smoothed signal.
     """
     return a * x + (1 - a) * x_prev
 
@@ -51,21 +47,19 @@ def _apply_filter(x: np.ndarray, t: float, x_prev: np.ndarray, t_prev: float, dx
     """
     Computes the filtered signal using the OneEuro filter algorithm.
 
-    Args:
-        x (np.ndarray): Signal values.
-        t (float): Time stamp.
-        x_prev (np.ndarray): Previous signal value.
-        t_prev (float): Previous time stamp.
-        dx_prev (np.ndarray): Previous derivative of the signal.
-        min_cutoff (float): Minimum cutoff frequency.
-        beta (float): Beta parameter for exponential smoothing.
-        d_cutoff (float): Cutoff frequency for derivative.
+    :param x: Signal values.
+    :param t: Time stamp.
+    :param x_prev: Previous signal value.
+    :param t_prev: Previous time stamp.
+    :param dx_prev: Previous derivative of the signal.
+    :param min_cutoff: Minimum cutoff frequency.
+    :param beta: Beta parameter for exponential smoothing.
+    :param d_cutoff: Cutoff frequency for derivative.
 
-    Returns:
-        np.ndarray: Filtered signal values.
-        np.ndarray: Previous filtered signal value.
-        np.ndarray: Previous derivative of the signal.
-        float: Previous time stamp.
+    :return: Filtered signal values.
+    :return: Previous filtered signal value.
+    :return: Previous derivative of the signal.
+    :return: Previous time stamp.
     """
     t_e = t - t_prev
     t_e = np.full(x.shape, t_e)
@@ -93,12 +87,10 @@ class OneEuroFilterNumba(OneEuroFilterNumpy):
         """
         Computes the filtered signal using the OneEuro filter algorithm.
 
-        Args:
-            x (np.ndarray): Signal values.
-            t (float, optional): Time stamp. Defaults to current time if not provided.
+        :param x: Signal values.
+        :param t: Time stamp. Defaults to current time if not provided.
 
-        Returns:
-            np.ndarray: Filtered signal values.
+        :return: Filtered signal values.
         """
         assert x.shape == self.data_shape
 

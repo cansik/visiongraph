@@ -18,10 +18,8 @@ class BaseObjectDetectionTracker(GraphNode[ResultList[ObjectDetectionResult], Re
         """
         Processes a list of detected objects.
 
-        Args:
-            data (List[ObjectDetectionResult]): The list of objects to be processed.
+        :param data: The list of objects to be processed.
 
-        Returns:
-            ResultList[ObjectDetectionResult]: A list of results containing the processed object detection information.
+        :return: A list of results containing the processed object detection information.
         """
         pass

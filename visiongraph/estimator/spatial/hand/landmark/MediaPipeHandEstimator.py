@@ -37,12 +37,11 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         """
         Initializes the MediaPipe hand estimator.
 
-        Args:
-            complexity (HandModelComplexity): The model complexity.
-            min_score (float): The minimum detection confidence.
-            min_tracking_confidence (float): The minimum tracking confidence.
-            static_image_mode (bool): Whether the image mode is static.
-            max_num_hands (int): The maximum number of hands to track.
+        :param complexity: The model complexity.
+        :param min_score: The minimum detection confidence.
+        :param min_tracking_confidence: The minimum tracking confidence.
+        :param static_image_mode: Whether the image mode is static.
+        :param max_num_hands: The maximum number of hands to track.
         """
         super().__init__(min_score)
 
@@ -66,12 +65,10 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         """
         Processes an image and returns a list of detected hands.
 
-        Args:
-            image (np.ndarray): The input image.
-            **kwargs: Additional keyword arguments.
+        :param image: The input image.
+        :param **kwargs: Additional keyword arguments.
 
-        Returns:
-            ResultList[BlazeHand]: A list of detected BlazeHands.
+        :return: A list of detected BlazeHands.
         """
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -104,8 +101,7 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         """
         Configures the estimator based on the provided arguments.
 
-        Args:
-            args (Namespace): The configuration namespace.
+        :param args: The configuration namespace.
         """
         super().configure(args)
 

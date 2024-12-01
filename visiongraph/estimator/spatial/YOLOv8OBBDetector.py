@@ -29,19 +29,16 @@ class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
     YOLOv8 Oriented Bounding Box Detector.
     Performs object detection and orients the detected bounding boxes.
 
-    Args:
-        UltralyticsYOLODetector: The Ultralytics YOLO Object Detector class.
+    :param UltralyticsYOLODetector: The Ultralytics YOLO Object Detector class.
     """
 
     def process(self, image: np.ndarray) -> ResultList[OrientedObjectDetectionResult]:
         """
         Processes detection on the input image and returns a list of oriented object detection results.
 
-        Args:
-            image (np.ndarray): The input image as a NumPy array.
+        :param image: The input image as a NumPy array.
 
-        Returns:
-            ResultList[OrientedObjectDetectionResult]: A list of oriented object detection results.
+        :return: A list of oriented object detection results.
         """
         output = self.engine.process(image)
 
@@ -86,11 +83,9 @@ class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
         """
         Instantiates a YOLOv8 Oriented Bounding Box Detector based on the provided configuration.
 
-        Args:
-            config (YOLOv8OBBConfig, optional): The configuration for the detector. Defaults to YOLOv8_OBB_S.
+        :param config: The configuration for the detector. Defaults to YOLOv8_OBB_S.
 
-        Returns:
-            YOLOv8OBBDetector: An instance of YOLOv8 Oriented Bounding Box Detector.
+        :return: An instance of YOLOv8 Oriented Bounding Box Detector.
         """
         model, labels = config.value
         return YOLOv8OBBDetector(model, labels=labels)

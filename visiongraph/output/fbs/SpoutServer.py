@@ -19,8 +19,7 @@ class SpoutServer(FrameBufferSharingServer):
         """
         Initializes the SpoutServer object with a default name and sets up the context.
 
-        Args:
-            name (str): The name of the Spout server. Defaults to "SpoutServer".
+        :param name: The name of the Spout server. Defaults to "SpoutServer".
         """
         super().__init__(name)
         self.ctx: Optional[SpoutGL.SpoutSender] = None
@@ -37,13 +36,11 @@ class SpoutServer(FrameBufferSharingServer):
         """
         Sends a frame to the Spout receiver.
 
-        Args:
-            frame (np.ndarray): The frame to be sent.
-            send_alpha (bool): Whether to send an alpha channel. Defaults to True.
-            flip_texture (bool): Whether to flip the texture. Defaults to False.
+        :param frame: The frame to be sent.
+        :param send_alpha: Whether to send an alpha channel. Defaults to True.
+        :param flip_texture: Whether to flip the texture. Defaults to False.
 
-        Returns:
-            bool: Whether the image was sent successfully.
+        :return: Whether the image was sent successfully.
         """
         h, w = frame.shape[:2]
 
@@ -73,8 +70,7 @@ class SpoutServer(FrameBufferSharingServer):
         """
         Configures the Spout server based on the provided arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -83,7 +79,6 @@ class SpoutServer(FrameBufferSharingServer):
         """
         Adds parameters to the argument parser for the Spout server.
 
-        Args:
-            parser (ArgumentParser): The argument parser to add parameters to.
+        :param parser: The argument parser to add parameters to.
         """
         pass

@@ -19,8 +19,7 @@ class VisionEngineOutput(Dict[str, Union[np.ndarray, BoundingBox2D, Size2D]]):
         """
         Gets the 2D bounding box representing the padded output.
 
-        Returns:
-            BoundingBox2D: The padded 2D bounding box.
+        :return: The padded 2D bounding box.
         """
         return self[PADDING_BOX_OUTPUT_NAME]
 
@@ -29,8 +28,7 @@ class VisionEngineOutput(Dict[str, Union[np.ndarray, BoundingBox2D, Size2D]]):
         """
         Sets the 2D bounding box representing the padded output.
 
-        Args:
-            box (BoundingBox2D): The new padded 2D bounding box.
+        :param box: The new padded 2D bounding box.
         """
         self[PADDING_BOX_OUTPUT_NAME] = box
 
@@ -39,8 +37,7 @@ class VisionEngineOutput(Dict[str, Union[np.ndarray, BoundingBox2D, Size2D]]):
         """
         Gets the 2D size representing the original image dimensions.
 
-        Returns:
-            Size2D: The original 2D size of the image.
+        :return: The original 2D size of the image.
         """
         return self[IMAGE_SIZE_OUTPUT_NAME]
 
@@ -49,7 +46,6 @@ class VisionEngineOutput(Dict[str, Union[np.ndarray, BoundingBox2D, Size2D]]):
         """
         Sets the 2D size representing the original image dimensions.
 
-        Args:
-            size (Size2D): The new original 2D size of the image.
+        :param size: The new original 2D size of the image.
         """
         self[IMAGE_SIZE_OUTPUT_NAME] = size

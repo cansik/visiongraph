@@ -5,7 +5,9 @@ EPS = 1e-7
 
 
 def calculate_iou(bboxes1, bboxes2, dim: int = 2):
-    """ expected bboxes size: (-1, 2*dim) """
+    """
+ expected bboxes size: (-1, 2*dim)
+ """
     bboxes1 = np.array(bboxes1).reshape((-1, dim * 2))
     bboxes2 = np.array(bboxes2).reshape((-1, dim * 2))
 

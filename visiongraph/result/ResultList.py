@@ -16,11 +16,9 @@ class ResultList(List[ResultType], BaseResult):
         """
         Initializes the ResultList object.
 
-        Args:
-            base_list (Optional[Sequence[BaseResult]], optional): The initial list of results. Defaults to ().
+        :param base_list: The initial list of results. Defaults to ().
 
-        Raises:
-            ValueError: If the input is not a sequence.
+        :raises ValueError: If the input is not a sequence.
         """
         super().__init__(base_list)
 
@@ -28,12 +26,10 @@ class ResultList(List[ResultType], BaseResult):
         """
         Annotates each result in the list on the given image.
 
-        Args:
-            image (np.ndarray): The image to annotate.
-            **kwargs: Additional keyword arguments to be passed to the annotation method of each result.
+        :param image: The image to annotate.
+        :param **kwargs: Additional keyword arguments to be passed to the annotation method of each result.
 
-        Raises:
-            ValueError: If any result is None.
+        :raises ValueError: If any result is None.
         """
         for result in self:
             if result is None:

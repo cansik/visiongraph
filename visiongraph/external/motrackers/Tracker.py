@@ -11,9 +11,8 @@ class Tracker:
     Greedy Tracker with tracking based on ``centroid`` location of the bounding box of the object.
     This tracker is also referred as ``CentroidTracker`` in this repository.
 
-    Args:
-        max_lost (int): Maximum number of consecutive frames object was not detected.
-        tracker_output_format (str): Output format of the tracker.
+    :param max_lost: Maximum number of consecutive frames object was not detected.
+    :param tracker_output_format: Output format of the tracker.
     """
 
     def __init__(self, max_lost=5, tracker_output_format='mot_challenge'):
@@ -27,12 +26,11 @@ class Tracker:
         """
         Add a newly detected object to the queue.
 
-        Args:
-            frame_id (int): Camera frame id.
-            bbox (numpy.ndarray): Bounding box pixel coordinates as (xmin, ymin, xmax, ymax) of the track.
-            detection_confidence (float): Detection confidence of the object (probability).
-            class_id (str or int): Class label id.
-            kwargs (dict): Additional key word arguments.
+        :param frame_id: Camera frame id.
+        :param bbox: Bounding box pixel coordinates as (xmin, ymin, xmax, ymax) of the track.
+        :param detection_confidence: Detection confidence of the object (probability).
+        :param class_id: Class label id.
+        :param kwargs: Additional key word arguments.
         """
 
         self.tracks[self.next_track_id] = Track(
@@ -46,8 +44,7 @@ class Tracker:
         """
         Remove tracker data after object is lost.
 
-        Args:
-            track_id (int): track_id of the track lost while tracking.
+        :param track_id: track_id of the track lost while tracking.
         """
 
         del self.tracks[track_id]
@@ -57,15 +54,14 @@ class Tracker:
         """
         Update track state.
 
-        Args:
-            track_id (int): ID of the track.
-            frame_id (int): Frame count.
-            bbox (numpy.ndarray or list): Bounding box coordinates as `(xmin, ymin, width, height)`.
-            detection_confidence (float): Detection confidence (a.k.a. detection probability).
-            class_id (int): ID of the class (aka label) of the object being tracked.
-            lost (int): Number of frames the object was lost while tracking.
-            iou_score (float): Intersection over union.
-            kwargs (dict): Additional keyword arguments.
+        :param track_id: ID of the track.
+        :param frame_id: Frame count.
+        :param bbox: Bounding box coordinates as `(xmin, ymin, width, height)`.
+        :param detection_confidence: Detection confidence (a.k.a. detection probability).
+        :param class_id: ID of the class (aka label) of the object being tracked.
+        :param lost: Number of frames the object was lost while tracking.
+        :param iou_score: Intersection over union.
+        :param kwargs: Additional keyword arguments.
         """
 
         self.tracks[track_id].update(
@@ -78,11 +74,9 @@ class Tracker:
         """
         Output the information of tracks.
 
-        Args:
-            tracks (OrderedDict): Tracks dictionary with (key, value) as (track_id, corresponding `Track` objects).
+        :param tracks: Tracks dictionary with (key, value) as (track_id, corresponding `Track` objects).
 
-        Returns:
-            list: List of tracks being currently tracked by the tracker.
+        :return: List of tracks being currently tracked by the tracker.
         """
 
         outputs = []
@@ -96,13 +90,10 @@ class Tracker:
         """
         Preprocess the input data.
 
-        Args:
-            bboxes (list or numpy.ndarray): Array of bounding boxes with each bbox as a tuple containing `(xmin, ymin, width, height)`.
-            class_ids (list or numpy.ndarray): Array of Class ID or label ID.
-            detection_scores (list or numpy.ndarray): Array of detection scores (a.k.a. detection probabilities).
+        :param bboxes: Array of bounding boxes with each bbox as a tuple containing `(xmin, ymin, width, height)`.
+        :param class_ids: Array of Class ID or label ID.
+        :param detection_scores: Array of detection scores (a.k.a. detection probabilities).
 
-        Returns:
-            detections (list[Tuple]): Data for detections as list of tuples containing `(bbox, class_id, detection_score)`.
         """
 
         new_bboxes = np.array(bboxes, dtype='float')
@@ -117,14 +108,11 @@ class Tracker:
         """
         Update the tracker based on the new bounding boxes.
 
-        Args:
-            bboxes (numpy.ndarray or list): List of bounding boxes detected in the current frame. Each element of the list represent
-                coordinates of bounding box as tuple `(top-left-x, top-left-y, width, height)`.
-            detection_scores(numpy.ndarray or list): List of detection scores (probability) of each detected object.
-            class_ids (numpy.ndarray or list): List of class_ids (int) corresponding to labels of the detected object. Default is `None`.
+        :param bboxes: List of bounding boxes detected in the current frame. Each element of the list represent
+        :param detection_scores: List of detection scores (probability) of each detected object.
+        :param class_ids: List of class_ids (int) corresponding to labels of the detected object. Default is `None`.
 
-        Returns:
-            list: List of tracks being currently tracked by the tracker. Each track is represented by the tuple with elements `(frame_id, track_id, bb_left, bb_top, bb_width, bb_height, conf, x, y, z)`.
+        :return: List of tracks being currently tracked by the tracker. Each track is represented by the tuple with elements `(frame_id, track_id, bb_left, bb_top, bb_width, bb_height, conf, x, y, z)`.
         """
 
         self.frame_count += 1

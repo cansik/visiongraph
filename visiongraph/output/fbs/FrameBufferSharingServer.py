@@ -19,8 +19,7 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Initializes the FrameBufferSharingServer object.
 
-        Args:
-            name (str): The name of the frame buffer sharing server.
+        :param name: The name of the frame buffer sharing server.
         """
         self.name = name
 
@@ -29,9 +28,8 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Sends the provided frame to a client.
 
-        Args:
-            frame (np.ndarray): The RGB frame to be sent.
-            flip_texture (bool, optional): Whether to flip the texture. Defaults to False.
+        :param frame: The RGB frame to be sent.
+        :param flip_texture: Whether to flip the texture. Defaults to False.
         """
         pass
 
@@ -43,11 +41,9 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         then calls the send method on this instance with the converted frame.
         Finally, returns the original BGR frame unchanged.
 
-        Args:
-            data (np.ndarray): The input BGR frame.
+        :param data: The input BGR frame.
 
-        Returns:
-            np.ndarray: The original BGR frame.
+        :return: The original BGR frame.
         """
         rgb_data = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
         self.send(rgb_data)
@@ -61,11 +57,9 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         Depending on the platform, it returns either a SyphonServer or SpoutServer instance.
         If the platform is not supported, it raises an exception with a descriptive message.
 
-        Args:
-            name (str): The name of the frame buffer sharing server.
+        :param name: The name of the frame buffer sharing server.
 
-        Returns:
-            FrameBufferSharingServer: A new FrameBufferSharingServer instance.
+        :return: A new FrameBufferSharingServer instance.
         """
         if platform.startswith("darwin"):
             from visiongraph.output.fbs.SyphonServer import SyphonServer

@@ -18,10 +18,8 @@ class HeadPoseEstimator(RoiEstimator):
         """
         Processes an input image to estimate the head pose.
 
-        Args:
-            image (np.ndarray): The input image to be processed.
+        :param image: The input image to be processed.
 
-        Returns:
-            HeadPoseResult: The estimated head pose result.
+        :return: The estimated head pose result.
         """
         pass

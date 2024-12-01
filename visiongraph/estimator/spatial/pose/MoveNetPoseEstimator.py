@@ -51,14 +51,13 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         """
         Initializes the MoveNetPoseEstimator with the given parameters.
 
-        Args:
-            model (Asset): The model asset to be used for pose estimation.
-            weights (Asset): The weights asset for the model.
-            multi_pose (bool): Flag to indicate if multi-pose estimation is enabled.
-            min_score (float): Minimum score threshold for valid pose detection.
-            enable_nms (bool): Flag to enable Non-Maximum Suppression.
-            iou_threshold (float): IOU threshold for NMS.
-            device (str): The device to run the model on (e.g., "AUTO").
+        :param model: The model asset to be used for pose estimation.
+        :param weights: The weights asset for the model.
+        :param multi_pose: Flag to indicate if multi-pose estimation is enabled.
+        :param min_score: Minimum score threshold for valid pose detection.
+        :param enable_nms: Flag to enable Non-Maximum Suppression.
+        :param iou_threshold: IOU threshold for NMS.
+        :param device: The device to run the model on (e.g., "AUTO").
         """
         super().__init__(min_score)
 
@@ -77,11 +76,9 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         """
         Processes the input data and estimates poses.
 
-        Args:
-            data (np.ndarray): The input data for pose estimation.
+        :param data: The input data for pose estimation.
 
-        Returns:
-            ResultList[COCOPose]: A list of detected poses with their associated scores.
+        :return: A list of detected poses with their associated scores.
         """
         outputs = self.engine.process(data)
         output = outputs[self.engine.output_names[0]]
@@ -134,11 +131,9 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         """
         Creates an instance of MoveNetPoseEstimator based on the provided configuration.
 
-        Args:
-            config (MoveNetConfig): The configuration for the MoveNet model.
+        :param config: The configuration for the MoveNet model.
 
-        Returns:
-            MoveNetPoseEstimator: An instance of the MoveNetPoseEstimator.
+        :return: An instance of the MoveNetPoseEstimator.
         """
         model, weights, multi_pose = config.value
         return MoveNetPoseEstimator(model, weights, multi_pose=multi_pose)

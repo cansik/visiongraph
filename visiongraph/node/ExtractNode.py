@@ -17,9 +17,8 @@ class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
         """
         Initializes an ExtractNode with a specific key and optional drop behavior.
 
-        Args:
-            key (str): The key to be extracted.
-            drop (bool): If True, removes the key-value pair after extraction. Defaults to False.
+        :param key: The key to be extracted.
+        :param drop: If True, removes the key-value pair after extraction. Defaults to False.
         """
         self.key = key
         self.drop = drop
@@ -36,11 +35,9 @@ class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
 
         If the key is not found or drop is True, returns None or removes the key-value pair.
 
-        Args:
-            data (ResultDict): The input data containing the key-value pair to be extracted.
+        :param data: The input data containing the key-value pair to be extracted.
 
-        Returns:
-            Optional[OutputType]: The extracted value if it exists and drop is False, otherwise None.
+        :return: The extracted value if it exists and drop is False, otherwise None.
         """
         if self.key not in data:
             logging.error(f"Could not find key {self.key} in result-dict {data}.")
@@ -61,8 +58,7 @@ class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
         """
         Configures the node with command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -71,7 +67,6 @@ class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
         """
         Adds parameters for the ExtractNode to the specified parser.
 
-        Args:
-            parser (ArgumentParser): The parser to which the node's parameters will be added.
+        :param parser: The parser to which the node's parameters will be added.
         """
         pass

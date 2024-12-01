@@ -18,9 +18,8 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         """
         Initializes an instance of AffectNetEmotionClassifier.
 
-        Args:
-            model_precision (ModelPrecision): The precision of the model used for classification. Defaults to ModelPrecision.FP32.
-            device (str): The device on which the model is executed. Defaults to "AUTO".
+        :param model_precision: The precision of the model used for classification. Defaults to ModelPrecision.FP32.
+        :param device: The device on which the model is executed. Defaults to "AUTO".
         """
         super().__init__(min_score=0.5)
 
@@ -40,11 +39,9 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         """
         Processes input data and returns an EmotionClassificationResult.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            EmotionClassificationResult: An object containing the best emotion label and its corresponding probability.
+        :return: An object containing the best emotion label and its corresponding probability.
         """
         output = self.engine.process(data)
         probability = np.squeeze(output["prob_emotion"])
@@ -58,12 +55,11 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         """
         Transforms the result of an emotion classification.
 
-        Args:
-            result (EmotionClassificationResult): The result to be transformed.
-            image (np.ndarray): The original input image.
-            roi (np.ndarray): The region of interest (ROI) from the image.
-            xs (float): The x-coordinate of the ROI.
-            ys (float): The y-coordinate of the ROI.
+        :param result: The result to be transformed.
+        :param image: The original input image.
+        :param roi: The region of interest (ROI) from the image.
+        :param xs: The x-coordinate of the ROI.
+        :param ys: The y-coordinate of the ROI.
         """
         pass
 
@@ -77,8 +73,7 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         """
         Configures the estimator with the provided command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -87,7 +82,6 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         """
         Adds parameters to the parser for configuration and parsing of command-line arguments.
 
-        Args:
-            parser (ArgumentParser): The parser instance to be updated with parameters.
+        :param parser: The parser instance to be updated with parameters.
         """
         pass

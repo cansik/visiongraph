@@ -12,8 +12,7 @@ class ImageResult(BaseResult):
         """
         Initializes the ImageResult object with the given output image.
 
-        Args:
-            output (np.ndarray): The output image to be stored in this result.
+        :param output: The output image to be stored in this result.
         """
         self.output = output
 
@@ -25,10 +24,8 @@ class ImageResult(BaseResult):
         the output image onto the input image. The implementation of drawing is
         currently left as a TODO.
 
-        Args:
-            image (np.ndarray): The input image to be annotated.
-            **kwargs: Additional keyword arguments to be passed to the parent
-                class's `annotate` method.
+        :param image: The input image to be annotated.
+        :param **kwargs: Additional keyword arguments to be passed to the parent
         """
         super().annotate(image, **kwargs)
 

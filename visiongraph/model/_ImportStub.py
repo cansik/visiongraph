@@ -14,7 +14,6 @@ class _ImportStub:
         """
         Initializes the _ImportStub object and raises an ImportError.
 
-        Raises:
-            ImportError: When the object is instantiated.
+        :raises ImportError: When the object is instantiated.
         """
         raise ImportError(f"{type(self).name} has not been imported!")

@@ -24,13 +24,12 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Initializes the ChArUcoCalibrator with specified parameters.
 
-        Args:
-            columns (int): Number of columns in the ChArUco board.
-            rows (int): Number of rows in the ChArUco board.
-            marker_length_in_m (float): Length of the markers in meters.
-            square_length_in_m (float): Length of the squares in meters.
-            aruco_config (int): Configuration for the ArUco dictionary.
-            max_samples (int): Maximum number of samples to collect for calibration.
+        :param columns: Number of columns in the ChArUco board.
+        :param rows: Number of rows in the ChArUco board.
+        :param marker_length_in_m: Length of the markers in meters.
+        :param square_length_in_m: Length of the squares in meters.
+        :param aruco_config: Configuration for the ArUco dictionary.
+        :param max_samples: Maximum number of samples to collect for calibration.
         """
         super().__init__(rows, columns, max_samples)
 
@@ -70,11 +69,9 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Processes the input data to detect ChArUco markers and calibrate the camera.
 
-        Args:
-            data (np.ndarray): The input image data.
+        :param data: The input image data.
 
-        Returns:
-            Optional[CameraPoseResult]: The result of the camera pose estimation, or None if not available.
+        :return: The result of the camera pose estimation, or None if not available.
         """
         self.board_detected = False
 
@@ -105,11 +102,9 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Calibrates the camera using the detected corners and IDs.
 
-        Raises:
-            Exception: If calibration is not supported by OpenCV.
+        :raises Exception: If calibration is not supported by OpenCV.
 
-        Returns:
-            Optional[CameraPoseResult]: The result of the camera pose estimation, or None if calibration fails.
+        :return: The result of the camera pose estimation, or None if calibration fails.
         """
         raise Exception("Currently not supported! - Waiting for fix by opencv!")
 
@@ -147,8 +142,7 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Configures the calibrator with command line arguments.
 
-        Args:
-            args (Namespace): The parsed command line arguments.
+        :param args: The parsed command line arguments.
         """
         self.marker_length_in_m = float(args.marker_length)
         self.square_length_in_m = float(args.square_length)
@@ -158,8 +152,7 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Adds command line arguments for the calibrator.
 
-        Args:
-            parser (ArgumentParser): The argument parser to which parameters are added.
+        :param parser: The argument parser to which parameters are added.
         """
         parser.add_argument("--marker-length", type=float, required=True, help="Marker length in m.")
         parser.add_argument("--square-length", type=float, required=True, help="Square length in m.")
@@ -169,7 +162,6 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         Gets the count of samples collected.
 
-        Returns:
-            int: The number of samples collected.
+        :return: The number of samples collected.
         """
         return len(self.ids)

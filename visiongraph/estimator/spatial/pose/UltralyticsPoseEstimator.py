@@ -49,15 +49,14 @@ class UltralyticsPoseEstimator(PoseEstimator):
         """
         Initializes the UltralyticsPoseEstimator with the given parameters.
 
-        Args:
-            assets (Asset): Assets required for the pose estimation model.
-            num_keypoints (int): The number of keypoints to detect.
-            min_score (float): Minimum score threshold for keypoints detection.
-            nms (bool): Whether to apply non-maximum suppression.
-            nms_threshold (float): Threshold for non-maximum suppression.
-            nms_eta (Optional[float]): Eta parameter for non-maximum suppression.
-            nms_top_k (Optional[int]): Maximum number of detections to keep after non-maximum suppression.
-            engine (InferenceEngine): Inference engine to run the pose estimation model.
+        :param assets: Assets required for the pose estimation model.
+        :param num_keypoints: The number of keypoints to detect.
+        :param min_score: Minimum score threshold for keypoints detection.
+        :param nms: Whether to apply non-maximum suppression.
+        :param nms_threshold: Threshold for non-maximum suppression.
+        :param nms_eta: Eta parameter for non-maximum suppression.
+        :param nms_top_k: Maximum number of detections to keep after non-maximum suppression.
+        :param engine: Inference engine to run the pose estimation model.
         """
         super().__init__(min_score)
 
@@ -85,11 +84,9 @@ class UltralyticsPoseEstimator(PoseEstimator):
         """
         Processes an image and performs pose estimation.
 
-        Args:
-            image (np.ndarray): Input image in which poses are to be detected.
+        :param image: Input image in which poses are to be detected.
 
-        Returns:
-            ResultList[COCOPose]: A list of detected poses represented as COCOPose objects.
+        :return: A list of detected poses represented as COCOPose objects.
         """
         h, w = self.engine.first_input_shape[2:]
 
@@ -139,11 +136,9 @@ class UltralyticsPoseEstimator(PoseEstimator):
         """
         Creates an instance of UltralyticsPoseEstimator based on the provided configuration.
 
-        Args:
-            config (UltralyticsPoseConfig): Configuration for the Ultralytics pose estimator.
+        :param config: Configuration for the Ultralytics pose estimator.
 
-        Returns:
-            UltralyticsPoseEstimator: An instance of the UltralyticsPoseEstimator.
+        :return: An instance of the UltralyticsPoseEstimator.
         """
         num_args = len(config.value) - 2
 

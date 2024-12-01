@@ -21,10 +21,8 @@ class BaseEstimator(GraphNode[InputType, OutputType], ABC):
         """
         Processes the input data using the estimator's logic.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The processed output of type `OutputType`.
+        :return: The processed output of type `OutputType`.
         """
         pass

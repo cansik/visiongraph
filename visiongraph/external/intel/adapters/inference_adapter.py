@@ -12,7 +12,7 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-"""
+ """
 
 import abc
 from dataclasses import dataclass, field
@@ -63,8 +63,6 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
            which contains the information about the input shape, layout, precision
            in OpenVINO format, meta (optional)
 
-        Returns:
-            - the dict containing Metadata for all inputs
         """
 
     @abc.abstractmethod
@@ -74,8 +72,6 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
            which contains the information about the output shape, layout, precision
            in OpenVINO format, meta (optional)
 
-        Returns:
-            - the dict containing Metadata for all outputs
         """
 
     @abc.abstractmethod
@@ -83,14 +79,6 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
         """
         Reshapes the model inputs to fit the new input shape.
 
-        Args:
-            - new_shape (dict): the dictionary with inputs names as keys and
-                list of new shape as values in the following format:
-                {
-                    'input_layer_name_1': [1, 128, 128, 3],
-                    'input_layer_name_2': [1, 128, 128, 3],
-                    ...
-                }
         """
 
     @abc.abstractmethod
@@ -98,21 +86,7 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
         """
         Performs the synchronous model inference. The infer is a blocking method.
 
-        Args:
-            - dict_data: it's submitted to the model for inference and has the following format:
-                {
-                    'input_layer_name_1': data_1,
-                    'input_layer_name_2': data_2,
-                    ...
-                }
 
-        Returns:
-            - raw result (dict) - model raw output in the following format:
-                {
-                    'output_layer_name_1': raw_result_1,
-                    'output_layer_name_2': raw_result_2,
-                    ...
-                }
         """
 
     @abc.abstractmethod
@@ -123,15 +97,6 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
         define get_raw_result() function, which handles the result
         of inference from the model.
 
-        Args:
-            - dict_data: it's submitted to the model for inference and has the following format:
-                {
-                    'input_layer_name_1': data_1,
-                    'input_layer_name_2': data_2,
-                    ...
-                }
-            - callback_fn: the callback function, which is defined outside the adapter
-            - callback_data: the data for callback, that will be taken after the model inference is ended
         """
 
     @abc.abstractmethod
@@ -140,9 +105,6 @@ class InferenceAdapter(metaclass=abc.ABCMeta):
         In case of asynchronous execution checks if one can submit input data
         to the model for inference, or all infer requests are busy.
 
-        Returns:
-            - the boolean flag whether the input data can be
-                submitted to the model for inference or not
         """
 
     @abc.abstractmethod

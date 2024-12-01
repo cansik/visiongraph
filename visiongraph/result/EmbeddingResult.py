@@ -13,8 +13,7 @@ class EmbeddingResult(BaseResult):
         """
         Initializes the EmbeddingResult object.
 
-        Args:
-            embeddings (np.ndarray): The embedded vectors.
+        :param embeddings: The embedded vectors.
         """
         self.embeddings = embeddings
 
@@ -22,8 +21,7 @@ class EmbeddingResult(BaseResult):
         """
         Annotates the result with additional information.
 
-        Args:
-            image (np.ndarray): The input image.
+        :param image: The input image.
         """
         pass
 
@@ -31,10 +29,8 @@ class EmbeddingResult(BaseResult):
         """
         Computes the cosine distance between this embedding and another.
 
-        Args:
-            embeddings (np.ndarray): The other embedded vectors.
+        :param embeddings: The other embedded vectors.
 
-        Returns:
-            float: The cosine distance between this embedding and the input.
+        :return: The cosine distance between this embedding and the input.
         """
         return cosine(self.embeddings, embeddings) * 0.5

@@ -17,9 +17,8 @@ class LandmarkEmbeddingResult(EmbeddingResult):
         """
         Initializes the LandmarkEmbeddingResult object.
 
-        Args:
-            embeddings (np.ndarray): The embedding data of detected landmarks.
-            detection (T): The landemark detection result to be embedded.
+        :param embeddings: The embedding data of detected landmarks.
+        :param detection: The landemark detection result to be embedded.
         """
         super().__init__(embeddings)
         self.detection = detection
@@ -28,8 +27,7 @@ class LandmarkEmbeddingResult(EmbeddingResult):
         """
         Annotates the image with the detected landmarks.
 
-        Args:
-            image (np.ndarray): The input image to be annotated.
-            **kwargs: Additional keyword arguments for the annotation process.
+        :param image: The input image to be annotated.
+        :param **kwargs: Additional keyword arguments for the annotation process.
         """
         self.detection.annotate(image, **kwargs)

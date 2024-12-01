@@ -11,8 +11,7 @@ def _get_onnx_vision_engine_type():
     """
     Returns the ONNXVisionEngine class type.
 
-    Returns:
-        type: The ONNXVisionEngine class type.
+    :return: The ONNXVisionEngine class type.
     """
     from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
     return ONNXVisionEngine
@@ -22,8 +21,7 @@ def _get_open_vino_engine_type():
     """
     Returns the OpenVinoEngine class type.
 
-    Returns:
-        type: The OpenVinoEngine class type.
+    :return: The OpenVinoEngine class type.
     """
     from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
     return OpenVinoEngine
@@ -59,22 +57,19 @@ class InferenceEngineFactory:
         """
         Creates an instance of a vision engine based on the selected inference engine type.
 
-        Args:
-            engine (Enum): The inference engine type to use. Can be ONNX, OpenVINO, or OpenVINO2.
-            assets (Sequence[Asset]): A list of assets (e.g., models and weights) required for the chosen engine.
-            flip_channels (bool, optional): Whether to flip channels in the input data. Defaults to True.
-            scale (Optional[Union[float, Sequence[float]]], optional): Scaling factors for the input data. Defaults to None.
-            mean (Optional[Union[float, Sequence[float]]], optional): Mean values for the input data. Defaults to None.
-            padding (bool, optional): Whether to pad the input data. Defaults to False.
-            transpose (bool, optional): Whether to transpose the output of the engine. Defaults to True.
-            order (InputShapeOrder, optional): The input shape order to use. Defaults to NCHW.
-            **engine_options: Any additional options to pass to the engine instance.
+        :param engine: The inference engine type to use. Can be ONNX, OpenVINO, or OpenVINO2.
+        :param assets: A list of assets (e.g., models and weights) required for the chosen engine.
+        :param flip_channels: Whether to flip channels in the input data. Defaults to True.
+        :param scale: Scaling factors for the input data. Defaults to None.
+        :param mean: Mean values for the input data. Defaults to None.
+        :param padding: Whether to pad the input data. Defaults to False.
+        :param transpose: Whether to transpose the output of the engine. Defaults to True.
+        :param order: The input shape order to use. Defaults to NCHW.
+        :param **engine_options: Any additional options to pass to the engine instance.
 
-        Returns:
-            BaseVisionEngine: An instance of the chosen vision engine.
+        :return: An instance of the chosen vision engine.
 
-        Raises:
-            Exception: If no assets are provided for the selected engine.
+        :raises Exception: If no assets are provided for the selected engine.
         """
         if len(assets) < 0:
             raise Exception("No model or weights provided for vision engine! At least one is required!")

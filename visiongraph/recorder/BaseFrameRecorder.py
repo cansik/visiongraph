@@ -28,10 +28,9 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Closes the frame recorder upon exiting the context.
 
-        Args:
-            type: The exception type, if any.
-            value: The exception value, if any.
-            traceback: The traceback object, if any.
+        :param type: The exception type, if any.
+        :param value: The exception value, if any.
+        :param traceback: The traceback object, if any.
         """
         self.close()
 
@@ -39,8 +38,7 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Reads an image from a file and adds it to the recorder.
 
-        Args:
-            input_path (str): The file path to the image.
+        :param input_path: The file path to the image.
         """
         image = cv2.imread(input_path)
         self.add_image(image)
@@ -57,8 +55,7 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Adds an image to the recorder.
 
-        Args:
-            image (np.ndarray): The image to be added.
+        :param image: The image to be added.
         """
         pass
 
@@ -74,8 +71,7 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Indicates whether the frame recorder is currently open.
 
-        Returns:
-            bool: True if the recorder is open, False otherwise.
+        :return: True if the recorder is open, False otherwise.
         """
         return self._is_open
 
@@ -89,11 +85,9 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Processes the input data by adding it as an image to the recorder.
 
-        Args:
-            data (np.ndarray): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            np.ndarray: The processed input data.
+        :return: The processed input data.
         """
         self.add_image(data)
         return data
@@ -108,8 +102,7 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Configures the recorder with command-line arguments.
 
-        Args:
-            args (Namespace): The parsed command-line arguments.
+        :param args: The parsed command-line arguments.
         """
         pass
 
@@ -118,7 +111,6 @@ class BaseFrameRecorder(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         Adds command-line parameters specific to the frame recorder.
 
-        Args:
-            parser (ArgumentParser): The argument parser to add parameters to.
+        :param parser: The argument parser to add parameters to.
         """
         pass

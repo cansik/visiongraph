@@ -13,11 +13,10 @@ class EyeOpenClosedResult(ClassificationResult):
         """
         Initializes the EyeOpenClosedResult object.
 
-        Args:
-            class_id (int): The ID of the classified class.
-            class_name (str): The name of the classified class.
-            score (float): The confidence score of the classification.
-            probabilities (np.ndarray): The probability distribution over all classes.
+        :param class_id: The ID of the classified class.
+        :param class_name: The name of the classified class.
+        :param score: The confidence score of the classification.
+        :param probabilities: The probability distribution over all classes.
         """
         super().__init__(class_id, class_name, score)
         self.probabilities = probabilities
@@ -26,14 +25,12 @@ class EyeOpenClosedResult(ClassificationResult):
         """
         Annotates the classification result on the provided image.
 
-        Args:
-            image (np.ndarray): The input image.
-            x (float, optional): The x-coordinate of the annotation point. Defaults to 0.
-            y (float, optional): The y-coordinate of the annotation point. Defaults to 0.
-            length (float, optional): The length of the annotation line. Defaults to 0.2.
+        :param image: The input image.
+        :param x: The x-coordinate of the annotation point. Defaults to 0.
+        :param y: The y-coordinate of the annotation point. Defaults to 0.
+        :param length: The length of the annotation line. Defaults to 0.2.
 
-        Returns:
-            np.ndarray: The annotated image.
+        :return: The annotated image.
         """
         super().annotate(image, **kwargs)
 

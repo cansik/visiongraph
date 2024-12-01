@@ -41,8 +41,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         """
         Reads a frame from the input source.
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the image read from the input source.
+        :return: A tuple containing the timestamp and the image read from the input source.
         """
         pass
 
@@ -50,26 +49,22 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         """
         Processes the input data and returns the corresponding image.
 
-        Args:
-            data (InputType): The input data to be processed.
+        :param data: The input data to be processed.
 
-        Returns:
-            OutputType: The processed image.
+        :return: The processed image.
         """
         ts, image = self.read()
         return image
 
     def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
         """
-        Applies the processing pipeline on the input image including pre-processing, cropping, masking, 
+        Applies the processing pipeline on the input image including pre-processing, cropping, masking,
         rotation, and flipping.
 
-        Args:
-            ts (int): The timestamp associated with the image.
-            image (Optional[np.ndarray]): The image to be processed.
+        :param ts: The timestamp associated with the image.
+        :param image: The image to be processed.
 
-        Returns:
-            Tuple[int, Optional[np.ndarray]]: A tuple containing the timestamp and the processed image.
+        :return: A tuple containing the timestamp and the processed image.
         """
         if image is None:
             return ts, image
@@ -108,8 +103,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         """
         Configures the input source based on command-line arguments.
 
-        Args:
-            args (Namespace): The command-line arguments namespace containing configuration parameters.
+        :param args: The command-line arguments namespace containing configuration parameters.
         """
         self.width, self.height = args.input_size
         self.fps = float(args.input_fps)
@@ -132,8 +126,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         """
         Adds command-line arguments for input source configuration to the argument parser.
 
-        Args:
-            parser (ArgumentParser): The argument parser to which the input parameters will be added.
+        :param parser: The argument parser to which the input parameters will be added.
         """
         try:
             parser.add_argument("--input-size", default=[640, 480], type=int, nargs=2, metavar=("width", "height"),

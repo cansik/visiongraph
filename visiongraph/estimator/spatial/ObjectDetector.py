@@ -25,10 +25,8 @@ class ObjectDetector(VisionClassifier[ResultList[OutputType]], ABC):
         """
         Abstract method to process input data and perform object detection.
 
-        Args:
-            data (np.ndarray): The input data for object detection, typically an image or a frame.
+        :param data: The input data for object detection, typically an image or a frame.
 
-        Returns:
-            ResultList[OutputType]: A list of object detection results of type OutputType.
+        :return: A list of object detection results of type OutputType.
         """
         pass

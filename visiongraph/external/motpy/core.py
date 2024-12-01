@@ -6,7 +6,9 @@ from typing import Optional, Any
 
 import numpy as np
 
-""" types """
+"""
+ types
+ """
 
 # Box is of shape (1,2xdim), e.g. for dim=2 [xmin, ymin, xmax, ymax] format is accepted
 Box = np.ndarray
@@ -40,7 +42,9 @@ class Detection:
                f'feature={self.feature} reference={self.reference})'
 
 
-""" utils """
+"""
+ utils
+ """
 
 LOG_FORMAT = "%(asctime)s\t%(threadName)s-%(name)s:%(levelname)s:%(message)s"
 

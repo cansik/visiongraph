@@ -14,11 +14,10 @@ class MoviePyVideoRecorder(BaseFrameRecorder):
         """
         Initializes the MoviePyVideoRecorder object with the specified parameters.
 
-        Args:
-            width (int): The desired width of the recorded video.
-            height (int): The desired height of the recorded video.
-            output_path (str, optional): The path to save the recorded video. Defaults to "video.mp4".
-            fps (float, optional): The frames per second for the recorded video. Defaults to 30.
+        :param width: The desired width of the recorded video.
+        :param height: The desired height of the recorded video.
+        :param output_path: The path to save the recorded video. Defaults to "video.mp4".
+        :param fps: The frames per second for the recorded video. Defaults to 30.
         """
         super().__init__()
         self.output_path = output_path
@@ -38,8 +37,7 @@ class MoviePyVideoRecorder(BaseFrameRecorder):
         """
         Adds an image to the recorder's internal image list, converting it from BGR to RGB format before doing so.
 
-        Args:
-            image (np.ndarray): The image to be added.
+        :param image: The image to be added.
         """
         im_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         super().add_image(im_rgb)

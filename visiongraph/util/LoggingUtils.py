@@ -5,8 +5,7 @@ def add_logging_parameter(parser):
     """
     Adds a command-line argument for specifying the logging level.
 
-    Args:
-        parser: The argument parser to which the logging level argument will be added.
+    :param parser: The argument parser to which the logging level argument will be added.
     """
     parser.add_argument('--loglevel', default='warning',
                         choices=["critical", "error", "warning", "info", "debug"],
@@ -17,8 +16,7 @@ def setup_logging(loglevel: str):
     """
     Configures the logging settings based on the specified log level.
 
-    Args:
-        loglevel (str): The logging level to set, must be one of 'critical', 'error', 'warning', 'info', or 'debug'.
+    :param loglevel: The logging level to set, must be one of 'critical', 'error', 'warning', 'info', or 'debug'.
     """
     logging.basicConfig(level=loglevel.upper(),
                         format="%(levelname)s - %(asctime)s.%(msecs)03d - %(module)s - %(message)s",
