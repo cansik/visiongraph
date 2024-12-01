@@ -22,9 +22,9 @@ def convert_docstring_to_rst(code: str) -> str:
     :return: Python code with reStructuredText formatted docstrings.
     """
 
-    params_regex = r"^\s*([\*\w_]+)\s*(\(([\w,\s\[\]]+)\))?\s*:([\w\s\._]+)$"
-    return_regex = r"^\s*([\w\_\[\],]*):\s([\w\s\_y\.]*)\s*$"
-    raise_regex = r"^\s*([\w\_\[\],]*):\s([\w\s\_y\.]*)\s*$"
+    params_regex = r"^\s*([\*\w_]+)\s*(\(([\w\s\_\[\],\.]+)\))?\s*:([\w\s\._,-\(\)]+)$"
+    return_regex = r"^\s*([\w\s\_\[\],\.]*):\s([\w\s\_\.,-\(\)]*)\s*$"
+    raise_regex = r"^\s*([\w\s\_\[\],\.]*):\s([\w\s\_\.,-\(\)]*)\s*$"
 
     def extract_and_convert_docstring(match: re.Match) -> str:
         docstring = match.group(1)
@@ -36,6 +36,7 @@ def convert_docstring_to_rst(code: str) -> str:
 
         for line in docstring.splitlines():
             spaces_count = len(line) - len(line.lstrip(" "))
+            original_line = line
             line = line.strip()
             if line.startswith("Args:"):
                 intent = " " * spaces_count
@@ -85,7 +86,14 @@ def convert_docstring_to_rst(code: str) -> str:
                     intent = " " * spaces_count
                     rst_lines.append(f"{intent}{line}")
 
-        return '"""' + "\n".join(rst_lines) + '"""'
+        if len(rst_lines) > 0:
+            if rst_lines[0].strip() == "":
+                rst_lines.pop(0)
+
+            if rst_lines[-1].strip() == "":
+                rst_lines.pop(-1)
+
+        return '"""' + "\n" + "\n".join(rst_lines) + "\n" + intent + '"""'
 
     # Replace Python docstrings with reStructuredText docstrings
     rst_code = re.sub(
