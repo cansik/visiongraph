@@ -22,9 +22,9 @@ def convert_docstring_to_rst(code: str) -> str:
     :return: Python code with reStructuredText formatted docstrings.
     """
 
-    params_regex = r"^\s*([\*\w_]+)\s*(\(([\w\s\_\[\],\.]+)\))?\s*:([\w\s\._,-\(\)]+)$"
-    return_regex = r"^\s*([\w\s\_\[\],\.]*):\s([\w\s\_\.,-\(\)]*)\s*$"
-    raise_regex = r"^\s*([\w\s\_\[\],\.]*):\s([\w\s\_\.,-\(\)]*)\s*$"
+    params_regex = r"^\s*([\*\w_]+)\s*(\(([\w\s\_\[\],\.]+)\))?\s*:\s*(.*)$"
+    return_regex = r"^\s*([\w\s\_\[\],\.]*)\s*:\s*(.*)\s*$"
+    raise_regex = r"^\s*([\w\s\_\[\],\.]*)\s*:\s*(.*)\s*$"
 
     def extract_and_convert_docstring(match: re.Match) -> str:
         docstring = match.group(1)
@@ -70,7 +70,7 @@ def convert_docstring_to_rst(code: str) -> str:
                     type_def = m.group(1)
                     description = m.group(2)
 
-                    rst_lines.append(f"{intent}:returns: {description.strip()}")
+                    rst_lines.append(f"{intent}:return: {description.strip()}")
                 elif section == SectionType.Raise and line:
                     matches = list(re.finditer(raise_regex, line, re.MULTILINE))
 
