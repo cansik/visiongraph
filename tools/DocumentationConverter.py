@@ -116,7 +116,7 @@ def main() -> None:
         corrected = convert_docstring_to_rst(text)
         file.write_text(corrected, encoding="utf-8")
         # print(corrected)
-        exit(0)
+        # exit(0)
 
     print("done!")
 
