@@ -1,5 +1,6 @@
 import typing
 from abc import ABC, abstractmethod
+from argparse import Namespace, ArgumentParser, ArgumentError
 from datetime import timedelta
 from typing import Optional, Tuple
 
@@ -9,6 +10,7 @@ from depthai import CameraFeatures
 
 from visiongraph.input.BaseCamera import BaseCamera
 from visiongraph.model.CameraStreamType import CameraStreamType
+from visiongraph.util import CommonArgs
 
 _CameraProperties = dai.ColorCameraProperties
 
@@ -21,9 +23,11 @@ class DepthAIBaseInput(BaseCamera, ABC):
     and data streams for DepthAI-compatible cameras.
     """
 
-    def __init__(self):
+    def __init__(self, mxid_or_name: Optional[str] = None):
         """
         Initializes the DepthAIBaseInput object with default settings for camera properties.
+
+        :param mxid_or_name: MXID or IP/USB of the device.
         """
         super().__init__()
 
@@ -46,6 +50,10 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
         self._auto_white_balance: bool = True
         self._white_balance: int = 1000
+
+        # device info
+        self.mxid_or_name: Optional[str] = mxid_or_name
+        self._initial_device_info: Optional[dai.DeviceInfo] = None
 
         # pipeline objects
         self.pipeline: Optional[dai.Pipeline] = None
@@ -77,10 +85,18 @@ class DepthAIBaseInput(BaseCamera, ABC):
         This method initializes the pipeline, starts the device, and prepares the output queues for RGB streams.
         """
         self.pipeline = dai.Pipeline()
+
+        if self.mxid_or_name is not None:
+            self._initial_device_info = dai.DeviceInfo(self.mxid_or_name)
+
         self.pre_start_setup()
 
         # starts pipeline
-        self.device = dai.Device(self.pipeline).__enter__()
+        if self._initial_device_info is not None:
+            device = dai.Device(self.pipeline, self._initial_device_info)
+        else:
+            device = dai.Device(self.pipeline)
+        self.device = device.__enter__()
 
         self.rgb_control_queue = self.device.getInputQueue(self.rgb_control_in_name)
         self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
@@ -149,6 +165,31 @@ class DepthAIBaseInput(BaseCamera, ABC):
         Releases the camera device, closing the connection and cleaning up resources.
         """
         self.device.__exit__(None, None, None)
+
+    def configure(self, args: Namespace):
+        """
+        Configures the DepthAI input using command line arguments.
+
+        :param args: The command line arguments to configure the input.
+        """
+        super().configure(args)
+
+    @staticmethod
+    def add_params(parser: ArgumentParser):
+        """
+        Adds the DepthAI input parameters to the argument parser.
+
+        :param parser: The argument parser to add parameters to.
+        """
+        super(DepthAIBaseInput, DepthAIBaseInput).add_params(parser)
+        CommonArgs.add_source_argument(parser)
+
+        try:
+            parser.add_argument("--dai-id", default=None, type=str, help="DepthAI MXID or IP/USB of the device.")
+        except ArgumentError as ex:
+            if ex.message.startswith("conflicting"):
+                return
+            raise ex
 
     @property
     def gain(self) -> int:

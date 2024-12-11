@@ -24,12 +24,14 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
     and depth camera functionalities.
     """
 
-    def __init__(self):
+    def __init__(self, mxid_or_name: Optional[str] = None):
         """
         Initializes the OakDInput object, setting up camera properties and
         internal states.
+
+        :param mxid_or_name: MXID or IP/USB of the device.
         """
-        super().__init__()
+        super().__init__(mxid_or_name=mxid_or_name)
 
         self.color_sensor_resolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
 
