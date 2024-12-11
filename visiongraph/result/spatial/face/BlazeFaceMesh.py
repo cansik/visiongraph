@@ -11,14 +11,30 @@ _mp_face_mesh = mp.solutions.face_mesh
 
 
 class BlazeFaceMesh(FaceLandmarkResult):
-    LEFT_EYE_CENTER_INDICES = [386, 374]
-    RIGHT_EYE_CENTER_INDICES = [159, 145]
+    # more information about the indices:
+    # https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/python/solutions/face_mesh_connections.py
 
-    LEFT_IRIS_INDICES = [474, 475, 476, 477]
-    RIGHT_IRIS_INDICES = [469, 470, 471, 472]
+    LEFT_EYE_CENTER_INDICES = frozenset([386, 374])
+    RIGHT_EYE_CENTER_INDICES = frozenset([159, 145])
 
-    LEFT_EYE_BOX_INDICES = [*LEFT_EYE_CENTER_INDICES, 362, 263]
-    RIGHT_EYE_BOX_INDICES = [*RIGHT_EYE_CENTER_INDICES, 33, 133]
+    LEFT_IRIS_INDICES = frozenset([474, 475, 476, 477])
+    RIGHT_IRIS_INDICES = frozenset([469, 470, 471, 472])
+
+    LEFT_EYE_BOX_INDICES = frozenset([*LEFT_EYE_CENTER_INDICES, 362, 263])
+    RIGHT_EYE_BOX_INDICES = frozenset([*RIGHT_EYE_CENTER_INDICES, 33, 133])
+
+    # lips indices
+    UPPER_VERMILION_TOP_INDICES = frozenset([61, 185, 40, 39, 37, 0, 267, 269, 270, 409, 291])
+    UPPER_VERMILION_BOTTOM_INDICES = frozenset([78, 191, 80, 81, 82, 13, 312, 311, 310, 415, 308])
+
+    UPPER_VERMILION_INDICES = frozenset([*UPPER_VERMILION_TOP_INDICES, *UPPER_VERMILION_BOTTOM_INDICES])
+
+    LOWER_VERMILION_TOP_INDICES = frozenset([95, 88, 178, 87, 14, 317, 402, 318, 324])
+    LOWER_VERMILION_BOTTOM_INDICES = frozenset([146, 91, 181, 84, 17, 314, 405, 321, 375])
+
+    LOWER_VERMILION_INDICES = frozenset([*LOWER_VERMILION_TOP_INDICES, *LOWER_VERMILION_BOTTOM_INDICES])
+
+    LIPS_INDICES = frozenset([*UPPER_VERMILION_INDICES, *LOWER_VERMILION_INDICES])
 
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(score, landmarks)
