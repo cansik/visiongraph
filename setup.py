@@ -14,7 +14,7 @@ ALL_NAME = "all"
 
 NAME = "visiongraph"
 PACKAGE_NAME = NAME
-PACKAGE_VERSION = "1.0.0"
+PACKAGE_VERSION = "1.0.1"
 PACKAGE_URL = "https://github.com/cansik/visiongraph"
 PACKAGE_DOC_MODULES = ["visiongraph", "!visiongraph.external"]
 
