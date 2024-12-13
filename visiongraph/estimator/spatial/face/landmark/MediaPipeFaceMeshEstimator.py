@@ -19,6 +19,12 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
+    """
+    A MediaPipe-based estimator for detecting facial landmarks and attributes.
+
+    This class provides functionality to detect facial landmarks, blend shapes,
+    and transformation matrices using MediaPipe's Face Landmarker.
+    """
 
     def __init__(self, static_image_mode: bool = False,
                  max_num_faces: int = 1,
@@ -33,9 +39,12 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
 
         :param static_image_mode: Whether to use the static image mode.
         :param max_num_faces: The maximum number of faces to detect.
-        :param min_score: The minimum detection confidence score.
-        :param min_tracking_confidence: The minimum tracking confidence.
-        :param task: MediaPipe task to use for face mesh estimator.
+        :param min_face_detection_confidence: The minimum detection confidence score.
+        :param min_face_presence_confidence: The minimum confidence for face presence detection.
+        :param min_tracking_confidence: The minimum confidence for tracking landmarks.
+        :param output_face_blendshapes: Whether to output face blend shapes.
+        :param output_facial_transformation_matrixes: Whether to output transformation matrices.
+        :param task: MediaPipe task to use for face mesh estimation.
         """
         super().__init__(min_face_detection_confidence)
 
@@ -53,6 +62,9 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
     def setup(self):
         """
         Sets up the MediaPipe FaceMesh detector.
+
+        Configures and initializes the MediaPipe FaceLandmarker using the specified
+        task options and the running mode (image or video).
         """
         running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
 
@@ -71,15 +83,16 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         Processes an image to detect faces and estimate landmarks.
 
-        :param image: The input image.
+        :param image: The input image as a NumPy array in BGR format.
 
-        :return: A list of detected faces with estimated landmarks.
+        :return: A ResultList of BlazeFaceMesh objects representing the detected faces
+                 and their respective landmarks, blend shapes, and transformation matrices.
         """
-        # pre-process image
+        # Pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         input_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=image)
 
-        # run inference
+        # Run inference
         if self.static_image_mode:
             results = self.detector.detect(input_frame)
         else:
@@ -107,6 +120,8 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
     def release(self):
         """
         Releases the MediaPipe FaceMesh detector.
+
+        Closes any resources held by the FaceLandmarker to free up memory.
         """
         self.detector.close()
 
@@ -114,6 +129,6 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         Configures the estimator based on the provided arguments.
 
-        :param args: The configuration arguments.
+        :param args: The configuration arguments as a Namespace object.
         """
         super().configure(args)

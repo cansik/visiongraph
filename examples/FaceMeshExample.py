@@ -3,12 +3,6 @@ import argparse
 from visiongraph import vg
 
 
-def send_osc(faces: vg.ResultList[vg.BlazeFaceMesh]) -> vg.ResultList[vg.BlazeFaceMesh]:
-    # todo: send out osc data
-
-    return faces
-
-
 def main():
     # parse command line arguments
     parser = argparse.ArgumentParser("FaceMesh Example", description="Detect face meshes on images.")
@@ -22,7 +16,10 @@ def main():
         # run detection and pass image through for annotation
         .apply(
             image=vg.passthrough(),
-            face_mesh=vg.sequence(vg.MediaPipeFaceMeshEstimator(), vg.custom(send_osc)),
+            face_mesh=vg.sequence(vg.MediaPipeFaceMeshEstimator(
+                output_face_blendshapes=True,
+                output_facial_transformation_matrixes=True,
+            )),
         )
 
         # annotate result
