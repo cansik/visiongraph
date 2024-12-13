@@ -1,52 +1,71 @@
+import time
 from argparse import Namespace
 from typing import Optional
 
 import cv2
 import mediapipe as mp
 import numpy as np
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+from mediapipe.tasks.python.vision.core.vision_task_running_mode import VisionTaskRunningMode
 
+from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
+from visiongraph.result.spatial.face.BlendShape import BlendShape
 from visiongraph.util.VectorUtils import list_of_vector4D
-
-_mp_face_mesh = mp.solutions.face_mesh
 
 
 class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
 
     def __init__(self, static_image_mode: bool = False,
                  max_num_faces: int = 1,
-                 refine_landmarks: bool = True,
-                 min_score: float = 0.5,
-                 min_tracking_confidence=0.5):
+                 min_face_detection_confidence: float = 0.5,
+                 min_face_presence_confidence: float = 0.5,
+                 min_tracking_confidence: float = 0.5,
+                 output_face_blendshapes: bool = False,
+                 output_facial_transformation_matrixes: bool = False,
+                 task: Asset = RepositoryAsset("face_landmarker.task")):
         """
         Initializes a MediaPipe FaceMeshEstimator.
 
         :param static_image_mode: Whether to use the static image mode.
         :param max_num_faces: The maximum number of faces to detect.
-        :param refine_landmarks: Whether to refine the landmarks.
         :param min_score: The minimum detection confidence score.
         :param min_tracking_confidence: The minimum tracking confidence.
+        :param task: MediaPipe task to use for face mesh estimator.
         """
-        super().__init__(min_score)
+        super().__init__(min_face_detection_confidence)
 
-        self.detector: Optional[_mp_face_mesh.FaceMesh] = None
+        self.detector: Optional[vision.FaceLandmarker] = None
 
         self.static_image_mode = static_image_mode
         self.max_num_faces = max_num_faces
-        self.refine_landmarks = refine_landmarks
+        self.min_face_presence_confidence = min_face_presence_confidence
         self.min_tracking_confidence = min_tracking_confidence
+        self.output_face_blendshapes = output_face_blendshapes
+        self.output_facial_transformation_matrixes = output_facial_transformation_matrixes
+
+        self.task = task
 
     def setup(self):
         """
         Sets up the MediaPipe FaceMesh detector.
         """
-        self.detector = _mp_face_mesh.FaceMesh(static_image_mode=self.static_image_mode,
-                                               min_detection_confidence=self.min_score,
-                                               max_num_faces=self.max_num_faces,
-                                               refine_landmarks=self.refine_landmarks,
-                                               min_tracking_confidence=self.min_tracking_confidence)
+        running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
+
+        base_options = python.BaseOptions(model_asset_path=self.task.path)
+        options = vision.FaceLandmarkerOptions(base_options=base_options,
+                                               running_mode=running_mode,
+                                               min_face_detection_confidence=self.min_score,
+                                               min_face_presence_confidence=self.min_face_presence_confidence,
+                                               min_tracking_confidence=self.min_tracking_confidence,
+                                               output_face_blendshapes=self.output_face_blendshapes,
+                                               output_facial_transformation_matrixes=self.output_facial_transformation_matrixes,
+                                               num_faces=self.max_num_faces)
+        self.detector = vision.FaceLandmarker.create_from_options(options)
 
     def process(self, image: np.ndarray) -> ResultList[BlazeFaceMesh]:
         """
@@ -58,20 +77,30 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         # pre-process image
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        input_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=image)
 
-        results = self.detector.process(image)
+        # run inference
+        if self.static_image_mode:
+            results = self.detector.detect(input_frame)
+        else:
+            results = self.detector.detect_for_video(input_frame, timestamp_ms=round(time.time() * 1000))
 
-        # check if results are there
-        if not results.multi_face_landmarks:
+        if len(results.face_landmarks) == 0:
             return ResultList()
 
         faces: ResultList[BlazeFaceMesh] = ResultList()
+        for i, face_landmarks in enumerate(results.face_landmarks):
+            landmarks = [(rkp.x, rkp.y, rkp.z, 1.0) for rkp in face_landmarks]
+            face_mesh = BlazeFaceMesh(1.0, list_of_vector4D(landmarks))
 
-        for face_landmarks in results.multi_face_landmarks:
-            relative_key_points = face_landmarks.landmark
+            if self.output_face_blendshapes:
+                blend_shapes = results.face_blendshapes[i]
+                face_mesh.blend_shapes = [BlendShape(b.index, b.category_name, b.score) for b in blend_shapes]
 
-            landmarks = [(rkp.x, rkp.y, rkp.z, 1.0) for rkp in relative_key_points]
-            faces.append(BlazeFaceMesh(1.0, list_of_vector4D(landmarks)))
+            if self.output_facial_transformation_matrixes:
+                face_mesh.transformation_matrix = results.facial_transformation_matrixes[i]
+
+            faces.append(face_mesh)
 
         return faces
 
