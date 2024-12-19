@@ -21,7 +21,7 @@ depthai~=2.29; platform_system != "Darwin" or platform.machine == "arm64"
 openvino~=2024.5.0
 
 # extra mediapipe
-mediapipe~=0.10.18
+mediapipe~=0.10.20
 
 # extra onnx
 onnxruntime~=1.20.1

@@ -6,6 +6,7 @@ import vector
 
 from visiongraph.result.spatial.face.BlendShape import BlendShape
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
+from visiongraph.util.MathUtils import decompose_transformation_matrix
 from visiongraph.util.VectorUtils import landmarks_center_by_indices
 
 _mp_face_mesh = mp.solutions.face_mesh
@@ -14,6 +15,11 @@ _mp_face_mesh = mp.solutions.face_mesh
 class BlazeFaceMesh(FaceLandmarkResult):
     # more information about the indices:
     # https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/python/solutions/face_mesh_connections.py
+    # https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
+
+    NOSE_INDEX = 1
+
+    PHILTRUM_INDEX = 164
 
     LEFT_EYE_CENTER_INDICES = frozenset([386, 374])
     RIGHT_EYE_CENTER_INDICES = frozenset([159, 145])
@@ -59,9 +65,38 @@ class BlazeFaceMesh(FaceLandmarkResult):
         super().annotate(image, show_info, info_text, color, show_bounding_box,
                          min_score, connections, stroke_width, marker_size)
 
+    def normalize_landmarks(self, origin_landmark_index: int = NOSE_INDEX) -> np.ndarray:
+        """
+        Normalize 3D landmark points to a canonical space using the inverse of
+        the specified transformation matrix.
+
+        :params origin_landmark_index: Index of the origin landmark for the normalisation.
+        :returns: A NumPy array containing the normalized 3D landmarks.
+        """
+        inv_matrix = np.linalg.inv(self.transformation_matrix)
+        inv_rotation, inv_translation, inv_scale = decompose_transformation_matrix(inv_matrix)
+
+        vertices = np.array([[e.x, 1 - e.y, -e.z] for e in self.landmarks], dtype=np.float32)
+        canonical_vertices = vertices @ inv_rotation.T
+
+        origin = canonical_vertices[origin_landmark_index]
+
+        # Translate vertices to center the origin
+        canonical_vertices -= origin
+
+        # Normalize vertices to be between -1 and +1 based on the maximum distance from the origin
+        max_distance = np.max(np.linalg.norm(canonical_vertices, axis=1))
+        normalized_vertices = canonical_vertices / max_distance
+
+        return normalized_vertices
+
     @property
     def nose(self) -> vector.Vector4D:
-        return self.landmarks[4]
+        return self.landmarks[self.NOSE_INDEX]
+
+    @property
+    def philtrum(self) -> vector.Vector4D:
+        return self.landmarks[self.PHILTRUM_INDEX]
 
     @property
     def left_eye(self) -> vector.Vector4D:

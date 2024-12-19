@@ -167,3 +167,29 @@ def sigmoid(x):
 
     """
     return 1 / (1 + np.exp(-x))
+
+
+def decompose_transformation_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Decomposes a 4x4 transformation matrix into rotation, translation, and scale components.
+
+    :param matrix: A 4x4 transformation matrix.
+    :returns: A triple containing the 3x3 rotation matrix, 3x1 translation vector, and 3x1 scale vector.
+    """
+    # Ensure the input is a 4x4 matrix
+    if matrix.shape != (4, 4):
+        raise ValueError("Input matrix must be a 4x4 matrix.")
+
+    # Extract the rotation matrix (upper-left 3x3 submatrix)
+    rotation_matrix = matrix[:3, :3]
+
+    # Extract the translation vector (upper-right 3x1 vector)
+    translation_vector = matrix[:3, 3]
+
+    # Compute the scale factors from the norms of the rotation matrix rows or columns
+    scale_factors = np.linalg.norm(rotation_matrix, axis=0)  # Column-wise norms
+
+    # Normalize the rotation matrix to remove scale
+    rotation_matrix_normalized = rotation_matrix / scale_factors
+
+    return rotation_matrix_normalized, translation_vector, scale_factors
