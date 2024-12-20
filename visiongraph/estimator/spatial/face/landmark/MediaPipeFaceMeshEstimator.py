@@ -79,11 +79,12 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
                                                num_faces=self.max_num_faces)
         self.detector = vision.FaceLandmarker.create_from_options(options)
 
-    def process(self, image: np.ndarray) -> ResultList[BlazeFaceMesh]:
+    def process(self, image: np.ndarray, timestamp_ms: Optional[int] = None) -> ResultList[BlazeFaceMesh]:
         """
         Processes an image to detect faces and estimate landmarks.
 
         :param image: The input image as a NumPy array in BGR format.
+        :param timestamp_ms: The timestamp of the input video frame in milliseconds. If None, time.monotonic is used.
 
         :return: A ResultList of BlazeFaceMesh objects representing the detected faces
                  and their respective landmarks, blend shapes, and transformation matrices.
@@ -96,7 +97,10 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         if self.static_image_mode:
             results = self.detector.detect(input_frame)
         else:
-            results = self.detector.detect_for_video(input_frame, timestamp_ms=round(time.time() * 1000))
+            if timestamp_ms is None:
+                timestamp_ms = int(time.monotonic() * 1000)
+
+            results = self.detector.detect_for_video(input_frame, timestamp_ms=timestamp_ms)
 
         if len(results.face_landmarks) == 0:
             return ResultList()
