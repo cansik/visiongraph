@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, TypeVar
+from typing import List, TypeVar, Generic
 
 from visiongraph.estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult
@@ -8,7 +8,7 @@ InputType = TypeVar('InputType')
 OutputType = TypeVar('OutputType', bound=ClassificationResult)
 
 
-class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC):
+class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], Generic[InputType, OutputType], ABC):
     """
     A base class for classification estimators that inherit the score thresholding functionality.
     """
