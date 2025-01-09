@@ -68,11 +68,10 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.input_names = [e.name for e in self.session.get_inputs()]
         self.output_names = [e.name for e in self.session.get_outputs()]
 
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         """
         Performs inference on the input image using the ONNX model.
 
-        :param image: The input image.
         :param inputs: The input data. Defaults to None.
 
         :return: The output of the ONNX model.

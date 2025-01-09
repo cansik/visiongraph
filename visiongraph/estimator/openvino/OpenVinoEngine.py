@@ -1,6 +1,5 @@
 from typing import Dict, Optional, Any, Sequence, Union, List
 
-import numpy as np
 import openvino.runtime as ov
 
 from visiongraph.data.Asset import Asset
@@ -65,11 +64,10 @@ class OpenVinoEngine(BaseVisionEngine):
 
         self._input_lut = {l.any_name: l for l in self.compiled_model.inputs}
 
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         """
         Performs inference on the input image.
 
-        :param image: The input image.
         :param inputs: Input data. Defaults to None.
 
         :return: The output of the model.
