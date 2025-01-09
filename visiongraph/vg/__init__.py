@@ -183,6 +183,14 @@ if TYPE_CHECKING:
         from visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator
     except ModuleNotFoundError as ex:
         logging.info(f"Module FaceReidentificationEstimator not found")
+    try:
+        from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVAD
+    except ModuleNotFoundError as ex:
+        logging.info(f"Module VivaVAD not found")
+    try:
+        from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVADConfig
+    except ModuleNotFoundError as ex:
+        logging.info(f"Module VivaVADConfig not found")
     from visiongraph.estimator.spatial.hand.HandDetector import HandDetector  # noqa
     from visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator  # noqa
     try:
@@ -367,6 +375,7 @@ if TYPE_CHECKING:
     from visiongraph.model.CameraIntrinsics import CameraIntrinsics  # noqa
     from visiongraph.model.CameraStreamType import CameraStreamType  # noqa
     from visiongraph.model.DepthBuffer import DepthBuffer  # noqa
+    from visiongraph.model.RollingBufferNumpy import RollingBufferNumpy  # noqa
     from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer  # noqa
     from visiongraph.model.VisionEngineOutput import VisionEngineOutput  # noqa
     from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D  # noqa
@@ -429,6 +438,7 @@ if TYPE_CHECKING:
         from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
     except ModuleNotFoundError as ex:
         logging.info(f"Module BlazeFaceMesh not found")
+    from visiongraph.result.spatial.face.BlendShape import BlendShape  # noqa
     from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionClassificationResult  # noqa
     from visiongraph.result.spatial.face.EyeOpenClosedResult import EyeOpenClosedResult  # noqa
     from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult  # noqa
@@ -436,6 +446,7 @@ if TYPE_CHECKING:
     from visiongraph.result.spatial.face.IrisDistanceResult import IrisDistanceResult  # noqa
     from visiongraph.result.spatial.face.IrisDistanceResult import IrisParameter  # noqa
     from visiongraph.result.spatial.face.RegressionFace import RegressionFace  # noqa
+    from visiongraph.result.spatial.face.VivaVADResult import VivaVADResult  # noqa
     try:
         from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
     except ModuleNotFoundError as ex:
@@ -470,6 +481,9 @@ if TYPE_CHECKING:
     from visiongraph.tracker.MotpyTracker import MotpyTracker  # noqa
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentResult  # noqa
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver  # noqa
+    from visiongraph.tracker.storage.SimpleTrackingStorage import SimpleTrackingStorage  # noqa
+    from visiongraph.tracker.storage.SimpleTrackingStorage import Trackable  # noqa
+    from visiongraph.tracker.storage.TrackingStorage import TrackingStorage  # noqa
     from visiongraph.util.ArgUtils import PipelineNodeFactory  # noqa
     from visiongraph.util.ArgUtils import add_dict_choice_argument  # noqa
     from visiongraph.util.ArgUtils import add_enum_choice_argument  # noqa
@@ -499,6 +513,7 @@ if TYPE_CHECKING:
     from visiongraph.util.LoggingUtils import setup_logging  # noqa
     from visiongraph.util.MathUtils import StreamingMovingAverage  # noqa
     from visiongraph.util.MathUtils import constrain  # noqa
+    from visiongraph.util.MathUtils import decompose_transformation_matrix  # noqa
     from visiongraph.util.MathUtils import intersection_over_union  # noqa
     from visiongraph.util.MathUtils import map_value  # noqa
     from visiongraph.util.MathUtils import rotate_2d  # noqa
@@ -507,6 +522,7 @@ if TYPE_CHECKING:
     from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d  # noqa
     from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_vector4d  # noqa
     from visiongraph.util.NetworkUtils import download_file  # noqa
+    from visiongraph.util.NetworkUtils import handle_redirects  # noqa
     from visiongraph.util.NetworkUtils import prepare_data_file  # noqa
     from visiongraph.util.NetworkUtils import prepare_openvino_model  # noqa
     from visiongraph.util.OSUtils import isLinux  # noqa
@@ -635,6 +651,8 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "FaceRecognitionEstimator": _LazyImport("FaceRecognitionEstimator", "visiongraph.estimator.spatial.face.recognition.FaceRecognitionEstimator", False),
     "FaceReidentificationConfig": _LazyImport("FaceReidentificationConfig", "visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator", True),
     "FaceReidentificationEstimator": _LazyImport("FaceReidentificationEstimator", "visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator", True),
+    "VivaVAD": _LazyImport("VivaVAD", "visiongraph.estimator.spatial.face.vad.VivaVAD", True),
+    "VivaVADConfig": _LazyImport("VivaVADConfig", "visiongraph.estimator.spatial.face.vad.VivaVAD", True),
     "HandDetector": _LazyImport("HandDetector", "visiongraph.estimator.spatial.hand.HandDetector", False),
     "HandLandmarkEstimator": _LazyImport("HandLandmarkEstimator", "visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator", False),
     "HandModelComplexity": _LazyImport("HandModelComplexity", "visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator", True),
@@ -699,6 +717,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "CameraIntrinsics": _LazyImport("CameraIntrinsics", "visiongraph.model.CameraIntrinsics", False),
     "CameraStreamType": _LazyImport("CameraStreamType", "visiongraph.model.CameraStreamType", False),
     "DepthBuffer": _LazyImport("DepthBuffer", "visiongraph.model.DepthBuffer", False),
+    "RollingBufferNumpy": _LazyImport("RollingBufferNumpy", "visiongraph.model.RollingBufferNumpy", False),
     "VisionEngineModelLayer": _LazyImport("VisionEngineModelLayer", "visiongraph.model.VisionEngineModelLayer", False),
     "VisionEngineOutput": _LazyImport("VisionEngineOutput", "visiongraph.model.VisionEngineOutput", False),
     "BoundingBox2D": _LazyImport("BoundingBox2D", "visiongraph.model.geometry.BoundingBox2D", False),
@@ -746,6 +765,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "SpatialCascadeResult": _LazyImport("SpatialCascadeResult", "visiongraph.result.spatial.SpatialCascadeResult", False),
     "BlazeFace": _LazyImport("BlazeFace", "visiongraph.result.spatial.face.BlazeFace", False),
     "BlazeFaceMesh": _LazyImport("BlazeFaceMesh", "visiongraph.result.spatial.face.BlazeFaceMesh", True),
+    "BlendShape": _LazyImport("BlendShape", "visiongraph.result.spatial.face.BlendShape", False),
     "EmotionClassificationResult": _LazyImport("EmotionClassificationResult", "visiongraph.result.spatial.face.EmotionClassificationResult", False),
     "EyeOpenClosedResult": _LazyImport("EyeOpenClosedResult", "visiongraph.result.spatial.face.EyeOpenClosedResult", False),
     "FaceDetectionResult": _LazyImport("FaceDetectionResult", "visiongraph.result.spatial.face.FaceDetectionResult", False),
@@ -753,6 +773,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "IrisDistanceResult": _LazyImport("IrisDistanceResult", "visiongraph.result.spatial.face.IrisDistanceResult", False),
     "IrisParameter": _LazyImport("IrisParameter", "visiongraph.result.spatial.face.IrisDistanceResult", False),
     "RegressionFace": _LazyImport("RegressionFace", "visiongraph.result.spatial.face.RegressionFace", False),
+    "VivaVADResult": _LazyImport("VivaVADResult", "visiongraph.result.spatial.face.VivaVADResult", False),
     "BlazeHand": _LazyImport("BlazeHand", "visiongraph.result.spatial.hand.BlazeHand", True),
     "HandDetectionResult": _LazyImport("HandDetectionResult", "visiongraph.result.spatial.hand.HandDetectionResult", False),
     "HandLandmarkResult": _LazyImport("HandLandmarkResult", "visiongraph.result.spatial.hand.HandLandmarkResult", False),
@@ -772,6 +793,9 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "MotpyTracker": _LazyImport("MotpyTracker", "visiongraph.tracker.MotpyTracker", False),
     "ObjectAssignmentResult": _LazyImport("ObjectAssignmentResult", "visiongraph.tracker.ObjectAssignmentSolver", False),
     "ObjectAssignmentSolver": _LazyImport("ObjectAssignmentSolver", "visiongraph.tracker.ObjectAssignmentSolver", False),
+    "SimpleTrackingStorage": _LazyImport("SimpleTrackingStorage", "visiongraph.tracker.storage.SimpleTrackingStorage", False),
+    "Trackable": _LazyImport("Trackable", "visiongraph.tracker.storage.SimpleTrackingStorage", False),
+    "TrackingStorage": _LazyImport("TrackingStorage", "visiongraph.tracker.storage.TrackingStorage", False),
     "PipelineNodeFactory": _LazyImport("PipelineNodeFactory", "visiongraph.util.ArgUtils", False),
     "add_dict_choice_argument": _LazyImport("add_dict_choice_argument", "visiongraph.util.ArgUtils", False),
     "add_enum_choice_argument": _LazyImport("add_enum_choice_argument", "visiongraph.util.ArgUtils", False),
@@ -801,6 +825,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "setup_logging": _LazyImport("setup_logging", "visiongraph.util.LoggingUtils", False),
     "StreamingMovingAverage": _LazyImport("StreamingMovingAverage", "visiongraph.util.MathUtils", False),
     "constrain": _LazyImport("constrain", "visiongraph.util.MathUtils", False),
+    "decompose_transformation_matrix": _LazyImport("decompose_transformation_matrix", "visiongraph.util.MathUtils", False),
     "intersection_over_union": _LazyImport("intersection_over_union", "visiongraph.util.MathUtils", False),
     "map_value": _LazyImport("map_value", "visiongraph.util.MathUtils", False),
     "rotate_2d": _LazyImport("rotate_2d", "visiongraph.util.MathUtils", False),
@@ -809,6 +834,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "mediapipe_landmarks_to_score_and_vector4d": _LazyImport("mediapipe_landmarks_to_score_and_vector4d", "visiongraph.util.MediaPipeUtils", False),
     "mediapipe_landmarks_to_vector4d": _LazyImport("mediapipe_landmarks_to_vector4d", "visiongraph.util.MediaPipeUtils", False),
     "download_file": _LazyImport("download_file", "visiongraph.util.NetworkUtils", False),
+    "handle_redirects": _LazyImport("handle_redirects", "visiongraph.util.NetworkUtils", False),
     "prepare_data_file": _LazyImport("prepare_data_file", "visiongraph.util.NetworkUtils", False),
     "prepare_openvino_model": _LazyImport("prepare_openvino_model", "visiongraph.util.NetworkUtils", False),
     "isLinux": _LazyImport("isLinux", "visiongraph.util.OSUtils", False),
