@@ -68,7 +68,7 @@ class BlazeFaceMesh(FaceLandmarkResult):
                  marker_size: int = 1,
                  stroke_width: int = 1, **kwargs):
         super().annotate(image, show_info, info_text, color, show_bounding_box,
-                         min_score, connections, stroke_width, marker_size)
+                         min_score, connections, stroke_width, marker_size, **kwargs)
 
     def normalize_landmarks(self, origin_landmark_index: int = NOSE_INDEX) -> np.ndarray:
         """
