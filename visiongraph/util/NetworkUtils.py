@@ -2,6 +2,7 @@ import logging
 import os
 import shutil
 import sys
+from typing import Any, Dict, Optional
 from typing import Tuple
 
 import requests
@@ -9,10 +10,37 @@ from tqdm import tqdm
 
 import visiongraph.cache
 
-PUBLIC_DATA_URL = "https://github.com/cansik/data-storage/releases/download/sarmotion/"
+HF_READ_ONLY_TOKEN = os.getenv("HF_TOKEN", "REMOVED_HF_TOKEN")
+
+# This is a read-only access token to the visiongraph repository on huggingface (https://huggingface.co/cansik/visiongraph/)
+PUBLIC_DATA_HEADERS = {
+    "Authorization": f"Bearer {HF_READ_ONLY_TOKEN}"
+}
+
+PUBLIC_DATA_URL = "https://huggingface.co/cansik/visiongraph/resolve/main/"
 
 
-def download_file(url: str, path: str, description: str = "download", with_progress: bool = True):
+def handle_redirects(url: str, headers: Optional[Dict[str, Any]] = None) -> str:
+    """
+    Handles HTTP redirects manually to ensure headers are preserved.
+
+    :param url: The initial URL to request.
+    :param headers: Optional headers to include in the requests.
+    :return: The final resolved URL after following redirects.
+    """
+    while True:
+        response = requests.head(url, headers=headers, allow_redirects=False)
+        if response.status_code in [301, 302, 303, 307, 308]:
+            url = response.headers['Location']
+        else:
+            break
+    return url
+
+
+def download_file(url: str, path: str,
+                  description: str = "download",
+                  with_progress: bool = True,
+                  headers: Optional[Dict[str, Any]] = None):
     """
     Downloads a file from the specified URL and saves it to the given path.
 
@@ -20,19 +48,24 @@ def download_file(url: str, path: str, description: str = "download", with_progr
     :param path: The local path where the file will be saved.
     :param description: A description for the download progress. Defaults to "download".
     :param with_progress: Indicates whether to show a progress bar. Defaults to True.
+    :param headers: Optional header variable for authentication.
     """
     os.makedirs(os.path.dirname(path), exist_ok=True)
 
+    # Resolve any redirects to ensure the final URL is used
+    resolved_url = handle_redirects(url, headers)
+
     if not with_progress:
         with tqdm(total=1, desc=description) as pb:
-            response = requests.get(url, stream=True)
+            response = requests.get(resolved_url, headers=headers, stream=True)
 
             with open(path, "wb") as out_file:
                 shutil.copyfileobj(response.raw, out_file)
             pb.update()
         return
 
-    head_request = requests.head(url)
+    # Perform a HEAD request to get the file size (if available)
+    head_request = requests.head(resolved_url, headers=headers)
 
     if "Content-Length" in head_request.headers:
         filesize = int(head_request.headers["Content-Length"])
@@ -42,7 +75,7 @@ def download_file(url: str, path: str, description: str = "download", with_progr
     dl_path = path
     chunk_size = 1024
 
-    with requests.get(url, stream=True) as r, open(dl_path, "wb") as f, tqdm(
+    with requests.get(resolved_url, headers=headers, stream=True) as r, open(dl_path, "wb") as f, tqdm(
             unit="B",
             unit_scale=True,
             unit_divisor=1024,
@@ -69,12 +102,15 @@ def prepare_openvino_model(model_name, url: str = None) -> Tuple[str, str]:
     return model_path, weights_path
 
 
-def prepare_data_file(file_name: str, url: str = None) -> str:
+def prepare_data_file(file_name: str,
+                      url: Optional[str] = None,
+                      headers: Optional[Dict[str, Any]] = None) -> str:
     """
     Prepares a data file by downloading it if it does not already exist.
 
     :param file_name: The name of the file to prepare.
     :param url: Optional URL for downloading the file. If None, defaults to the public data URL.
+    :param headers: Optional header variable for authentication.
 
     :return: The path to the prepared data file.
     """
@@ -98,10 +134,10 @@ def prepare_data_file(file_name: str, url: str = None) -> str:
         os.remove(temp_file)
 
     try:
-        download_file(url, temp_file, f"Downloading {file_name}")
+        download_file(url, temp_file, f"Downloading {file_name}", headers=headers)
     except Exception as ex:
         logging.warning(f"Retry download because {file_name} could not be download: {ex}")
-        download_file(url, temp_file, f"Downloading {file_name}", with_progress=False)
+        download_file(url, temp_file, f"Downloading {file_name}", with_progress=False, headers=headers)
 
     # check if file has been downloaded correctly
     head = ""
