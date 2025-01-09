@@ -74,7 +74,7 @@ class BaseVisionEngine(ABC):
             inputs = {}
 
         inputs.update({self.first_input_name: in_frame})
-        outputs = self._inference(image, inputs)
+        outputs = self.predict(inputs)
 
         # add padding box
         outputs.padding_box = padding_box
@@ -83,12 +83,11 @@ class BaseVisionEngine(ABC):
         return outputs
 
     @abstractmethod
-    def _inference(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         """
         Performs inference on the input image.
 
-        :param image: The input image to be inferred.
-        :param inputs: Optional additional inputs for inference.
+        :param inputs: Inputs for inference.
 
         :return: The output from the inference process.
         """
@@ -114,7 +113,7 @@ class BaseVisionEngine(ABC):
         :param order: The order of input shapes (e.g., NCHW or NWHC).
         :param dtype: The data type of the input images.
 
-        :return: A tuple containing the preprocessed image,
+        :return: A tuple containing the preprocessed image, the padding box, and the image size.
         """
         input_channels = image.shape[-1] if image.ndim == 3 else 1
 
