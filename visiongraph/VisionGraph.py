@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional
+from typing import Optional, List
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.GraphNode import GraphNode
@@ -41,6 +41,8 @@ class VisionGraph(BaseGraph):
             self.nodes.append(self.input)
         self.nodes = self.nodes + list(nodes)
 
+        self.unlinked_nodes: List[GraphNode] = []
+
         self.name = name
         self.skip_none_frame = skip_none_frame
 
@@ -52,6 +54,9 @@ class VisionGraph(BaseGraph):
             self.nodes.insert(0, self.input)
 
         super()._init()
+
+        for n in self.unlinked_nodes:
+            n.setup()
 
     def _process(self):
         """
@@ -77,6 +82,15 @@ class VisionGraph(BaseGraph):
                 return None
 
         return result
+
+    def _release(self):
+        """
+        Releases the graph nodes.
+        """
+        super()._release()
+
+        for n in self.unlinked_nodes:
+            n.release()
 
     def configure(self, args: Namespace):
         """
