@@ -129,4 +129,4 @@ For more information about the dependencies have a look at the [requirements.txt
 Please note that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licences (AGPLv3). Always check the model licence before using the model.
 
 ## About
-Copyright (c) 2024 Florian Bruggisser
+Copyright (c) 2025 Florian Bruggisser
