@@ -1,4 +1,6 @@
-# ![image](https://user-images.githubusercontent.com/5220162/192808079-2043fb41-8637-4697-8286-985bc5340f37.png) Visiongraph 
+<img src="https://github.com/user-attachments/assets/0ed34695-ca0e-47ff-aebb-eb59ff851770" alt="Visiongraph Logo Bright" width="75%">
+
+# Visiongraph
 
 [![PyPI](https://img.shields.io/pypi/v/visiongraph)](https://pypi.org/project/visiongraph/)
 ![Pepy Total Downloads](https://img.shields.io/pepy/dt/visiongraph)
