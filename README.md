@@ -54,6 +54,7 @@ To demonstrate the possibilities of visiongraph there are already implemented [e
 - [InpaintExample](examples/InpaintExample.py) - GAN based inpainting example.
 - [MidasDepthExample](examples/MidasDepthExample.py) - Realtime depth prediction with the [midas-small](https://github.com/isl-org/MiDaS) network.
 - [RGBDSmoother](examples/RGBDSmoother.py) - Smooth RGB-D depth map videos with a one-euro filter per pixel.
+- [FaceMeshVVADExample.py](examples/FaceMeshVVADExample.py) - Detect voice activation by landmark sequence classification.
 
 There are even more examples where visiongraph is currently in use:
 
