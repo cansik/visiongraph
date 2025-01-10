@@ -131,8 +131,13 @@ class VVADApplication:
         :param args: Command-line arguments.
         """
         self.args = args
-        self.vvad_options = VVADOptions()
-        self.vvad = vg.VivaVAD.create()
+
+        self.vvad_config = vg.VivaVADConfig.I_TCN_148_30_1
+        self.vvad = vg.VivaVAD.create(self.vvad_config)
+        self.vvad_options = VVADOptions(
+            sequence_length=self.vvad_config.value[2],
+            landmark_indices=self.vvad_config.value[1]
+        )
 
         self.graph = (
             vg.create_graph(name="FaceMesh VVAD Example", input_node=args.input(), handle_signals=True)

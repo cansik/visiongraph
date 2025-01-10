@@ -18,7 +18,9 @@ class VivaVADConfig(Enum):
     """
     Configuration options for the VivaVAD model.
     """
-    I_TCN_148_10_2 = (RepositoryAsset("viva-10-2-148.onnx"), BlazeFaceMesh.FEATURES_148, 10)
+    I_TCN_148_10_2 = (RepositoryAsset("viva-10-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 10)
+    I_TCN_148_15_2 = (RepositoryAsset("viva-15-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 15)
+    I_TCN_148_30_1 = (RepositoryAsset("viva-30-1-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 30)
 
 
 class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
