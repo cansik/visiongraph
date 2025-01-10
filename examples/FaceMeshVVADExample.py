@@ -43,6 +43,7 @@ class TrackedFace(vg.BaseResult, vg.Trackable):
     face_mesh: vg.BlazeFaceMesh
     feature_buffer: Optional[RollingBufferNumpy] = None
     vvad_result: Optional[vg.VivaVADResult] = None
+    filtered_speaking_score: Optional[vg.OneEuroFilter] = None
 
     @property
     def tracking_id(self) -> int:
@@ -62,6 +63,12 @@ class TrackedFace(vg.BaseResult, vg.Trackable):
             track.feature_buffer = RollingBufferNumpy(self.vvad_options.sequence_length,
                                                       len(self.vvad_options.landmark_indices_numpy) * 3,
                                                       dtype=np.float32)
+
+        if track.filtered_speaking_score is None:
+            track.filtered_speaking_score = vg.OneEuroFilter(0.0, min_cutoff=2.0, beta=0.0, d_cutoff=0.1)
+
+        if track.vvad_result is not None:
+            track.filtered_speaking_score(track.vvad_result.speaking_score)
 
         # update values
         track.face_mesh = self.face_mesh
@@ -99,8 +106,11 @@ class TrackedFace(vg.BaseResult, vg.Trackable):
         bbox = self.face_mesh.bounding_box
 
         if self.vvad_result is not None:
-            is_speaking = self.vvad_result.speaking_score > self.vvad_options.min_score
-            vg.draw_text_normalized(image, f"{self.vvad_result.speaking_score * 100:.0f}%",
+            score = self.filtered_speaking_score.x_prev
+            raw = self.vvad_result.speaking_score
+
+            is_speaking = score > self.vvad_options.min_score
+            vg.draw_text_normalized(image, f"{score * 100:.0f}%",
                                     bbox.top_right, font=cv2.FONT_HERSHEY_PLAIN)
 
         box_color = (0, 255, 0) if is_speaking else (0, 0, 255)
