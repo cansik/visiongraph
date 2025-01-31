@@ -129,9 +129,10 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         """
         super().setup()
 
-        self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name,
-                                                   maxSize=self.queue_max_size,
-                                                   blocking=False)
+        if self.use_infrared:
+            self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name,
+                                                       maxSize=self.queue_max_size,
+                                                       blocking=False)
 
         if self.enable_depth:
             self.depth_queue = self.device.getOutputQueue(name=self.depth_stream_name,
