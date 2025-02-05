@@ -262,7 +262,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         value = max(1, min(60 * 1000 * 1000, int(value)))
         self._exposure = timedelta(microseconds=value)
         ctrl.setManualExposure(self._exposure, self._iso_sensitivity)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     @property
     def enable_auto_exposure(self) -> bool:
@@ -289,7 +291,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
             ctrl.setAutoExposureEnable()
         else:
             ctrl.setManualExposure(self._exposure, self._iso_sensitivity)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     @property
     def enable_auto_white_balance(self) -> bool:
@@ -316,7 +320,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
             ctrl.setAutoWhiteBalanceMode(dai.RawCameraControl.AutoWhiteBalanceMode.AUTO)
         else:
             ctrl.setAutoWhiteBalanceMode(dai.RawCameraControl.AutoWhiteBalanceMode.OFF)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     @property
     def white_balance(self) -> int:
@@ -340,7 +346,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         ctrl = dai.CameraControl()
         value = max(1000, min(12000, int(value)))
         ctrl.setManualWhiteBalance(value)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     @property
     def auto_focus(self) -> bool:
@@ -369,7 +377,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         else:
             self._focus_mode = dai.RawCameraControl.AutoFocusMode.OFF
             ctrl.setAutoFocusMode(dai.RawCameraControl.AutoFocusMode.OFF)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     @property
     def focus_distance(self) -> int:
@@ -393,7 +403,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         ctrl = dai.CameraControl()
         position = max(0, min(255, int(position)))
         ctrl.setManualFocus(position)
-        self.rgb_control_queue.send(ctrl)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
 
     def get_camera_matrix(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         """
