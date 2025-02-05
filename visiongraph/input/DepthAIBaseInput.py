@@ -36,6 +36,8 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
         self.color_sensor_resolution: dai.ColorCameraProperties.SensorResolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
 
+        self.enable_color: bool = True
+
         self.interleaved: bool = False
         self.color_isp_scale: Optional[Tuple[int, int]] = None
         self.color_board_socket: dai.CameraBoardSocket = dai.CameraBoardSocket.CAM_A
@@ -98,16 +100,17 @@ class DepthAIBaseInput(BaseCamera, ABC):
             device = dai.Device(self.pipeline)
         self.device = device.__enter__()
 
-        self.rgb_control_queue = self.device.getInputQueue(self.rgb_control_in_name)
-        self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
-                                                    blocking=False)
-        self.rgb_isp_queue = self.device.getOutputQueue(name=self.rgb_isp_stream_name, maxSize=self.queue_max_size,
+        if self.enable_color:
+            self.rgb_control_queue = self.device.getInputQueue(self.rgb_control_in_name)
+            self.rgb_isp_queue = self.device.getOutputQueue(name=self.rgb_isp_stream_name, maxSize=self.queue_max_size,
+                                                            blocking=False)
+            self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
                                                         blocking=False)
 
-        # wait for the first isp frame
-        rgb_isp_frame = typing.cast(dai.ImgFrame, self.rgb_isp_queue.get())
-        self.width = rgb_isp_frame.getWidth()
-        self.height = rgb_isp_frame.getHeight()
+            # wait for the first isp frame
+            rgb_isp_frame = typing.cast(dai.ImgFrame, self.rgb_isp_queue.get())
+            self.width = rgb_isp_frame.getWidth()
+            self.height = rgb_isp_frame.getHeight()
 
     def pre_start_setup(self):
         """
@@ -115,30 +118,32 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
         This method configures the camera parameters such as resolution, interleaved mode, and stream linking.
         """
-        self.color_camera = self.pipeline.create(dai.node.ColorCamera)
-        self.color_camera.setBoardSocket(self.color_board_socket)
-        self.color_camera.setResolution(self.color_sensor_resolution)
+        if self.enable_color:
+            self.color_camera = self.pipeline.create(dai.node.ColorCamera)
+            self.color_camera.setBoardSocket(self.color_board_socket)
+            self.color_camera.setResolution(self.color_sensor_resolution)
 
-        if self.color_fps is not None:
-            self.color_camera.setFps(self.color_fps)
+            if self.color_fps is not None:
+                self.color_camera.setFps(self.color_fps)
 
-        self.color_camera.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
-        self.color_camera.setInterleaved(self.interleaved)
+            self.color_camera.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
+            self.color_camera.setInterleaved(self.interleaved)
 
-        if self.color_isp_scale is not None:
-            self.color_camera.setIspScale(self.color_isp_scale[0], self.color_isp_scale[1])
+            if self.color_isp_scale is not None:
+                self.color_camera.setIspScale(self.color_isp_scale[0], self.color_isp_scale[1])
 
-        self.color_x_out = self.pipeline.create(dai.node.XLinkOut)
-        self.color_x_out.setStreamName(self.rgb_stream_name)
-        self.color_camera.video.link(self.color_x_out.input)
+            self.color_x_out = self.pipeline.create(dai.node.XLinkOut)
+            self.color_x_out.setStreamName(self.rgb_stream_name)
+            self.color_camera.video.link(self.color_x_out.input)
 
-        self.color_isp_out = self.pipeline.create(dai.node.XLinkOut)
-        self.color_isp_out.setStreamName(self.rgb_isp_stream_name)
-        self.color_camera.isp.link(self.color_isp_out.input)
+            self.color_isp_out = self.pipeline.create(dai.node.XLinkOut)
+            self.color_isp_out.setStreamName(self.rgb_isp_stream_name)
 
-        self.color_control_in = self.pipeline.create(dai.node.XLinkIn)
-        self.color_control_in.setStreamName(self.rgb_control_in_name)
-        self.color_control_in.out.link(self.color_camera.inputControl)
+            self.color_camera.isp.link(self.color_isp_out.input)
+
+            self.color_control_in = self.pipeline.create(dai.node.XLinkIn)
+            self.color_control_in.setStreamName(self.rgb_control_in_name)
+            self.color_control_in.out.link(self.color_camera.inputControl)
 
     @abstractmethod
     def read(self) -> (int, Optional[np.ndarray]):
@@ -147,18 +152,19 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
         :return: The timestamp of the frame and the frame image as a NumPy array.
         """
-        frame = typing.cast(dai.ImgFrame, self.rgb_queue.get())
+        if self.enable_color:
+            frame = typing.cast(dai.ImgFrame, self.rgb_queue.get())
 
-        # update frame information
-        self._manual_lens_pos = frame.getLensPosition()
-        self._exposure = frame.getExposureTime()
-        self._white_balance = frame.getColorTemperature()
+            # update frame information
+            self._manual_lens_pos = frame.getLensPosition()
+            self._exposure = frame.getExposureTime()
+            self._white_balance = frame.getColorTemperature()
 
-        ts = int(frame.getTimestamp().total_seconds() * 1000)
-        image = typing.cast(np.ndarray, frame.getCvFrame())
+            ts = int(frame.getTimestamp().total_seconds() * 1000)
+            image = typing.cast(np.ndarray, frame.getCvFrame())
 
-        self._last_rgb_frame = image
-        self._last_ts = ts
+            self._last_rgb_frame = image
+            self._last_ts = ts
 
     def release(self):
         """
