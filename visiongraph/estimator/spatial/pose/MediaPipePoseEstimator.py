@@ -1,115 +1,108 @@
+import time
 from argparse import Namespace
+from enum import Enum
 from typing import Optional
 
 import cv2
 import mediapipe as mp
 import numpy as np
+from mediapipe.tasks import python
+from mediapipe.tasks.python import vision
+from mediapipe.tasks.python.vision.core.vision_task_running_mode import VisionTaskRunningMode
 
+from visiongraph.data.Asset import Asset
+from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
-from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d
+from visiongraph.util.VectorUtils import list_of_vector4D
 
-_mp_pose = mp.solutions.pose
+
+class MediaPipePoseConfig(Enum):
+    Light = RepositoryAsset("pose_landmarker_lite.task")
+    Full = RepositoryAsset("pose_landmarker_full.task")
+    Heavy = RepositoryAsset("pose_landmarker_heavy.task")
 
 
 class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
-    """
-    A pose estimator using MediaPipe to detect and process human poses in images.
-    """
 
-    def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
-                 min_score: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
+    def __init__(self,
                  static_image_mode: bool = False,
-                 smooth_landmarks: bool = True,
-                 enable_segmentation: bool = False,
-                 smooth_segmentation: bool = True):
-        """
-        Initializes the MediaPipePoseEstimator with specified parameters.
+                 max_num_poses: int = 1,
+                 min_pose_detection_confidence: float = 0.5,
+                 min_pose_presence_confidence: float = 0.5,
+                 min_tracking_confidence: float = 0.5,
+                 output_segmentation_masks: bool = True,
+                 task: Asset = MediaPipePoseConfig.Full):
+        super().__init__(min_pose_detection_confidence)
 
-        :param complexity: Complexity of the pose model.
-        :param min_score: Minimum score threshold for valid detections.
-        :param min_tracking_confidence: Confidence threshold for tracking landmarks.
-        :param static_image_mode: Indicates if the input images are static.
-        :param smooth_landmarks: If True, applies smoothing to the detected landmarks.
-        :param enable_segmentation: If True, enables segmentation for the pose.
-        :param smooth_segmentation: If True, applies smoothing to the segmentation mask.
-        """
-        super().__init__(min_score)
-
-        self.smooth_landmarks = smooth_landmarks
         self.static_image_mode = static_image_mode
+        self.max_num_poses = max_num_poses
+        self.min_pose_presence_confidence = min_pose_presence_confidence
         self.min_tracking_confidence = min_tracking_confidence
-        self.complexity = complexity
 
-        self.smooth_segmentation = smooth_segmentation
-        self.enable_segmentation = enable_segmentation
+        self.output_segmentation_masks = output_segmentation_masks
 
-        self.detector: Optional[_mp_pose.Pose] = None
+        self.detector: Optional[vision.PoseLandmarker] = None
+
+        self.task = task
 
     def setup(self):
-        """
-        Sets up the MediaPipe pose detector with the specified configuration.
-        """
-        self.detector = _mp_pose.Pose(static_image_mode=self.static_image_mode,
-                                      model_complexity=self.complexity.value,
-                                      min_detection_confidence=self.min_score,
-                                      min_tracking_confidence=self.min_tracking_confidence,
-                                      enable_segmentation=self.enable_segmentation,
-                                      smooth_segmentation=self.smooth_segmentation)
+        running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
 
-    def process(self, data: np.ndarray) -> ResultList[BlazePose]:
-        """
-        Processes an input image to detect poses and return results.
+        base_options = python.BaseOptions(model_asset_path=self.task.path)
+        options = vision.PoseLandmarkerOptions(
+            base_options=base_options,
+            running_mode=running_mode,
+            num_poses=self.max_num_poses,
+            min_pose_detection_confidence=self.min_score,
+            min_pose_presence_confidence=self.min_pose_presence_confidence,
+            min_tracking_confidence=self.min_tracking_confidence,
+            output_segmentation_masks=self.output_segmentation_masks
+        )
+        self.detector = vision.PoseLandmarker.create_from_options(options)
 
-        :param data: The input image in BGR format.
+    def process(self, image: np.ndarray, timestamp_ms: Optional[int] = None) -> ResultList[BlazePose]:
+        # Pre-process image
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        input_frame = mp.Image(image_format=mp.ImageFormat.SRGB, data=image)
 
-        :return: A list of detected BlazePose objects.
-        """
-        # pre-process image
-        image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
+        # Run inference
+        if self.static_image_mode:
+            results = self.detector.detect(input_frame)
+        else:
+            if timestamp_ms is None:
+                timestamp_ms = int(time.monotonic() * 1000)
 
-        results = self.detector.process(image)
+            results = self.detector.detect_for_video(input_frame, timestamp_ms=timestamp_ms)
 
-        # check if results are there
-        if not results.pose_landmarks:
+        if len(results.pose_landmarks) == 0:
             return ResultList()
 
-        score, landmarks = mediapipe_landmarks_to_score_and_vector4d(results.pose_landmarks.landmark)
+        poses: ResultList[BlazePose] = ResultList()
+        for i, pose_landmarks in enumerate(results.pose_landmarks):
+            landmarks = [(rkp.x, rkp.y, rkp.z, rkp.visibility) for rkp in pose_landmarks]
+            vector_landmarks = list_of_vector4D(landmarks)
+            score = vector_landmarks.t.mean()
 
-        if not self.enable_segmentation:
-            return ResultList([BlazePose(score, landmarks)])
+            if self.output_segmentation_masks:
+                mask: np.ndarray = results.segmentation_masks[i].numpy_view()
+                mask_uint8 = (mask * 255).astype(np.uint8)
+                pose = BlazePoseSegmentation(score, vector_landmarks, mask_uint8)
+            else:
+                pose = BlazePose(score, vector_landmarks)
 
-        # use segmentation
-        mask = results.segmentation_mask
-        mask_uint8 = (mask * 255).astype(np.uint8)
-        return ResultList([BlazePoseSegmentation(score, landmarks, mask_uint8)])
+            poses.append(pose)
+
+        return poses
 
     def release(self):
-        """
-        Releases resources used by the pose detector.
-        """
         self.detector.close()
 
     def configure(self, args: Namespace):
-        """
-        Configures the estimator with command-line arguments.
-
-        :param args: The command-line arguments.
-        """
         super().configure(args)
-        # todo: implement arg parse
 
     @staticmethod
-    def create(complexity: PoseModelComplexity = PoseModelComplexity.Normal) -> "MediaPipePoseEstimator":
-        """
-        Creates a new instance of MediaPipePoseEstimator with the specified complexity.
-
-        :param complexity: The complexity level for the new instance.
-
-        :return: A new instance of MediaPipePoseEstimator.
-        """
-        return MediaPipePoseEstimator(complexity)
+    def create(config: MediaPipePoseConfig = MediaPipePoseConfig.Full, *args, **kwargs) -> "MediaPipePoseEstimator":
+        return MediaPipePoseEstimator(*args, **kwargs, task=config.value)

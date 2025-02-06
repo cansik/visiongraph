@@ -244,9 +244,17 @@ if TYPE_CHECKING:
     except ModuleNotFoundError as ex:
         logging.info(f"Module MediaPipeHolisticEstimator not found")
     try:
+        from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseConfig
+    except ModuleNotFoundError as ex:
+        logging.info(f"Module MediaPipePoseConfig not found")
+    try:
         from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
     except ModuleNotFoundError as ex:
         logging.info(f"Module MediaPipePoseEstimator not found")
+    try:
+        from visiongraph.estimator.spatial.pose.MediaPipePoseEstimatorLegacy import MediaPipePoseEstimatorLegacy
+    except ModuleNotFoundError as ex:
+        logging.info(f"Module MediaPipePoseEstimatorLegacy not found")
     try:
         from visiongraph.estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator
     except ModuleNotFoundError as ex:
@@ -669,7 +677,9 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "LitePoseEstimator": _LazyImport("LitePoseEstimator", "visiongraph.estimator.spatial.pose.LitePoseEstimator", True),
     "LitePoseEstimatorConfig": _LazyImport("LitePoseEstimatorConfig", "visiongraph.estimator.spatial.pose.LitePoseEstimator", True),
     "MediaPipeHolisticEstimator": _LazyImport("MediaPipeHolisticEstimator", "visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator", True),
+    "MediaPipePoseConfig": _LazyImport("MediaPipePoseConfig", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimator", True),
     "MediaPipePoseEstimator": _LazyImport("MediaPipePoseEstimator", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimator", True),
+    "MediaPipePoseEstimatorLegacy": _LazyImport("MediaPipePoseEstimatorLegacy", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimatorLegacy", True),
     "MobileHumanPoseEstimator": _LazyImport("MobileHumanPoseEstimator", "visiongraph.estimator.spatial.pose.MobileHumanPoseEstimator", True),
     "MobileNetV2PoseEstimator": _LazyImport("MobileNetV2PoseEstimator", "visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator", True),
     "MobileNetV2PoseEstimatorConfig": _LazyImport("MobileNetV2PoseEstimatorConfig", "visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator", True),
