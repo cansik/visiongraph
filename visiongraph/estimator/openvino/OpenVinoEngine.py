@@ -39,7 +39,7 @@ class OpenVinoEngine(BaseVisionEngine):
         self.config: Dict = config
 
         self.ie: Optional[ov.Core] = None
-        self.parsed_model: Optional = None
+        self.parsed_model: Optional[ov.Model] = None
         self.compiled_model: Optional[ov.CompiledModel] = None
 
         self._input_lut = {}
