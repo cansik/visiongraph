@@ -11,12 +11,19 @@ PoseEstimators = {}
 # setup optional pose estimators
 try:
     from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
-    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator
+    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator, MediaPipePoseConfig
+    from visiongraph.estimator.spatial.pose.MediaPipePoseEstimatorLegacy import MediaPipePoseEstimatorLegacy
     from visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator import MediaPipeHolisticEstimator
 
-    PoseEstimators["mediapipe"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Normal)
-    PoseEstimators["mediapipe-light"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Light)
-    PoseEstimators["mediapipe-heavy"] = partial(MediaPipePoseEstimator.create, PoseModelComplexity.Heavy)
+    # new models for mediapipe based on tasks
+    PoseEstimators["mediapipe"] = partial(MediaPipePoseEstimator.create, MediaPipePoseConfig.Full)
+    PoseEstimators["mediapipe-light"] = partial(MediaPipePoseEstimator.create, MediaPipePoseConfig.Light)
+    PoseEstimators["mediapipe-heavy"] = partial(MediaPipePoseEstimator.create, MediaPipePoseConfig.Heavy)
+
+    # legacy
+    PoseEstimators["mediapipe-legacy"] = partial(MediaPipePoseEstimatorLegacy.create, PoseModelComplexity.Normal)
+    PoseEstimators["mediapipe-light-legacy"] = partial(MediaPipePoseEstimatorLegacy.create, PoseModelComplexity.Light)
+    PoseEstimators["mediapipe-heavy-legacy"] = partial(MediaPipePoseEstimatorLegacy.create, PoseModelComplexity.Heavy)
     PoseEstimators["mediapipe-holistic"] = partial(MediaPipeHolisticEstimator.create, PoseModelComplexity.Light)
 except ImportError as ex:
     logging.info(f"MediaPipe not installed: {ex}")
