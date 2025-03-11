@@ -15,6 +15,7 @@ from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import Fa
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 from visiongraph.result.spatial.face.BlendShape import BlendShape
+from visiongraph.util.TimeUtils import HighPrecisionTimer
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
@@ -59,6 +60,8 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
 
         self.task = task
 
+        self.timer = HighPrecisionTimer(ensure_monotonic=True)
+
     def setup(self):
         """
         Sets up the MediaPipe FaceMesh detector.
@@ -98,7 +101,7 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
             results = self.detector.detect(input_frame)
         else:
             if timestamp_ms is None:
-                timestamp_ms = int(time.monotonic() * 1000)
+                timestamp_ms = int(self.timer.time_ms())
 
             results = self.detector.detect_for_video(input_frame, timestamp_ms=timestamp_ms)
 

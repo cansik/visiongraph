@@ -1,3 +1,4 @@
+import threading
 import time
 
 from visiongraph.util.MathUtils import StreamingMovingAverage
@@ -158,3 +159,41 @@ class FPSTracer:
         self.prev_frame_time = current_time
 
         self.smooth_fps += (self.fps - self.smooth_fps) * self.alpha
+
+
+class HighPrecisionTimer:
+    def __init__(self, ensure_monotonic: bool = False):
+        """
+        Initializes the timer.
+
+        :param ensure_monotonic: If True, ensures the returned timestamps are strictly increasing.
+        """
+        self.ensure_monotonic = ensure_monotonic
+        # Check for the high-resolution performance counter method at initialization.
+        if hasattr(time, 'perf_counter_ns'):
+            self._use_ns = True
+            self._counter = time.perf_counter_ns  # Function returning nanoseconds directly.
+        else:
+            self._use_ns = False
+            # Fallback: convert perf_counter() seconds to nanoseconds.
+            self._counter = lambda: int(time.perf_counter() * 1e9)
+
+        # Only create a lock and track the last timestamp if monotonicity is enforced.
+        self._lock = threading.Lock() if self.ensure_monotonic else None
+        self._last_ns = 0
+
+    def time_ms(self) -> float:
+        """
+        Returns a high precision timestamp in milliseconds as a float.
+        If ensure_monotonic was set to True during initialization, the method
+        guarantees that the timestamp will always be strictly increasing.
+        """
+        current_ns = self._counter()
+        if self.ensure_monotonic:
+            with self._lock:
+                # If the current timestamp is not greater than the last one, bump it.
+                if current_ns <= self._last_ns:
+                    current_ns = self._last_ns + 1
+                self._last_ns = current_ns
+        # Convert nanoseconds to milliseconds.
+        return current_ns / 1e6
