@@ -1,4 +1,3 @@
-import time
 from argparse import Namespace
 from enum import Enum
 from typing import Optional
@@ -16,6 +15,7 @@ from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation
+from visiongraph.util.TimeUtils import HighPrecisionTimer
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
@@ -48,6 +48,8 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
 
         self.task = task
 
+        self.timer = HighPrecisionTimer(ensure_monotonic=True)
+
     def setup(self):
         running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
 
@@ -73,7 +75,7 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
             results = self.detector.detect(input_frame)
         else:
             if timestamp_ms is None:
-                timestamp_ms = int(time.monotonic() * 1000)
+                timestamp_ms = int(self.timer.time_ms())
 
             results = self.detector.detect_for_video(input_frame, timestamp_ms=timestamp_ms)
 
