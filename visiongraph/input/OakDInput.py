@@ -1,5 +1,5 @@
 import typing
-from argparse import Namespace
+from argparse import Namespace, ArgumentParser
 from enum import Enum
 from typing import Optional
 
@@ -181,6 +181,10 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
             return -1
 
         depth_frame = self._last_depth_frame
+
+        if self._last_depth_frame is None:
+            return -1
+
         h, w = depth_frame.shape[:2]
         ix, iy = self._calculate_depth_coordinates(x, y, w, h)
 
@@ -279,6 +283,17 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
         return None
 
+    @staticmethod
+    def add_params(parser: ArgumentParser):
+        """
+        Adds the DepthAI input parameters to the argument parser.
+
+        :param parser: The argument parser to add parameters to.
+        """
+        super(OakDInput, OakDInput).add_params(parser)
+        parser.add_argument("--dai-disable-color", action="store_true",
+                            help="Disables the color stream of the OAK-D.")
+
     def configure(self, args: Namespace):
         """
         Configures the OakDInput settings based on the provided command-line arguments.
@@ -289,3 +304,5 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
         if self.use_infrared:
             self.frame_alignment = OakDFrameAlignment.Infrared
+
+        self.enable_color = not args.dai_disable_color
