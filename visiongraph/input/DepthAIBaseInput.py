@@ -45,15 +45,27 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.color_board_socket: dai.CameraBoardSocket = dai.CameraBoardSocket.CAM_A
         self.color_fps: Optional[float] = None
 
+        # settings
         self._focus_mode: dai.RawCameraControl.AutoFocusMode = dai.RawCameraControl.AutoFocusMode.AUTO
         self._manual_lens_pos: int = 0
 
         self._auto_exposure: bool = True
+        self._auto_exposure_compensation: int = 0
         self._exposure: timedelta = timedelta(microseconds=30)
         self._iso_sensitivity: int = 400
 
         self._auto_white_balance: bool = True
+        self._auto_white_balance_mode: dai.CameraControl.AutoWhiteBalanceMode = dai.CameraControl.AutoWhiteBalanceMode.AUTO
         self._white_balance: int = 1000
+
+        self._anti_banding_mode: dai.CameraControl.AntiBandingMode = dai.CameraControl.AntiBandingMode.OFF
+        self._effect_mode: dai.CameraControl.EffectMode = dai.CameraControl.EffectMode.OFF
+        self._brightness: int = 0
+        self._contrast: int = 0
+        self._saturation: int = 0
+        self._sharpness: int = 0
+        self._luma_denoise: int = 0
+        self._chroma_denoise: int = 0
 
         # device info
         self.mxid_or_name: Optional[str] = mxid_or_name
@@ -180,6 +192,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
             # update frame information
             self._manual_lens_pos = frame.getLensPosition()
             self._exposure = frame.getExposureTime()
+            self._iso_sensitivity = frame.getSensitivity()
             self._white_balance = frame.getColorTemperature()
 
             ts = int(frame.getTimestamp().total_seconds() * 1000)
@@ -461,6 +474,266 @@ class DepthAIBaseInput(BaseCamera, ABC):
         ctrl = dai.CameraControl()
         position = max(0, min(255, int(position)))
         ctrl.setManualFocus(position)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def auto_exposure_compensation(self) -> int:
+        """
+        Gets the current auto exposure compensation value.
+
+        :return: The current auto exposure compensation in the range [-9, 9].
+        """
+        return self._auto_exposure_compensation
+
+    @auto_exposure_compensation.setter
+    def auto_exposure_compensation(self, value: int):
+        """
+        Sets the auto exposure compensation for the camera, if the camera is running.
+
+        :param value: Compensation value in the range [-9, 9].
+        """
+        if not self.is_running:
+            return
+
+        self._auto_exposure_compensation = max(-9, min(9, value))
+        ctrl = dai.CameraControl()
+        ctrl.setAutoExposureCompensation(self._auto_exposure_compensation)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def anti_banding_mode(self) -> dai.CameraControl.AntiBandingMode:
+        """
+        Gets the current anti-banding mode.
+
+        :return: The current anti-banding mode.
+        """
+        return self._anti_banding_mode
+
+    @anti_banding_mode.setter
+    def anti_banding_mode(self, mode: dai.CameraControl.AntiBandingMode):
+        """
+        Sets the anti-banding mode for the camera, if the camera is running.
+
+        :param mode: Anti-banding mode value (e.g., dai.CameraControl.AntiBandingMode).
+        """
+        if not self.is_running:
+            return
+
+        self._anti_banding_mode = mode
+        ctrl = dai.CameraControl()
+        ctrl.setAntiBandingMode(mode)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def auto_white_balance_mode(self) -> dai.CameraControl.AutoWhiteBalanceMode:
+        """
+        Gets the current auto white balance mode.
+
+        :return: The current AWB mode.
+        """
+        return self._auto_white_balance_mode
+
+    @auto_white_balance_mode.setter
+    def auto_white_balance_mode(self, mode: dai.CameraControl.AutoWhiteBalanceMode):
+        """
+        Sets the auto white balance mode for the camera, if the camera is running.
+
+        :param mode: Auto white balance mode (e.g., dai.CameraControl.AutoWhiteBalanceMode).
+        """
+        if not self.is_running:
+            return
+
+        self._auto_white_balance_mode = mode
+        ctrl = dai.CameraControl()
+        ctrl.setAutoWhiteBalanceMode(mode)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def effect_mode(self) -> dai.CameraControl.EffectMode:
+        """
+        Gets the current image effect mode.
+
+        :return: The current effect mode.
+        """
+        return self._effect_mode
+
+    @effect_mode.setter
+    def effect_mode(self, mode: dai.CameraControl.EffectMode):
+        """
+        Sets the image effect mode for the camera, if the camera is running.
+
+        :param mode: The image effect mode (e.g., dai.CameraControl.EffectMode).
+        """
+        if not self.is_running:
+            return
+
+        self._effect_mode = mode
+        ctrl = dai.CameraControl()
+        ctrl.setEffectMode(mode)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def brightness(self) -> int:
+        """
+        Gets the current brightness setting.
+
+        :return: The brightness value in the range [-10, 10].
+        """
+        return self._brightness
+
+    @brightness.setter
+    def brightness(self, value: int):
+        """
+        Sets the brightness for the camera, if the camera is running.
+
+        :param value: Brightness value in the range [-10, 10].
+        """
+        if not self.is_running:
+            return
+
+        self._brightness = max(-10, min(10, value))
+        ctrl = dai.CameraControl()
+        ctrl.setBrightness(self._brightness)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def contrast(self) -> int:
+        """
+        Gets the current contrast setting.
+
+        :return: The contrast value in the range [-10, 10].
+        """
+        return self._contrast
+
+    @contrast.setter
+    def contrast(self, value: int):
+        """
+        Sets the contrast for the camera, if the camera is running.
+
+        :param value: Contrast value in the range [-10, 10].
+        """
+        if not self.is_running:
+            return
+
+        self._contrast = max(-10, min(10, value))
+        ctrl = dai.CameraControl()
+        ctrl.setContrast(self._contrast)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def saturation(self) -> int:
+        """
+        Gets the current saturation setting.
+
+        :return: The saturation value in the range [-10, 10].
+        """
+        return self._saturation
+
+    @saturation.setter
+    def saturation(self, value: int):
+        """
+        Sets the saturation for the camera, if the camera is running.
+
+        :param value: Saturation value in the range [-10, 10].
+        """
+        if not self.is_running:
+            return
+
+        self._saturation = max(-10, min(10, value))
+        ctrl = dai.CameraControl()
+        ctrl.setSaturation(self._saturation)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def sharpness(self) -> int:
+        """
+        Gets the current sharpness setting.
+
+        :return: The sharpness value in the range [0, 4].
+        """
+        return self._sharpness
+
+    @sharpness.setter
+    def sharpness(self, value: int):
+        """
+        Sets the sharpness for the camera, if the camera is running.
+
+        :param value: Sharpness value in the range [0, 4].
+        """
+        if not self.is_running:
+            return
+
+        self._sharpness = max(0, min(4, value))
+        ctrl = dai.CameraControl()
+        ctrl.setSharpness(self._sharpness)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def luma_denoise(self) -> int:
+        """
+        Gets the current luma denoise setting.
+
+        :return: The luma denoise value in the range [0, 4].
+        """
+        return self._luma_denoise
+
+    @luma_denoise.setter
+    def luma_denoise(self, value: int):
+        """
+        Sets the luma denoise for the camera, if the camera is running.
+
+        :param value: Luma denoise value in the range [0, 4].
+        """
+        if not self.is_running:
+            return
+
+        self._luma_denoise = max(0, min(4, value))
+        ctrl = dai.CameraControl()
+        ctrl.setLumaDenoise(self._luma_denoise)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+    @property
+    def chroma_denoise(self) -> int:
+        """
+        Gets the current chroma denoise setting.
+
+        :return: The chroma denoise value in the range [0, 4].
+        """
+        return self._chroma_denoise
+
+    @chroma_denoise.setter
+    def chroma_denoise(self, value: int):
+        """
+        Sets the chroma denoise for the camera, if the camera is running.
+
+        :param value: Chroma denoise value in the range [0, 4].
+        """
+        if not self.is_running:
+            return
+
+        self._chroma_denoise = max(0, min(4, value))
+        ctrl = dai.CameraControl()
+        ctrl.setChromaDenoise(self._chroma_denoise)
 
         if self.rgb_control_queue is not None:
             self.rgb_control_queue.send(ctrl)
