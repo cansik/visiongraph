@@ -4,6 +4,7 @@ from argparse import Namespace, ArgumentParser, ArgumentError
 from datetime import timedelta
 from typing import Optional, Tuple
 
+import cv2
 import depthai as dai
 import numpy as np
 from depthai import CameraFeatures
@@ -37,6 +38,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.color_sensor_resolution: dai.ColorCameraProperties.SensorResolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
 
         self.enable_color: bool = True
+        self.enable_color_still: bool = False
 
         self.interleaved: bool = False
         self.color_isp_scale: Optional[Tuple[int, int]] = None
@@ -61,24 +63,29 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.pipeline: Optional[dai.Pipeline] = None
         self.color_camera: Optional[dai.node.ColorCamera] = None
         self.device: Optional[dai.Device] = None
+        self.color_still_encoder: Optional[dai.node.VideoEncoder] = None
 
         # node names
         self.rgb_stream_name = "rgb"
         self.rgb_isp_stream_name = "rgb_isp"
         self.rgb_control_in_name = "rbg_control_in"
+        self.rgb_still_stream_name = "rgb_still"
 
         # nodes
         self.color_x_out: Optional[dai.node.XLinkOut] = None
         self.color_isp_out: Optional[dai.node.XLinkOut] = None
+        self.color_still_out: Optional[dai.node.XLinkOut] = None
         self.color_control_in: Optional[dai.node.XLinkIn] = None
 
         self.rgb_control_queue: Optional[dai.DataInputQueue] = None
         self.rgb_queue: Optional[dai.DataOutputQueue] = None
         self.rgb_isp_queue: Optional[dai.DataOutputQueue] = None
+        self.rgb_still_queue: Optional[dai.DataOutputQueue] = None
 
         # capture
         self._last_ts: int = 0
         self._last_rgb_frame: Optional[np.ndarray] = None
+        self._last_rgb_still_frame: Optional[np.ndarray] = None
 
     def setup(self):
         """
@@ -98,6 +105,8 @@ class DepthAIBaseInput(BaseCamera, ABC):
             device = dai.Device(self.pipeline, self._initial_device_info)
         else:
             device = dai.Device(self.pipeline)
+
+        # camera starts - pre_start_setup is also called here
         self.device = device.__enter__()
 
         if self.enable_color:
@@ -106,6 +115,8 @@ class DepthAIBaseInput(BaseCamera, ABC):
                                                             blocking=False)
             self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
                                                         blocking=False)
+            self.rgb_still_queue = self.device.getOutputQueue(name=self.rgb_still_stream_name,
+                                                              maxSize=self.queue_max_size, blocking=False)
 
             # wait for the first isp frame
             rgb_isp_frame = typing.cast(dai.ImgFrame, self.rgb_isp_queue.get())
@@ -145,6 +156,17 @@ class DepthAIBaseInput(BaseCamera, ABC):
             self.color_control_in.setStreamName(self.rgb_control_in_name)
             self.color_control_in.out.link(self.color_camera.inputControl)
 
+            # setup still stream if needed
+            if self.enable_color_still:
+                self.color_still_encoder = self.pipeline.create(dai.node.VideoEncoder)
+                self.color_still_encoder.setDefaultProfilePreset(1, dai.VideoEncoderProperties.Profile.MJPEG)
+
+                self.color_still_out = self.pipeline.create(dai.node.XLinkOut)
+                self.color_still_out.setStreamName(self.rgb_still_stream_name)
+
+                self.color_camera.still.link(self.color_still_encoder.input)
+                self.color_still_encoder.bitstream.link(self.color_still_out.input)
+
     @abstractmethod
     def read(self) -> (int, Optional[np.ndarray]):
         """
@@ -165,6 +187,42 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
             self._last_rgb_frame = image
             self._last_ts = ts
+
+    def capture_color_still(self, post_processed: bool = True) -> Optional[np.ndarray]:
+        """
+        Captures a still image from the color camera if the device is running and still capture is enabled.
+
+        This method sends a still image capture request to the camera and waits for the resulting frame.
+        The captured image is decoded and stored for potential reuse.
+
+        :returns: A decoded still image as a NumPy array if successful, otherwise None.
+        """
+        if not self.is_running:
+            return None
+
+        if not self.enable_color_still:
+            return None
+
+        # send capture request
+        ctrl = dai.CameraControl()
+        ctrl.setCaptureStill(True)
+
+        if self.rgb_control_queue is not None:
+            self.rgb_control_queue.send(ctrl)
+
+        # wait for still available
+        still_queue_blocking_state = self.rgb_still_queue.getBlocking()
+        self.rgb_still_queue.setBlocking(True)
+
+        raw_frame = typing.cast(dai.ImgFrame, self.rgb_still_queue.get())
+        still_frame = cv2.imdecode(raw_frame.getData(), cv2.IMREAD_UNCHANGED)
+
+        if post_processed:
+            still_frame = self._post_process(0, still_frame)
+        self._last_rgb_still_frame = still_frame
+
+        self.rgb_still_queue.setBlocking(still_queue_blocking_state)
+        return self._last_rgb_still_frame
 
     def release(self):
         """
