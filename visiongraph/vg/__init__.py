@@ -545,6 +545,7 @@ if TYPE_CHECKING:
     from visiongraph.util.ResultUtils import extract_object_detection_roi  # noqa
     from visiongraph.util.ResultUtils import non_maximum_suppression  # noqa
     from visiongraph.util.TimeUtils import FPSTracer  # noqa
+    from visiongraph.util.TimeUtils import HighPrecisionTimer  # noqa
     from visiongraph.util.TimeUtils import ProfileWatch  # noqa
     from visiongraph.util.TimeUtils import Watch  # noqa
     from visiongraph.util.TimeUtils import current_millis  # noqa
@@ -856,6 +857,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "extract_object_detection_roi": _LazyImport("extract_object_detection_roi", "visiongraph.util.ResultUtils", False),
     "non_maximum_suppression": _LazyImport("non_maximum_suppression", "visiongraph.util.ResultUtils", False),
     "FPSTracer": _LazyImport("FPSTracer", "visiongraph.util.TimeUtils", False),
+    "HighPrecisionTimer": _LazyImport("HighPrecisionTimer", "visiongraph.util.TimeUtils", False),
     "ProfileWatch": _LazyImport("ProfileWatch", "visiongraph.util.TimeUtils", False),
     "Watch": _LazyImport("Watch", "visiongraph.util.TimeUtils", False),
     "current_millis": _LazyImport("current_millis", "visiongraph.util.TimeUtils", False),
