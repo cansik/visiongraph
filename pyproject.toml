@@ -1,0 +1,125 @@
+[build-system]
+requires = ["setuptools>=80.9.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "visiongraph"
+version = "1.1.0"
+description = "Visiongraph is a high level computer vision framework."
+readme = "README.md"
+license = "MIT"
+
+authors = [
+    { name = "Florian Bruggisser", email = "github@broox.ch" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Image Processing",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+requires-python = ">=3.10,<3.13"
+
+dependencies = [
+    "requests",
+    "tqdm",
+    "vector~=1.6.2",
+    "scipy",
+    "numpy>2",
+    "opencv-python~=4.7.0; python_version <= '3.9'",
+    "opencv-python~=4.11; python_version > '3.9'",
+]
+
+[project.urls]
+Homepage = "https://github.com/cansik/visiongraph"
+Documentation = "https://cansik.github.io/visiongraph/"
+Repository = "https://github.com/cansik/visiongraph.git"
+
+[dependency-groups]
+dev = [
+    "wheel",
+    "setuptools>=80.9.0",
+    "pytest",
+    "autopep8~=2.3.2"
+]
+
+docs = [
+    "pdoc~=15.0.4"
+]
+
+[project.optional-dependencies]
+realsense = [
+    "pyrealsense2-macosx~=2.54.2; platform_system == 'Darwin'",
+    "pyrealsense2~=2.55.1; platform_system != 'Darwin'",
+]
+
+azure = [
+    "pyk4a-bundle~=1.5; platform_system == 'Windows' or platform_system == 'Linux'",
+]
+
+depthai = [
+    "depthai~=2.30; platform_system != 'Darwin' or platform.machine == 'arm64'",
+]
+
+openvino = ["openvino~=2025.1.0"]
+
+mediapipe = ["mediapipe~=0.10.21"]
+
+onnx = ["onnxruntime~=1.22.0"]
+
+"onnx-gpu" = [
+    "onnxruntime~=1.22.0; platform_system == 'Darwin'",
+    "onnxruntime-gpu~=1.22.0; platform_system != 'Darwin'",
+]
+
+"onnx-directml" = [
+    "onnxruntime~=1.22.0; platform_system == 'Darwin' or platform_system == 'Linux'",
+    "onnxruntime-directml~=1.22.0; platform_system == 'Windows'",
+]
+
+media = [
+    "moviepy",
+    "vidgear[core]",
+]
+
+numba = ["numba~=0.61"]
+
+fbs = [
+    "pyopengl; platform_system == 'Darwin' or platform_system == 'Windows'",
+    "syphon-python~=0.1.1; platform_system == 'Darwin'",
+    "SpoutGL~=0.1.1; platform_system == 'Windows'",
+]
+
+faiss = ["faiss-cpu"]
+
+mot = ["filterpy"]
+
+[tool.uv]
+override-dependencies = [
+    # see https://github.com/google-ai-edge/mediapipe/issues/5612
+    "numpy>2"
+]
+
+[project.entry-points."distutils.commands"]
+generate_init = "scripts.commands:GenerateInitPy"
+doc = "scripts.commands:GenerateDoc"
+
+[tool.setuptools]
+packages = { find = { exclude = [
+    "tests",
+    "examples",
+    "snippets",
+    "assets",
+    "tools",
+    "scripts"
+] } }

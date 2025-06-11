@@ -11,7 +11,6 @@ import pdoc.web
 from jinja2 import pass_context
 from jinja2.runtime import Context
 from markupsafe import Markup
-from pdoc._compat import removesuffix
 from pdoc.render_helpers import qualname_candidates, possible_sources, relative_link
 
 from scripts import pdoc_monkeypatch
@@ -55,7 +54,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
         plain_text = text.replace(
             '</span><span class="o">.</span><span class="n">', "."
         )
-        identifier = removesuffix(plain_text, "()")
+        identifier = plain_text.removesuffix("()")
         mod: pdoc.doc.Module = context["module"]
 
         # Check if this is a relative reference?
@@ -109,7 +108,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
                 assert isinstance(doc, pdoc.doc.Module)
                 doc = doc.get(qualname)
             target_exists_and_public = (
-                doc is not None and context["is_public"](doc).strip()
+                    doc is not None and context["is_public"](doc).strip()
             )
             if target_exists_and_public:
                 assert doc is not None  # mypy

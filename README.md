@@ -62,18 +62,19 @@ There are even more examples where visiongraph is currently in use:
 - [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph
 
 ## Development
-To develop on visiograph it is recommended to clone this repository and install the dependencies like this:
+To develop on visiongraph it is recommended to clone this repository and install the dependencies like this. First install the [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager.
 
 ```bash
-# in the visiongraph directory
-pip install -e ".[all]"
+# in the visiongraph directory install all dependencies
+uv sync --all-extras --dev --group docs
 ```
 
 ### Build
-To build a new wheel package of visiongraph run the following command in the root directory.
+To build a new wheel package of visiongraph run the following command in the root directory. Please find the wheel and source distribution in `./dist`.
 
 ```bash
-python setup.py bdist_wheel
+uv run python setup.py generate_init
+uv build
 ```
 
 ### Docs
@@ -82,10 +83,10 @@ To generate the documentation, use the following commands.
 
 ```bash
 # create documentation into "./docs
-python setup.py doc
+uv run python setup.py doc
 
 # launch pdoc webserver
-python setup.py doc --launch
+uv run python setup.py doc --launch
 ```
 
 ## Dependencies
