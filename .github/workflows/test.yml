@@ -49,8 +49,7 @@ jobs:
         run: |
           cd $GITHUB_WORKSPACE
           pip install uv
-          uv pip install --system -r dev-requirements.txt
-          uv pip install --system .[all]
+          uv sync --all-extras --dev
 
       - name: "Download all networks from ${{ github.event.inputs.tag }}"
         uses: robinraju/release-downloader@v1.8
@@ -73,4 +72,4 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          python -m unittest discover -s ./tests -t ./ -v
+          uv run python -m unittest discover -s ./tests -t ./ -v
