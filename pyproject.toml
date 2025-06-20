@@ -71,7 +71,7 @@ depthai = [
     "depthai~=2.30; platform_system != 'Darwin' or platform.machine == 'arm64'",
 ]
 
-openvino = ["openvino~=2025.1.0"]
+openvino = ["openvino~=2025.2.0"]
 
 mediapipe = ["mediapipe~=0.10.21"]
 
