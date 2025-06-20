@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional
 
-import openvino.runtime
+import openvino
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -63,7 +63,7 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
             'delta': 0.5
         }
 
-        core = openvino.runtime.Core()
+        core = openvino.Core()
         adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
         return HpeAssociativeEmbedding.create_model(HpeAssociativeEmbedding.__model__, adapter, config, preload=True)
 

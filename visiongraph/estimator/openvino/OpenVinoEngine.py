@@ -1,6 +1,6 @@
 from typing import Dict, Optional, Any, Sequence, Union, List
 
-import openvino.runtime as ov
+import openvino as ov
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine

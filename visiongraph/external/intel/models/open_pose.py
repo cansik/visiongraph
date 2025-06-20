@@ -16,11 +16,12 @@
 
 import cv2
 import numpy as np
+
 try:
     from numpy.core.umath import clip
 except ImportError:
     from numpy import clip
-import openvino.runtime.opset8 as opset8
+import openvino.opset8 as opset8
 
 from .image_model import ImageModel
 from .types import NumericalValue
@@ -61,7 +62,8 @@ class OpenPose(ImageModel):
         # Heuristic NMS kernel size adjustment depending on the feature maps upsampling ratio.
         p = int(np.round(6 / 7 * self.upsample_ratio))
         k = 2 * p + 1
-        pooled_heatmap = opset8.max_pool(heatmap, kernel_shape=(k, k), dilations=(1, 1), pads_begin=(p, p), pads_end=(p, p),
+        pooled_heatmap = opset8.max_pool(heatmap, kernel_shape=(k, k), dilations=(1, 1), pads_begin=(p, p),
+                                         pads_end=(p, p),
                                          strides=(1, 1), name=self.pooled_heatmaps_blob_name)
         pooled_heatmap.output(0).get_tensor().set_names({self.pooled_heatmaps_blob_name})
         self.model_adapter.model.add_outputs([pooled_heatmap.output(0)])
@@ -70,7 +72,7 @@ class OpenPose(ImageModel):
         self.outputs = self.model_adapter.get_output_layers()
 
         self.output_scale = self.inputs[self.image_blob_name].shape[-2] / \
-            self.outputs[self.heatmaps_blob_name].shape[-2]
+                            self.outputs[self.heatmaps_blob_name].shape[-2]
 
         if self.target_size is None:
             self.target_size = self.inputs[self.image_blob_name].shape[-2]
@@ -139,7 +141,6 @@ class OpenPose(ImageModel):
 
 
 class OpenPoseDecoder:
-
     BODY_PARTS_KPT_IDS = ((1, 2), (1, 5), (2, 3), (3, 4), (5, 6), (6, 7), (1, 8), (8, 9), (9, 10), (1, 11),
                           (11, 12), (12, 13), (1, 0), (0, 14), (14, 16), (0, 15), (15, 17), (2, 16), (5, 17))
     BODY_PARTS_PAF_IDS = (12, 20, 14, 16, 22, 24, 0, 2, 4, 6, 8, 10, 28, 30, 34, 32, 36, 18, 26)

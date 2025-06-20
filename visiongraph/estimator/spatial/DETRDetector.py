@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List
 
-import openvino.runtime
+import openvino
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
@@ -57,7 +57,7 @@ class DETRDetector(OpenVinoObjectDetector):
             'num_classes': None,  # The NanoDet and NanoDetPlus specific
         }
 
-        core = openvino.runtime.Core()
+        core = openvino.Core()
         adapter = OpenvinoAdapter(core, self.model.path, device=self.device)
         return DETR.create_model(DETR.__model__, adapter, config, preload=True)
 
