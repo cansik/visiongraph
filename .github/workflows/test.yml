@@ -49,6 +49,8 @@ jobs:
 
       - name: "Download all models from Hugging Face"
         shell: bash
+        env:
+          HF_TOKEN: ${{ secrets.HF_HUB_TOKEN }}
         run: |
           cd $GITHUB_WORKSPACE
           python - << 'EOF'
