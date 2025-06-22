@@ -71,7 +71,7 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         """
         running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
 
-        base_options = python.BaseOptions(model_asset_path=self.task.path)
+        base_options = python.BaseOptions(model_asset_buffer=open(self.task.path, "rb").read())
         options = vision.FaceLandmarkerOptions(base_options=base_options,
                                                running_mode=running_mode,
                                                min_face_detection_confidence=self.min_score,
