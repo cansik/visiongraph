@@ -14,12 +14,8 @@ jobs:
             host: windows-latest
             args:
 
-          - name: macos-intel
-            host: macos-13
-            args:
-
           - name: macos-silicon
-            host: macos-14
+            host: macos-latest
             args:
 
           - name: ubuntu
