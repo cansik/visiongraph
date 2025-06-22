@@ -53,6 +53,7 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
     def setup(self):
         running_mode = VisionTaskRunningMode.IMAGE if self.static_image_mode else VisionTaskRunningMode.VIDEO
 
+        # buffer loading because of https://github.com/google-ai-edge/mediapipe/issues/5343
         base_options = python.BaseOptions(model_asset_buffer=open(self.task.path, "rb").read())
         options = vision.PoseLandmarkerOptions(
             base_options=base_options,
