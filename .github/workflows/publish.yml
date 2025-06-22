@@ -25,23 +25,23 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Get Library Version
-        id: get_version
-        run: |
-          lib_version=$(python setup.py --version)
-          echo "Library Version: $lib_version"
-
-          echo ::set-output name=version::"$lib_version"
-          echo ::set-output name=v_version::"v$lib_version"
-
       - name: Build
         run: |
           pip install --upgrade pip
           pip install uv
-          
+
           uv sync --all-extras --dev
           uv run python setup.py generate_init
           uv build
+
+      - name: Get Library Version
+        id: get_version
+        run: |
+          lib_version=$(uv run python setup.py --version)
+          echo "Library Version: $lib_version"
+
+          echo ::set-output name=version::"$lib_version"
+          echo ::set-output name=v_version::"v$lib_version"
 
       # upload dist
       - name: Upload binaries to release
