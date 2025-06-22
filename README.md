@@ -36,6 +36,23 @@ pip install "visiongraph[realsense, openvino]"
 
 Please read more about the extra packages in the [documentation](https://cansik.github.io/visiongraph/visiongraph.html#extras).
 
+### Optional Mediapipe Support
+
+Visiongraph can integrate Google’s [MediaPipe](https://github.com/google/mediapipe) for advanced hand, face and object tracking pipelines. Unfortunately, the official PyPI MediaPipe wheels declare a strict dependency on `numpy<2.0`, which prevents installation alongside NumPy 2.x, even though most functionality works fine with NumPy 2.0 and above. To work around this limitation, we maintain a custom [mediapipe-numpy2](https://github.com/cansik/mediapipe-numpy2) build that removes the `<2.0` pin.
+
+When you install with the `mediapipe` extra, pip will automatically fetch the matching patched wheel for your OS and Python version.
+
+#### Alternative: Use the Official MediaPipe Release
+
+If you’re happy to stick with NumPy <2.0, you can skip our custom package entirely and install the upstream MediaPipe wheel from PyPI:
+
+```bash
+pip install visiongraph mediapipe
+```
+
+This will install Visiongraph plus the official `mediapipe` package (which requires `numpy<2.0`). Just make sure your environment’s NumPy version is below 2.0 when using this route.
+
+
 ## Examples
 To demonstrate the possibilities of visiongraph there are already implemented [examples](examples) ready for you to try out. Here is a list of the current examples:
 

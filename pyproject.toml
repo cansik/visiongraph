@@ -73,7 +73,32 @@ depthai = [
 
 openvino = ["openvino~=2025.2.0"]
 
-mediapipe = ["mediapipe~=0.10.21"]
+mediapipe = [
+    # currently we use a custom mediapipe package
+    # see https://github.com/google-ai-edge/mediapipe/issues/5612
+    # "mediapipe~=0.10.21"
+
+    # Python 3.9
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-macosx_11_0_universal2.whl ; python_version == '3.9' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-macosx_11_0_x86_64.whl      ; python_version == '3.9' and platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-manylinux_2_28_x86_64.whl ; python_version == '3.9' and platform_system == 'Linux'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-win_amd64.whl               ; python_version == '3.9' and platform_system == 'Windows'",
+    # Python 3.10
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl ; python_version == '3.10' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl      ; python_version == '3.10' and platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl ; python_version == '3.10' and platform_system == 'Linux'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl               ; python_version == '3.10' and platform_system == 'Windows'",
+    # Python 3.11
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl ; python_version == '3.11' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl      ; python_version == '3.11' and platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl ; python_version == '3.11' and platform_system == 'Linux'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl               ; python_version == '3.11' and platform_system == 'Windows'",
+    # Python 3.12
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl ; python_version == '3.12' and platform_system == 'Darwin' and platform_machine == 'arm64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl      ; python_version == '3.12' and platform_system == 'Darwin' and platform_machine == 'x86_64'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl ; python_version == '3.12' and platform_system == 'Linux'",
+    "mediapipe-numpy2 @ https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl               ; python_version == '3.12' and platform_system == 'Windows'",
+]
 
 onnx = ["onnxruntime~=1.22.0"]
 
@@ -107,7 +132,7 @@ mot = ["filterpy"]
 [tool.uv]
 override-dependencies = [
     # see https://github.com/google-ai-edge/mediapipe/issues/5612
-    "numpy>2"
+    # "numpy>2"
 ]
 
 [project.entry-points."distutils.commands"]
