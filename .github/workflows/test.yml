@@ -48,6 +48,7 @@ jobs:
           uv sync --all-extras --dev
 
       - name: "Download all models from Hugging Face"
+        shell: bash
         run: |
           cd $GITHUB_WORKSPACE
           python - << 'EOF'
