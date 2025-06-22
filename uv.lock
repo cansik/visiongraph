@@ -495,11 +495,11 @@ name = "jax"
 version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "jaxlib", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "ml-dtypes", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "numpy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "opt-einsum", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "scipy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "jaxlib" },
+    { name = "ml-dtypes" },
+    { name = "numpy" },
+    { name = "opt-einsum" },
+    { name = "scipy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/a3/b9/6d3d88fbab17696d00824ecac3d67feea1ff0abe12d3ebe64166a311ac04/jax-0.6.1.tar.gz", hash = "sha256:c4dcb93e1d34f80cf7adfa81f3fdab62a5068b69107b7a6117f8742ab37b6779", size = 2062260, upload-time = "2025-05-21T18:10:45.017Z" }
 wheels = [
@@ -511,9 +511,9 @@ name = "jaxlib"
 version = "0.6.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "ml-dtypes", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "numpy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
-    { name = "scipy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "ml-dtypes" },
+    { name = "numpy" },
+    { name = "scipy" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/bb/75/f16efee0f23acef960c18af326d608cff2e27aefabffdc652ccec3004ff2/jaxlib-0.6.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:277cc7e9d657d0893a559261277b3eae916ad7fa73e300a629261fb537dca0f1", size = 53770292, upload-time = "2025-05-21T18:10:55.238Z" },
@@ -714,448 +714,32 @@ wheels = [
 [[package]]
 name = "mediapipe-numpy2"
 version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl" }
-resolution-markers = [
-    "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-]
+source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "absl-py", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl", hash = "sha256:0e8db4c2c595eb214d0730df11b488196b83c9d6bc6660d3ec81d978f6cd9428" },
-]
-
-[package.metadata]
-requires-dist = [
     { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
+    { name = "attrs" },
+    { name = "flatbuffers" },
     { name = "jax" },
     { name = "jaxlib" },
     { name = "matplotlib" },
     { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
+    { name = "protobuf" },
     { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl" }
-resolution-markers = [
-    "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
+    { name = "sounddevice" },
 ]
 wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:10f1fefd1a56e1eb0b4def01478a95c0591295f443f95baa2898c67650fb56e6" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl" }
-resolution-markers = [
-    "python_full_version < '3.11' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version < '3.11' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "attrs", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "flatbuffers", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "jax", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "jaxlib", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "matplotlib", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "opencv-contrib-python", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "protobuf", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "sentencepiece", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "sounddevice", marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:bdfba6d27834b50edb8b14eb002ce7915e20f4f6db4c7bae28917235c8bc1978" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl" }
-resolution-markers = [
-    "python_full_version < '3.11' and sys_platform == 'win32'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "attrs", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "flatbuffers", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "jax", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "jaxlib", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "matplotlib", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "opencv-contrib-python", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "protobuf", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "sentencepiece", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "sounddevice", marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl", hash = "sha256:30f4d935ac353422b077f4f0eebce9e50cdd0660e4a2bfd43a188f95048c60b7" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl", hash = "sha256:d9cccb39ee97e13218034f31a2159a5d94c27f663180259b4e19b5994f310038" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:2653df0ee000b6d4a73e66adedcf7aa8c5a4696af1e75d67579c9de4c616d93c" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version == '3.11.*' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "attrs", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "flatbuffers", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "jax", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "jaxlib", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "matplotlib", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "opencv-contrib-python", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "protobuf", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "sentencepiece", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "sounddevice", marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:393b77dfeeccd857e46bcce405b7ed85fa596cc24830b1fa5a2a211a2b2a16e3" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and sys_platform == 'win32'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "attrs", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "flatbuffers", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "jax", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "jaxlib", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "matplotlib", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "opencv-contrib-python", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "protobuf", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "sentencepiece", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "sounddevice", marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl", hash = "sha256:84c1616a8eb1fe2e31b900e6fb343a448e99992334ac1773464522944f158bb8" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl" }
-resolution-markers = [
-    "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl", hash = "sha256:307b7016a206bf9bdeaedcbd3f5bdf6d82ba4c3a689adf08d31ba72758d3d967" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl" }
-resolution-markers = [
-    "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "attrs", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "flatbuffers", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jax", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "jaxlib", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "matplotlib", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "opencv-contrib-python", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "protobuf", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sentencepiece", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "sounddevice", marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:8f657059e19735afc3f2ad42e6b4a1713d4f4cbfc72785e2c54b960a5343a58f" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl" }
-resolution-markers = [
-    "python_full_version >= '3.12' and platform_machine == 'aarch64' and sys_platform == 'linux'",
-    "python_full_version >= '3.12' and platform_machine != 'aarch64' and sys_platform == 'linux'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "attrs", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "flatbuffers", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "jax", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "jaxlib", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "matplotlib", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "opencv-contrib-python", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "protobuf", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "sentencepiece", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "sounddevice", marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:bb0af420b0211cab16d4b71febff26c2a86bd03127ecd4d51157dc5a80ca0baf" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
-]
-
-[[package]]
-name = "mediapipe-numpy2"
-version = "0.10.21"
-source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl" }
-resolution-markers = [
-    "python_full_version >= '3.12' and sys_platform == 'win32'",
-]
-dependencies = [
-    { name = "absl-py", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "attrs", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "flatbuffers", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "jax", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "jaxlib", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "matplotlib", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "opencv-contrib-python", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "protobuf", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "sentencepiece", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-    { name = "sounddevice", marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
-]
-wheels = [
-    { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl", hash = "sha256:291b42c54975f8e0a65bd4bca84ad29824dd113529c4c7d7f901e8ce248ef1df" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "absl-py" },
-    { name = "attrs", specifier = ">=19.1.0" },
-    { name = "flatbuffers", specifier = ">=2.0" },
-    { name = "jax" },
-    { name = "jaxlib" },
-    { name = "matplotlib" },
-    { name = "opencv-contrib-python" },
-    { name = "protobuf", specifier = ">=4.25.3,<5" },
-    { name = "sentencepiece" },
-    { name = "sounddevice", specifier = ">=0.4.4" },
+    { url = "https://files.pythonhosted.org/packages/cb/a0/9c50fb44ec24f1b7f2c372c180d0629e23da87fdd165bd73b66fbf20b082/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl", hash = "sha256:0e8db4c2c595eb214d0730df11b488196b83c9d6bc6660d3ec81d978f6cd9428", size = 49044233, upload-time = "2025-06-22T14:01:51.937Z" },
+    { url = "https://files.pythonhosted.org/packages/e6/45/295fd376342bfe402ac08e39f490dd7b639ac9a96a0623e4b1ad52bd630a/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:10f1fefd1a56e1eb0b4def01478a95c0591295f443f95baa2898c67650fb56e6", size = 49044058, upload-time = "2025-06-22T14:01:56.076Z" },
+    { url = "https://files.pythonhosted.org/packages/8b/1d/1c7ff864a1800bf20827973125b9cf3fd79b6a515f26fc92469ceed276d1/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:bdfba6d27834b50edb8b14eb002ce7915e20f4f6db4c7bae28917235c8bc1978", size = 35597881, upload-time = "2025-06-22T14:02:00.551Z" },
+    { url = "https://files.pythonhosted.org/packages/bf/e5/0d9d6d0d7694a004ac8bdee8c72d426e2de797a16bb1b138979c3bf53fcd/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl", hash = "sha256:30f4d935ac353422b077f4f0eebce9e50cdd0660e4a2bfd43a188f95048c60b7", size = 50965158, upload-time = "2025-06-22T14:02:04.349Z" },
+    { url = "https://files.pythonhosted.org/packages/ac/04/8953051db0ec1bdf2d0030ca7d32590a86ebb71a96f1850d68b883bf0a7a/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl", hash = "sha256:d9cccb39ee97e13218034f31a2159a5d94c27f663180259b4e19b5994f310038", size = 49044633, upload-time = "2025-06-22T14:02:08.823Z" },
+    { url = "https://files.pythonhosted.org/packages/b2/ec/6f85bde30fdde491f1bbf1ad829f5011f7822e077bf2283dc7459173885d/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl", hash = "sha256:2653df0ee000b6d4a73e66adedcf7aa8c5a4696af1e75d67579c9de4c616d93c", size = 49044458, upload-time = "2025-06-22T14:02:12.57Z" },
+    { url = "https://files.pythonhosted.org/packages/f2/fc/ff700ce271088883c79b85288204f2559786cf06e7f6ad5251c4ddc4c308/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl", hash = "sha256:393b77dfeeccd857e46bcce405b7ed85fa596cc24830b1fa5a2a211a2b2a16e3", size = 35597751, upload-time = "2025-06-22T14:02:16.044Z" },
+    { url = "https://files.pythonhosted.org/packages/9f/ed/11392d2fa6b9bd6a3b9ac4ed21b98507beb82753db78aaacf4100e0fe45c/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl", hash = "sha256:84c1616a8eb1fe2e31b900e6fb343a448e99992334ac1773464522944f158bb8", size = 50964875, upload-time = "2025-06-22T14:02:19.994Z" },
+    { url = "https://files.pythonhosted.org/packages/ed/ae/7c3683d3f2ad42632885c412112a7e7eac27a759258a1a9513530343d895/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl", hash = "sha256:307b7016a206bf9bdeaedcbd3f5bdf6d82ba4c3a689adf08d31ba72758d3d967", size = 49054994, upload-time = "2025-06-22T14:02:24.438Z" },
+    { url = "https://files.pythonhosted.org/packages/53/c8/5944f681181474f744ae569854fb9729c8ddb29c663b6280946f86c5ae42/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:8f657059e19735afc3f2ad42e6b4a1713d4f4cbfc72785e2c54b960a5343a58f", size = 49054819, upload-time = "2025-06-22T14:02:29.349Z" },
+    { url = "https://files.pythonhosted.org/packages/86/46/80bb1fdea021dcce7c3b71efb7e9bf2e0d193321c7b5e1055404a09c4a8f/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl", hash = "sha256:bb0af420b0211cab16d4b71febff26c2a86bd03127ecd4d51157dc5a80ca0baf", size = 35602434, upload-time = "2025-06-22T14:02:33.153Z" },
+    { url = "https://files.pythonhosted.org/packages/6f/b3/22cd589162664a59b8dcb6abe5a05da89e9659683cc3b701813321642059/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl", hash = "sha256:291b42c54975f8e0a65bd4bca84ad29824dd113529c4c7d7f901e8ce248ef1df", size = 50967173, upload-time = "2025-06-22T14:02:37.038Z" },
 ]
 
 [[package]]
@@ -1163,7 +747,7 @@ name = "ml-dtypes"
 version = "0.5.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "numpy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/32/49/6e67c334872d2c114df3020e579f3718c333198f8312290e09ec0216703a/ml_dtypes-0.5.1.tar.gz", hash = "sha256:ac5b58559bb84a95848ed6984eb8013249f90b6bab62aa5acbad876e256002c9", size = 698772, upload-time = "2025-01-07T03:34:55.613Z" }
 wheels = [
@@ -1336,12 +920,12 @@ name = "onnxruntime-gpu"
 version = "1.22.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "coloredlogs", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
-    { name = "flatbuffers", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
-    { name = "numpy", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
-    { name = "packaging", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
-    { name = "protobuf", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
-    { name = "sympy", marker = "(platform_machine != 'arm64' and platform_machine != 'x86_64') or sys_platform != 'darwin'" },
+    { name = "coloredlogs", marker = "sys_platform != 'darwin'" },
+    { name = "flatbuffers", marker = "sys_platform != 'darwin'" },
+    { name = "numpy", marker = "sys_platform != 'darwin'" },
+    { name = "packaging", marker = "sys_platform != 'darwin'" },
+    { name = "protobuf", marker = "sys_platform != 'darwin'" },
+    { name = "sympy", marker = "sys_platform != 'darwin'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/27/76/81de592072d6a41553b1523e15447f0ef94392e8f4cb98fda42909f24f9b/onnxruntime_gpu-1.22.0-cp310-cp310-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:965da7d33a54917e8e5176f292cc22640819f328370f4fb86087908745b03708", size = 283205327, upload-time = "2025-05-09T19:39:24.231Z" },
@@ -1357,7 +941,7 @@ name = "opencv-contrib-python"
 version = "4.11.0.86"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "numpy" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ef/51/3ceb85ecff5f26994b7aae2922b1aa38148dbfe88cab13d63bc6facbac88/opencv-contrib-python-4.11.0.86.tar.gz", hash = "sha256:4ff773dab44911da366b906621c9592d4eb96f6ad3777098933a23f064aab38e", size = 150559874, upload-time = "2025-01-16T13:53:08.425Z" }
 wheels = [
@@ -1576,7 +1160,7 @@ name = "pyk4a-bundle"
 version = "1.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "numpy" },
+    { name = "numpy", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/ae/30/fd535346510b01f4941c260106ebb130fce1ac16220533c0bd1caf1b82cf/pyk4a_bundle-1.5.0-cp310-cp310-manylinux_2_35_x86_64.whl", hash = "sha256:7b09ce618cfcbcec2c63cb15f0bcded1a125484fe834f33c8f821fb397e3cfe1", size = 7513050, upload-time = "2024-08-28T12:35:27.676Z" },
@@ -1603,7 +1187,7 @@ name = "pyobjc-framework-cocoa"
 version = "10.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyobjc-core" },
+    { name = "pyobjc-core", marker = "sys_platform == 'darwin'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/39/41/4f09a5e9a6769b4dafb293ea597ed693cc0def0e07867ad0a42664f530b6/pyobjc_framework_cocoa-10.3.2.tar.gz", hash = "sha256:673968e5435845bef969bfe374f31a1a6dc660c98608d2b84d5cae6eafa5c39d", size = 4942530, upload-time = "2024-11-30T15:30:27.244Z" }
 wheels = [
@@ -1617,8 +1201,8 @@ name = "pyobjc-framework-metal"
 version = "10.3.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyobjc-core" },
-    { name = "pyobjc-framework-cocoa" },
+    { name = "pyobjc-core", marker = "sys_platform == 'darwin'" },
+    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/ef/12/a7695cab9ee18c2500ada306b283fc80f6628cb5fc396ee19fcc470bf186/pyobjc_framework_metal-10.3.2.tar.gz", hash = "sha256:59246982eab788b955f6d45dfb8c80e8f97bd1b56e1d678c90e91ad4a9376e35", size = 300113, upload-time = "2024-11-30T17:10:18.588Z" }
 wheels = [
@@ -1919,7 +1503,7 @@ name = "sounddevice"
 version = "0.5.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cffi", marker = "(platform_machine == 'arm64' and sys_platform == 'darwin') or (platform_machine == 'x86_64' and sys_platform == 'darwin') or sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "cffi" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/91/a6/91e9f08ed37c7c9f56b5227c6aea7f2ae63ba2d59520eefb24e82cbdd589/sounddevice-0.5.2.tar.gz", hash = "sha256:c634d51bd4e922d6f0fa5e1a975cc897c947f61d31da9f79ba7ea34dff448b49", size = 53150, upload-time = "2025-05-16T18:12:27.339Z" }
 wheels = [
@@ -1961,10 +1545,10 @@ name = "syphon-python"
 version = "0.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "pyobjc-core" },
-    { name = "pyobjc-framework-cocoa" },
-    { name = "pyobjc-framework-metal" },
-    { name = "pyopengl" },
+    { name = "pyobjc-core", marker = "sys_platform == 'darwin'" },
+    { name = "pyobjc-framework-cocoa", marker = "sys_platform == 'darwin'" },
+    { name = "pyobjc-framework-metal", marker = "sys_platform == 'darwin'" },
+    { name = "pyopengl", marker = "sys_platform == 'darwin'" },
 ]
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/f2/460c9cc7c4682353abccb1d3f8cf5ca0af2a59af97b5c57b72f87e1f296c/syphon_python-0.1.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:be4a25818cf228e895ff49255ebfbae3ce9578dcb0eae9c6f5b9083df721e8ff", size = 459805, upload-time = "2023-12-28T15:36:00.026Z" },
@@ -2103,18 +1687,7 @@ media = [
     { name = "vidgear", extra = ["core"] },
 ]
 mediapipe = [
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl" }, marker = "python_full_version < '3.11' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl" }, marker = "python_full_version < '3.11' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl" }, marker = "python_full_version < '3.11' and sys_platform == 'linux'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl" }, marker = "python_full_version < '3.11' and sys_platform == 'win32'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl" }, marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl" }, marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl" }, marker = "python_full_version == '3.11.*' and sys_platform == 'linux'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl" }, marker = "python_full_version == '3.11.*' and sys_platform == 'win32'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl" }, marker = "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl" }, marker = "python_full_version >= '3.12' and platform_machine == 'x86_64' and sys_platform == 'darwin'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl" }, marker = "python_full_version >= '3.12' and sys_platform == 'linux'" },
-    { name = "mediapipe-numpy2", version = "0.10.21", source = { url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl" }, marker = "python_full_version >= '3.12' and sys_platform == 'win32'" },
+    { name = "mediapipe-numpy2" },
 ]
 mot = [
     { name = "filterpy" },
@@ -2157,22 +1730,7 @@ requires-dist = [
     { name = "depthai", marker = "(platform_machine == 'arm64' and extra == 'depthai') or (sys_platform != 'darwin' and extra == 'depthai')", specifier = "~=2.30" },
     { name = "faiss-cpu", marker = "extra == 'faiss'" },
     { name = "filterpy", marker = "extra == 'mot'" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.9.*' and platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-macosx_11_0_universal2.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.10.*' and platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_universal2.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.11.*' and platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_universal2.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.12.*' and platform_machine == 'arm64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_universal2.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.9.*' and platform_machine == 'x86_64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-macosx_11_0_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.10.*' and platform_machine == 'x86_64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-macosx_11_0_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.11.*' and platform_machine == 'x86_64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-macosx_11_0_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.12.*' and platform_machine == 'x86_64' and sys_platform == 'darwin' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-macosx_11_0_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.9.*' and sys_platform == 'linux' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-manylinux_2_28_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.10.*' and sys_platform == 'linux' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-manylinux_2_28_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.11.*' and sys_platform == 'linux' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-manylinux_2_28_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.12.*' and sys_platform == 'linux' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-manylinux_2_28_x86_64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.9.*' and sys_platform == 'win32' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp39-cp39-win_amd64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.10.*' and sys_platform == 'win32' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp310-cp310-win_amd64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.11.*' and sys_platform == 'win32' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp311-cp311-win_amd64.whl" },
-    { name = "mediapipe-numpy2", marker = "python_full_version == '3.12.*' and sys_platform == 'win32' and extra == 'mediapipe'", url = "https://github.com/cansik/mediapipe-numpy2/releases/download/0.10.21/mediapipe_numpy2-0.10.21-cp312-cp312-win_amd64.whl" },
+    { name = "mediapipe-numpy2", marker = "extra == 'mediapipe'", specifier = "~=0.10.21" },
     { name = "moviepy", marker = "extra == 'media'" },
     { name = "numba", marker = "extra == 'numba'", specifier = "~=0.61" },
     { name = "numpy", specifier = ">2" },
