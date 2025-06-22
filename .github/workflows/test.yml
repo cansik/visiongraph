@@ -44,17 +44,21 @@ jobs:
         shell: bash
         run: |
           cd $GITHUB_WORKSPACE
-          pip install uv
+          pip install uv "huggingface_hub[cli]"
           uv sync --all-extras --dev
 
-      - name: "Download all networks from ${{ github.event.inputs.tag }}"
-        uses: robinraju/release-downloader@v1.8
-        with:
-          repository: "cansik/data-storage"
-          tag: "sarmotion"
-          fileName: "*"
-          out-file-path: "visiongraph/cache"
-          token: ${{ secrets.DATA_REPO_TOKEN }}
+      - name: "Download all models from Hugging Face"
+        run: |
+          cd $GITHUB_WORKSPACE
+          python - << 'EOF'
+          from huggingface_hub import snapshot_download
+          # Pulls entire repo snapshot into visiongraph/cache
+          snapshot_download(
+              repo_id="cansik/visiongraph",
+              local_dir="visiongraph/cache",
+              token="${HF_HUB_TOKEN}"
+          )
+          EOF
 
       # check networks
       - name: Check networks
