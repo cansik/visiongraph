@@ -50,7 +50,9 @@ dev = [
     "wheel",
     "setuptools>=80.9.0",
     "pytest",
-    "autopep8~=2.3.2"
+    "autopep8~=2.3.2",
+    "ty>=0.0.1a12",
+    "ruff>=0.12.0",
 ]
 
 docs = [
@@ -113,6 +115,23 @@ override-dependencies = [
     # see https://github.com/google-ai-edge/mediapipe/issues/5612
     # "numpy>2"
 ]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+# select = ["FA100", "UP006"]
+
+[tool.ruff.format]
+# Use double quotes for strings
+quote-style = "double"
+
+# Indent with spaces
+indent-style = "space"
+
+docstring-code-format = true
 
 [project.entry-points."distutils.commands"]
 generate_init = "scripts.commands:GenerateInitPy"
