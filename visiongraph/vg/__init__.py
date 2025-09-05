@@ -529,6 +529,7 @@ if TYPE_CHECKING:
     from visiongraph.util.MathUtils import transform_coordinates  # noqa
     from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d  # noqa
     from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_vector4d  # noqa
+    from visiongraph.util.NetworkUtils import HTTPDownloadError  # noqa
     from visiongraph.util.NetworkUtils import download_file  # noqa
     from visiongraph.util.NetworkUtils import handle_redirects  # noqa
     from visiongraph.util.NetworkUtils import prepare_data_file  # noqa
@@ -844,6 +845,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "transform_coordinates": _LazyImport("transform_coordinates", "visiongraph.util.MathUtils", False),
     "mediapipe_landmarks_to_score_and_vector4d": _LazyImport("mediapipe_landmarks_to_score_and_vector4d", "visiongraph.util.MediaPipeUtils", False),
     "mediapipe_landmarks_to_vector4d": _LazyImport("mediapipe_landmarks_to_vector4d", "visiongraph.util.MediaPipeUtils", False),
+    "HTTPDownloadError": _LazyImport("HTTPDownloadError", "visiongraph.util.NetworkUtils", False),
     "download_file": _LazyImport("download_file", "visiongraph.util.NetworkUtils", False),
     "handle_redirects": _LazyImport("handle_redirects", "visiongraph.util.NetworkUtils", False),
     "prepare_data_file": _LazyImport("prepare_data_file", "visiongraph.util.NetworkUtils", False),
