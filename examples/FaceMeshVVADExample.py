@@ -30,7 +30,7 @@ class VVADOptions:
 
 
 @dataclass
-class TrackedFace(vg.BaseResult, vg.Trackable):
+class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
     """
     Represents a tracked face with VAD results.
 
@@ -107,7 +107,6 @@ class TrackedFace(vg.BaseResult, vg.Trackable):
 
         if self.vvad_result is not None:
             score = self.filtered_speaking_score.x_prev
-            raw = self.vvad_result.speaking_score
 
             is_speaking = score > self.vvad_options.min_score
             vg.draw_text_normalized(image, f"{score * 100:.0f}%",

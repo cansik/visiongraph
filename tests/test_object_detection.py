@@ -42,9 +42,6 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_yolov3_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv3_FP32))
 
-    def test_yolov3_detector_fp32(self):
-        self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv3_FP32))
-
     def test_yolov3_tiny_detector_fp16(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv3_Tiny_FP16))
 

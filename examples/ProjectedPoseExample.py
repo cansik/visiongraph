@@ -7,7 +7,6 @@ import numpy as np
 import open3d as o3d
 import vector
 from open3d.cpu.pybind.geometry import TriangleMesh
-from open3d.cpu.pybind.visualization import rendering
 from open3d.visualization import gui
 
 from visiongraph import vg
@@ -154,9 +153,8 @@ class MainWindow:
                 self.vis.reset_camera_to_default()
                 self._first_run = False
             elif not self._first_run and pose_detected:
-                update_flags = (rendering.Scene.UPDATE_POINTS_FLAG |
-                                rendering.Scene.UPDATE_COLORS_FLAG)
                 # not working atm
+                # update_flags = (rendering.Scene.UPDATE_POINTS_FLAG | rendering.Scene.UPDATE_COLORS_FLAG)
                 # self.vis.update_geometry("pose", self.pose_cloud, update_flags)
                 self.vis.remove_geometry("pose")
                 self.vis.add_geometry("pose", self.pose_cloud)
@@ -184,7 +182,7 @@ def main():
     app = o3d.visualization.gui.Application.instance
     app.initialize()
 
-    win = MainWindow(pipeline)
+    MainWindow(pipeline)
     app.run()
 
 

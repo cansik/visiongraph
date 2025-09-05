@@ -17,13 +17,13 @@ class DSPTest(unittest.TestCase):
             (1.2, 2.2), (1.1, 2.1), (1.5, 2.5), (1.4, 2.4), (1.5, 2.5)
         ], dtype=[("x", float), ("y", float)])
 
-        filter = VectorNumpySmoothFilter(OneEuroFilterNumpy(np.full((5, 5), 1.0)))
+        np_filter = VectorNumpySmoothFilter(OneEuroFilterNumpy(np.full((5, 5), 1.0)))
 
         # first pass (re-init)
-        result1 = filter.process(data1)
+        np_filter.process(data1)
 
         # second pass (real filtering)
-        result2 = filter.process(data2)
+        np_filter.process(data2)
 
 
 if __name__ == '__main__':

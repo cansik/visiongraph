@@ -153,11 +153,11 @@ class ONNXVisionEngine(BaseVisionEngine):
         :return: The model layers.
         """
         return [
-            VisionEngineModelLayer(name=l.name,
-                                   shape=list(l.shape),
-                                   numpy_dtype=self._to_numpy_dtype(l.type),
-                                   layer_names=list(l.name))
-            for l in compiled_layers
+            VisionEngineModelLayer(name=layer.name,
+                                   shape=list(layer.shape),
+                                   numpy_dtype=self._to_numpy_dtype(layer.type),
+                                   layer_names=list(layer.name))
+            for layer in compiled_layers
         ]
 
     def _to_numpy_dtype(self, type_text: str) -> np.dtype:

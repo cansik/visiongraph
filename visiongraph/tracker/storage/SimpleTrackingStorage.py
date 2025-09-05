@@ -7,13 +7,13 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.tracker.storage.TrackingStorage import T, TrackingStorage
 
 
-class Trackable(ABC):
+class SimpleTrackable(ABC):
     """
     Abstract base class for trackable objects.
     """
 
     @abstractmethod
-    def update_track(self, track: "Trackable"):
+    def update_track(self, track: "SimpleTrackable"):
         """
         Update the current trackable object with data from another trackable object.
 

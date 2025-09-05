@@ -64,7 +64,7 @@ class VisionGraph(BaseGraph):
 
         :return: The result of the graph processing.
         """
-        result: Optional[BaseResult] = self._inference()
+        self._inference()
         self.fps.update()
 
     def _inference(self) -> Optional[BaseResult]:

@@ -36,7 +36,6 @@ def convert_docstring_to_rst(code: str) -> str:
 
         for line in docstring.splitlines():
             spaces_count = len(line) - len(line.lstrip(" "))
-            original_line = line
             line = line.strip()
             if line.startswith("Args:"):
                 intent = " " * spaces_count

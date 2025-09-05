@@ -62,7 +62,7 @@ class OpenVinoEngine(BaseVisionEngine):
         self.input_names = list([layer.any_name for layer in self.compiled_model.inputs])
         self.output_names = list([layer.any_name for layer in self.compiled_model.outputs])
 
-        self._input_lut = {l.any_name: l for l in self.compiled_model.inputs}
+        self._input_lut = {layer.any_name: layer for layer in self.compiled_model.inputs}
 
     def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
         """
@@ -74,7 +74,7 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         request: ov.InferRequest = self.compiled_model.create_infer_request()
         request.infer(inputs=inputs)
-        outputs = {l: request.output_tensors[i].data for i, l in enumerate(self.output_names)}
+        outputs = {layer_name: request.output_tensors[i].data for i, layer_name in enumerate(self.output_names)}
         return VisionEngineOutput(outputs)
 
     def get_input_shape(self, input_name: str) -> Sequence[int]:
@@ -128,9 +128,9 @@ class OpenVinoEngine(BaseVisionEngine):
         :return: The VisionEngineModelLayer objects.
         """
         return [
-            VisionEngineModelLayer(name=l.any_name,
-                                   shape=list(l.partial_shape),
-                                   numpy_dtype=l.element_type.to_dtype(),
-                                   layer_names=list(l.names))
-            for l in compiled_layers
+            VisionEngineModelLayer(name=layer.any_name,
+                                   shape=list(layer.partial_shape),
+                                   numpy_dtype=layer.element_type.to_dtype(),
+                                   layer_names=list(layer.names))
+            for layer in compiled_layers
         ]

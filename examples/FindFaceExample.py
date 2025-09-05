@@ -108,8 +108,10 @@ class FindFaceExample(BaseGraph):
 
         # solve linear assignment
         row_ind, col_ind = linear_sum_assignment(costs)
-        matching_error = costs[row_ind, col_ind].sum() / costs.shape[0]
         lookup_table = dict(zip(row_ind.tolist(), col_ind.tolist()))
+
+        # unsued, but here is how to calculate the matching error:
+        # matching_error = costs[row_ind, col_ind].sum() / costs.shape[0]
 
         # display results
         for i, result in enumerate(results):

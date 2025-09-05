@@ -115,7 +115,7 @@ Releases resources held by the inference engine.
         """
         xc = prediction[..., 4] > threshold
 
-        num_coords = self.num_keypoints * 3
+        _ = self.num_keypoints * 3
         np_classes = np.array(classes)
 
         result = []

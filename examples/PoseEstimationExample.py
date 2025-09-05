@@ -45,7 +45,8 @@ class PoseEstimationExample(BaseGraph):
         results = self.network.process(frame)
         results = self.tracker.process(results)
 
-        embeddings = self.embedder.process(results)
+        # example on how to embedd a pose
+        # embeddings = self.embedder.process(results)
 
         for result in results:
             result.annotate(frame, min_score=0.1)
