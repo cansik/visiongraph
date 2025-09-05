@@ -8,7 +8,7 @@
 
 Visiongraph is a high level computer vision framework that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://github.com/openvinotoolkit/openvino) and [Google MediaPipe](https://github.com/google-ai-edge/mediapipe).
 
-Here an example on how to start a webcam capture and display the image:
+Here is an example on how to start a webcam capture and display the image:
 
 ```python
 from visiongraph import vg
@@ -114,7 +114,7 @@ Parts of these libraries are directly included and adapted to work with visiongr
 * [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
 * [OneEuroFilter-Numpy](https://github.com/HoBeom/OneEuroFilter-Numpy) - (MIT License)
 
-Here you can find a list of the dependencies of visiongraph and their licence:
+Here you can find a list of the dependencies of visiongraph and their license (no guarantee of correctness):
 
 ```
 depthai               MIT License
@@ -142,9 +142,9 @@ vidgear               Apache License 2.0
 wheel                 MIT License
 ```
 
-For more information about the dependencies have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
+For more information about the dependencies, have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
 
-Please note that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licences (AGPLv3). Always check the model licence before using the model.
+Please note that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
 
 ## About
 Copyright (c) 2025 Florian Bruggisser

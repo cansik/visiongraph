@@ -1,5 +1,5 @@
 # Documentation
-This documentation is intended to provide an overview of the framework. A full documentation will be available later.
+This documentation is intended to provide an overview of the framework.
 
 ### Import Visiongraph
 There are two ways on how to import visiongraph related objects and classes. The classical way is to use the direct import like this:
