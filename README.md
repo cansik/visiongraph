@@ -1,4 +1,8 @@
-<img src="https://github.com/user-attachments/assets/0ed34695-ca0e-47ff-aebb-eb59ff851770" alt="Visiongraph Logo Bright" width="75%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/user-attachments/assets/f30f10ef-8058-4306-882f-6301226107be">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/user-attachments/assets/0ed34695-ca0e-47ff-aebb-eb59ff851770">
+  <img src="https://github.com/user-attachments/assets/0ed34695-ca0e-47ff-aebb-eb59ff851770" alt="Visiongraph Logo Bright" width="75%">
+</picture>
 
 # Visiongraph
 
