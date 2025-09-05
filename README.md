@@ -11,7 +11,7 @@
 ![Pepy Total Downloads](https://img.shields.io/pepy/dt/visiongraph)
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/visiongraph/visiongraph.html#documentation)
 
-Visiongraph is a high level computer vision framework that includes predefined modules to quickly create and run algorithms on images. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://github.com/openvinotoolkit/openvino) and [Google MediaPipe](https://github.com/google-ai-edge/mediapipe).
+Visiongraph is a computer vision pipeline that provides ready-to-use modules for quick prototyping of image-based algorithms. It is based on opencv and includes other computer vision frameworks like [Intel openVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe) and [depthai](https://pypi.org/project/depthai/).
 
 Here is an example on how to start a webcam capture and display the image:
 
@@ -115,7 +115,7 @@ uv run python setup.py doc --launch
 
 Parts of these libraries are directly included and adapted to work with visiongraph.
 
-* [motpy](https://github.com/wmuron/motpy) - simple multi object tracking library (MIT License)
+* [motpy](https://github.com/wmuron/motpy) - Simple multi-object tracking library (MIT License)
 * [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
 * [OneEuroFilter-Numpy](https://github.com/HoBeom/OneEuroFilter-Numpy) - (MIT License)
 
@@ -149,7 +149,8 @@ wheel                 MIT License
 
 For more information about the dependencies, have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
 
-Please note that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
+Please **note** that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
 
 ## About
-Copyright (c) 2025 Florian Bruggisser
+Copyright (c) 2025 Florian Bruggisser  
+Released under the MIT License. See [LICENSE](LICENSE) for details.

@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "visiongraph"
 version = "1.2.0"
-description = "Visiongraph is a high level computer vision framework."
+description = "Visiongraph is a computer vision pipeline that provides ready-to-use modules for quick prototyping of image-based algorithms."
 readme = "README.md"
 license = "MIT"
 
