@@ -8,7 +8,7 @@ from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.hand.HandLandmarkResult import HandLandmarkResult
 
-OutputType = TypeVar('OutputType', bound=HandLandmarkResult)
+OutputType = TypeVar("OutputType", bound=HandLandmarkResult)
 
 
 class HandLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):

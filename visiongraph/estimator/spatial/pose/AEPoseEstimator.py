@@ -17,6 +17,7 @@ class AEPoseConfig(Enum):
 
     Each configuration corresponds to a specific pre-trained model and its weights.
     """
+
     EfficientHRNet_288_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp16"),)
     EfficientHRNet_288_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp32"),)
     EfficientHRNet_352_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp16"),)
@@ -33,9 +34,16 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
     specific to the AEPose model configurations.
     """
 
-    def __init__(self, model: Asset, weights: Asset,
-                 target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.1,
-                 auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Asset,
+        target_size: Optional[int] = None,
+        aspect_ratio: float = 16 / 9,
+        min_score: float = 0.1,
+        auto_adjust_aspect_ratio: bool = True,
+        device: str = "AUTO",
+    ):
         """
         Initializes the AEPoseEstimator with specified parameters.
 
@@ -56,11 +64,11 @@ class AEPoseEstimator(OpenVinoPoseEstimator):
         :return: The created model for inference.
         """
         config = {
-            'target_size': self.target_size,
-            'aspect_ratio': self.aspect_ratio,
-            'confidence_threshold': self.min_score,
-            'padding_mode': 'center',
-            'delta': 0.5
+            "target_size": self.target_size,
+            "aspect_ratio": self.aspect_ratio,
+            "confidence_threshold": self.min_score,
+            "padding_mode": "center",
+            "delta": 0.5,
         }
 
         core = openvino.Core()

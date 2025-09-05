@@ -15,15 +15,31 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.EfficientPose import EfficientPose
 from visiongraph.util import VectorUtils, MathUtils
 
-_BODY_PARTS = ['head_top', 'upper_neck', 'right_shoulder', 'right_elbow', 'right_wrist', 'thorax',
-               'left_shoulder', 'left_elbow', 'left_wrist', 'pelvis', 'right_hip', 'right_knee', 'right_ankle',
-               'left_hip', 'left_knee', 'left_ankle']
+_BODY_PARTS = [
+    "head_top",
+    "upper_neck",
+    "right_shoulder",
+    "right_elbow",
+    "right_wrist",
+    "thorax",
+    "left_shoulder",
+    "left_elbow",
+    "left_wrist",
+    "pelvis",
+    "right_hip",
+    "right_knee",
+    "right_ankle",
+    "left_hip",
+    "left_knee",
+    "left_ankle",
+]
 
 
 class EfficientPoseEstimatorConfig(Enum):
     """
     Enumeration for EfficientPose estimator configurations with associated model and weights.
     """
+
     EFFICIENT_POSE_I_FP16 = RepositoryAsset.openVino("EfficientPoseI-fp16")
     EFFICIENT_POSE_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32")
     EFFICIENT_POSE_II_FP16 = RepositoryAsset.openVino("EfficientPoseII-fp16")
@@ -53,19 +69,16 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
     :param device: The device to run the inference on. Defaults to "AUTO".
     """
 
-    def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.1, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, min_score: float = 0.1, device: str = "AUTO"):
         super().__init__(min_score)
 
-        self.engine = OpenVinoEngine(model, weights,
-                                     flip_channels=True, padding=True,
-                                     device=device)
+        self.engine = OpenVinoEngine(model, weights, flip_channels=True, padding=True, device=device)
         self.engine.order = InputShapeOrder.NWHC
 
     def setup(self):
         """
-Sets up the inference engine.
-"""
+        Sets up the inference engine.
+        """
         self.engine.setup()
 
     def process(self, data: np.ndarray) -> ResultList[EfficientPose]:
@@ -87,10 +100,14 @@ Sets up the inference engine.
         landmarks: List[Tuple[float, float, float, float]] = []
         max_score = 0.0
         for name, x, y, score in body_parts:
-            landmarks.append((
-                MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
-                MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
-                0.0, float(score)))
+            landmarks.append(
+                (
+                    MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
+                    MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
+                    0.0,
+                    float(score),
+                )
+            )
 
             if max_score < score:
                 max_score = float(score)
@@ -99,8 +116,8 @@ Sets up the inference engine.
 
     def release(self):
         """
-Releases resources held by the inference engine.
-"""
+        Releases resources held by the inference engine.
+        """
         self.engine.release()
 
     @staticmethod
@@ -120,11 +137,10 @@ Releases resources held by the inference engine.
 
         # Iterate over body parts
         for i in range(frame_output.shape[1]):
-
             # Find peak point
             conf = frame_output[0, i, ...]
             if blur:
-                conf = gaussian_filter(conf, sigma=1.)
+                conf = gaussian_filter(conf, sigma=1.0)
 
             max_index = np.argmax(conf)
             peak_y = float(math.floor(max_index / output_width))
@@ -140,8 +156,9 @@ Releases resources held by the inference engine.
         return frame_coords
 
     @staticmethod
-    def create(config: EfficientPoseEstimatorConfig
-               = EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32) -> "EfficientPoseEstimator":
+    def create(
+        config: EfficientPoseEstimatorConfig = EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32,
+    ) -> "EfficientPoseEstimator":
         """
         Creates an instance of EfficientPoseEstimator with specified configuration.
 

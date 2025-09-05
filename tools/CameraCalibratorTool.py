@@ -21,7 +21,6 @@ BOARD_CALIBRATORS = {
 
 
 class CameraCalibratorTool(BaseGraph):
-
     def __init__(self, input: BaseInput, calibrator: BoardCameraCalibrator):
         super().__init__()
         self.input = input
@@ -75,8 +74,16 @@ class CameraCalibratorTool(BaseGraph):
             h, w = frame.shape[:2]
             frame = cv2.rectangle(frame, (0, 0), (w - 1, h - 1), [0, 255, 0], 8)
 
-        cv2.putText(frame, f"Samples: {self.calibrator.sample_count} / {self.calibrator.max_samples}",
-                    (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+        cv2.putText(
+            frame,
+            f"Samples: {self.calibrator.sample_count} / {self.calibrator.max_samples}",
+            (20, 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            (0, 255, 0),
+            1,
+            cv2.LINE_AA,
+        )
 
         cv2.imshow("Camera Calibrator", frame)
         if cv2.waitKey(1) & 0xFF == 27:
@@ -94,12 +101,19 @@ class CameraCalibratorTool(BaseGraph):
 
     @staticmethod
     def add_params(parser: ArgumentParser):
-        parser.add_argument("--board-size", type=int, nargs=2, required=True,
-                            metavar=("columns", "rows"), help="Calibration board size.")
+        parser.add_argument(
+            "--board-size",
+            type=int,
+            nargs=2,
+            required=True,
+            metavar=("columns", "rows"),
+            help="Calibration board size.",
+        )
         parser.add_argument("--max-samples", type=int, default=30, help="How many calibration samples are gathered.")
         parser.add_argument("--wait-time", type=int, default=1000, help="How long to wait between capture (ms).")
-        parser.add_argument("--calibration", type=str, default="calibration.json",
-                            help="Path where the calibration is stored.")
+        parser.add_argument(
+            "--calibration", type=str, default="calibration.json", help="Path where the calibration is stored."
+        )
 
 
 def main():
@@ -108,8 +122,14 @@ def main():
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group)
 
-    add_step_choice_argument(parser, BOARD_CALIBRATORS, "--calibrator", help="Board calibrator system.",
-                             default="chessboard", add_params=True)
+    add_step_choice_argument(
+        parser,
+        BOARD_CALIBRATORS,
+        "--calibrator",
+        help="Board calibrator system.",
+        default="chessboard",
+        add_params=True,
+    )
     CameraCalibratorTool.add_params(parser)
 
     args = parser.parse_args()

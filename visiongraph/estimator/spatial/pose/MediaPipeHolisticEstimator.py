@@ -23,14 +23,17 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
     Estimates holistic poses using MediaPipe framework.
     """
 
-    def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
-                 min_score: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
-                 static_image_mode: bool = False,
-                 smooth_landmarks: bool = True,
-                 enable_segmentation: bool = False,
-                 smooth_segmentation: bool = True,
-                 refine_landmarks: bool = True):
+    def __init__(
+        self,
+        complexity: PoseModelComplexity = PoseModelComplexity.Normal,
+        min_score: float = 0.5,
+        min_tracking_confidence: float = 0.5,
+        static_image_mode: bool = False,
+        smooth_landmarks: bool = True,
+        enable_segmentation: bool = False,
+        smooth_segmentation: bool = True,
+        refine_landmarks: bool = True,
+    ):
         """
         Initializes the MediaPipeHolisticEstimator with specified parameters.
 
@@ -61,13 +64,15 @@ class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
         """
         Sets up the MediaPipe Holistic detector with the specified parameters.
         """
-        self.detector = _mp_holistic.Holistic(static_image_mode=self.static_image_mode,
-                                              model_complexity=self.complexity.value,
-                                              min_detection_confidence=self.min_score,
-                                              min_tracking_confidence=self.min_tracking_confidence,
-                                              enable_segmentation=self.enable_segmentation,
-                                              smooth_segmentation=self.smooth_segmentation,
-                                              refine_face_landmarks=self.refine_landmarks)
+        self.detector = _mp_holistic.Holistic(
+            static_image_mode=self.static_image_mode,
+            model_complexity=self.complexity.value,
+            min_detection_confidence=self.min_score,
+            min_tracking_confidence=self.min_tracking_confidence,
+            enable_segmentation=self.enable_segmentation,
+            smooth_segmentation=self.smooth_segmentation,
+            refine_face_landmarks=self.refine_landmarks,
+        )
 
     def process(self, data: np.ndarray) -> ResultList[BlazePose]:
         """

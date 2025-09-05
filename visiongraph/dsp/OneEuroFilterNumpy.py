@@ -2,6 +2,7 @@
 Source: https://github.com/HoBeom/OneEuroFilter-Numpy
 MIT License
 """
+
 from time import time
 from typing import Optional
 
@@ -45,9 +46,16 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
     estimation of the acceleration signal.
     """
 
-    def __init__(self, x0: np.ndarray, t0: Optional[float] = None, dx0: float = 0.0,
-                 min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0,
-                 invalid_value: Optional[float] = None):
+    def __init__(
+        self,
+        x0: np.ndarray,
+        t0: Optional[float] = None,
+        dx0: float = 0.0,
+        min_cutoff: float = 1.0,
+        beta: float = 0.0,
+        d_cutoff: float = 1.0,
+        invalid_value: Optional[float] = None,
+    ):
         """
         Initialize the OneEuro filter.
 

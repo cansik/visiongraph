@@ -131,11 +131,7 @@ class BoundingBox2D:
 
         :return: A new BoundingBox2D instance with scaled dimensions.
         """
-        return BoundingBox2D(
-            self.x_min * width,
-            self.y_min * height,
-            self.width * width,
-            self.height * height)
+        return BoundingBox2D(self.x_min * width, self.y_min * height, self.width * width, self.height * height)
 
     def scale_with(self, size: Size2D) -> "BoundingBox2D":
         """
@@ -169,11 +165,7 @@ class BoundingBox2D:
 
         :return: A new BoundingBox2D instance with added borders.
         """
-        return BoundingBox2D(
-            self.x_min - (dx * 0.5),
-            self.y_min - (dy * 0.5),
-            self.width + dx,
-            self.height + dy)
+        return BoundingBox2D(self.x_min - (dx * 0.5), self.y_min - (dy * 0.5), self.width + dx, self.height + dy)
 
     def add_border_with(self, size: Size2D) -> "BoundingBox2D":
         """

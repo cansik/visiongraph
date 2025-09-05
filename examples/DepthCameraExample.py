@@ -10,7 +10,6 @@ from visiongraph.input import add_input_step_choices
 
 
 class DepthCameraExample(vg.BaseGraph):
-
     def __init__(self, input: vg.BaseDepthInput):
         super().__init__()
         self.input = input

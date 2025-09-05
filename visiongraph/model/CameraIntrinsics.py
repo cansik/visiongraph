@@ -30,7 +30,7 @@ class CameraIntrinsics:
         """
         data = {
             INTRINSIC_MATRIX_NAME: self.intrinsic_matrix.tolist(),
-            DISTORTION_COEFFICIENTS_NAME: self.distortion_coefficients.tolist()
+            DISTORTION_COEFFICIENTS_NAME: self.distortion_coefficients.tolist(),
         }
 
         with open(path, "w") as file:
@@ -63,8 +63,8 @@ class CameraIntrinsics:
         :return: The loaded CameraIntrinsics object.
         """
         storage = cv2.FileStorage(path, cv2.FILE_STORAGE_READ)
-        intrinsic_mat = storage.getNode('Camera_Matrix').mat()
-        distortion_coeff = storage.getNode('Distortion_Coefficients').mat()
+        intrinsic_mat = storage.getNode("Camera_Matrix").mat()
+        distortion_coeff = storage.getNode("Distortion_Coefficients").mat()
         storage.release()
 
         return CameraIntrinsics(intrinsic_mat, distortion_coeff)
@@ -111,4 +111,6 @@ class CameraIntrinsics:
 
         :return: A string representation of the object.
         """
-        return f"{CameraIntrinsics.__name__} (fx: {self.fx:.3f}, fy: {self.fy:.3f} px: {self.px:.3f}, py: {self.py:.3f})"
+        return (
+            f"{CameraIntrinsics.__name__} (fx: {self.fx:.3f}, fy: {self.fy:.3f} px: {self.px:.3f}, py: {self.py:.3f})"
+        )

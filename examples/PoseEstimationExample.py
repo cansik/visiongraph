@@ -18,15 +18,12 @@ from visiongraph.util.TimeUtils import FPSTracer
 
 
 class PoseEstimationExample(BaseGraph):
-
     def __init__(self, input: BaseInput, pose_network: PoseEstimator, sliding_window: bool = False):
         super().__init__()
         self.input = input
 
         if sliding_window:
-            self.network = SlidingWindowEstimator(
-                pose_network, 128, (256, 256), 0.5
-            )
+            self.network = SlidingWindowEstimator(pose_network, 128, (256, 256), 0.5)
         else:
             self.network = pose_network
         self.fps_tracer = FPSTracer()
@@ -53,14 +50,22 @@ class PoseEstimationExample(BaseGraph):
 
         self.fps_tracer.update()
         if not args.performance:
-            cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
-                        (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 255, 0), 2, cv2.LINE_AA)
+            cv2.putText(
+                frame,
+                "FPS: %.0f" % self.fps_tracer.smooth_fps,
+                (7, 40),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                (0, 255, 0),
+                2,
+                cv2.LINE_AA,
+            )
 
             cv2.imshow("Pose Estimator", frame)
             if cv2.waitKey(1) & 0xFF == 27:
                 self.close()
         else:
-            print("\033[K", end='')
+            print("\033[K", end="")
             print("FPS: %.0f" % self.fps_tracer.smooth_fps)
 
     @staticmethod

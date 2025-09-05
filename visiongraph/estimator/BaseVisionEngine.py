@@ -17,13 +17,16 @@ class BaseVisionEngine(ABC):
     An abstract base class for a vision engine that processes images and performs inference.
     """
 
-    def __init__(self, flip_channels: bool = True,
-                 scale: Optional[Union[float, Sequence[float]]] = None,
-                 mean: Optional[Union[float, Sequence[float]]] = None,
-                 padding: bool = False,
-                 transpose: bool = True,
-                 order: InputShapeOrder = InputShapeOrder.NCHW,
-                 dtype: np.dtype = np.float32):
+    def __init__(
+        self,
+        flip_channels: bool = True,
+        scale: Optional[Union[float, Sequence[float]]] = None,
+        mean: Optional[Union[float, Sequence[float]]] = None,
+        padding: bool = False,
+        transpose: bool = True,
+        order: InputShapeOrder = InputShapeOrder.NCHW,
+        dtype: np.dtype = np.float32,
+    ):
         """
         Initializes the BaseVisionEngine with specified parameters.
 
@@ -65,10 +68,17 @@ class BaseVisionEngine(ABC):
 
         :return: The output from the inference process.
         """
-        in_frame, padding_box, image_size = self.pre_process_image(image, self.first_input_name,
-                                                                   self.flip_channels, self.scale, self.mean,
-                                                                   self.padding, self.transpose, self.order,
-                                                                   self.dtype)
+        in_frame, padding_box, image_size = self.pre_process_image(
+            image,
+            self.first_input_name,
+            self.flip_channels,
+            self.scale,
+            self.mean,
+            self.padding,
+            self.transpose,
+            self.order,
+            self.dtype,
+        )
 
         if inputs is None:
             inputs = {}
@@ -93,13 +103,18 @@ class BaseVisionEngine(ABC):
         """
         pass
 
-    def pre_process_image(self, image: np.ndarray, input_name: str, flip_channels: bool = True,
-                          scale: Optional[Union[float, Sequence[float]]] = None,
-                          mean: Optional[Union[float, Sequence[float]]] = None,
-                          padding: bool = False,
-                          transpose: bool = True,
-                          order: InputShapeOrder = InputShapeOrder.NCHW,
-                          dtype: np.dtype = np.float32) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
+    def pre_process_image(
+        self,
+        image: np.ndarray,
+        input_name: str,
+        flip_channels: bool = True,
+        scale: Optional[Union[float, Sequence[float]]] = None,
+        mean: Optional[Union[float, Sequence[float]]] = None,
+        padding: bool = False,
+        transpose: bool = True,
+        order: InputShapeOrder = InputShapeOrder.NCHW,
+        dtype: np.dtype = np.float32,
+    ) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
         """
         Preprocesses the input image for inference.
 

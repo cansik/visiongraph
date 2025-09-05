@@ -30,7 +30,7 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
 
         self.objp = np.zeros((self.rows * self.columns, 3), np.float32)
-        self.objp[:, :2] = np.mgrid[0:self.rows, 0:self.columns].T.reshape(-1, 2)
+        self.objp[:, :2] = np.mgrid[0 : self.rows, 0 : self.columns].T.reshape(-1, 2)
 
         self.obj_points = []  # 3d point in real world space
         self.img_points = []  # 2d points in image plane.
@@ -86,8 +86,9 @@ class ChessboardCalibrator(BoardCameraCalibrator):
 
         :return: The calibrated camera pose if successful, otherwise None.
         """
-        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(self.obj_points, self.img_points,
-                                                           self.image_size, None, None)
+        ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(
+            self.obj_points, self.img_points, self.image_size, None, None
+        )
 
         if ret:
             logging.info("Camera calibrated")

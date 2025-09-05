@@ -18,6 +18,7 @@ class VVADOptions:
     :param landmark_indices: Indices of facial landmarks used for processing.
     :param min_score: Minimum score to classify as speaking.
     """
+
     sequence_length: int = 10
     landmark_indices: Sequence[int] = vg.BlazeFaceMesh.FEATURES_148
     min_score: float = 0.75
@@ -39,6 +40,7 @@ class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
     :param feature_buffer: Buffer to store processed facial features.
     :param vvad_result: The VivaVAD classification result.
     """
+
     vvad_options: VVADOptions
     face_mesh: vg.BlazeFaceMesh
     feature_buffer: Optional[RollingBufferNumpy] = None
@@ -60,9 +62,9 @@ class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
         """
         # lazy initialize buffer
         if track.feature_buffer is None:
-            track.feature_buffer = RollingBufferNumpy(self.vvad_options.sequence_length,
-                                                      len(self.vvad_options.landmark_indices_numpy) * 3,
-                                                      dtype=np.float32)
+            track.feature_buffer = RollingBufferNumpy(
+                self.vvad_options.sequence_length, len(self.vvad_options.landmark_indices_numpy) * 3, dtype=np.float32
+            )
 
         if track.filtered_speaking_score is None:
             track.filtered_speaking_score = vg.OneEuroFilter(0.0, min_cutoff=2.0, beta=0.0, d_cutoff=0.1)
@@ -109,8 +111,7 @@ class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
             score = self.filtered_speaking_score.x_prev
 
             is_speaking = score > self.vvad_options.min_score
-            vg.draw_text_normalized(image, f"{score * 100:.0f}%",
-                                    bbox.top_right, font=cv2.FONT_HERSHEY_PLAIN)
+            vg.draw_text_normalized(image, f"{score * 100:.0f}%", bbox.top_right, font=cv2.FONT_HERSHEY_PLAIN)
 
         box_color = (0, 255, 0) if is_speaking else (0, 0, 255)
         vg.draw_bbox(image, bbox, color=box_color)
@@ -134,37 +135,28 @@ class VVADApplication:
         self.vvad_config = vg.VivaVADConfig.I_TCN_148_30_1
         self.vvad = vg.VivaVAD.create(self.vvad_config)
         self.vvad_options = VVADOptions(
-            sequence_length=self.vvad_config.value[2],
-            landmark_indices=self.vvad_config.value[1]
+            sequence_length=self.vvad_config.value[2], landmark_indices=self.vvad_config.value[1]
         )
 
         self.graph = (
             vg.create_graph(name="FaceMesh VVAD Example", input_node=args.input(), handle_signals=True)
-
             # run detection and pass image through for annotation
             .apply(
                 image=vg.passthrough(),
-
                 # detect face meshes, run vvad detection and filter results
                 face_meshes=vg.sequence(
                     # detect face meshes and track them
                     vg.MediaPipeFaceMeshEstimator(max_num_faces=2, output_facial_transformation_matrixes=True),
                     vg.FlateTracker(),
-
                     # convert results into VVADFace and update filters (using tracking storage)
                     vg.custom(self._as_tracked_faces),
                     vg.SimpleTrackingStorage(),
-
                     # run vvad prediction per face
-                    vg.custom(self._predict_vad)
+                    vg.custom(self._predict_vad),
                 ),
             )
-
             # annotate result
-            .then(
-                vg.ResultAnnotator(),
-                vg.ImagePreview("Viva VVAD")
-            )
+            .then(vg.ResultAnnotator(), vg.ImagePreview("Viva VVAD"))
             .build()
         )
         self.graph.unlinked_nodes.append(self.vvad)

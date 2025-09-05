@@ -7,7 +7,7 @@ from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.hand.HandDetectionResult import HandDetectionResult
 
-OutputType = TypeVar('OutputType', bound=HandDetectionResult)
+OutputType = TypeVar("OutputType", bound=HandDetectionResult)
 
 
 class HandDetector(ObjectDetector[OutputType], ABC):

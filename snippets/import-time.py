@@ -9,11 +9,34 @@ if False:
     print(f"It took {(end - start) * 1000:.2f} ms to import visiongraph")
 
 # attribute_names = list(vg._visiongraph_imports.keys())
-attribute_names = ['AsyncGraphNode', 'BaseGraph', 'GraphNode', 'Processable', 'VisionGraph', 'add_breakpoint',
-                   'create_graph', 'custom', 'extract', 'passthrough', 'sequence', 'Asset', 'LocalAsset',
-                   'RepositoryAsset', 'BaseFilterNumpy', 'LandmarkSmoothFilter', 'OneEuroFilter', 'OneEuroFilterNumpy',
-                   'VectorNumpySmoothFilter', 'BaseClassifier', "AdasFaceConfig", "AdasFaceDetector", "FaceDetector",
-                   "OpenVinoFaceConfig", "OpenVinoFaceDetector", "AffectNetEmotionClassifier"]
+attribute_names = [
+    "AsyncGraphNode",
+    "BaseGraph",
+    "GraphNode",
+    "Processable",
+    "VisionGraph",
+    "add_breakpoint",
+    "create_graph",
+    "custom",
+    "extract",
+    "passthrough",
+    "sequence",
+    "Asset",
+    "LocalAsset",
+    "RepositoryAsset",
+    "BaseFilterNumpy",
+    "LandmarkSmoothFilter",
+    "OneEuroFilter",
+    "OneEuroFilterNumpy",
+    "VectorNumpySmoothFilter",
+    "BaseClassifier",
+    "AdasFaceConfig",
+    "AdasFaceDetector",
+    "FaceDetector",
+    "OpenVinoFaceConfig",
+    "OpenVinoFaceDetector",
+    "AffectNetEmotionClassifier",
+]
 
 times = []
 

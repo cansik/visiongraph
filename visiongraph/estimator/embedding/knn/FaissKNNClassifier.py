@@ -15,9 +15,12 @@ class FaissKNNClassifier(BaseKNNClassifier):
     https://github.com/facebookresearch/faiss
     """
 
-    def __init__(self, index_dimensions: Optional[int] = None,
-                 store_training_data: bool = True,
-                 data_path: Optional[Union[str, os.PathLike]] = None):
+    def __init__(
+        self,
+        index_dimensions: Optional[int] = None,
+        store_training_data: bool = True,
+        data_path: Optional[Union[str, os.PathLike]] = None,
+    ):
         """
         Initializes the FaissKNNClassifier object.
 
@@ -25,9 +28,7 @@ class FaissKNNClassifier(BaseKNNClassifier):
         :param store_training_data: Whether to store the training data. Defaults to True.
         :param data_path: The path to the data. Defaults to None.
         """
-        super().__init__(min_score=0.5,
-                         store_training_data=store_training_data,
-                         data_path=data_path)
+        super().__init__(min_score=0.5, store_training_data=store_training_data, data_path=data_path)
         self.index: Optional[IndexFlat] = None
         self.index_dimensions = index_dimensions
 

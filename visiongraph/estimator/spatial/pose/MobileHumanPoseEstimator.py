@@ -38,12 +38,14 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
     :param min_score: Minimum score threshold for detected poses.
     """
 
-    def __init__(self,
-                 human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
-                 model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx"),
-                 intrinsics: Optional[CameraIntrinsics] = None,
-                 abs_depth: float = 1.0,
-                 min_score: float = 0.5):
+    def __init__(
+        self,
+        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
+        model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx"),
+        intrinsics: Optional[CameraIntrinsics] = None,
+        abs_depth: float = 1.0,
+        min_score: float = 0.5,
+    ):
         super().__init__(human_detector, min_score)
 
         self.model = model
@@ -69,11 +71,11 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         Initializes input and output parameters based on the model specifications.
         """
         super().setup()
-        self.session = rt.InferenceSession(self.model.path,
-                                           providers=["CUDAExecutionProvider",
-                                                      "OpenVINOExecutionProvider",
-                                                      "CPUExecutionProvider"],
-                                           sess_options=self.session_options)
+        self.session = rt.InferenceSession(
+            self.model.path,
+            providers=["CUDAExecutionProvider", "OpenVINOExecutionProvider", "CPUExecutionProvider"],
+            sess_options=self.session_options,
+        )
 
         # read input infos
         self.input_name = self.session.get_inputs()[0].name
@@ -154,14 +156,16 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
 
         :return: An object containing 2D poses, 3D poses, and scores.
         """
-        heatmaps = output.reshape((-1, MOBILE_HUMAN_POSE_JOINT_NUM,
-                                   self.output_depth * self.output_height * self.output_width))
+        heatmaps = output.reshape(
+            (-1, MOBILE_HUMAN_POSE_JOINT_NUM, self.output_depth * self.output_height * self.output_width)
+        )
         heatmaps = softmax(heatmaps, 2)
 
         scores = np.squeeze(np.max(heatmaps, 2))  # Ref: https://github.com/mks0601/3DMPPE_POSENET_RELEASE/issues/47
 
-        heatmaps = heatmaps.reshape((-1, MOBILE_HUMAN_POSE_JOINT_NUM,
-                                     self.output_depth, self.output_height, self.output_width))
+        heatmaps = heatmaps.reshape(
+            (-1, MOBILE_HUMAN_POSE_JOINT_NUM, self.output_depth, self.output_height, self.output_width)
+        )
 
         accu_x = heatmaps.sum(axis=(2, 3))
         accu_y = heatmaps.sum(axis=(2, 4))

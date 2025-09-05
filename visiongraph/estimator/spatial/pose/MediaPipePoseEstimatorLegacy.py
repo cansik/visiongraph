@@ -20,13 +20,16 @@ class MediaPipePoseEstimatorLegacy(PoseEstimator[BlazePose]):
     A pose estimator using MediaPipe to detect and process human poses in images.
     """
 
-    def __init__(self, complexity: PoseModelComplexity = PoseModelComplexity.Normal,
-                 min_score: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
-                 static_image_mode: bool = False,
-                 smooth_landmarks: bool = True,
-                 enable_segmentation: bool = False,
-                 smooth_segmentation: bool = True):
+    def __init__(
+        self,
+        complexity: PoseModelComplexity = PoseModelComplexity.Normal,
+        min_score: float = 0.5,
+        min_tracking_confidence: float = 0.5,
+        static_image_mode: bool = False,
+        smooth_landmarks: bool = True,
+        enable_segmentation: bool = False,
+        smooth_segmentation: bool = True,
+    ):
         """
         Initializes the MediaPipePoseEstimator with specified parameters.
 
@@ -54,12 +57,14 @@ class MediaPipePoseEstimatorLegacy(PoseEstimator[BlazePose]):
         """
         Sets up the MediaPipe pose detector with the specified configuration.
         """
-        self.detector = _mp_pose.Pose(static_image_mode=self.static_image_mode,
-                                      model_complexity=self.complexity.value,
-                                      min_detection_confidence=self.min_score,
-                                      min_tracking_confidence=self.min_tracking_confidence,
-                                      enable_segmentation=self.enable_segmentation,
-                                      smooth_segmentation=self.smooth_segmentation)
+        self.detector = _mp_pose.Pose(
+            static_image_mode=self.static_image_mode,
+            model_complexity=self.complexity.value,
+            min_detection_confidence=self.min_score,
+            min_tracking_confidence=self.min_tracking_confidence,
+            enable_segmentation=self.enable_segmentation,
+            smooth_segmentation=self.smooth_segmentation,
+        )
 
     def process(self, data: np.ndarray) -> ResultList[BlazePose]:
         """

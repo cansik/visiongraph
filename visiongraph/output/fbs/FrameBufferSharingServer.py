@@ -63,9 +63,11 @@ class FrameBufferSharingServer(GraphNode[np.ndarray, np.ndarray], ABC):
         """
         if platform.startswith("darwin"):
             from visiongraph.output.fbs.SyphonServer import SyphonServer
+
             return SyphonServer(name)
         elif platform.startswith("win"):
             from visiongraph.output.fbs.SpoutServer import SpoutServer
+
             return SpoutServer(name)
         else:
             raise Exception(f"Platform {platform} is not supported!")

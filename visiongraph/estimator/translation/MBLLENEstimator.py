@@ -20,18 +20,15 @@ class MBLLENConfig(Enum):
 
 
 class MBLLENEstimator(VisionEstimator[ImageResult]):
-    def __init__(self, *assets: Asset,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(self, *assets: Asset, engine: InferenceEngine = InferenceEngine.ONNX):
         super().__init__()
 
         if len(assets) == 0:
             assets = [MBLLENConfig.MBLLEN_Syn_LowLight_Noise_240x320]
 
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    scale=255.0,
-                                                    transpose=True,
-                                                    padding=False)
+        self.engine = InferenceEngineFactory.create(
+            engine, assets, flip_channels=True, scale=255.0, transpose=True, padding=False
+        )
 
         self.highpercent: int = 95  # should be in [85,100], linear amplification
         self.lowpercent: int = 5  # should be in [0,15], rescale the range [p%,1] to [0, 1]
@@ -47,8 +44,9 @@ class MBLLENEstimator(VisionEstimator[ImageResult]):
         outputs = self.engine.process(image)
         output = outputs[self.engine.output_names[0]].squeeze()
 
-        result = self._post_process(output, self.highpercent, self.lowpercent,
-                                    self.hsvgamma / 10.0, self.maxrange / 10.0)
+        result = self._post_process(
+            output, self.highpercent, self.lowpercent, self.hsvgamma / 10.0, self.maxrange / 10.0
+        )
 
         result = cv2.resize(result, (w, h))
         return ImageResult(result)
@@ -56,20 +54,19 @@ class MBLLENEstimator(VisionEstimator[ImageResult]):
     def release(self):
         self.engine.release()
 
-    def _post_process(self, output: np.ndarray,
-                      highpercent: float, lowpercent: float,
-                      hsvgamma: float, maxrange: float) -> np.ndarray:
+    def _post_process(
+        self, output: np.ndarray, highpercent: float, lowpercent: float, hsvgamma: float, maxrange: float
+    ) -> np.ndarray:
         gray_output = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
-        percent_max = sum(sum(gray_output >= maxrange)) / sum(
-            sum(gray_output <= 1.0))
+        percent_max = sum(sum(gray_output >= maxrange)) / sum(sum(gray_output <= 1.0))
         max_value = np.percentile(gray_output[:], highpercent)
-        if percent_max < (100 - highpercent) / 100.:
+        if percent_max < (100 - highpercent) / 100.0:
             scale = maxrange / max_value
             output = output * scale
             output = np.minimum(output, 1.0)
 
         sub_value = np.percentile(gray_output[:], lowpercent)
-        output = ((output - sub_value) * (1. / (1 - sub_value)))
+        output = (output - sub_value) * (1.0 / (1 - sub_value))
 
         hsv_image = cv2.cvtColor(output, cv2.COLOR_RGB2HSV)
         h_value, s_value, v_value = cv2.split(hsv_image)

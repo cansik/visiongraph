@@ -4,7 +4,7 @@ from typing import TypeVar
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ResultDict import ResultDict
 
-InputType = TypeVar('InputType')
+InputType = TypeVar("InputType")
 
 
 class ApplyNode(GraphNode[InputType, ResultDict]):

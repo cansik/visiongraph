@@ -4,8 +4,8 @@ from typing import List, TypeVar, Generic
 from visiongraph.estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType', bound=ClassificationResult)
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType", bound=ClassificationResult)
 
 
 class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], Generic[InputType, OutputType], ABC):

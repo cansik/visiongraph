@@ -17,10 +17,13 @@ class ImagePreview(GraphNode[np.ndarray, np.ndarray]):
     A graph node that displays an image and waits for user input.
     """
 
-    def __init__(self, title: str = "Image",
-                 image_key: str = DEFAULT_IMAGE_KEY,
-                 wait_time: int = 1,
-                 handle_key_callback: Optional[Callable[[int], None]] = None):
+    def __init__(
+        self,
+        title: str = "Image",
+        image_key: str = DEFAULT_IMAGE_KEY,
+        wait_time: int = 1,
+        handle_key_callback: Optional[Callable[[int], None]] = None,
+    ):
         """
         Initializes the ImagePreview node.
 

@@ -15,8 +15,9 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
     This class provides methods to process ROI or object detection results in images.
     """
 
-    def process_roi(self, image: np.ndarray,
-                    xmin: float, ymin: float, xmax: float, ymax: float, rectified: bool = True) -> BaseResult:
+    def process_roi(
+        self, image: np.ndarray, xmin: float, ymin: float, xmax: float, ymax: float, rectified: bool = True
+    ) -> BaseResult:
         """
         Processes a region of interest (ROI) in an image.
 
@@ -37,8 +38,9 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
 
         return result
 
-    def process_detection(self, image: np.ndarray,
-                          detection: ObjectDetectionResult, rectified: bool = True) -> BaseResult:
+    def process_detection(
+        self, image: np.ndarray, detection: ObjectDetectionResult, rectified: bool = True
+    ) -> BaseResult:
         """
         Processes an object detection result within the image.
 
@@ -49,8 +51,9 @@ class RoiEstimator(VisionEstimator[BaseResult], ABC):
         :return: The result of processing the object detection result.
         """
         bbox = detection.bounding_box
-        return self.process_roi(image, bbox.x_min, bbox.y_min,
-                                bbox.x_min + bbox.width, bbox.y_min + bbox.height, rectified)
+        return self.process_roi(
+            image, bbox.x_min, bbox.y_min, bbox.x_min + bbox.width, bbox.y_min + bbox.height, rectified
+        )
 
     def _transform_result(self, result: BaseResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float):
         """

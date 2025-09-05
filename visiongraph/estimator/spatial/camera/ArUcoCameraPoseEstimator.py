@@ -19,11 +19,13 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
     estimate the corresponding 3D pose, and draw the marker corners on the original image.
     """
 
-    def __init__(self,
-                 camera_matrix: np.ndarray,
-                 fisheye_distortion: np.ndarray,
-                 aruco_config: int = aruco.DICT_6X6_50,
-                 marker_length_in_m: float = 0.1):
+    def __init__(
+        self,
+        camera_matrix: np.ndarray,
+        fisheye_distortion: np.ndarray,
+        aruco_config: int = aruco.DICT_6X6_50,
+        marker_length_in_m: float = 0.1,
+    ):
         """
         Initializes the ArUcoCameraPoseEstimator object.
 
@@ -73,28 +75,29 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         corners = marker_corner.reshape((4, 2))
         (topLeft, topRight, bottomRight, bottomLeft) = corners
 
-        marker = ArUcoMarkerDetection(marker_id,
-                                      vector.obj(x=topLeft[0], y=topLeft[1]),
-                                      vector.obj(x=topRight[0], y=topRight[1]),
-                                      vector.obj(x=bottomRight[0], y=bottomRight[1]),
-                                      vector.obj(x=bottomLeft[0], y=bottomLeft[1]))
+        marker = ArUcoMarkerDetection(
+            marker_id,
+            vector.obj(x=topLeft[0], y=topLeft[1]),
+            vector.obj(x=topRight[0], y=topRight[1]),
+            vector.obj(x=bottomRight[0], y=bottomRight[1]),
+            vector.obj(x=bottomLeft[0], y=bottomLeft[1]),
+        )
 
         # estimate pose
-        rotation_vector, translation_vector, _ = aruco.estimatePoseSingleMarkers([marker_corner],
-                                                                                 self.marker_size_in_m,
-                                                                                 self.camera_matrix,
-                                                                                 self.fisheye_distortion)
+        rotation_vector, translation_vector, _ = aruco.estimatePoseSingleMarkers(
+            [marker_corner], self.marker_size_in_m, self.camera_matrix, self.fisheye_distortion
+        )
 
         cv2.drawFrameAxes(data, self.camera_matrix, self.fisheye_distortion, rotation_vector, translation_vector, 0.1)
 
         #
-        return ArUcoCameraPose(position=vector.obj(x=translation_vector[0, 0, 0],
-                                                   y=translation_vector[0, 0, 1],
-                                                   z=translation_vector[0, 0, 2]),
-                               rotation=vector.obj(x=rotation_vector[0, 0, 0],
-                                                   y=rotation_vector[0, 0, 1],
-                                                   z=rotation_vector[0, 0, 2]),
-                               marker=marker)
+        return ArUcoCameraPose(
+            position=vector.obj(
+                x=translation_vector[0, 0, 0], y=translation_vector[0, 0, 1], z=translation_vector[0, 0, 2]
+            ),
+            rotation=vector.obj(x=rotation_vector[0, 0, 0], y=rotation_vector[0, 0, 1], z=rotation_vector[0, 0, 2]),
+            marker=marker,
+        )
 
     def release(self):
         """

@@ -9,7 +9,7 @@ DEFAULT_IMAGE_KEY = "image"
 Default key for referencing images in the result dictionary.
 """
 
-ResultType = TypeVar('ResultType', bound=BaseResult)
+ResultType = TypeVar("ResultType", bound=BaseResult)
 
 
 class ResultDict(Dict[str, ResultType], BaseResult):

@@ -20,12 +20,7 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
     It provides a pre-built pipeline for inference and automatic model preparation.
     """
 
-    def __init__(self,
-                 model: Asset,
-                 weights: Asset,
-                 labels: List[str],
-                 min_score: float,
-                 device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float, device: str = "AUTO"):
         """
         Initializes the OpenVinoObjectDetector object.
 
@@ -67,14 +62,20 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         h, w = data.shape[:2]
         output: List[Detection] = self.pipeline.process(data)
 
-        return ResultList([ObjectDetectionResult(int(d.id),
-                                                 self._get_label(int(d.id)),
-                                                 float(d.score),
-                                                 BoundingBox2D(float(d.xmin) / w,
-                                                               float(d.ymin) / h,
-                                                               float(d.xmax - d.xmin) / w,
-                                                               float(d.ymax - d.ymin) / h))
-                           for d in output if float(d.score) >= self.min_score])
+        return ResultList(
+            [
+                ObjectDetectionResult(
+                    int(d.id),
+                    self._get_label(int(d.id)),
+                    float(d.score),
+                    BoundingBox2D(
+                        float(d.xmin) / w, float(d.ymin) / h, float(d.xmax - d.xmin) / w, float(d.ymax - d.ymin) / h
+                    ),
+                )
+                for d in output
+                if float(d.score) >= self.min_score
+            ]
+        )
 
     def release(self):
         """

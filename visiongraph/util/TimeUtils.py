@@ -170,7 +170,7 @@ class HighPrecisionTimer:
         """
         self.ensure_monotonic = ensure_monotonic
         # Check for the high-resolution performance counter method at initialization.
-        if hasattr(time, 'perf_counter_ns'):
+        if hasattr(time, "perf_counter_ns"):
             self._use_ns = True
             self._counter = time.perf_counter_ns  # Function returning nanoseconds directly.
         else:

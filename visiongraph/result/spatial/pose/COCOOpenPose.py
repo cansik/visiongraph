@@ -6,10 +6,27 @@ from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util.VectorUtils import list_of_vector4D
 
-COCO_OPEN_POSE_PAIRS = frozenset([
-    (1, 2), (1, 5), (2, 3), (3, 4), (5, 6), (6, 7), (1, 8), (8, 9), (9, 10), (1, 11), (11, 12), (12, 13), (1, 0),
-    (0, 14), (14, 16), (0, 15), (15, 17)
-])
+COCO_OPEN_POSE_PAIRS = frozenset(
+    [
+        (1, 2),
+        (1, 5),
+        (2, 3),
+        (3, 4),
+        (5, 6),
+        (6, 7),
+        (1, 8),
+        (8, 9),
+        (9, 10),
+        (1, 11),
+        (11, 12),
+        (12, 13),
+        (1, 0),
+        (0, 14),
+        (14, 16),
+        (0, 15),
+        (15, 17),
+    ]
+)
 """
 Frozen set representing pairs of keypoints that define connections in the COCO OpenPose model.
 """

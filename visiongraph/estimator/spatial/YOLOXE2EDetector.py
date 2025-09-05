@@ -17,10 +17,17 @@ class YOLOXE2EDetector(ObjectDetector):
     YOLOXE2EDetector class represents an object detector using YOLO-X vision engine.
     """
 
-    def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
-                 nms: bool = True, nms_threshold: float = 0.3,
-                 nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(
+        self,
+        *assets: Asset,
+        labels: List[str],
+        min_score: float = 0.3,
+        nms: bool = True,
+        nms_threshold: float = 0.3,
+        nms_eta: Optional[float] = None,
+        nms_top_k: Optional[int] = None,
+        engine: InferenceEngine = InferenceEngine.ONNX,
+    ):
         """
         Initialize the YOLOXE2EDetector object with specified parameters.
 
@@ -34,10 +41,7 @@ class YOLOXE2EDetector(ObjectDetector):
         :param engine: Inference engine to be used (default is InferenceEngine.ONNX).
         """
         super().__init__(min_score)
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    scale=255.0,
-                                                    padding=True)
+        self.engine = InferenceEngineFactory.create(engine, assets, flip_channels=True, scale=255.0, padding=True)
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
@@ -95,8 +99,9 @@ class YOLOXE2EDetector(ObjectDetector):
             results.append(detection)
 
         if self.nms:
-            results = ResultList(non_maximum_suppression(results, self.min_score, self.nms_threshold,
-                                                         self.nms_eta, self.nms_top_k))
+            results = ResultList(
+                non_maximum_suppression(results, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k)
+            )
         return results
 
     def release(self):

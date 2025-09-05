@@ -43,7 +43,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.ir_left_camera: Optional[dai.node.MonoCamera] = None
         self.ir_right_camera: Optional[dai.node.MonoCamera] = None
         self.active_ir_camera: Optional[dai.node.MonoCamera] = None
-        self.ir_sensor_resolution: dai.MonoCameraProperties.SensorResolution = dai.MonoCameraProperties.SensorResolution.THE_720_P
+        self.ir_sensor_resolution: dai.MonoCameraProperties.SensorResolution = (
+            dai.MonoCameraProperties.SensorResolution.THE_720_P
+        )
 
         self.depth_node: Optional[dai.node.StereoDepth] = None
         self.depth_preset_mode: dai.node.StereoDepth.PresetMode = dai.node.StereoDepth.PresetMode.HIGH_DENSITY
@@ -130,14 +132,14 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         super().setup()
 
         if self.use_infrared:
-            self.ir_queue = self.device.getOutputQueue(name=self.ir_stream_name,
-                                                       maxSize=self.queue_max_size,
-                                                       blocking=False)
+            self.ir_queue = self.device.getOutputQueue(
+                name=self.ir_stream_name, maxSize=self.queue_max_size, blocking=False
+            )
 
         if self.enable_depth:
-            self.depth_queue = self.device.getOutputQueue(name=self.depth_stream_name,
-                                                          maxSize=self.queue_max_size,
-                                                          blocking=False)
+            self.depth_queue = self.device.getOutputQueue(
+                name=self.depth_stream_name, maxSize=self.queue_max_size, blocking=False
+            )
 
         self.device.setIrLaserDotProjectorIntensity(self._ir_laser_dot_projector_intensity)
         self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
@@ -251,8 +253,9 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
             self.device.setIrFloodLightIntensity(value)
             self._ir_flood_light_intensity = value
 
-    def pre_process_image(self, image: np.ndarray,
-                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def pre_process_image(
+        self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
+    ) -> Optional[np.ndarray]:
         """
         Pre-processes the input image based on the specified stream type.
 
@@ -291,8 +294,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         :param parser: The argument parser to add parameters to.
         """
         super(OakDInput, OakDInput).add_params(parser)
-        parser.add_argument("--dai-disable-color", action="store_true",
-                            help="Disables the color stream of the OAK-D.")
+        parser.add_argument("--dai-disable-color", action="store_true", help="Disables the color stream of the OAK-D.")
 
     def configure(self, args: Namespace):
         """

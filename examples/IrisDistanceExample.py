@@ -15,21 +15,14 @@ class IrisDistanceApp:
         # define graph
         self.graph = (
             vg.create_graph(name="Iris Distance Calculator Example", input_node=args.input(), handle_signals=True)
-
             # run detection and pass image through for annotation
             .then(vg.custom(self.read_input))
             .apply(
                 image=vg.passthrough(),
-                iris=vg.sequence(vg.MediaPipeFaceMeshEstimator(refine_landmarks=True),
-                                 self.iris_distance_calculator),
+                iris=vg.sequence(vg.MediaPipeFaceMeshEstimator(refine_landmarks=True), self.iris_distance_calculator),
             )
-
             # annotate result
-            .then(
-                vg.ResultAnnotator(),
-                vg.custom(self._annotate_distance),
-                vg.ImagePreview("Preview")
-            )
+            .then(vg.ResultAnnotator(), vg.custom(self._annotate_distance), vg.ImagePreview("Preview"))
             .build()
         )
         self.graph.configure(args)
@@ -60,9 +53,14 @@ class IrisDistanceApp:
 
         point = vg.project_pixel_to_point(head_center_location, iris_result.average_iris_distance(), self.intrinsics)
 
-        cv2.putText(image, f"{iris_result.average_iris_distance():.2f}m"
-                           f" (x={point.x:.2f}, y={point.y:.2f}, z={point.z:.2f})",
-                    (20, 50), cv2.FONT_HERSHEY_DUPLEX, 0.6, (255, 0, 255))
+        cv2.putText(
+            image,
+            f"{iris_result.average_iris_distance():.2f}m (x={point.x:.2f}, y={point.y:.2f}, z={point.z:.2f})",
+            (20, 50),
+            cv2.FONT_HERSHEY_DUPLEX,
+            0.6,
+            (255, 0, 255),
+        )
 
 
 def main():

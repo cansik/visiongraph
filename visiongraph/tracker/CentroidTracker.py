@@ -30,7 +30,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
 
         """
         if not self.tracker:
-            self.tracker = Tracker(max_lost=self.max_lost, tracker_output_format='raw')
+            self.tracker = Tracker(max_lost=self.max_lost, tracker_output_format="raw")
 
     def track(self, detections: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """

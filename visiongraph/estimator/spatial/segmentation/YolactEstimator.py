@@ -20,6 +20,7 @@ class YolactConfig(Enum):
     """
     Enum containing configuration options for the Yolcat estimator.
     """
+
     YolactEdge_MobileNetV2_550 = (RepositoryAsset("yolact_edge_mobilenetv2_550x550.onnx"), COCO_80_LABELS)
 
 

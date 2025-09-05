@@ -14,7 +14,9 @@ def custom(*args):
 
 
 if __name__ == "__main__":
-    graph = vg.create_graph(name="VisionGraph", input_node=vg.VideoCaptureInput(), handle_signals=True) \
-        .then(vg.custom(custom)) \
-        .then(vg.ImagePreview()) \
+    graph = (
+        vg.create_graph(name="VisionGraph", input_node=vg.VideoCaptureInput(), handle_signals=True)
+        .then(vg.custom(custom))
+        .then(vg.ImagePreview())
         .open()
+    )

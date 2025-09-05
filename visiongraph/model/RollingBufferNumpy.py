@@ -13,7 +13,7 @@ class RollingBufferNumpy:
         :param dtype: Data type of the buffer elements (default: np.float32).
         """
         if isinstance(feature_shape, int):
-            feature_shape = feature_shape,
+            feature_shape = (feature_shape,)
 
         self.buffer_size = buffer_size
         self.feature_shape = feature_shape

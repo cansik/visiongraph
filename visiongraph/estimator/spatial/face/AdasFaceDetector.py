@@ -11,6 +11,7 @@ class AdasFaceConfig(Enum):
     """
     Enumerates possible configuration options for the Adas Face detector.
     """
+
     MobileNet_672x384_FP32 = RepositoryAsset.openVino("face-detection-adas-0001")
 
 

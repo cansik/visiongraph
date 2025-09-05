@@ -5,8 +5,8 @@ from pdoc import render, doc, extract
 
 
 def patched_pdoc(
-        *modules: Path | str,
-        output_directory: Path | None = None,
+    *modules: Path | str,
+    output_directory: Path | None = None,
 ) -> str | None:
     """
     Render the documentation for a list of modules.

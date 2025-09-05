@@ -8,5 +8,6 @@ class InputShapeOrder(Enum):
     :param NCHW: The order with channels first and height/width second.
     :param NWHC: The order with channels first, width first and height second.
     """
+
     NCHW = 0
     NWHC = 1

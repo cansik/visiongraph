@@ -110,8 +110,9 @@ class RealSenseInput(BaseDepthCamera):
             self.config.enable_record_to_file(self.output_bag_file)
 
         if self.use_infrared:
-            self.config.enable_stream(rs.stream.infrared, self.infrared_width, self.infrared_height,
-                                      self.infrared_format, int(self.fps))
+            self.config.enable_stream(
+                rs.stream.infrared, self.infrared_width, self.infrared_height, self.infrared_format, int(self.fps)
+            )
             self.align = rs.align(rs.stream.infrared)
         else:
             self.config.enable_stream(rs.stream.color, self.width, self.height, self.color_format, int(self.fps))
@@ -119,8 +120,9 @@ class RealSenseInput(BaseDepthCamera):
 
         if self.enable_depth:
             self.colorizer = rs.colorizer(color_scheme=self.color_scheme.value)
-            self.config.enable_stream(rs.stream.depth, self.depth_width, self.depth_height,
-                                      self.depth_format, int(self.fps))
+            self.config.enable_stream(
+                rs.stream.depth, self.depth_width, self.depth_height, self.depth_format, int(self.fps)
+            )
             [self.depth_filters.append(f()) for f in self._filters_to_enable]
 
         # set options before startup (only for live-camera feed)
@@ -129,6 +131,7 @@ class RealSenseInput(BaseDepthCamera):
             depth_sensor: rs.depth_stereo_sensor = device.first_depth_sensor()
 
             if depth_sensor is not None:
+
                 def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
                     if not depth_sensor.supports(option):
                         logging.warning(f"The option {option} is not supported!")
@@ -141,15 +144,20 @@ class RealSenseInput(BaseDepthCamera):
                     return option_range.max
 
                 try:
-                    self.set_option(rs.option.auto_exposure_limit, sensor=depth_sensor,
-                                    value=get_option_max_or_value(rs.option.auto_exposure_limit,
-                                                                  self.auto_exposure_limit))
+                    self.set_option(
+                        rs.option.auto_exposure_limit,
+                        sensor=depth_sensor,
+                        value=get_option_max_or_value(rs.option.auto_exposure_limit, self.auto_exposure_limit),
+                    )
                 except Exception as ex:
                     logging.error(f"Could not set auto_exposure_limit: {ex}")
 
                 try:
-                    self.set_option(rs.option.auto_gain_limit, sensor=depth_sensor,
-                                    value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit))
+                    self.set_option(
+                        rs.option.auto_gain_limit,
+                        sensor=depth_sensor,
+                        value=get_option_max_or_value(rs.option.auto_gain_limit, self.auto_gain_limit),
+                    )
                 except Exception as ex:
                     logging.error(f"Could not set auto_gain_limit: {ex}")
 
@@ -361,7 +369,7 @@ class RealSenseInput(BaseDepthCamera):
 
         serdev = rs.serializable_device(self.device)
 
-        json_config = str(json_config).replace("'", '\"')
+        json_config = str(json_config).replace("'", '"')
         serdev.load_json(json_config)
 
         logging.info(f"Json config has been loaded {self.json_config_path}")
@@ -383,8 +391,9 @@ class RealSenseInput(BaseDepthCamera):
         serdev = rs.serializable_device(self.device)
         return serdev.serialize_json()
 
-    def get_realsense_intrinsics(self, stream_type: Optional[rs.stream] = None,
-                                 stream_index: int = -1) -> rs.intrinsics:
+    def get_realsense_intrinsics(
+        self, stream_type: Optional[rs.stream] = None, stream_index: int = -1
+    ) -> rs.intrinsics:
         """
         Retrieves the intrinsics of the selected stream type.
 
@@ -436,9 +445,7 @@ class RealSenseInput(BaseDepthCamera):
         :return: The camera matrix as a 3x3 numpy array.
         """
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
-        return np.array([[intrinsics.fx, 0, intrinsics.ppx],
-                         [0, intrinsics.fy, intrinsics.ppy],
-                         [0, 0, 1]])
+        return np.array([[intrinsics.fx, 0, intrinsics.ppx], [0, intrinsics.fy, intrinsics.ppy], [0, 0, 1]])
 
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         """
@@ -451,8 +458,9 @@ class RealSenseInput(BaseDepthCamera):
         intrinsics = self.get_realsense_intrinsics(self._to_rs2_stream_type(stream_type))
         return np.array(intrinsics.coeffs[:4])
 
-    def pre_process_image(self, image: np.ndarray,
-                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def pre_process_image(
+        self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
+    ) -> Optional[np.ndarray]:
         """
         Preprocesses the given image based on the stream type.
 
@@ -493,14 +501,14 @@ class RealSenseInput(BaseDepthCamera):
 
     def get_option(self, option: rs.option, sensor: Optional[rs.sensor] = None) -> float:
         """
-        Retrieves the value of the specified option for the given sensor.
+                Retrieves the value of the specified option for the given sensor.
 
-        :param option: The option to retrieve.
-        :param sensor: The sensor for which to get the option value.
+                :param option: The option to retrieve.
+                :param sensor: The sensor for which to get the option value.
 
-        :return: The value of the option.
+                :return: The value of the option.
 
-:return: 
+        :return:
         """
         if sensor is None:
             sensor = self.image_sensor
@@ -517,13 +525,13 @@ class RealSenseInput(BaseDepthCamera):
 
     def set_option(self, option: rs.option, value: float, sensor: Optional[rs.sensor] = None):
         """
-        Sets the specified option for the given sensor.
+                Sets the specified option for the given sensor.
 
-        :param option: The option to set.
-        :param value: The value to set for the option.
-        :param sensor: The sensor for which to set the option value.
+                :param option: The option to set.
+                :param value: The value to set for the option.
+                :param sensor: The sensor for which to set the option value.
 
-:param Notes: 
+        :param Notes:
         """
         if sensor is None:
             sensor = self.image_sensor
@@ -656,22 +664,27 @@ class RealSenseInput(BaseDepthCamera):
 
         CommonArgs.add_source_argument(parser)
 
-        parser.add_argument("--rs-serial", default=None, type=str,
-                            help="RealSense serial number to choose specific device.")
-        parser.add_argument("--rs-json", default=None, type=str,
-                            help="RealSense json configuration to apply.")
-        parser.add_argument("--rs-play-bag", default=None, type=str,
-                            help="Path to a pre-recorded bag file for playback.")
-        parser.add_argument("--rs-record-bag", default=None, type=str,
-                            help="Path to a bag file to store the current recording.")
-        parser.add_argument("--rs-disable-emitter", action="store_true",
-                            help="Disable RealSense IR emitter.")
-        parser.add_argument("--rs-bag-offline", action="store_true",
-                            help="Disable realtime bag playback.")
+        parser.add_argument(
+            "--rs-serial", default=None, type=str, help="RealSense serial number to choose specific device."
+        )
+        parser.add_argument("--rs-json", default=None, type=str, help="RealSense json configuration to apply.")
+        parser.add_argument(
+            "--rs-play-bag", default=None, type=str, help="Path to a pre-recorded bag file for playback."
+        )
+        parser.add_argument(
+            "--rs-record-bag", default=None, type=str, help="Path to a bag file to store the current recording."
+        )
+        parser.add_argument("--rs-disable-emitter", action="store_true", help="Disable RealSense IR emitter.")
+        parser.add_argument("--rs-bag-offline", action="store_true", help="Disable realtime bag playback.")
         parser.add_argument("--rs-auto-exposure-limit", default=None, type=int, help="Auto exposure limit (ms).")
         parser.add_argument("--rs-auto-gain-limit", default=None, type=int, help="Auto gain limit (16-248).")
-        add_dict_choice_argument(parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter",
-                                 default=None, nargs="+")
-        add_enum_choice_argument(parser, RealSenseColorScheme, "--rs-color-scheme",
-                                 default=RealSenseColorScheme.WhiteToBlack,
-                                 help="Color scheme for depth map")
+        add_dict_choice_argument(
+            parser, RealSenseFilters, "--rs-filter", help="RealSense depth filter", default=None, nargs="+"
+        )
+        add_enum_choice_argument(
+            parser,
+            RealSenseColorScheme,
+            "--rs-color-scheme",
+            default=RealSenseColorScheme.WhiteToBlack,
+            help="Color scheme for depth map",
+        )

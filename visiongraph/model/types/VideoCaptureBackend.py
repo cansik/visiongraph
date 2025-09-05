@@ -58,5 +58,5 @@ VideoCaptureBackend = {
     "aravis": cv2.CAP_ARAVIS,
     "opencv_mjpeg": cv2.CAP_OPENCV_MJPEG,
     "intel_mfx": cv2.CAP_INTEL_MFX,
-    "xine": cv2.CAP_XINE
+    "xine": cv2.CAP_XINE,
 }

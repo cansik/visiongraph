@@ -14,9 +14,9 @@ class ArUcoMarkerDetection(BaseResult):
     Represents an object detected using the ARUCO marker detection algorithm.
     """
 
-    def __init__(self, marker_id: int,
-                 top_left: Vector2D, top_right: Vector2D,
-                 bottom_right: Vector2D, bottom_left: Vector2D):
+    def __init__(
+        self, marker_id: int, top_left: Vector2D, top_right: Vector2D, bottom_right: Vector2D, bottom_left: Vector2D
+    ):
         """
         Initializes the ArUcoMarkerDetection object with marker ID and bounding box coordinates.
 
@@ -33,10 +33,7 @@ class ArUcoMarkerDetection(BaseResult):
         self.bottom_right = bottom_right
         self.bottom_left = bottom_left
 
-    def annotate(self, image: np.ndarray,
-                 color: Sequence[int] = (0, 255, 0),
-                 thickness: int = 1,
-                 **kwargs):
+    def annotate(self, image: np.ndarray, color: Sequence[int] = (0, 255, 0), thickness: int = 1, **kwargs):
         """
         Draws the bounding box and marker on the given image.
 
@@ -46,10 +43,15 @@ class ArUcoMarkerDetection(BaseResult):
         """
         super().annotate(image, **kwargs)
 
-        vertices = np.array([vector_to_array(self.top_left),
-                             vector_to_array(self.top_right),
-                             vector_to_array(self.bottom_right),
-                             vector_to_array(self.bottom_left)], dtype=np.int32).reshape((-1, 1, 2))
+        vertices = np.array(
+            [
+                vector_to_array(self.top_left),
+                vector_to_array(self.top_right),
+                vector_to_array(self.bottom_right),
+                vector_to_array(self.bottom_left),
+            ],
+            dtype=np.int32,
+        ).reshape((-1, 1, 2))
         cv2.polylines(image, [vertices], isClosed=True, color=color, thickness=thickness)
 
         center = self.center
@@ -62,5 +64,6 @@ class ArUcoMarkerDetection(BaseResult):
 
         :return: The center coordinates.
         """
-        return vector.obj(x=(self.top_left.x + self.bottom_right.x) / 2.0,
-                          y=(self.top_left.y + self.bottom_right.y) / 2.0)
+        return vector.obj(
+            x=(self.top_left.x + self.bottom_right.x) / 2.0, y=(self.top_left.y + self.bottom_right.y) / 2.0
+        )

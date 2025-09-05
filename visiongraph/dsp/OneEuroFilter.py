@@ -37,8 +37,15 @@ class OneEuroFilter:
     https://github.com/casiez/OneEuroFilter
     """
 
-    def __init__(self, x0: float, t0: Optional[float] = None, dx0: float = 0.0,
-                 min_cutoff: float = 1.0, beta: float = 0.0, d_cutoff: float = 1.0):
+    def __init__(
+        self,
+        x0: float,
+        t0: Optional[float] = None,
+        dx0: float = 0.0,
+        min_cutoff: float = 1.0,
+        beta: float = 0.0,
+        d_cutoff: float = 1.0,
+    ):
         """
         Initializes the OneEuro filter.
 

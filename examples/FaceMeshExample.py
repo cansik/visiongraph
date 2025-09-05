@@ -12,21 +12,18 @@ def main():
     # define graph
     graph = (
         vg.create_graph(name="FaceMesh Example", input_node=args.input(), handle_signals=True)
-
         # run detection and pass image through for annotation
         .apply(
             image=vg.passthrough(),
-            face_mesh=vg.sequence(vg.MediaPipeFaceMeshEstimator(
-                output_face_blendshapes=True,
-                output_facial_transformation_matrixes=True,
-            )),
+            face_mesh=vg.sequence(
+                vg.MediaPipeFaceMeshEstimator(
+                    output_face_blendshapes=True,
+                    output_facial_transformation_matrixes=True,
+                )
+            ),
         )
-
         # annotate result
-        .then(
-            vg.ResultAnnotator(),
-            vg.ImagePreview("Preview")
-        )
+        .then(vg.ResultAnnotator(), vg.ImagePreview("Preview"))
         .build()
     )
     graph.configure(args)

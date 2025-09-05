@@ -3,8 +3,8 @@ from typing import TypeVar, Callable
 
 from visiongraph.GraphNode import GraphNode
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType')
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType")
 
 
 class CustomNode(GraphNode[InputType, OutputType]):

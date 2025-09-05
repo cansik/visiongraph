@@ -10,6 +10,7 @@ class YOLOv8Config(Enum):
     """
     An enumeration class that defines YOLOv8 model configurations with their corresponding ONNX models and labels.
     """
+
     YOLOv8_N = RepositoryAsset("yolov8n.onnx"), COCO_80_LABELS
     YOLOv8_S = RepositoryAsset("yolov8s.onnx"), COCO_80_LABELS
     YOLOv8_M = RepositoryAsset("yolov8m.onnx"), COCO_80_LABELS

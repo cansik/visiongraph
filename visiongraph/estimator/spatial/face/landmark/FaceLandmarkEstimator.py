@@ -8,7 +8,7 @@ from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 
-OutputType = TypeVar('OutputType', bound=FaceLandmarkResult)
+OutputType = TypeVar("OutputType", bound=FaceLandmarkResult)
 
 
 class FaceLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):

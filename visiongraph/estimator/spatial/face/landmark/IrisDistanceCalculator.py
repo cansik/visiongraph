@@ -71,7 +71,7 @@ class IrisDistanceCalculator(GraphNode[ResultList[BlazeFaceMesh], ResultList[Iri
         iris_landmarks = np.array([[face.landmarks[i].x, face.landmarks[i].y] for i in iris_indices])
         iris_landmarks *= np.array([self.input_width, self.input_height], dtype=float)
 
-        iris_distances = cdist(iris_landmarks, iris_landmarks, metric='euclidean')
+        iris_distances = cdist(iris_landmarks, iris_landmarks, metric="euclidean")
         max_size = float(iris_distances.max())
 
         fx_z = self._calculate_z_distance_in_m(max_size, self.camera_intrinsics.fx)

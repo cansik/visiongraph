@@ -22,6 +22,7 @@ class MaskRCNNConfig(Enum):
     Enumeration of available configurations for the Mask R-CNN model, including
     different architectures and precision options.
     """
+
     # 0002 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0002.html
     ResNet50_1024x768_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16-int8"), COCO_80_LABELS)
     ResNet50_1024x768_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16"), COCO_80_LABELS)
@@ -54,6 +55,7 @@ class _OutputLayerName:
     A class to represent the name and options for an output layer in the
     Mask R-CNN model.
     """
+
     name: str
     options: List[str] = field(default_factory=lambda: [])
 
@@ -67,8 +69,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         instance segmentation estimators.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str],
-                 min_score: float = 0.5, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
         """
         Initializes the MaskRCNNEstimator with the specified model, weights, and labels.
 
@@ -95,15 +96,14 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
             "labels": _OutputLayerName("labels"),
             "classes": _OutputLayerName("classes"),
             "scores": _OutputLayerName("scores"),
-            "masks": _OutputLayerName("masks")
+            "masks": _OutputLayerName("masks"),
         }
 
     def setup(self):
         """
         Sets up the OpenVino engine for inference and configures output layer mappings.
         """
-        self.engine = OpenVinoEngine(self.model, self.weights,
-                                     flip_channels=True, device=self.device)
+        self.engine = OpenVinoEngine(self.model, self.weights, flip_channels=True, device=self.device)
         self.engine.setup()
         _, _, self.height, self.width = self.engine.first_input_shape
 
@@ -151,8 +151,9 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         """
         self.engine.release()
 
-    def _postprocess(self, outputs, scale_x, scale_y, frame_height,
-                     frame_width, input_height, input_width, conf_threshold):
+    def _postprocess(
+        self, outputs, scale_x, scale_y, frame_height, frame_width, input_height, input_width, conf_threshold
+    ):
         """
         Post-processes the model outputs to extract bounding boxes, scores, classes, and masks.
 
@@ -173,7 +174,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         classes_name = self.output_layer_mapping["classes"].name
         masks_name = self.output_layer_mapping["masks"].name
 
-        segmentoly_postprocess = 'raw_masks' in outputs
+        segmentoly_postprocess = "raw_masks" in outputs
         boxes = outputs[boxes_name] if segmentoly_postprocess else outputs[boxes_name][:, :4]
         scores = outputs[scores_name] if segmentoly_postprocess else outputs[boxes_name][:, 4]
         boxes[:, 0::2] /= scale_x
@@ -183,7 +184,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         else:
             classes = outputs[labels_name].astype(np.uint32) + 1
         masks = []
-        masks_name = 'raw_masks' if segmentoly_postprocess else masks_name
+        masks_name = "raw_masks" if segmentoly_postprocess else masks_name
         for box, cls, raw_mask in zip(boxes, classes, outputs[masks_name]):
             raw_cls_mask = raw_mask[cls, ...] if segmentoly_postprocess else raw_mask
             mask = MaskRCNNEstimator._segm_postprocess(box, raw_cls_mask, frame_height, frame_width)
@@ -206,10 +207,10 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
 
         :return: The expanded bounding box.
         """
-        w_half = (box[2] - box[0]) * .5
-        h_half = (box[3] - box[1]) * .5
-        x_c = (box[2] + box[0]) * .5
-        y_c = (box[3] + box[1]) * .5
+        w_half = (box[2] - box[0]) * 0.5
+        h_half = (box[3] - box[1]) * 0.5
+        x_c = (box[2] + box[0]) * 0.5
+        y_c = (box[3] + box[1]) * 0.5
         w_half *= scale
         h_half *= scale
         box_exp = np.zeros(box.shape)
@@ -232,9 +233,10 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         :return: The processed binary mask.
         """
         # Add zero border to prevent upsampling artifacts on segment borders.
-        raw_cls_mask = np.pad(raw_cls_mask, ((1, 1), (1, 1)), 'constant', constant_values=0)
-        extended_box = MaskRCNNEstimator._expand_box(box,
-                                                     raw_cls_mask.shape[0] / (raw_cls_mask.shape[0] - 2.0)).astype(int)
+        raw_cls_mask = np.pad(raw_cls_mask, ((1, 1), (1, 1)), "constant", constant_values=0)
+        extended_box = MaskRCNNEstimator._expand_box(box, raw_cls_mask.shape[0] / (raw_cls_mask.shape[0] - 2.0)).astype(
+            int
+        )
         w, h = np.maximum(extended_box[2:] - extended_box[:2] + 1, 1)
         x0, y0 = np.clip(extended_box[:2], a_min=0, a_max=[im_w, im_h])
         x1, y1 = np.clip(extended_box[2:] + 1, a_min=0, a_max=[im_w, im_h])
@@ -243,8 +245,9 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         mask = raw_cls_mask.astype(np.uint8)
         # Put an object mask in an image mask.
         im_mask = np.zeros((im_h, im_w), dtype=np.uint8)
-        im_mask[y0:y1, x0:x1] = mask[(y0 - extended_box[1]):(y1 - extended_box[1]),
-                                     (x0 - extended_box[0]):(x1 - extended_box[0])]
+        im_mask[y0:y1, x0:x1] = mask[
+            (y0 - extended_box[1]) : (y1 - extended_box[1]), (x0 - extended_box[0]) : (x1 - extended_box[0])
+        ]
         return im_mask
 
     @staticmethod

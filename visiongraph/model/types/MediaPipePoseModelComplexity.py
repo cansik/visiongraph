@@ -11,6 +11,7 @@ class PoseModelComplexity(Enum):
     """
     Enumerates the possible complexities of pose models, from simple (Light) to complex (Heavy).
     """
+
     Light = 0
     Normal = 1
     Heavy = 2

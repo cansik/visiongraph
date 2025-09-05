@@ -8,7 +8,7 @@ from visiongraph.estimator.BaseClassifier import BaseClassifier
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult
 
-OutputType = TypeVar('OutputType', bound=ClassificationResult)
+OutputType = TypeVar("OutputType", bound=ClassificationResult)
 
 
 class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, OutputType], ABC):

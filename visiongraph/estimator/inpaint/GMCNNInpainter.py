@@ -57,8 +57,9 @@ class GMCNNInpainter(BaseInpainter):
         _, binary_mask = cv2.threshold(mask, 1, 1, cv2.THRESH_BINARY)
 
         mask_input_name = self.engine.input_names[1]
-        mask_input, padding_box, image_box = self.engine.pre_process_image(binary_mask, mask_input_name,
-                                                                           flip_channels=False, transpose=False)
+        mask_input, padding_box, image_box = self.engine.pre_process_image(
+            binary_mask, mask_input_name, flip_channels=False, transpose=False
+        )
         inputs = {mask_input_name: mask_input}
 
         outputs = self.engine.process(image, inputs)

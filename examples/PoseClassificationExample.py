@@ -18,8 +18,7 @@ def classify(results: vg.ResultDict):
     classifications = pose_classifier.process(embeddings)
     if len(classifications) > 0:
         cls = classifications[0]
-        cv2.putText(image, f"{cls.class_name} ({cls.score:.2f})",
-                    (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0))
+        cv2.putText(image, f"{cls.class_name} ({cls.score:.2f})", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0))
 
     cv2.imshow("Pose", image)
     key = cv2.waitKey(5) & 0xFF
@@ -27,11 +26,11 @@ def classify(results: vg.ResultDict):
     if key == 27:
         quit(0)
 
-    if chr(key).lower() == 's':
+    if chr(key).lower() == "s":
         print("saving samples")
         pose_classifier.save_data(pose_data_path)
 
-    if chr(key).lower() == 'l':
+    if chr(key).lower() == "l":
         print("loading samples")
         pose_classifier.load_data(pose_data_path)
 
@@ -57,10 +56,10 @@ def main():
 
     pipeline = (
         vg.create_graph(name="Pose Classification", handle_signals=True)
-        .apply(image=vg.passthrough(),
-               embeddings=vg.sequence(vg.MediaPipePoseEstimator(),
-                                      vg.LandmarkEmbedder(vg.embed_pose))
-               )
+        .apply(
+            image=vg.passthrough(),
+            embeddings=vg.sequence(vg.MediaPipePoseEstimator(), vg.LandmarkEmbedder(vg.embed_pose)),
+        )
         .then(vg.custom(classify))
         .build()
     )

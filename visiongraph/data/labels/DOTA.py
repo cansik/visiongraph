@@ -17,5 +17,5 @@ DOTA_v1_0: list[str] = [
     "helicopter",
     "roundabout",
     "soccer ball field",
-    "swimming pool"
+    "swimming pool",
 ]

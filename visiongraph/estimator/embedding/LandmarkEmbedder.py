@@ -12,7 +12,6 @@ T = TypeVar("T", bound=LandmarkDetectionResult)
 
 
 class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResult]]):
-
     def __init__(self, embedding_function: Callable[[T], Optional[np.ndarray]]):
         """
         Initializes the LandmarkEmbedder node with a given embedding function.

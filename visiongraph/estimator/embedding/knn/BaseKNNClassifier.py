@@ -15,9 +15,9 @@ T = TypeVar("T", bound=EmbeddingResult)
 
 
 class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationResult]], ABC):
-    def __init__(self, min_score: float,
-                 store_training_data: bool = True,
-                 data_path: Optional[Union[str, os.PathLike]] = None):
+    def __init__(
+        self, min_score: float, store_training_data: bool = True, data_path: Optional[Union[str, os.PathLike]] = None
+    ):
         """
         Initializes the K-Nearest Neighbors classifier.
 
@@ -99,9 +99,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
 
         :return: List of classification results.
         """
-        results = self.predict_all(np.array(
-            [r.embeddings for r in embedding_results]
-        ))
+        results = self.predict_all(np.array([r.embeddings for r in embedding_results]))
 
         classifications = ResultList()
         for result in results:

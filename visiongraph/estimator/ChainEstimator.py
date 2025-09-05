@@ -8,7 +8,7 @@ from visiongraph import GraphNode
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.BaseResult import BaseResult
 
-OutputType = TypeVar('OutputType', bound=BaseResult)
+OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
 class ChainEstimator(VisionEstimator[OutputType], ABC):

@@ -138,6 +138,10 @@ indent-style = "space"
 
 docstring-code-format = true
 
+exclude = [
+    "visiongraph/vg/__init__.py"
+]
+
 [project.entry-points."distutils.commands"]
 generate_init = "scripts.commands:GenerateInitPy"
 doc = "scripts.commands:GenerateDoc"

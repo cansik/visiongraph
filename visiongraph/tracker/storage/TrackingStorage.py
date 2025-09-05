@@ -7,10 +7,12 @@ K = TypeVar("K")  # The type of the tracking data
 
 
 class TrackingStorage(Generic[T, K]):
-    def __init__(self,
-                 on_create: Callable[[T], K],
-                 on_update: Callable[[T, K], K],
-                 on_remove: Optional[Callable[[K], None]] = None):
+    def __init__(
+        self,
+        on_create: Callable[[T], K],
+        on_update: Callable[[T, K], K],
+        on_remove: Optional[Callable[[K], None]] = None,
+    ):
         """
         :param on_create: Function to create a new track from a detected object.
         :param on_update: Function to update an existing track with a detected object.

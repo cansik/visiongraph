@@ -16,11 +16,15 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
     A class to perform camera calibration using ChArUco boards.
     """
 
-    def __init__(self, columns: int, rows: int,
-                 marker_length_in_m: float = 0.23,
-                 square_length_in_m: float = 0.3,
-                 aruco_config: int = aruco.DICT_4X4_50,
-                 max_samples: int = -1):
+    def __init__(
+        self,
+        columns: int,
+        rows: int,
+        marker_length_in_m: float = 0.23,
+        square_length_in_m: float = 0.3,
+        aruco_config: int = aruco.DICT_4X4_50,
+        max_samples: int = -1,
+    ):
         """
         Initializes the ChArUcoCalibrator with specified parameters.
 
@@ -60,9 +64,9 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
 
         self.aruco_dict = aruco.getPredefinedDictionary(self.aruco_config)
         self.aruco_params = aruco.CharucoParameters()
-        self.board = aruco.CharucoBoard((self.rows, self.columns),
-                                        self.square_length_in_m, self.marker_length_in_m,
-                                        self.aruco_dict)
+        self.board = aruco.CharucoBoard(
+            (self.rows, self.columns), self.square_length_in_m, self.marker_length_in_m, self.aruco_dict
+        )
         self.detector = aruco.CharucoDetector(self.board)
 
     def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
@@ -108,17 +112,24 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         """
         raise Exception("Currently not supported! - Waiting for fix by opencv!")
 
-        (ret, camera_matrix, distortion_coefficients,
-         rotation_vectors, translation_vectors,
-         std_deviations_intrinsics, std_deviations_extrinsics,
-         per_view_errors) = cv2.aruco.calibrateCameraCharucoExtended(
+        (
+            ret,
+            camera_matrix,
+            distortion_coefficients,
+            rotation_vectors,
+            translation_vectors,
+            std_deviations_intrinsics,
+            std_deviations_extrinsics,
+            per_view_errors,
+        ) = cv2.aruco.calibrateCameraCharucoExtended(
             charucoCorners=self.corners,
             charucoIds=self.ids,
             board=self.board,
             imageSize=self.image_size,
             cameraMatrix=None,
             distCoeffs=None,
-            criteria=self.criteria)
+            criteria=self.criteria,
+        )
 
         if ret:
             intrinsics = CameraIntrinsics(camera_matrix, distortion_coefficients.flatten())

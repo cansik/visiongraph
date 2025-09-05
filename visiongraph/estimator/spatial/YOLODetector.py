@@ -16,6 +16,7 @@ class YOLOArchitecture(Enum):
     """
     An enumeration to represent different YOLO architectures.
     """
+
     YOLO = YOLO.__model__
     YOLOv4 = YoloV4.__model__
     YOLOF = YOLOF.__model__
@@ -26,6 +27,7 @@ class YOLOConfig(Enum):
     """
     An enumeration to store different configurations for YOLO models.
     """
+
     YOLOv3_FP32 = (*RepositoryAsset.openVino("yolo-v3-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLO)
     YOLOv3_FP16 = (*RepositoryAsset.openVino("yolo-v3-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLO)
     YOLOv3_Tiny_FP32 = (*RepositoryAsset.openVino("yolo-v3-tiny-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLO)
@@ -48,9 +50,15 @@ class YOLODetector(OpenVinoObjectDetector):
     A class to detect objects using YOLO models with OpenVino.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5,
-                 architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
-                 device: str = "AUTO"):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Asset,
+        labels: List[str],
+        min_score: float = 0.5,
+        architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
+        device: str = "AUTO",
+    ):
         """
         Initializes the YOLO detector with model-specific parameters.
 
@@ -71,14 +79,14 @@ class YOLODetector(OpenVinoObjectDetector):
         :return: The OpenVino model for object detection.
         """
         config = {
-            'resize_type': None,
-            'mean_values': None,
-            'scale_values': None,
-            'reverse_input_channels': True,
-            'path_to_labels': None,
-            'confidence_threshold': self.min_score,
-            'input_size': None,  # The CTPN specific
-            'num_classes': None,  # The NanoDet and NanoDetPlus specific
+            "resize_type": None,
+            "mean_values": None,
+            "scale_values": None,
+            "reverse_input_channels": True,
+            "path_to_labels": None,
+            "confidence_threshold": self.min_score,
+            "input_size": None,  # The CTPN specific
+            "num_classes": None,  # The NanoDet and NanoDetPlus specific
         }
 
         core = openvino.Core()

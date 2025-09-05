@@ -19,22 +19,27 @@ class AzureKinectInput(BaseDepthCamera):
     """
     Azure Kinect DK1 input device based on pyk4a library.
     """
-    _HeightToResolutionMapping = default_value_dict(pyk4a.ColorResolution.RES_720P,
-                                                    {
-                                                        720: pyk4a.ColorResolution.RES_720P,
-                                                        1080: pyk4a.ColorResolution.RES_1080P,
-                                                        1440: pyk4a.ColorResolution.RES_1440P,
-                                                        1536: pyk4a.ColorResolution.RES_1536P,
-                                                        2160: pyk4a.ColorResolution.RES_2160P,
-                                                        3072: pyk4a.ColorResolution.RES_3072P,
-                                                    })
 
-    _FPSToK4AFPSMapping = default_value_dict(pyk4a.FPS.FPS_30,
-                                             {
-                                                 5: pyk4a.FPS.FPS_5,
-                                                 15: pyk4a.FPS.FPS_15,
-                                                 30: pyk4a.FPS.FPS_30,
-                                             })
+    _HeightToResolutionMapping = default_value_dict(
+        pyk4a.ColorResolution.RES_720P,
+        {
+            720: pyk4a.ColorResolution.RES_720P,
+            1080: pyk4a.ColorResolution.RES_1080P,
+            1440: pyk4a.ColorResolution.RES_1440P,
+            1536: pyk4a.ColorResolution.RES_1536P,
+            2160: pyk4a.ColorResolution.RES_2160P,
+            3072: pyk4a.ColorResolution.RES_3072P,
+        },
+    )
+
+    _FPSToK4AFPSMapping = default_value_dict(
+        pyk4a.FPS.FPS_30,
+        {
+            5: pyk4a.FPS.FPS_5,
+            15: pyk4a.FPS.FPS_15,
+            30: pyk4a.FPS.FPS_30,
+        },
+    )
 
     def __init__(self, device_id: int = 0):
         """
@@ -255,8 +260,9 @@ class AzureKinectInput(BaseDepthCamera):
 
         :return: The colorized depth map.
         """
-        return self._colorize(self.depth_buffer, (self.depth_min_clipping, self.depth_max_clipping),
-                              self.depth_color_map)
+        return self._colorize(
+            self.depth_buffer, (self.depth_min_clipping, self.depth_max_clipping), self.depth_color_map
+        )
 
     @property
     def depth_buffer(self) -> np.ndarray:
@@ -319,37 +325,63 @@ class AzureKinectInput(BaseDepthCamera):
         super(AzureKinectInput, AzureKinectInput).add_params(parser)
         CommonArgs.add_source_argument(parser)
 
-        parser.add_argument("--k4a-align-to-color", action="store_true",
-                            help="Align azure frames to color frame.")
-        parser.add_argument("--k4a-align-to-depth", action="store_true",
-                            help="Align azure frames to depth frame.")
+        parser.add_argument("--k4a-align-to-color", action="store_true", help="Align azure frames to color frame.")
+        parser.add_argument("--k4a-align-to-depth", action="store_true", help="Align azure frames to depth frame.")
         parser.add_argument("--k4a-device", type=int, default=0, help="Azure device id.")
 
-        parser.add_argument("--k4a-depth-clipping", default=[0, 5000], type=int, nargs=2,
-                            metavar=("min", "max"), help="Depth input clipping.")
-        parser.add_argument("--k4a-ir-clipping", default=[0, 5000], type=int, nargs=2,
-                            metavar=("min", "max"), help="Infrared input clipping.")
+        parser.add_argument(
+            "--k4a-depth-clipping",
+            default=[0, 5000],
+            type=int,
+            nargs=2,
+            metavar=("min", "max"),
+            help="Depth input clipping.",
+        )
+        parser.add_argument(
+            "--k4a-ir-clipping",
+            default=[0, 5000],
+            type=int,
+            nargs=2,
+            metavar=("min", "max"),
+            help="Infrared input clipping.",
+        )
 
-        parser.add_argument("--k4a-play-mkv", type=str, default=None,
-                            help="Path to a pre-recorded bag file for playback.")
-        parser.add_argument("--k4a-record-mkv", type=str, default=None,
-                            help="Path to a mkv file to store the current recording.")
+        parser.add_argument(
+            "--k4a-play-mkv", type=str, default=None, help="Path to a pre-recorded bag file for playback."
+        )
+        parser.add_argument(
+            "--k4a-record-mkv", type=str, default=None, help="Path to a mkv file to store the current recording."
+        )
 
-        add_enum_choice_argument(parser, pyk4a.DepthMode, "--k4a-depth-mode", default=pyk4a.DepthMode.NFOV_UNBINNED,
-                                 help="Azure depth mode")
-        parser.add_argument("--k4a-passive-ir", action="store_true",
-                            help="Use passive IR input.")
-        add_enum_choice_argument(parser, pyk4a.ColorResolution, "--k4a-color-resolution",
-                                 default=pyk4a.ColorResolution.RES_720P,
-                                 help="Azure color resolution (overwrites input-size)")
-        add_enum_choice_argument(parser, pyk4a.ImageFormat, "--k4a-color-format",
-                                 default=pyk4a.ImageFormat.COLOR_BGRA32,
-                                 help="Azure color image format")
+        add_enum_choice_argument(
+            parser, pyk4a.DepthMode, "--k4a-depth-mode", default=pyk4a.DepthMode.NFOV_UNBINNED, help="Azure depth mode"
+        )
+        parser.add_argument("--k4a-passive-ir", action="store_true", help="Use passive IR input.")
+        add_enum_choice_argument(
+            parser,
+            pyk4a.ColorResolution,
+            "--k4a-color-resolution",
+            default=pyk4a.ColorResolution.RES_720P,
+            help="Azure color resolution (overwrites input-size)",
+        )
+        add_enum_choice_argument(
+            parser,
+            pyk4a.ImageFormat,
+            "--k4a-color-format",
+            default=pyk4a.ImageFormat.COLOR_BGRA32,
+            help="Azure color image format",
+        )
 
-        add_enum_choice_argument(parser, pyk4a.WiredSyncMode, "--k4a-wired-sync-mode", default=None,
-                                 help="Synchronization mode when connecting two or more devices together")
-        parser.add_argument("--k4a-subordinate-delay-off-master-usec", type=int, default=0,
-                            help="The external synchronization timing.")
+        add_enum_choice_argument(
+            parser,
+            pyk4a.WiredSyncMode,
+            "--k4a-wired-sync-mode",
+            default=None,
+            help="Synchronization mode when connecting two or more devices together",
+        )
+        parser.add_argument(
+            "--k4a-subordinate-delay-off-master-usec", type=int, default=0, help="The external synchronization timing."
+        )
 
     @property
     def gain(self) -> int:
@@ -484,8 +516,9 @@ class AzureKinectInput(BaseDepthCamera):
         calibration = self.playback.calibration if self.is_playback else self.device.calibration
         return calibration.get_distortion_coefficients(self._to_k4a_calibration_type(stream_type))
 
-    def pre_process_image(self, image: np.ndarray,
-                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def pre_process_image(
+        self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
+    ) -> Optional[np.ndarray]:
         """
         Pre-processes the input image based on the stream type.
 
@@ -562,8 +595,9 @@ class AzureKinectInput(BaseDepthCamera):
         color = self._convert_to_bgra_if_required(self._playback.configuration["color_format"], self.capture.color)
         color = cv2.cvtColor(color, cv2.COLOR_RGB2RGBA)
         depth = self.capture.depth
-        transformed = pyk4a.color_image_to_depth_camera(color, depth,
-                                                        self._playback.calibration, self._playback.thread_safe)
+        transformed = pyk4a.color_image_to_depth_camera(
+            color, depth, self._playback.calibration, self._playback.thread_safe
+        )
         transformed = transformed[:, :, :3]
         return transformed
 

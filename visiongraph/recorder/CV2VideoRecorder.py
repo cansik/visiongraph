@@ -66,5 +66,5 @@ class CV2VideoRecorder(BaseFrameRecorder):
 
         Creates a new video writer with the specified fourcc, fps, and frame size.
         """
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fourcc = cv2.VideoWriter_fourcc(*"mp4v")
         self._writer = cv2.VideoWriter(self.output_path, fourcc, self.fps, (self.width, self.height))

@@ -52,9 +52,9 @@ class DepthMap(DepthBuffer, ImageResult):
         self.output = cv2.applyColorMap(norm_buffer, colormap=color_map)
         return self.output
 
-    def normalize_buffer(self, bit_depth: int = 8,
-                         depth_min: Optional[float] = None,
-                         depth_max: Optional[float] = None) -> np.ndarray:
+    def normalize_buffer(
+        self, bit_depth: int = 8, depth_min: Optional[float] = None, depth_max: Optional[float] = None
+    ) -> np.ndarray:
         """
         Normalizes the depth buffer values to a specified range.
 

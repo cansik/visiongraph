@@ -18,6 +18,7 @@ class VivaVADConfig(Enum):
     """
     Configuration options for the VivaVAD model.
     """
+
     I_TCN_148_10_2 = (RepositoryAsset("viva-10-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 10)
     I_TCN_148_15_2 = (RepositoryAsset("viva-15-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 15)
     I_TCN_148_30_1 = (RepositoryAsset("viva-30-1-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 30)
@@ -29,11 +30,14 @@ class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
     to determine speaking activity.
     """
 
-    def __init__(self, *assets: Asset,
-                 landmark_indices: Sequence[int] = BlazeFaceMesh.FEATURES_148,
-                 sequence_length: int = 15,
-                 min_score: float = 0.75,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(
+        self,
+        *assets: Asset,
+        landmark_indices: Sequence[int] = BlazeFaceMesh.FEATURES_148,
+        sequence_length: int = 15,
+        min_score: float = 0.75,
+        engine: InferenceEngine = InferenceEngine.ONNX,
+    ):
         """
         Initializes the VivaVAD classifier.
 
@@ -80,8 +84,9 @@ class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
             scores = softmax(logits)
             predicted_class = np.argmax(logits)
 
-            results.append(VivaVADResult(predicted_class, self.labels[predicted_class],
-                                         float(scores[predicted_class]), logits))
+            results.append(
+                VivaVADResult(predicted_class, self.labels[predicted_class], float(scores[predicted_class]), logits)
+            )
 
         return results
 
@@ -92,8 +97,9 @@ class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
         self.engine.release()
 
     @staticmethod
-    def create(config: VivaVADConfig = VivaVADConfig.I_TCN_148_10_2,
-               engine: InferenceEngine = InferenceEngine.ONNX) -> "VivaVAD":
+    def create(
+        config: VivaVADConfig = VivaVADConfig.I_TCN_148_10_2, engine: InferenceEngine = InferenceEngine.ONNX
+    ) -> "VivaVAD":
         """
         Creates a VivaVAD classifier with the specified configuration and engine.
 
@@ -103,8 +109,7 @@ class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
         :return: An instance of the VivaVAD classifier.
         """
         model, landmark_indices, sequence_length = config.value
-        return VivaVAD(model, landmark_indices=landmark_indices,
-                       sequence_length=sequence_length, engine=engine)
+        return VivaVAD(model, landmark_indices=landmark_indices, sequence_length=sequence_length, engine=engine)
 
     def configure(self, args: Namespace):
         """

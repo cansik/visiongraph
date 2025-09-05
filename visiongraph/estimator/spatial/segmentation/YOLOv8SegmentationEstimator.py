@@ -22,6 +22,7 @@ class YOLOv8SegmentationConfig(Enum):
     """
     Configuration options for YOLOv8 segmentation models.
     """
+
     YOLOv8_SEG_N = RepositoryAsset("yolov8n-seg.onnx"), COCO_80_LABELS
     YOLOv8_SEG_S = RepositoryAsset("yolov8s-seg.onnx"), COCO_80_LABELS
     YOLOv8_SEG_M = RepositoryAsset("yolov8m-seg.onnx"), COCO_80_LABELS
@@ -35,10 +36,19 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
     Inherits from UltralyticsYOLODetector and InstanceSegmentationEstimator.
     """
 
-    def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3, nms: bool = True,
-                 nms_threshold: float = 0.5, nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
-                 engine: InferenceEngine = InferenceEngine.ONNX,
-                 allowed_classes: Optional[Set[int]] = None, mask_threshold: float = 0.5):
+    def __init__(
+        self,
+        *assets: Asset,
+        labels: List[str],
+        min_score: float = 0.3,
+        nms: bool = True,
+        nms_threshold: float = 0.5,
+        nms_eta: Optional[float] = None,
+        nms_top_k: Optional[int] = None,
+        engine: InferenceEngine = InferenceEngine.ONNX,
+        allowed_classes: Optional[Set[int]] = None,
+        mask_threshold: float = 0.5,
+    ):
         """
         Initializes the YOLOv8SegmentationEstimator.
 
@@ -53,8 +63,16 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         :param allowed_classes: Set of allowed class IDs. Defaults to None.
         :param mask_threshold: Threshold for mask predictions. Defaults to 0.5.
         """
-        super().__init__(*assets, labels=labels, min_score=min_score, nms=nms, nms_threshold=nms_threshold,
-                         nms_eta=nms_eta, nms_top_k=nms_top_k, engine=engine)
+        super().__init__(
+            *assets,
+            labels=labels,
+            min_score=min_score,
+            nms=nms,
+            nms_threshold=nms_threshold,
+            nms_eta=nms_eta,
+            nms_top_k=nms_top_k,
+            engine=engine,
+        )
 
         self.allowed_classes: Optional[Set[int]] = allowed_classes
         self.mask_threshold = mask_threshold
@@ -70,7 +88,7 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         """
         predictions = predictions.T
 
-        scores = np.max(predictions[:, 4:4 + len(self.labels)], axis=1)
+        scores = np.max(predictions[:, 4 : 4 + len(self.labels)], axis=1)
         valid_indices = scores > self.min_score
         predictions = predictions[valid_indices, :]
         return predictions, scores[valid_indices]
@@ -99,8 +117,8 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         mask_output: np.ndarray = np.squeeze(mask_output)
 
         boxes = predictions[:, :4]  # cxcywh
-        class_ids = np.argmax(predictions[:, 4:4 + len(self.labels)], axis=1)
-        mask_predictions = predictions[:, 4 + len(self.labels):]
+        class_ids = np.argmax(predictions[:, 4 : 4 + len(self.labels)], axis=1)
+        mask_predictions = predictions[:, 4 + len(self.labels) :]
 
         # prepare masks
         num_mask, mask_height, mask_width = mask_output.shape  # CHW
@@ -115,7 +133,6 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
 
         results = ResultList()
         for box, score, class_id, mask in zip(boxes, scores, class_ids, masks):
-
             # filter classes if necessary
             if self.allowed_classes is not None:
                 if class_id not in self.allowed_classes:
@@ -166,7 +183,8 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
 
     @staticmethod
     def create(
-            config: YOLOv8SegmentationConfig = YOLOv8SegmentationConfig.YOLOv8_SEG_S) -> "YOLOv8SegmentationEstimator":
+        config: YOLOv8SegmentationConfig = YOLOv8SegmentationConfig.YOLOv8_SEG_S,
+    ) -> "YOLOv8SegmentationEstimator":
         """
         Creates an instance of YOLOv8SegmentationEstimator using the specified configuration.
 

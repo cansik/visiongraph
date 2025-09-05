@@ -12,7 +12,6 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 class DeblurExample(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input

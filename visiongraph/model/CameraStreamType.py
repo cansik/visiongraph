@@ -11,6 +11,6 @@ class CameraStreamType(Enum):
         - `Infrared`: An infrared stream type.
     """
 
-    Color = 0,
-    Depth = 1,
+    Color = (0,)
+    Depth = (1,)
     Infrared = 2

@@ -19,6 +19,7 @@ class UltralyticsPoseConfig(Enum):
     """
     Configuration options for the Ultralytics pose estimation models.
     """
+
     YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), InferenceEngine.ONNX, 17
     YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), InferenceEngine.ONNX, 17
     YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx"), InferenceEngine.ONNX, 17
@@ -42,10 +43,17 @@ class UltralyticsPoseEstimator(PoseEstimator):
         PoseEstimator: Base class for pose estimation algorithms.
     """
 
-    def __init__(self, *assets: Asset, num_keypoints: int,
-                 min_score: float = 0.7, nms: bool = True, nms_threshold: float = 0.5,
-                 nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
-                 engine: InferenceEngine = InferenceEngine.OpenVINO2):
+    def __init__(
+        self,
+        *assets: Asset,
+        num_keypoints: int,
+        min_score: float = 0.7,
+        nms: bool = True,
+        nms_threshold: float = 0.5,
+        nms_eta: Optional[float] = None,
+        nms_top_k: Optional[int] = None,
+        engine: InferenceEngine = InferenceEngine.OpenVINO2,
+    ):
         """
         Initializes the UltralyticsPoseEstimator with the given parameters.
 
@@ -67,10 +75,7 @@ class UltralyticsPoseEstimator(PoseEstimator):
 
         self.num_keypoints = num_keypoints
 
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    scale=255.0,
-                                                    padding=True)
+        self.engine = InferenceEngineFactory.create(engine, assets, flip_channels=True, scale=255.0, padding=True)
         # set padding color
         self.engine.padding_color = (114, 114, 114)
 
@@ -108,8 +113,9 @@ class UltralyticsPoseEstimator(PoseEstimator):
             x1, y1, bw, bh, score = raw_pose[:5]
             raw_key_points = raw_pose[5:].reshape((self.num_keypoints, 3))
 
-            box = BoundingBox2D(x1 / tensor_size.width, y1 / tensor_size.height,
-                                bw / tensor_size.width, bh / tensor_size.height)
+            box = BoundingBox2D(
+                x1 / tensor_size.width, y1 / tensor_size.height, bw / tensor_size.width, bh / tensor_size.height
+            )
 
             key_points: List[Tuple[float, float, float, float]] = []
             for kp in raw_key_points:
@@ -120,8 +126,9 @@ class UltralyticsPoseEstimator(PoseEstimator):
             poses.append(pose)
 
         if self.nms:
-            poses = ResultList(non_maximum_suppression(poses, self.min_score, self.nms_threshold,
-                                                       self.nms_eta, self.nms_top_k))
+            poses = ResultList(
+                non_maximum_suppression(poses, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k)
+            )
 
         return poses
 

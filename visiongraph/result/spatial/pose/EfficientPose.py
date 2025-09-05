@@ -5,10 +5,25 @@ import vector
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util import VectorUtils
 
-EFFICIENT_POSE_PAIRS = frozenset([
-    (0, 1), (1, 5), (5, 2), (5, 6), (5, 9), (2, 3), (3, 4), (6, 7), (7, 8), (9, 10),
-    (9, 13), (10, 11), (11, 12), (13, 14), (14, 15)
-])
+EFFICIENT_POSE_PAIRS = frozenset(
+    [
+        (0, 1),
+        (1, 5),
+        (5, 2),
+        (5, 6),
+        (5, 9),
+        (2, 3),
+        (3, 4),
+        (6, 7),
+        (7, 8),
+        (9, 10),
+        (9, 13),
+        (10, 11),
+        (11, 12),
+        (13, 14),
+        (14, 15),
+    ]
+)
 """
 A set of efficient pairs of landmark indices for pose connections.
 """

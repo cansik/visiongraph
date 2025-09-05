@@ -17,6 +17,7 @@ class HandModelComplexity(Enum):
     """
     Enum to represent the complexity of the hand model.
     """
+
     Light = 0
     Normal = 1
 
@@ -29,11 +30,14 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
     A class to estimate hands using MediaPipe hand tracking.
     """
 
-    def __init__(self, complexity: HandModelComplexity = HandModelComplexity.Normal,
-                 min_score: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
-                 static_image_mode: bool = False,
-                 max_num_hands: int = 2):
+    def __init__(
+        self,
+        complexity: HandModelComplexity = HandModelComplexity.Normal,
+        min_score: float = 0.5,
+        min_tracking_confidence: float = 0.5,
+        static_image_mode: bool = False,
+        max_num_hands: int = 2,
+    ):
         """
         Initializes the MediaPipe hand estimator.
 
@@ -55,11 +59,13 @@ class MediaPipeHandEstimator(HandLandmarkEstimator[BlazeHand]):
         """
         Initializes the MediaPipe hand detector.
         """
-        self.detector = _mp_hands.Hands(static_image_mode=self.static_image_mode,
-                                        model_complexity=self.complexity.value,
-                                        min_detection_confidence=self.min_score,
-                                        min_tracking_confidence=self.min_tracking_confidence,
-                                        max_num_hands=self.max_num_hands)
+        self.detector = _mp_hands.Hands(
+            static_image_mode=self.static_image_mode,
+            model_complexity=self.complexity.value,
+            min_detection_confidence=self.min_score,
+            min_tracking_confidence=self.min_tracking_confidence,
+            max_num_hands=self.max_num_hands,
+        )
 
     def process(self, image: np.ndarray, **kwargs) -> ResultList[BlazeHand]:
         """

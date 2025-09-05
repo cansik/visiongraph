@@ -10,19 +10,26 @@ h, w = image.shape[:2]
 
 input, padding_box = ImageUtils.resize_and_pad(image, (iw, ih))
 
-result = vg.LandmarkDetectionResult(0, "face", 1.0, vector.array(
-    {
-        "x": [114 / iw],
-        "y": [43 / ih],
-        "z": [0.0],
-        "t": [1.0],
-    }
-), vg.BoundingBox2D(105 / iw, 31 / ih, 18 / iw, 20 / ih))
+result = vg.LandmarkDetectionResult(
+    0,
+    "face",
+    1.0,
+    vector.array(
+        {
+            "x": [114 / iw],
+            "y": [43 / ih],
+            "z": [0.0],
+            "t": [1.0],
+        }
+    ),
+    vg.BoundingBox2D(105 / iw, 31 / ih, 18 / iw, 20 / ih),
+)
 result.tracking_id = 2
 
 output = input.copy()
-result.annotate(input, show_bounding_box=True, landmark_colors=[(255, 0, 0)],
-                marker_type=cv2.MARKER_CROSS, marker_size=5)
+result.annotate(
+    input, show_bounding_box=True, landmark_colors=[(255, 0, 0)], marker_type=cv2.MARKER_CROSS, marker_size=5
+)
 cv2.imshow("Input", input)
 
 result.map_coordinates((iw, ih), (w, h), src_roi=padding_box)

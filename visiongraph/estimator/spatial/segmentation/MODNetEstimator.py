@@ -31,19 +31,15 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
     :param engine: The inference engine to be used. Default is ONNX.
     """
 
-    def __init__(self, *assets: Asset,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(self, *assets: Asset, engine: InferenceEngine = InferenceEngine.ONNX):
         super().__init__(0.5)
 
         if len(assets) == 0:
             assets = [ModNetConfig.ModNetBasic]
 
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    mean=127.0,
-                                                    scale=127.0,
-                                                    transpose=True,
-                                                    padding=False)
+        self.engine = InferenceEngineFactory.create(
+            engine, assets, flip_channels=True, mean=127.0, scale=127.0, transpose=True, padding=False
+        )
 
         self.reference_size: int = 512
         self.mask_threshold: Optional[int] = 127

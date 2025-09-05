@@ -47,8 +47,7 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         probability = softmax(np.squeeze(output[self.engine.output_names[0]]))
         best_index = int(np.argmax(probability))
 
-        return EyeOpenClosedResult(best_index, self.labels[best_index],
-                                   float(probability[best_index]), probability)
+        return EyeOpenClosedResult(best_index, self.labels[best_index], float(probability[best_index]), probability)
 
     def _transform_result(self, result: HeadPoseResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float):
         """

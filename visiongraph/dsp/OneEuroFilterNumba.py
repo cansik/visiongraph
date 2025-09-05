@@ -42,8 +42,16 @@ def _exponential_smoothing(a: float, x: np.ndarray, x_prev: np.ndarray) -> np.nd
 
 
 @njit()
-def _apply_filter(x: np.ndarray, t: float, x_prev: np.ndarray, t_prev: float, dx_prev: np.ndarray,
-                  min_cutoff: float, beta: float, d_cutoff: float) -> (np.ndarray, np.ndarray, np.ndarray, float):
+def _apply_filter(
+    x: np.ndarray,
+    t: float,
+    x_prev: np.ndarray,
+    t_prev: float,
+    dx_prev: np.ndarray,
+    min_cutoff: float,
+    beta: float,
+    d_cutoff: float,
+) -> (np.ndarray, np.ndarray, np.ndarray, float):
     """
     Computes the filtered signal using the OneEuro filter algorithm.
 
@@ -97,8 +105,9 @@ class OneEuroFilterNumba(OneEuroFilterNumpy):
         if t is None:
             t = time()
 
-        x_hat, x_prev, dx_prev, t_prev = _apply_filter(x, t, self.x_prev, self.t_prev, self.dx_prev,
-                                                       self.min_cutoff, self.beta, self.d_cutoff)
+        x_hat, x_prev, dx_prev, t_prev = _apply_filter(
+            x, t, self.x_prev, self.t_prev, self.dx_prev, self.min_cutoff, self.beta, self.d_cutoff
+        )
 
         self.x_prev = x_prev
         self.dx_prev = dx_prev

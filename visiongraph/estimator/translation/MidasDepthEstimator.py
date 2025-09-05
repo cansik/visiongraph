@@ -41,9 +41,10 @@ class MidasDepthEstimator(DepthEstimator):
         self.transform = self.compose2(resize_image, PrepareForNet())
 
     def setup(self):
-        self.model = rt.InferenceSession(self.model_asset.path, providers=["CUDAExecutionProvider",
-                                                                           "OpenVINOExecutionProvider",
-                                                                           "CPUExecutionProvider"])
+        self.model = rt.InferenceSession(
+            self.model_asset.path,
+            providers=["CUDAExecutionProvider", "OpenVINOExecutionProvider", "CPUExecutionProvider"],
+        )
         self.input_name = self.model.get_inputs()[0].name
         self.output_name = self.model.get_outputs()[0].name
 
@@ -53,9 +54,10 @@ class MidasDepthEstimator(DepthEstimator):
         img_input = self.transform({"image": normalized_image})["image"]
 
         # compute
-        output = self.model.run([self.output_name],
-                                {self.input_name: img_input.reshape(1, 3, self.net_size, self.net_size).astype(
-                                    np.float32)})[0]
+        output = self.model.run(
+            [self.output_name],
+            {self.input_name: img_input.reshape(1, 3, self.net_size, self.net_size).astype(np.float32)},
+        )[0]
 
         prediction = np.array(output).reshape(self.net_size, self.net_size)
         depth = cv2.resize(prediction, (image.shape[1], image.shape[0]), interpolation=cv2.INTER_CUBIC)

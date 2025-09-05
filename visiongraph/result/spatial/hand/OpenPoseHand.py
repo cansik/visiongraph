@@ -9,4 +9,5 @@ class OpenPoseHand(BlazeHand):
     """
     An OpenPose-specific implementation of the BlazeHand class.
     """
+
     pass

@@ -3,8 +3,8 @@ from typing import TypeVar
 
 from visiongraph.GraphNode import GraphNode
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType')
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType")
 
 
 class PassThroughNode(GraphNode[InputType, OutputType]):

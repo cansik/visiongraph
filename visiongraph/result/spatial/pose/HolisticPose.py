@@ -14,9 +14,9 @@ class HolisticPose(BlazePose):
     landmarks, facial mesh, and hand landmarks.
     """
 
-    def __init__(self, pose_score: float,
-                 pose_landmarks: vector.VectorNumpy4D,
-                 segmentation_mask: Optional[np.ndarray] = None):
+    def __init__(
+        self, pose_score: float, pose_landmarks: vector.VectorNumpy4D, segmentation_mask: Optional[np.ndarray] = None
+    ):
         """
         Initializes a HolisticPose object with specified score, landmarks, and optional segmentation mask.
 
@@ -32,10 +32,18 @@ class HolisticPose(BlazePose):
 
         self.segmentation_mask: Optional[np.ndarray] = segmentation_mask
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None,
-                 show_bounding_box: bool = False, min_score: float = 0, use_class_color: bool = True,
-                 pose_only: bool = False, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        show_bounding_box: bool = False,
+        min_score: float = 0,
+        use_class_color: bool = True,
+        pose_only: bool = False,
+        **kwargs,
+    ):
         """
         Annotates the given image with the pose, hand, and face information.
 

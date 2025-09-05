@@ -7,9 +7,12 @@ def add_logging_parameter(parser):
 
     :param parser: The argument parser to which the logging level argument will be added.
     """
-    parser.add_argument('--loglevel', default='warning',
-                        choices=["critical", "error", "warning", "info", "debug"],
-                        help='Provide logging level. Example --loglevel debug, default=warning')
+    parser.add_argument(
+        "--loglevel",
+        default="warning",
+        choices=["critical", "error", "warning", "info", "debug"],
+        help="Provide logging level. Example --loglevel debug, default=warning",
+    )
 
 
 def setup_logging(loglevel: str):
@@ -18,6 +21,9 @@ def setup_logging(loglevel: str):
 
     :param loglevel: The logging level to set, must be one of 'critical', 'error', 'warning', 'info', or 'debug'.
     """
-    logging.basicConfig(level=loglevel.upper(),
-                        format="%(levelname)s - %(asctime)s.%(msecs)03d - %(module)s - %(message)s",
-                        datefmt="%Y-%m-%d %H:%M:%S", force=True)
+    logging.basicConfig(
+        level=loglevel.upper(),
+        format="%(levelname)s - %(asctime)s.%(msecs)03d - %(module)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S",
+        force=True,
+    )

@@ -6,7 +6,6 @@ from visiongraph import vg
 
 
 class FaceCascadeRegressionEstimationTests(unittest.TestCase):
-
     def setUp(self) -> None:
         self.network = vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create())
         self.network.setup()
@@ -35,5 +34,5 @@ class FaceCascadeRegressionEstimationTests(unittest.TestCase):
         self._test_model(vg.FERPlusEmotionClassifier())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

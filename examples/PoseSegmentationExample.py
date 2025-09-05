@@ -12,7 +12,6 @@ from visiongraph.util.TimeUtils import FPSTracer
 
 
 class PoseSegmentationExample(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
@@ -35,8 +34,16 @@ class PoseSegmentationExample(BaseGraph):
             result.annotate(frame)
 
         self.fps_tracer.update()
-        cv2.putText(frame, "FPS: %.0f" % self.fps_tracer.smooth_fps,
-                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(
+            frame,
+            "FPS: %.0f" % self.fps_tracer.smooth_fps,
+            (7, 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.0,
+            (0, 0, 0),
+            2,
+            cv2.LINE_AA,
+        )
 
         cv2.imshow("Pose Estimator", frame)
         if cv2.waitKey(15) & 0xFF == 27:

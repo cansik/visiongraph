@@ -7,7 +7,6 @@ from visiongraph import vg
 
 
 class TestInferenceEngine(unittest.TestCase):
-
     @staticmethod
     def _engine_test(engine_type: vg.InferenceEngine, test_method: Optional[Callable[[vg.BaseVisionEngine], None]]):
         asset = vg.KAPAOPoseConfig.KAPAO_N_COCO_640.value[0]
@@ -61,5 +60,5 @@ class TestInferenceEngine(unittest.TestCase):
         assert device
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

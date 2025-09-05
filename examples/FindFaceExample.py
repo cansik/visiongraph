@@ -24,7 +24,7 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 def get_images_in_path(path: str) -> [str]:
-    return get_files_in_path(path, ['*.jpg', '*.jpeg', '*.png', '*.bmp', '*.gif'])
+    return get_files_in_path(path, ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.gif"])
 
 
 def get_files_in_path(path: str, extensions: [str] = ["*.*"]) -> [str]:
@@ -38,11 +38,14 @@ class Target:
     auto_tracked: bool
     overlap: float
 
-    def __init__(self, name: str,
-                 image: Optional[np.ndarray] = None,
-                 embeddings: Optional[np.ndarray] = None,
-                 auto_tracked: bool = False,
-                 overlap: float = 10000.0):
+    def __init__(
+        self,
+        name: str,
+        image: Optional[np.ndarray] = None,
+        embeddings: Optional[np.ndarray] = None,
+        auto_tracked: bool = False,
+        overlap: float = 10000.0,
+    ):
         self.name = name
         self.image = image
         self.embeddings = embeddings
@@ -51,13 +54,11 @@ class Target:
 
 
 class FindFaceExample(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
 
         self.input = input
-        self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
-                                               landmarks=RegressionLandmarkEstimator())
+        self.network = SpatialCascadeEstimator(AdasFaceDetector.create(), landmarks=RegressionLandmarkEstimator())
         self.recognition_net = FaceReidentificationEstimator.create()
         self.add_nodes(self.input, self.network, self.recognition_net)
 
@@ -145,8 +146,12 @@ class FindFaceExample(BaseGraph):
 
             if self.add_unknown and not has_been_recognized:
                 self.targets.append(
-                    Target(f"Face{self.unique_id}", embeddings=result_embeddings[i],
-                           auto_tracked=True, overlap=recognition_result.landmark_overlap)
+                    Target(
+                        f"Face{self.unique_id}",
+                        embeddings=result_embeddings[i],
+                        auto_tracked=True,
+                        overlap=recognition_result.landmark_overlap,
+                    )
                 )
                 self.unique_id += 1
 

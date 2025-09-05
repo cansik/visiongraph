@@ -28,9 +28,16 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
     :param device: The device for inference. Defaults to "AUTO".
     """
 
-    def __init__(self, model: Asset, weights: Asset,
-                 target_size: Optional[int] = None, aspect_ratio: float = 16 / 9, min_score: float = 0.5,
-                 auto_adjust_aspect_ratio: bool = True, device: str = "AUTO"):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Asset,
+        target_size: Optional[int] = None,
+        aspect_ratio: float = 16 / 9,
+        min_score: float = 0.5,
+        auto_adjust_aspect_ratio: bool = True,
+        device: str = "AUTO",
+    ):
         super().__init__(min_score)
         self.model = model
         self.weights = weights

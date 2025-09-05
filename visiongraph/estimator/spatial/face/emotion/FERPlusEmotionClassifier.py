@@ -17,8 +17,9 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
     Provides an implementation of the Face Emotion Estimator using FER+ models.
     """
 
-    def __init__(self, model: Asset = RepositoryAsset("emotion-ferplus-8.onnx"),
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(
+        self, model: Asset = RepositoryAsset("emotion-ferplus-8.onnx"), engine: InferenceEngine = InferenceEngine.ONNX
+    ):
         """
         Initializes the FERPlusEmotionClassifier object.
 
@@ -28,11 +29,9 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         super().__init__(0.5)
 
         self.model = model
-        self.engine = InferenceEngineFactory.create(engine, [model],
-                                                    flip_channels=False,
-                                                    scale=1.0,
-                                                    transpose=False,
-                                                    padding=False)
+        self.engine = InferenceEngineFactory.create(
+            engine, [model], flip_channels=False, scale=1.0, transpose=False, padding=False
+        )
 
         self.labels = ["neutral", "happiness", "surprise", "sadness", "anger", "disgust", "fear", "contempt"]
 
@@ -54,11 +53,13 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
         probability = softmax(np.squeeze(output[self.engine.output_names[0]]))
         best_index = int(np.argmax(probability))
 
-        return EmotionClassificationResult(best_index, self.labels[best_index],
-                                           float(probability[best_index]), probability)
+        return EmotionClassificationResult(
+            best_index, self.labels[best_index], float(probability[best_index]), probability
+        )
 
-    def _transform_result(self, result: EmotionClassificationResult, image: np.ndarray,
-                          roi: np.ndarray, xs: float, ys: float):
+    def _transform_result(
+        self, result: EmotionClassificationResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float
+    ):
         pass
 
     def release(self):

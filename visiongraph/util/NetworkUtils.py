@@ -17,6 +17,7 @@ PUBLIC_DATA_URL = "https://huggingface.co/cansik/visiongraph/resolve/main/"
 
 class HTTPDownloadError(Exception):
     """Raised when an HTTP error or connection error occurs during download."""
+
     pass
 
 
@@ -52,11 +53,11 @@ def handle_redirects(url: str, headers: Optional[Dict[str, Any]] = None) -> str:
 
 
 def download_file(
-        url: str,
-        path: str,
-        description: str = "download",
-        with_progress: bool = True,
-        headers: Optional[Dict[str, Any]] = None
+    url: str,
+    path: str,
+    description: str = "download",
+    with_progress: bool = True,
+    headers: Optional[Dict[str, Any]] = None,
 ):
     """
     Download a file from URL to local path, with optional progress and error handling.
@@ -99,14 +100,12 @@ def download_file(
     try:
         with requests.get(resolved_url, headers=headers, stream=True) as r:
             r.raise_for_status()
-            with open(path, "wb") as f, tqdm(
-                    unit="B",
-                    unit_scale=True,
-                    unit_divisor=1024,
-                    total=filesize,
-                    file=sys.stdout,
-                    desc=description
-            ) as progress:
+            with (
+                open(path, "wb") as f,
+                tqdm(
+                    unit="B", unit_scale=True, unit_divisor=1024, total=filesize, file=sys.stdout, desc=description
+                ) as progress,
+            ):
                 for chunk in r.iter_content(chunk_size=chunk_size):
                     if not chunk:
                         continue
@@ -129,11 +128,7 @@ def prepare_openvino_model(model_name: str, url: Optional[str] = None) -> Tuple[
     return model_path, weights_path
 
 
-def prepare_data_file(
-        file_name: str,
-        url: Optional[str] = None,
-        headers: Optional[Dict[str, Any]] = None
-) -> str:
+def prepare_data_file(file_name: str, url: Optional[str] = None, headers: Optional[Dict[str, Any]] = None) -> str:
     """
     Ensure a data file is available locally, downloading if missing.
 

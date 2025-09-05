@@ -13,11 +13,15 @@ def on_results_ready(result: vg.BaseResult):
 
 def main():
     global pipeline
-    pipeline = vg.create_graph(name="Face Detection", handle_signals=True) \
-        .apply(ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.CentroidTracker(), vg.custom(on_results_ready)),
-               image=vg.passthrough()) \
-        .then(vg.ResultAnnotator(), vg.VidGearVideoRecorder("media/video.mp4"), vg.ImagePreview()) \
+    pipeline = (
+        vg.create_graph(name="Face Detection", handle_signals=True)
+        .apply(
+            ssd=vg.sequence(vg.AdasFaceDetector.create(), vg.CentroidTracker(), vg.custom(on_results_ready)),
+            image=vg.passthrough(),
+        )
+        .then(vg.ResultAnnotator(), vg.VidGearVideoRecorder("media/video.mp4"), vg.ImagePreview())
         .build()
+    )
     pipeline.configure(args)
 
     pipeline.open()

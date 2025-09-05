@@ -5,7 +5,6 @@ from visiongraph import vg
 
 
 class FaceLandmarkEstimationTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.FaceLandmarkEstimator):
         image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
@@ -24,5 +23,5 @@ class FaceLandmarkEstimationTests(unittest.TestCase):
         self._test_model(vg.RegressionLandmarkEstimator())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

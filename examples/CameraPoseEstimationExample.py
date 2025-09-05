@@ -12,7 +12,6 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 class CameraPoseEstimationExample(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
@@ -20,8 +19,7 @@ class CameraPoseEstimationExample(BaseGraph):
         intrinsics = CameraIntrinsics.load("media/calibration.json")
 
         self.network = ArUcoCameraPoseEstimator(
-            camera_matrix=intrinsics.intrinsic_matrix,
-            fisheye_distortion=intrinsics.distortion_coefficients
+            camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
         )
 
         self.add_nodes(self.input, self.network)
@@ -37,8 +35,9 @@ class CameraPoseEstimationExample(BaseGraph):
 
         if result is not None:
             result.annotate(frame)
-            cv2.putText(frame, f"Distance: {result.position.mag:.2f}",
-                        (5, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1)
+            cv2.putText(
+                frame, f"Distance: {result.position.mag:.2f}", (5, 20), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1
+            )
 
         cv2.imshow("Camera Pose Example", frame)
         if cv2.waitKey(15) & 0xFF == 27:

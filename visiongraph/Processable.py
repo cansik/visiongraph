@@ -1,8 +1,8 @@
 from abc import abstractmethod
 from typing import Generic, TypeVar
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType')
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType")
 
 
 class Processable(Generic[InputType, OutputType]):

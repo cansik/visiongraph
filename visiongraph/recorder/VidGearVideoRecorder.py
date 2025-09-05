@@ -7,8 +7,9 @@ from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
 
 
 class VidGearVideoRecorder(BaseFrameRecorder):
-    def __init__(self, output_path: str = "video.mp4",
-                 width: Optional[int] = None, height: Optional[int] = None, fps: float = 30):
+    def __init__(
+        self, output_path: str = "video.mp4", width: Optional[int] = None, height: Optional[int] = None, fps: float = 30
+    ):
         """
         Initializes the VidGearVideoRecorder.
 
@@ -31,7 +32,7 @@ class VidGearVideoRecorder(BaseFrameRecorder):
             "-crf": 23,
             "-tune": "zerolatency",
             "-input_framerate": self.fps,
-            "-disable_force_termination": True
+            "-disable_force_termination": True,
         }
 
     def open(self):

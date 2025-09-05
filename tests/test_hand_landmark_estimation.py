@@ -5,7 +5,6 @@ from visiongraph import vg
 
 
 class HandLandmarkTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.HandLandmarkEstimator):
         image = cv2.imread("assets/hands-pexels-ketut-subiyanto-4126739.jpg")
@@ -21,5 +20,5 @@ class HandLandmarkTests(unittest.TestCase):
         self._test_model(vg.OpenPoseHandEstimator())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

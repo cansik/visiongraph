@@ -41,21 +41,27 @@ try:
     from visiongraph.estimator.spatial.pose.LiteHRNetEstimator import LiteHRNetPoseEstimator, LiteHRNetConfig
 
     prefix = "lite-hrnet"
-    PoseEstimators[f"{prefix}-fp16"] = partial(LiteHRNetPoseEstimator.create,
-                                               LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
+    PoseEstimators[f"{prefix}-fp16"] = partial(
+        LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16
+    )
     PoseEstimators[f"{prefix}"] = partial(LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
-    PoseEstimators[f"{prefix}-fast"] = partial(LiteHRNetPoseEstimator.create,
-                                               LiteHRNetConfig.LiteHRNet_18_COCO_256x192_FP32)
+    PoseEstimators[f"{prefix}-fast"] = partial(
+        LiteHRNetPoseEstimator.create, LiteHRNetConfig.LiteHRNet_18_COCO_256x192_FP32
+    )
 except ImportError as ex:
     logging.info(f"MoveNet not installed: {ex}")
 
 try:
     from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseEstimator, AEPoseConfig
     from visiongraph.estimator.spatial.pose.OpenPoseEstimator import OpenPoseEstimator, OpenPoseConfig
-    from visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator import MobileNetV2PoseEstimator, \
-        MobileNetV2PoseEstimatorConfig
-    from visiongraph.estimator.spatial.pose.EfficientPoseEstimator import EfficientPoseEstimator, \
-        EfficientPoseEstimatorConfig
+    from visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator import (
+        MobileNetV2PoseEstimator,
+        MobileNetV2PoseEstimatorConfig,
+    )
+    from visiongraph.estimator.spatial.pose.EfficientPoseEstimator import (
+        EfficientPoseEstimator,
+        EfficientPoseEstimatorConfig,
+    )
     from visiongraph.estimator.spatial.pose.LitePoseEstimator import LitePoseEstimator, LitePoseEstimatorConfig
 
     PoseEstimators["openpose"] = partial(OpenPoseEstimator.create, OpenPoseConfig.LightWeightOpenPose_FP32)
@@ -66,18 +72,21 @@ try:
     PoseEstimators["aepose-288-fp16"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_288_FP16)
     PoseEstimators["aepose-448-fp32"] = partial(AEPoseEstimator.create, AEPoseConfig.EfficientHRNet_448_FP32)
 
-    PoseEstimators["mobilenet"] = partial(MobileNetV2PoseEstimator.create,
-                                          MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32)
+    PoseEstimators["mobilenet"] = partial(
+        MobileNetV2PoseEstimator.create, MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32
+    )
 
-    PoseEstimators["efficient-pose"] = partial(EfficientPoseEstimator.create,
-                                               EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32)
-    PoseEstimators["efficient-pose-lite"] = partial(EfficientPoseEstimator.create,
-                                                    EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_LITE_FP32)
-    PoseEstimators["efficient-pose-rt"] = partial(EfficientPoseEstimator.create,
-                                                  EfficientPoseEstimatorConfig.EFFICIENT_POSE_RT_FP32)
+    PoseEstimators["efficient-pose"] = partial(
+        EfficientPoseEstimator.create, EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_FP32
+    )
+    PoseEstimators["efficient-pose-lite"] = partial(
+        EfficientPoseEstimator.create, EfficientPoseEstimatorConfig.EFFICIENT_POSE_I_LITE_FP32
+    )
+    PoseEstimators["efficient-pose-rt"] = partial(
+        EfficientPoseEstimator.create, EfficientPoseEstimatorConfig.EFFICIENT_POSE_RT_FP32
+    )
 
-    PoseEstimators["litepose"] = partial(LitePoseEstimator.create,
-                                         LitePoseEstimatorConfig.LitePose_S_COCO_FP32)
+    PoseEstimators["litepose"] = partial(LitePoseEstimator.create, LitePoseEstimatorConfig.LitePose_S_COCO_FP32)
 except ImportError as ex:
     logging.info(f"OpenVino not installed: {ex}")
 
@@ -99,8 +108,10 @@ except ImportError as ex:
     logging.info(f"ONNX not installed: {ex}")
 
 try:
-    from visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator import UltralyticsPoseEstimator, \
-        UltralyticsPoseConfig
+    from visiongraph.estimator.spatial.pose.UltralyticsPoseEstimator import (
+        UltralyticsPoseEstimator,
+        UltralyticsPoseConfig,
+    )
 
     PoseEstimators["yolov8-n"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_N_640)
     PoseEstimators["yolov8-s"] = partial(UltralyticsPoseEstimator.create, UltralyticsPoseConfig.YOLOv8_S_640)
@@ -118,7 +129,9 @@ except ImportError as ex:
     logging.info(f"Could not import YOLOv8 - dependencies not installed: {ex}")
 
 
-def add_pose_estimation_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup],
-                                     default: Union[int, str] = 0, add_params: bool = False):
-    add_step_choice_argument(parser, PoseEstimators, "--pose-estimator", help="Pose estimator",
-                             default=default, add_params=add_params)
+def add_pose_estimation_step_choices(
+    parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0, add_params: bool = False
+):
+    add_step_choice_argument(
+        parser, PoseEstimators, "--pose-estimator", help="Pose estimator", default=default, add_params=add_params
+    )

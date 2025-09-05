@@ -7,7 +7,7 @@ from visiongraph.estimator.spatial.LandmarkEstimator import LandmarkEstimator
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
-OutputType = TypeVar('OutputType', bound=PoseLandmarkResult)
+OutputType = TypeVar("OutputType", bound=PoseLandmarkResult)
 
 
 class PoseEstimator(LandmarkEstimator[OutputType], ABC):

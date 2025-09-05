@@ -7,7 +7,7 @@ from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 
-OutputType = TypeVar('OutputType', bound=InstanceSegmentationResult)
+OutputType = TypeVar("OutputType", bound=InstanceSegmentationResult)
 
 
 class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC):

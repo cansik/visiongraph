@@ -15,8 +15,14 @@ class CamGearInput(VideoCaptureInput):
     setup and management for CamGear inputs.
     """
 
-    def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
-                 loop: bool = True, fps_lock: bool = False, stream_mode: bool = False):
+    def __init__(
+        self,
+        channel: Union[str, int] = 0,
+        input_skip: int = -1,
+        loop: bool = True,
+        fps_lock: bool = False,
+        stream_mode: bool = False,
+    ):
         """
         Initializes the CamGearInput with the given parameters.
 
@@ -40,16 +46,16 @@ class CamGearInput(VideoCaptureInput):
         """
         if str(self.channel).isnumeric():
             # probably a webcam input
-            self.input_options.update({
-                "CAP_PROP_FRAME_WIDTH": self.width,
-                "CAP_PROP_FRAME_HEIGHT": self.height,
-                "CAP_PROP_FPS": self.fps,
-            })
+            self.input_options.update(
+                {
+                    "CAP_PROP_FRAME_WIDTH": self.width,
+                    "CAP_PROP_FRAME_HEIGHT": self.height,
+                    "CAP_PROP_FPS": self.fps,
+                }
+            )
 
         if self.input_skip >= 0:
-            self.input_options.update({
-                "CAP_PROP_POS_MSEC": self.input_skip
-            })
+            self.input_options.update({"CAP_PROP_POS_MSEC": self.input_skip})
 
         self._cap = CamGear(source=self.channel, **self.input_options)
         self._cap.start()

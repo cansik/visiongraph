@@ -26,15 +26,16 @@ class MediaPipePoseConfig(Enum):
 
 
 class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
-
-    def __init__(self,
-                 static_image_mode: bool = False,
-                 max_num_poses: int = 1,
-                 min_pose_detection_confidence: float = 0.5,
-                 min_pose_presence_confidence: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
-                 output_segmentation_masks: bool = True,
-                 task: Asset = MediaPipePoseConfig.Full):
+    def __init__(
+        self,
+        static_image_mode: bool = False,
+        max_num_poses: int = 1,
+        min_pose_detection_confidence: float = 0.5,
+        min_pose_presence_confidence: float = 0.5,
+        min_tracking_confidence: float = 0.5,
+        output_segmentation_masks: bool = True,
+        task: Asset = MediaPipePoseConfig.Full,
+    ):
         super().__init__(min_pose_detection_confidence)
 
         self.static_image_mode = static_image_mode
@@ -62,7 +63,7 @@ class MediaPipePoseEstimator(PoseEstimator[BlazePose]):
             min_pose_detection_confidence=self.min_score,
             min_pose_presence_confidence=self.min_pose_presence_confidence,
             min_tracking_confidence=self.min_tracking_confidence,
-            output_segmentation_masks=self.output_segmentation_masks
+            output_segmentation_masks=self.output_segmentation_masks,
         )
         self.detector = vision.PoseLandmarker.create_from_options(options)
 

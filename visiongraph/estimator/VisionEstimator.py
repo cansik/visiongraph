@@ -6,7 +6,7 @@ import numpy as np
 from visiongraph.estimator.BaseEstimator import BaseEstimator
 from visiongraph.result.BaseResult import BaseResult
 
-OutputType = TypeVar('OutputType', bound=BaseResult)
+OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
 class VisionEstimator(BaseEstimator[np.ndarray, OutputType], ABC):

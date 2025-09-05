@@ -16,11 +16,15 @@ class ONNXVisionEngine(BaseVisionEngine):
     https://github.com/microsoft/onnxruntime
     """
 
-    def __init__(self, model: Asset, execution_providers: Optional[List[str]] = None,
-                 flip_channels: bool = True,
-                 scale: Optional[Union[float, Sequence[float]]] = None,
-                 mean: Optional[Union[float, Sequence[float]]] = None,
-                 padding: bool = False):
+    def __init__(
+        self,
+        model: Asset,
+        execution_providers: Optional[List[str]] = None,
+        flip_channels: bool = True,
+        scale: Optional[Union[float, Sequence[float]]] = None,
+        mean: Optional[Union[float, Sequence[float]]] = None,
+        padding: bool = False,
+    ):
         """
         Initializes the ONNXVisionEngine object.
 
@@ -39,9 +43,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.session: Optional[rt.InferenceSession] = None
         self.session_options = rt.SessionOptions()
 
-        self.preferred_execution_providers = ["CUDAExecutionProvider",
-                                              "DmlExecutionProvider",
-                                              "CPUExecutionProvider"]
+        self.preferred_execution_providers = ["CUDAExecutionProvider", "DmlExecutionProvider", "CPUExecutionProvider"]
 
         self.dtype_conversion_table = {
             "tensor(float)": np.float32,
@@ -50,7 +52,7 @@ class ONNXVisionEngine(BaseVisionEngine):
             "tensor(int64)": np.int64,
             "tensor(int32)": np.int32,
             "tensor(int8)": np.int8,
-            "tensor(uint8)": np.uint8
+            "tensor(uint8)": np.uint8,
         }
 
     def setup(self):
@@ -60,9 +62,9 @@ class ONNXVisionEngine(BaseVisionEngine):
         if self.execution_providers is None:
             self.execution_providers = self.get_execution_providers()
 
-        self.session = rt.InferenceSession(self.model.path,
-                                           providers=self.execution_providers,
-                                           sess_options=self.session_options)
+        self.session = rt.InferenceSession(
+            self.model.path, providers=self.execution_providers, sess_options=self.session_options
+        )
 
         # read input infos
         self.input_names = [e.name for e in self.session.get_inputs()]
@@ -153,10 +155,12 @@ class ONNXVisionEngine(BaseVisionEngine):
         :return: The model layers.
         """
         return [
-            VisionEngineModelLayer(name=layer.name,
-                                   shape=list(layer.shape),
-                                   numpy_dtype=self._to_numpy_dtype(layer.type),
-                                   layer_names=list(layer.name))
+            VisionEngineModelLayer(
+                name=layer.name,
+                shape=list(layer.shape),
+                numpy_dtype=self._to_numpy_dtype(layer.type),
+                layer_names=list(layer.name),
+            )
             for layer in compiled_layers
         ]
 

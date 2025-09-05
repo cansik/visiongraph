@@ -16,6 +16,7 @@ class DETRConfig(Enum):
     """
     An enumeration class representing different configurations for the DETR model.
     """
+
     DETR_Resnet50_FP16 = (*RepositoryAsset.openVino("detr-resnet50-fp16"), COCO_80_LABELS)
     DETR_Resnet50_FP32 = (*RepositoryAsset.openVino("detr-resnet50-fp32"), COCO_80_LABELS)
 
@@ -47,14 +48,14 @@ class DETRDetector(OpenVinoObjectDetector):
         """
 
         config = {
-            'resize_type': None,
-            'mean_values': None,
-            'scale_values': None,
-            'reverse_input_channels': True,
-            'path_to_labels': None,
-            'confidence_threshold': self.min_score,
-            'input_size': None,  # The CTPN specific
-            'num_classes': None,  # The NanoDet and NanoDetPlus specific
+            "resize_type": None,
+            "mean_values": None,
+            "scale_values": None,
+            "reverse_input_channels": True,
+            "path_to_labels": None,
+            "confidence_threshold": self.min_score,
+            "input_size": None,  # The CTPN specific
+            "num_classes": None,  # The NanoDet and NanoDetPlus specific
         }
 
         core = openvino.Core()

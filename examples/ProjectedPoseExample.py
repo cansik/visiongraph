@@ -17,7 +17,6 @@ MIN_SCORE = 0.3
 
 
 class ProjectedPoseExample(vg.BaseGraph):
-
     def __init__(self, input: vg.RealSenseInput, pose_network: vg.PoseEstimator):
         super().__init__(multi_threaded=True, daemon=True)
         self.input = input
@@ -127,19 +126,26 @@ class MainWindow:
 
             lm_positions = pose.landmarks.to_xyz()
             size = len(lm_positions)
-            points = np.concatenate((lm_positions.x.reshape(size, 1) * -1,  # this is used if camera is not upside down
-                                     lm_positions.y.reshape(size, 1) * -1,
-                                     lm_positions.z.reshape(size, 1)),
-                                    axis=1)
+            points = np.concatenate(
+                (
+                    lm_positions.x.reshape(size, 1) * -1,  # this is used if camera is not upside down
+                    lm_positions.y.reshape(size, 1) * -1,
+                    lm_positions.z.reshape(size, 1),
+                ),
+                axis=1,
+            )
             self.pose_cloud.points = o3d.utility.Vector3dVector(points)
 
-            connections = [line for line in pose.connections
-                           if pose.landmarks.t[line[0]] >= MIN_SCORE and pose.landmarks.t[line[1]] >= MIN_SCORE]
+            connections = [
+                line
+                for line in pose.connections
+                if pose.landmarks.t[line[0]] >= MIN_SCORE and pose.landmarks.t[line[1]] >= MIN_SCORE
+            ]
 
             # create connection lines
-            self.lines = o3d.geometry.LineSet().create_from_point_cloud_correspondences(self.pose_cloud,
-                                                                                        self.pose_cloud,
-                                                                                        connections)
+            self.lines = o3d.geometry.LineSet().create_from_point_cloud_correspondences(
+                self.pose_cloud, self.pose_cloud, connections
+            )
 
             pose_detected = True
 
@@ -197,10 +203,12 @@ if __name__ == "__main__":
     add_pose_estimation_step_choices(pose_group, default="aepose")
 
     transform_group = parser.add_argument_group("camera transform")
-    transform_group.add_argument("--angle", default=-30, type=float,
-                                 help="Angle (degree) how much the camera is tilted.")
-    transform_group.add_argument("--translation-y", default=-1.00, type=float,
-                                 help="Distance (m) to translate the camera.")
+    transform_group.add_argument(
+        "--angle", default=-30, type=float, help="Angle (degree) how much the camera is tilted."
+    )
+    transform_group.add_argument(
+        "--translation-y", default=-1.00, type=float, help="Distance (m) to translate the camera."
+    )
 
     args = parser.parse_args()
 

@@ -47,11 +47,13 @@ class AffectNetEmotionClassifier(FaceEmotionEstimator):
         probability = np.squeeze(output["prob_emotion"])
         best_index = int(np.argmax(probability))
 
-        return EmotionClassificationResult(best_index, self.labels[best_index],
-                                           float(probability[best_index]), probability)
+        return EmotionClassificationResult(
+            best_index, self.labels[best_index], float(probability[best_index]), probability
+        )
 
-    def _transform_result(self, result: EmotionClassificationResult, image: np.ndarray,
-                          roi: np.ndarray, xs: float, ys: float):
+    def _transform_result(
+        self, result: EmotionClassificationResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float
+    ):
         """
         Transforms the result of an emotion classification.
 

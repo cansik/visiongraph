@@ -14,6 +14,7 @@ class IrisParameter:
     """
     Represents iris parameters with distance, diameter and position.
     """
+
     distance: float
     diameter: float
     position: vector.Vector4D

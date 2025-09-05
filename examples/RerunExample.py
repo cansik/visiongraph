@@ -21,9 +21,7 @@ def main():
         rr.log("ir", rr.Image(oak_d.ir_frame))
         rr.log("depth", rr.Image(oak_d.depth_map))
 
-    create_graph(name="VisionGraph", input_node=oak_d, handle_signals=True) \
-        .then(custom(on_frame)) \
-        .open()
+    create_graph(name="VisionGraph", input_node=oak_d, handle_signals=True).then(custom(on_frame)).open()
 
 
 if __name__ == "__main__":

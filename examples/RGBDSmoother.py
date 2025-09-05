@@ -17,7 +17,6 @@ from visiongraph.util.TimeUtils import FPSTracer
 
 
 class RGBDSmoother(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input: VideoCaptureInput = input
@@ -50,7 +49,7 @@ class RGBDSmoother(BaseGraph):
         # extract depth only
         w, h = int(self.input.width // 2), int(self.input.height)
         depth_frame = np.copy(frame[0:h, 0:w])
-        rgb_frame = frame[0:h, w:w + w]
+        rgb_frame = frame[0:h, w : w + w]
 
         # extract hue
         bgr_frame = cv2.cvtColor(depth_frame, cv2.COLOR_RGB2BGR)
@@ -86,8 +85,16 @@ class RGBDSmoother(BaseGraph):
         stacked = np.hstack((smooth_rgb, depth_frame, rgb_frame))
 
         self.fps_tracer.update()
-        cv2.putText(stacked, "FPS: %.0f" % self.fps_tracer.smooth_fps,
-                    (7, 40), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 2, cv2.LINE_AA)
+        cv2.putText(
+            stacked,
+            "FPS: %.0f" % self.fps_tracer.smooth_fps,
+            (7, 40),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            1.0,
+            (0, 0, 0),
+            2,
+            cv2.LINE_AA,
+        )
 
         cv2.imshow("RGB-D Smoother (Smooth, Original, RGB)", stacked)
         if cv2.waitKey(15) & 0xFF == 27:

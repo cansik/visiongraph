@@ -26,12 +26,21 @@ class BlazePoseSegmentation(BlazePose, InstanceSegmentationResult):
         :param mask: The segmentation mask associated with the instance.
         """
         BlazePose.__init__(self, score, landmarks)
-        InstanceSegmentationResult.__init__(self, POSE_DETECTION_ID, POSE_DETECTION_NAME,
-                                            score, mask, self.bounding_box)
+        InstanceSegmentationResult.__init__(
+            self, POSE_DETECTION_ID, POSE_DETECTION_NAME, score, mask, self.bounding_box
+        )
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None,
-                 show_bounding_box: bool = False, min_score: float = 0, use_class_color: bool = True, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        show_bounding_box: bool = False,
+        min_score: float = 0,
+        use_class_color: bool = True,
+        **kwargs,
+    ):
         """
         Annotates the given image with pose landmarks and segmentation information.
 
@@ -44,6 +53,7 @@ class BlazePoseSegmentation(BlazePose, InstanceSegmentationResult):
         :param use_class_color: Whether to use the class color for annotations. Defaults to True.
         :param **kwargs: Additional keyword arguments for further customization.
         """
-        InstanceSegmentationResult.annotate(self, image, show_info, info_text, show_bounding_box,
-                                            use_class_color, min_score, **kwargs)
+        InstanceSegmentationResult.annotate(
+            self, image, show_info, info_text, show_bounding_box, use_class_color, min_score, **kwargs
+        )
         BlazePose.annotate(self, image, show_info, info_text, color, show_bounding_box, min_score, **kwargs)

@@ -34,5 +34,5 @@ class GraphNodeTests(unittest.TestCase):
         self.assertEqual(node.counter, 11, "Context manager seems not to work.")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

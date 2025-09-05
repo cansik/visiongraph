@@ -7,7 +7,7 @@ from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 
-OutputType = TypeVar('OutputType', bound=LandmarkDetectionResult)
+OutputType = TypeVar("OutputType", bound=LandmarkDetectionResult)
 
 
 class LandmarkEstimator(ObjectDetector[OutputType], ABC):

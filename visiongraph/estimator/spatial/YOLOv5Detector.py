@@ -12,6 +12,7 @@ class YOLOv5Config(Enum):
     """
     An enumeration of YOLOv5 model configurations including the model asset and labels.
     """
+
     YOLOv5_N = RepositoryAsset("yolov5n.onnx"), COCO_80_LABELS
     YOLOv5_S = RepositoryAsset("yolov5s.onnx"), COCO_80_LABELS
     YOLOv5_M = RepositoryAsset("yolov5m.onnx"), COCO_80_LABELS

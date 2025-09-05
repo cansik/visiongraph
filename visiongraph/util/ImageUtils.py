@@ -26,13 +26,15 @@ def resize_and_letter_box(image, width, height):
     letter_box = np.zeros((int(height), int(width), 3))
     row_start = int((letter_box.shape[0] - image_resized.shape[0]) / 2)
     col_start = int((letter_box.shape[1] - image_resized.shape[1]) / 2)
-    letter_box[row_start:row_start + image_resized.shape[0],
-               col_start:col_start + image_resized.shape[1]] = image_resized
+    letter_box[row_start : row_start + image_resized.shape[0], col_start : col_start + image_resized.shape[1]] = (
+        image_resized
+    )
     return letter_box
 
 
-def resize_and_pad(image: np.ndarray, new_size: Tuple[int, int],
-                   color: Tuple[int, int, int] = (125, 125, 125)) -> Tuple[np.ndarray, BoundingBox2D]:
+def resize_and_pad(
+    image: np.ndarray, new_size: Tuple[int, int], color: Tuple[int, int, int] = (125, 125, 125)
+) -> Tuple[np.ndarray, BoundingBox2D]:
     """
     Resize an image and pad it with a specified color to fit the new size.
 
@@ -51,14 +53,13 @@ def resize_and_pad(image: np.ndarray, new_size: Tuple[int, int],
     d_h = max(new_h - scale_new_h, 0)
     top, bottom = d_h // 2, d_h - (d_h // 2)
     left, right = d_w // 2, d_w - (d_w // 2)
-    result = cv2.copyMakeBorder(resized_img, top, bottom, left, right,
-                                cv2.BORDER_CONSTANT, value=color)
+    result = cv2.copyMakeBorder(resized_img, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
     return result, BoundingBox2D(left, top, scale_new_w, scale_new_h)
 
 
-def extract_roi_safe(image: np.ndarray,
-                     xmin: float, ymin: float, xmax: float, ymax: float,
-                     rectified: bool = False) -> Tuple[np.ndarray, int, int]:
+def extract_roi_safe(
+    image: np.ndarray, xmin: float, ymin: float, xmax: float, ymax: float, rectified: bool = False
+) -> Tuple[np.ndarray, int, int]:
     """
     Safely extract a region of interest (ROI) from an image based on normalized coordinates.
 
@@ -96,9 +97,9 @@ def extract_roi_safe(image: np.ndarray,
     return image[ys:ye, xs:xe], int(xs), int(ys)
 
 
-def align_image(image: np.ndarray,
-                src_triangle: np.ndarray,
-                dest_triangle: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+def align_image(
+    image: np.ndarray, src_triangle: np.ndarray, dest_triangle: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Align an image based on an affine transformation defined by source and destination triangles.
 
@@ -122,7 +123,7 @@ def roi(image: np.ndarray, box: BoundingBox2D) -> np.ndarray:
 
     :return: Extracted region of interest.
     """
-    return image[int(box.y_min):int(box.y_min + box.height), int(box.x_min):int(box.x_min + box.width)]
+    return image[int(box.y_min) : int(box.y_min + box.height), int(box.x_min) : int(box.x_min + box.width)]
 
 
 def roi_safe(image: np.ndarray, box: BoundingBox2D, rectified: bool = False) -> Tuple[np.ndarray, int, int]:

@@ -37,9 +37,7 @@ class Size2D:
 
         :return: A new Size2D object with scaled dimensions.
         """
-        return Size2D(
-            self.width * width,
-            self.height * height)
+        return Size2D(self.width * width, self.height * height)
 
     @staticmethod
     def from_array(data: Union[Sequence, np.ndarray]):

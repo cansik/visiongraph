@@ -6,7 +6,6 @@ from visiongraph import vg
 
 
 class ImageTranslationTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.VisionEstimator[vg.ImageResult]):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -28,5 +27,5 @@ class ImageTranslationTests(unittest.TestCase):
         self._test_model(vg.MBLLENEstimator.create())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

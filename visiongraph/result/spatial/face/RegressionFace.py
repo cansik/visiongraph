@@ -11,8 +11,7 @@ class RegressionFace(FaceLandmarkResult):
     Represents a face regression result, containing facial landmarks and bounding box information.
     """
 
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D,
-                 bounding_box: Optional[BoundingBox2D] = None):
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
         """
         Initializes the RegressionFace object.
 

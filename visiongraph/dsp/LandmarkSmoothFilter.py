@@ -7,8 +7,8 @@ from visiongraph.dsp.VectorNumpySmoothFilter import VectorNumpySmoothFilter
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from visiongraph.util.VectorUtils import vector_to_array
 
-InputType = TypeVar('InputType', bound=List[LandmarkDetectionResult])
-OutputType = TypeVar('OutputType', bound=List[LandmarkDetectionResult])
+InputType = TypeVar("InputType", bound=List[LandmarkDetectionResult])
+OutputType = TypeVar("OutputType", bound=List[LandmarkDetectionResult])
 
 
 class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
@@ -51,11 +51,15 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
             # create or get filter
             if detection.tracking_id not in self.filters:
                 landmarks = vector_to_array(detection.landmarks)
-                smooth_filter = VectorNumpySmoothFilter(OneEuroFilterNumpy(x0=landmarks,
-                                                                           min_cutoff=self.min_cutoff,
-                                                                           beta=self.beta,
-                                                                           d_cutoff=self.d_cutoff,
-                                                                           invalid_value=0.0))
+                smooth_filter = VectorNumpySmoothFilter(
+                    OneEuroFilterNumpy(
+                        x0=landmarks,
+                        min_cutoff=self.min_cutoff,
+                        beta=self.beta,
+                        d_cutoff=self.d_cutoff,
+                        invalid_value=0.0,
+                    )
+                )
                 smooth_filter.setup()
                 self.filters.update({detection.tracking_id: smooth_filter})
 

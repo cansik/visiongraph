@@ -13,7 +13,6 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class PoseEstimationTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.PoseEstimator):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -109,5 +108,5 @@ class PoseEstimationTests(unittest.TestCase):
         embedder.release()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

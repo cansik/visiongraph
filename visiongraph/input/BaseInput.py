@@ -129,17 +129,31 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         :param parser: The argument parser to which the input parameters will be added.
         """
         try:
-            parser.add_argument("--input-size", default=[640, 480], type=int, nargs=2, metavar=("width", "height"),
-                                help="Requested input media size.")
+            parser.add_argument(
+                "--input-size",
+                default=[640, 480],
+                type=int,
+                nargs=2,
+                metavar=("width", "height"),
+                help="Requested input media size.",
+            )
             parser.add_argument("--input-fps", default=30, type=float, help="Requested input media framerate.")
-            add_dict_choice_argument(parser, RotationParameter, "--input-rotate", help="Rotate input media",
-                                     default=None)
+            add_dict_choice_argument(
+                parser, RotationParameter, "--input-rotate", help="Rotate input media", default=None
+            )
             add_dict_choice_argument(parser, FlipParameter, "--input-flip", help="Flip input media", default=None)
             parser.add_argument("--input-mask", default=None, type=str, help="Path to the input mask.")
-            parser.add_argument("--input-crop", default=None, type=int, nargs=4,
-                                metavar=("x", "y", "width", "height"), help="Crop input image.")
-            parser.add_argument("--raw-input", action="store_true",
-                                help="Skip automatic input conversion to 3-channel image.")
+            parser.add_argument(
+                "--input-crop",
+                default=None,
+                type=int,
+                nargs=4,
+                metavar=("x", "y", "width", "height"),
+                help="Crop input image.",
+            )
+            parser.add_argument(
+                "--raw-input", action="store_true", help="Skip automatic input conversion to 3-channel image."
+            )
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return

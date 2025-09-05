@@ -58,7 +58,7 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
 
         # crop the image
         x, y, w, h = self.roi
-        dst = dst[y:y + h, x:x + w]
+        dst = dst[y : y + h, x : x + w]
         return dst
 
     def release(self):
@@ -74,15 +74,20 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         """
         w = self.width
         h = self.height
-        mat, roi = cv2.getOptimalNewCameraMatrix(self.intrinsics.intrinsic_matrix,
-                                                 self.intrinsics.distortion_coefficients,
-                                                 (w, h), 1, (w, h))
+        mat, roi = cv2.getOptimalNewCameraMatrix(
+            self.intrinsics.intrinsic_matrix, self.intrinsics.distortion_coefficients, (w, h), 1, (w, h)
+        )
         self.new_camera_matrix = mat
         self.roi = roi
 
-        self.rectify_map_x, self.rectify_map_y = cv2.initUndistortRectifyMap(self.intrinsics.intrinsic_matrix,
-                                                                             self.intrinsics.distortion_coefficients,
-                                                                             None, self.new_camera_matrix, (w, h), 5)
+        self.rectify_map_x, self.rectify_map_y = cv2.initUndistortRectifyMap(
+            self.intrinsics.intrinsic_matrix,
+            self.intrinsics.distortion_coefficients,
+            None,
+            self.new_camera_matrix,
+            (w, h),
+            5,
+        )
 
     def configure(self, args: Namespace) -> None:
         """

@@ -6,7 +6,6 @@ from visiongraph import vg
 
 
 class SegmentationEstimationTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.InstanceSegmentationEstimator):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -37,5 +36,5 @@ class SegmentationEstimationTests(unittest.TestCase):
         self._test_model(vg.ModNetEstimator.create())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

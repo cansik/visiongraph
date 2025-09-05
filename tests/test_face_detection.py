@@ -5,7 +5,6 @@ from visiongraph import vg
 
 
 class FaceDetectionTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.FaceDetector):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -36,5 +35,5 @@ class FaceDetectionTests(unittest.TestCase):
         self._test_model(vg.OpenVinoFaceDetector.create(vg.OpenVinoFaceConfig.MobileNetV2_640_FP16_INT8))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

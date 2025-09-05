@@ -49,8 +49,9 @@ class MediaPipeFaceDetector(FaceLandmarkEstimator[BlazeFace]):
 
         """
 
-        self.detector = _mp_face_detection.FaceDetection(model_selection=self.model.value,
-                                                         min_detection_confidence=self.min_score)
+        self.detector = _mp_face_detection.FaceDetection(
+            model_selection=self.model.value, min_detection_confidence=self.min_score
+        )
 
     def process(self, image: np.ndarray) -> ResultList[BlazeFace]:
         """

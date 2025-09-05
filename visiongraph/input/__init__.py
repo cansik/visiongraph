@@ -51,8 +51,9 @@ except ImportError as ex:
     logging.info(f"ZED SDK not installed: {ex}")
 
 
-def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0,
-                           add_params: bool = True):
+def add_input_step_choices(
+    parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0, add_params: bool = True
+):
     """
     Adds input step choices to the given parser.
 
@@ -63,5 +64,6 @@ def add_input_step_choices(parser: Union[argparse.ArgumentParser, _ArgumentGroup
     :param default: The default value for the input choice. Default is 0.
     :param add_params: A flag indicating whether to add additional parameters for the input choice. Default is True.
     """
-    add_step_choice_argument(parser, InputProviders, "--input", help="Image input provider",
-                             default=default, add_params=add_params)
+    add_step_choice_argument(
+        parser, InputProviders, "--input", help="Image input provider", default=default, add_params=add_params
+    )

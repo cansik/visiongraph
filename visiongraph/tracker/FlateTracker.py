@@ -118,8 +118,9 @@ class FlateTracker(BaseObjectDetectionTracker):
         # clean up stale tracks
         self._tracks = [t for t in self._tracks if t.stale <= self.max_lost]
 
-        return ResultList([t.reference for t in self._tracks
-                           if t.age >= self.min_alive and (self.include_stale or t.stale == 0)])
+        return ResultList(
+            [t.reference for t in self._tracks if t.age >= self.min_alive and (self.include_stale or t.stale == 0)]
+        )
 
     @staticmethod
     def _l2_cost_function(tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]) -> np.ndarray:

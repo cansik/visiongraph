@@ -17,6 +17,7 @@ class YOLOv8OBBConfig(Enum):
     An enumeration of YOLOv8 OBB model configurations.
     Each configuration includes the model asset and the dataset version.
     """
+
     YOLOv8_OBB_N = RepositoryAsset("yolov8n-obb.onnx"), DOTA_v1_0
     YOLOv8_OBB_S = RepositoryAsset("yolov8s-obb.onnx"), DOTA_v1_0
     YOLOv8_OBB_M = RepositoryAsset("yolov8m-obb.onnx"), DOTA_v1_0
@@ -51,7 +52,7 @@ class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
         if len(scores) == 0:
             return ResultList()
 
-        class_ids = np.argmax(predictions[:, 4:4 + len(self.labels)], axis=1)
+        class_ids = np.argmax(predictions[:, 4 : 4 + len(self.labels)], axis=1)
         boxes = predictions[:, :4]  # cxcywh
         angles = predictions[:, 4 + len(self.labels)]
 

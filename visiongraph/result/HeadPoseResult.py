@@ -20,14 +20,14 @@ class HeadPoseResult(BaseResult):
 
     def annotate(self, image: np.ndarray, x: float = 0, y: float = 0, length: float = 0.2, **kwargs):
         """
-        Draws a bounding box around the detected face on the provided image.
+                Draws a bounding box around the detected face on the provided image.
 
-        :param image: The input image.
-        :param x: The x-coordinate of the center of the axis. Defaults to 0.
-        :param y: The y-coordinate of the center of the axis. Defaults to 0.
-        :param length: The length of the axis. Defaults to 0.2.
+                :param image: The input image.
+                :param x: The x-coordinate of the center of the axis. Defaults to 0.
+                :param y: The y-coordinate of the center of the axis. Defaults to 0.
+                :param length: The length of the axis. Defaults to 0.2.
 
-:param Draws: 
+        :param Draws:
         """
         super().annotate(image, **kwargs)
         draw_axis(image, self.rotation, vector.obj(x=x, y=y), length)

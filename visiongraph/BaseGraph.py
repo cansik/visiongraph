@@ -15,11 +15,13 @@ class BaseGraph(ArgumentConfigurable, ABC):
     Abstract base class for a graph in VisionGraph.
     """
 
-    def __init__(self,
-                 multi_threaded: bool = False,
-                 daemon: bool = False,
-                 handle_signals: bool = False,
-                 new_process: bool = False):
+    def __init__(
+        self,
+        multi_threaded: bool = False,
+        daemon: bool = False,
+        handle_signals: bool = False,
+        new_process: bool = False,
+    ):
         """
         Initializes the BaseGraph object.
 

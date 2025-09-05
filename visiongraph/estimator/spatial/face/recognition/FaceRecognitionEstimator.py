@@ -26,8 +26,9 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         self.landmarks_key = "landmarks"
         self._landmarks: Optional[FaceLandmarkResult] = None
 
-    def process_detection(self, image: np.ndarray,
-                          detection: SpatialCascadeResult, rectified: bool = True) -> EmbeddingResult:
+    def process_detection(
+        self, image: np.ndarray, detection: SpatialCascadeResult, rectified: bool = True
+    ) -> EmbeddingResult:
         """
         Processes a detected face in the image by extracting and mapping landmarks.
 
@@ -53,8 +54,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         return super().process_detection(image, detection, rectified)
 
     @abstractmethod
-    def process(self, image: np.ndarray,
-                landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
+    def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
         """
         Processes the input image and landmarks to produce an embedding result.
 
@@ -65,8 +65,9 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         """
         pass
 
-    def _pre_process_input(self, data: np.ndarray,
-                           landmarks: Optional[FaceLandmarkResult] = None) -> Tuple[np.ndarray, FaceLandmarkResult]:
+    def _pre_process_input(
+        self, data: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None
+    ) -> Tuple[np.ndarray, FaceLandmarkResult]:
         """
         Prepares the input data and landmarks for processing.
 
@@ -80,9 +81,9 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
         return data, landmarks
 
-    def _align_face(self, image: np.ndarray,
-                    landmarks: FaceLandmarkResult,
-                    normalized_keypoints: np.ndarray) -> Tuple[np.ndarray, float]:
+    def _align_face(
+        self, image: np.ndarray, landmarks: FaceLandmarkResult, normalized_keypoints: np.ndarray
+    ) -> Tuple[np.ndarray, float]:
         """
         Aligns the face in the image based on the provided landmarks and normalized keypoints.
 
@@ -92,23 +93,32 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
         :return: The aligned image and the overlap score of the landmarks.
         """
-        src_keypoints = np.array([
-            [landmarks.left_eye.x, landmarks.left_eye.y],
-            [landmarks.right_eye.x, landmarks.right_eye.y],
-            [landmarks.nose.x, landmarks.nose.y]
-        ], dtype=np.float32)
+        src_keypoints = np.array(
+            [
+                [landmarks.left_eye.x, landmarks.left_eye.y],
+                [landmarks.right_eye.x, landmarks.right_eye.y],
+                [landmarks.nose.x, landmarks.nose.y],
+            ],
+            dtype=np.float32,
+        )
 
         # use all landmarks if possible
         if hasattr(landmarks, "mouth_left") and hasattr(landmarks, "mouth_right"):
-            src_keypoints = np.vstack((src_keypoints,
-                                       np.array([
-                                           [landmarks.mouth_left.x, landmarks.mouth_left.y],
-                                           [landmarks.mouth_right.x, landmarks.mouth_right.y]
-                                       ], dtype=np.float32)
-                                       ))
+            src_keypoints = np.vstack(
+                (
+                    src_keypoints,
+                    np.array(
+                        [
+                            [landmarks.mouth_left.x, landmarks.mouth_left.y],
+                            [landmarks.mouth_right.x, landmarks.mouth_right.y],
+                        ],
+                        dtype=np.float32,
+                    ),
+                )
+            )
 
         scale = np.array((image.shape[1], image.shape[0]))
-        desired_landmarks = np.array(normalized_keypoints[:src_keypoints.shape[0]], dtype=np.float64)
+        desired_landmarks = np.array(normalized_keypoints[: src_keypoints.shape[0]], dtype=np.float64)
         landmarks = src_keypoints
 
         landmark_overlap = np.sqrt((np.power(desired_landmarks - landmarks, 2)).sum(axis=-1)).sum()
@@ -146,8 +156,9 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
         :raises AssertionError: If the input arrays are not 2D or do not have equal shapes.
         """
-        assert np.array_equal(src.shape, dst.shape) and len(src.shape) == 2, \
-            '2d input arrays are expected, got {}'.format(src.shape)
+        assert np.array_equal(src.shape, dst.shape) and len(src.shape) == 2, (
+            "2d input arrays are expected, got {}".format(src.shape)
+        )
         src_col_mean, src_col_std = FaceRecognitionEstimator._normalize(src, axis=0)
         dst_col_mean, dst_col_std = FaceRecognitionEstimator._normalize(dst, axis=0)
 

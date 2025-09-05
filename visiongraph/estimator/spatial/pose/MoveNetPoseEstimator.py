@@ -18,6 +18,7 @@ class MoveNetConfig(Enum):
     Enumeration for different configurations of the MoveNet model, including
     different architectures and precision levels.
     """
+
     MoveNet_Single_Lightning_FP16 = (*RepositoryAsset.openVino("movenet-single-lightning-fp16"), False)
     MoveNet_Single_Lightning_FP32 = (*RepositoryAsset.openVino("movenet-single-lightning-fp32"), False)
 
@@ -45,9 +46,16 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
     MoveNetPoseEstimator is responsible for estimating poses using the MoveNet model.
     """
 
-    def __init__(self, model: Asset, weights: Asset, multi_pose: bool = False,
-                 min_score: float = 0.3, enable_nms: bool = False, iou_threshold: float = 0.4,
-                 device: str = "AUTO"):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Asset,
+        multi_pose: bool = False,
+        min_score: float = 0.3,
+        enable_nms: bool = False,
+        iou_threshold: float = 0.4,
+        device: str = "AUTO",
+    ):
         """
         Initializes the MoveNetPoseEstimator with the given parameters.
 

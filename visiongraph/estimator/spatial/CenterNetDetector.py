@@ -16,6 +16,7 @@ class CenterNetConfig(Enum):
     """
     Enum class for predefined CenterNet configurations.
     """
+
     CenterNet_FP16 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp16"), COCO_80_LABELS)
     CenterNet_FP32 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp32"), COCO_80_LABELS)
 
@@ -44,14 +45,14 @@ class CenterNetDetector(OpenVinoObjectDetector):
         :return: The created detection model.
         """
         config = {
-            'resize_type': None,
-            'mean_values': None,
-            'scale_values': None,
-            'reverse_input_channels': True,
-            'path_to_labels': None,
-            'confidence_threshold': self.min_score,
-            'input_size': None,  # The CTPN specific
-            'num_classes': None,  # The NanoDet and NanoDetPlus specific
+            "resize_type": None,
+            "mean_values": None,
+            "scale_values": None,
+            "reverse_input_channels": True,
+            "path_to_labels": None,
+            "confidence_threshold": self.min_score,
+            "input_size": None,  # The CTPN specific
+            "num_classes": None,  # The NanoDet and NanoDetPlus specific
         }
 
         core = openvino.Core()

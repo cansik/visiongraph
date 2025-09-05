@@ -19,6 +19,7 @@ class ObjectAssignmentResult(Generic[T]):
     """
     Data class representing the result of an object assignment process.
     """
+
     assignments: Dict[T, Optional[T]]
     unassigned_destinations: List[T]
     costs: Dict[T, float]

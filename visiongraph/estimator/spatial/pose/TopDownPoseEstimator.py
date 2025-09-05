@@ -11,7 +11,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 from visiongraph.util import ImageUtils
 
-OutputType = TypeVar('OutputType', bound=PoseLandmarkResult)
+OutputType = TypeVar("OutputType", bound=PoseLandmarkResult)
 
 
 class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
@@ -19,10 +19,13 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
     A top-down pose estimator that uses a human detector to detect people and then estimates their pose.
     """
 
-    def __init__(self,
-                 human_detector: ObjectDetector[ObjectDetectionResult] = SSDDetector.create(
-                     SSDConfig.PersonDetection_0200_256x256_FP32),
-                 min_score: float = 0.5):
+    def __init__(
+        self,
+        human_detector: ObjectDetector[ObjectDetectionResult] = SSDDetector.create(
+            SSDConfig.PersonDetection_0200_256x256_FP32
+        ),
+        min_score: float = 0.5,
+    ):
         """
         Initializes the TopDownPoseEstimator.
 

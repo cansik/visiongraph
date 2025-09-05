@@ -13,13 +13,16 @@ pipeline: Optional[vg.VisionGraph] = None
 output_size = vg.Size2D(512, 512)
 blank_image = np.zeros((output_size.height, output_size.width, 3), dtype=np.uint8)
 
-normalized_keypoints = np.array([
-    [0.35703125, 0.489453125],  # left eye
-    [0.621875, 0.489453125],  # right eye
-    [0.489453125, 0.6603515625],  # tip of nose
-    [0.4103515625, 0.7603515625],  # left lip corner
-    [0.4103515625, 0.568359375],  # right lip corner
-], dtype=np.float32)
+normalized_keypoints = np.array(
+    [
+        [0.35703125, 0.489453125],  # left eye
+        [0.621875, 0.489453125],  # right eye
+        [0.489453125, 0.6603515625],  # tip of nose
+        [0.4103515625, 0.7603515625],  # left lip corner
+        [0.4103515625, 0.568359375],  # right lip corner
+    ],
+    dtype=np.float32,
+)
 
 
 def extract_landmarks(data) -> vg.ResultList[vg.FaceLandmarkResult]:
@@ -67,20 +70,27 @@ def main():
     global pipeline
     pipeline = (
         vg.create_graph(name="Face Texture Detection", handle_signals=True)
-        .apply(faces=vg.sequence(
-            # different networks
-            # vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
-            # vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(), landmarks=vg.RegressionLandmarkEstimator()),
-            vg.SpatialCascadeEstimator(vg.MediaPipeFaceDetector(
-                vg.MediaPipeFaceModel.Full_Range), landmarks=vg.RegressionLandmarkEstimator()),
-            # vg.MediaPipeFaceMeshEstimator(),
-            vg.custom(extract_landmarks),
-            vg.CentroidTracker(),
-            vg.LandmarkSmoothFilter(min_cutoff=1.0, beta=0.03)),
-            image=vg.passthrough())
+        .apply(
+            faces=vg.sequence(
+                # different networks
+                # vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
+                # vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(), landmarks=vg.RegressionLandmarkEstimator()),
+                vg.SpatialCascadeEstimator(
+                    vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
+                    landmarks=vg.RegressionLandmarkEstimator(),
+                ),
+                # vg.MediaPipeFaceMeshEstimator(),
+                vg.custom(extract_landmarks),
+                vg.CentroidTracker(),
+                vg.LandmarkSmoothFilter(min_cutoff=1.0, beta=0.03),
+            ),
+            image=vg.passthrough(),
+        )
         .then(vg.custom(extract_face_texture, recognizer), vg.ImagePreview("face", image_key=FACE_KEY))
-        .apply(share=vg.sequence(vg.extract(FACE_KEY), vg.FrameBufferSharingServer.create("face-texture")),
-               preview=vg.sequence(vg.ResultAnnotator(), vg.ImagePreview()))
+        .apply(
+            share=vg.sequence(vg.extract(FACE_KEY), vg.FrameBufferSharingServer.create("face-texture")),
+            preview=vg.sequence(vg.ResultAnnotator(), vg.ImagePreview()),
+        )
         .build()
     )
     pipeline.configure(args)

@@ -13,8 +13,9 @@ from visiongraph.util import ImageUtils
 ODR = TypeVar("ODR", bound=ObjectDetectionResult)
 
 
-def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold: float,
-                            eta: Optional[float] = None, top_k: Optional[int] = None) -> List[ODR]:
+def non_maximum_suppression(
+    results: List[ODR], min_score: float, iou_threshold: float, eta: Optional[float] = None, top_k: Optional[int] = None
+) -> List[ODR]:
     """
     Applies Non-Maximum Suppression (NMS) to filter out overlapping bounding boxes.
 
@@ -32,8 +33,7 @@ def non_maximum_suppression(results: List[ODR], min_score: float, iou_threshold:
     return [results[int(i)] for i in list(indices)]
 
 
-def extract_object_detection_roi(image: np.ndarray,
-                                 detection: ODR) -> Tuple[np.ndarray, ODR]:
+def extract_object_detection_roi(image: np.ndarray, detection: ODR) -> Tuple[np.ndarray, ODR]:
     """
     Extracts the region of interest (ROI) from an image based on the detected bounding box.
 

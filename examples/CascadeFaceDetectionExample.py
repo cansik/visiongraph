@@ -15,15 +15,16 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 class CascadeFaceDetectionExample(BaseGraph):
-
     def __init__(self, input: BaseInput):
         super().__init__()
         self.input = input
-        self.network = SpatialCascadeEstimator(AdasFaceDetector.create(),
-                                               landmarks=RegressionLandmarkEstimator(),
-                                               head_pose=AdasHeadPoseEstimator(),
-                                               # emotion=AffectNetEmotionClassifier(ModelPrecision.INT8),
-                                               emotion2=FERPlusEmotionClassifier())
+        self.network = SpatialCascadeEstimator(
+            AdasFaceDetector.create(),
+            landmarks=RegressionLandmarkEstimator(),
+            head_pose=AdasHeadPoseEstimator(),
+            # emotion=AffectNetEmotionClassifier(ModelPrecision.INT8),
+            emotion2=FERPlusEmotionClassifier(),
+        )
 
         self.add_nodes(self.input, self.network)
 

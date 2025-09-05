@@ -6,7 +6,6 @@ from visiongraph.util import OSUtils
 
 
 class ObjectDetectionTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.ObjectDetector):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -87,5 +86,5 @@ class ObjectDetectionTests(unittest.TestCase):
         self._test_model(vg.CrowdHumanDetector.create(vg.CrowdHumanConfig.YOLOv5_N_640))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

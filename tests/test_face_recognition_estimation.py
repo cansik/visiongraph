@@ -6,10 +6,10 @@ from visiongraph import vg
 
 
 class FaceRecognitionEstimationTests(unittest.TestCase):
-
     def setUp(self) -> None:
-        self.network = vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(),
-                                                  landmarks=vg.RegressionLandmarkEstimator())
+        self.network = vg.SpatialCascadeEstimator(
+            vg.AdasFaceDetector.create(), landmarks=vg.RegressionLandmarkEstimator()
+        )
         self.network.setup()
 
     def doCleanups(self) -> None:
@@ -33,5 +33,5 @@ class FaceRecognitionEstimationTests(unittest.TestCase):
         self._test_model(vg.FaceReidentificationEstimator.create(vg.FaceReidentificationConfig.Retail_0095_FP32))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

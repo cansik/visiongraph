@@ -5,7 +5,6 @@ from visiongraph import vg
 
 
 class InpaintTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.BaseInpainter):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
@@ -22,5 +21,5 @@ class InpaintTests(unittest.TestCase):
         self._test_model(vg.GMCNNInpainter.create(vg.GMCNNConfig.GMCNN_Places2_FP16))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

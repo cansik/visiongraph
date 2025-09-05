@@ -27,17 +27,17 @@ def dict_choice(table):
 
 def float_range(mini, maxi):
     """
-Return function handle of an argument type function for
-       ArgumentParser checking a float range: mini <= arg <= maxi
-         mini - minimum acceptable argument
-         maxi - maximum acceptable argument
-         """
+    Return function handle of an argument type function for
+           ArgumentParser checking a float range: mini <= arg <= maxi
+             mini - minimum acceptable argument
+             maxi - maximum acceptable argument
+    """
 
     # Define the function with default arguments
     def float_range_checker(arg):
         """
-New Type function for argparse - a float within predefined range.
-"""
+        New Type function for argparse - a float within predefined range.
+        """
 
         try:
             f = float(arg)
@@ -51,9 +51,14 @@ New Type function for argparse - a float within predefined range.
     return float_range_checker
 
 
-def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, Any],
-                             name: str, help: str = "", default: Optional[Union[int, str]] = 0,
-                             nargs: Optional[Union[str, int]] = None):
+def add_dict_choice_argument(
+    parser: argparse.ArgumentParser,
+    source: Dict[str, Any],
+    name: str,
+    help: str = "",
+    default: Optional[Union[int, str]] = 0,
+    nargs: Optional[Union[str, int]] = None,
+):
     """
     Add an argument to the ArgumentParser that uses a dictionary of choices.
 
@@ -80,13 +85,19 @@ def add_dict_choice_argument(parser: argparse.ArgumentParser, source: Dict[str, 
         help_text += "."
 
     choices = ",".join(list(source.keys()))
-    parser.add_argument(name, default=default_item, metavar=choices, nargs=nargs,
-                        type=dict_choice(source), help=help_text)
+    parser.add_argument(
+        name, default=default_item, metavar=choices, nargs=nargs, type=dict_choice(source), help=help_text
+    )
 
 
-def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, GraphNode],
-                             name: str, help: str = "", default: Optional[Union[int, str]] = 0,
-                             add_params: bool = True):
+def add_step_choice_argument(
+    parser: argparse.ArgumentParser,
+    steps: Dict[str, GraphNode],
+    name: str,
+    help: str = "",
+    default: Optional[Union[int, str]] = 0,
+    add_params: bool = True,
+):
     """
     Add an argument to the ArgumentParser that allows for choosing a step from a dictionary of GraphNodes.
 
@@ -105,8 +116,9 @@ def add_step_choice_argument(parser: argparse.ArgumentParser, steps: Dict[str, G
             steps[item].add_params(parser)
 
 
-def add_enum_choice_argument(parser: argparse.ArgumentParser, enum_type: Any, name: str, help: str = "",
-                             default: Optional[Any] = None):
+def add_enum_choice_argument(
+    parser: argparse.ArgumentParser, enum_type: Any, name: str, help: str = "", default: Optional[Any] = None
+):
     """
     Add an argument to the ArgumentParser that uses an enumeration type for choices.
 

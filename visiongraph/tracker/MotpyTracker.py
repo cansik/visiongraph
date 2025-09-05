@@ -14,13 +14,16 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
     A class to track multiple objects using the MOTPy tracker.
     """
 
-    def __init__(self, delta_time: float = 1.0 / 10.0,
-                 min_iou: float = 0.1,
-                 multi_match_min_iou: float = 1. + EPS,
-                 min_steps_alive: int = -1,
-                 max_staleness_to_positive_ratio: float = 3.0,
-                 max_staleness: float = 12.0,
-                 use_predicted_bounding_box: bool = False):
+    def __init__(
+        self,
+        delta_time: float = 1.0 / 10.0,
+        min_iou: float = 0.1,
+        multi_match_min_iou: float = 1.0 + EPS,
+        min_steps_alive: int = -1,
+        max_staleness_to_positive_ratio: float = 3.0,
+        max_staleness: float = 12.0,
+        use_predicted_bounding_box: bool = False,
+    ):
         """
         Initializes the MOTPyTracker with given parameters.
 
@@ -50,10 +53,11 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
         If the tracker is not initialized, it creates a new MultiObjectTracker instance.
         """
         if self.tracker is None:
-            self.tracker = MultiObjectTracker(dt=self.delta_time,
-                                              tracker_kwargs={'max_staleness': self.max_staleness},
-                                              matching_fn_kwargs={'min_iou': self.min_iou,
-                                                                  'multi_match_min_iou': self.multi_match_min_iou})
+            self.tracker = MultiObjectTracker(
+                dt=self.delta_time,
+                tracker_kwargs={"max_staleness": self.max_staleness},
+                matching_fn_kwargs={"min_iou": self.min_iou, "multi_match_min_iou": self.multi_match_min_iou},
+            )
 
     def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
@@ -63,8 +67,7 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
 
         :return: The list of tracked object detection results.
         """
-        detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True), reference=d)
-                      for d in data]
+        detections = [Detection(box=d.bounding_box.to_array(tl_br_format=True), reference=d) for d in data]
         self.tracker.step(detections)
         active_tracks = self.tracker.active_tracks(min_steps_alive=self.min_steps_alive)
 

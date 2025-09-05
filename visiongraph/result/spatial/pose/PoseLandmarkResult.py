@@ -25,7 +25,7 @@ DEFAULT_POSE_LANDMARKS = [
     "left_knee",
     "right_knee",
     "left_ankle",
-    "right_ankle"
+    "right_ankle",
 ]
 
 
@@ -46,9 +46,16 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         """
         super().__init__(POSE_DETECTION_ID, POSE_DETECTION_NAME, score, landmarks, bounding_box=bounding_box)
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, show_bounding_box: bool = False,
-                 min_score: float = 0, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        show_bounding_box: bool = False,
+        min_score: float = 0,
+        **kwargs,
+    ):
         """
         Annotates the image with the pose landmarks and optional information.
 
@@ -60,8 +67,9 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         :param min_score: Minimum score threshold for displaying landmarks.
         :param **kwargs: Additional keyword arguments for customization.
         """
-        super().annotate(image, show_info, info_text, color, show_bounding_box, min_score,
-                         connections=self.connections, **kwargs)
+        super().annotate(
+            image, show_info, info_text, color, show_bounding_box, min_score, connections=self.connections, **kwargs
+        )
 
     @property
     def default_landmarks(self) -> List[vector.Vector4D]:

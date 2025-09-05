@@ -142,8 +142,8 @@ def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: flo
     y2 = min(a[3], b[3])
 
     # AREA OF OVERLAP - Area where the boxes intersect
-    width = (x2 - x1)
-    height = (y2 - y1)
+    width = x2 - x1
+    height = y2 - y1
     # handle case where there is NO overlap
     if (width < 0) or (height < 0):
         return 0.0

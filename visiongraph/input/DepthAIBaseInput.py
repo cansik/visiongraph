@@ -35,7 +35,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         # settings
         self.queue_max_size: int = 1
 
-        self.color_sensor_resolution: dai.ColorCameraProperties.SensorResolution = dai.ColorCameraProperties.SensorResolution.THE_1080_P
+        self.color_sensor_resolution: dai.ColorCameraProperties.SensorResolution = (
+            dai.ColorCameraProperties.SensorResolution.THE_1080_P
+        )
 
         self.enable_color: bool = True
         self.enable_color_still: bool = False
@@ -55,7 +57,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self._iso_sensitivity: int = 400
 
         self._auto_white_balance: bool = True
-        self._auto_white_balance_mode: dai.CameraControl.AutoWhiteBalanceMode = dai.CameraControl.AutoWhiteBalanceMode.AUTO
+        self._auto_white_balance_mode: dai.CameraControl.AutoWhiteBalanceMode = (
+            dai.CameraControl.AutoWhiteBalanceMode.AUTO
+        )
         self._white_balance: int = 1000
 
         self._anti_banding_mode: dai.CameraControl.AntiBandingMode = dai.CameraControl.AntiBandingMode.OFF
@@ -123,12 +127,15 @@ class DepthAIBaseInput(BaseCamera, ABC):
 
         if self.enable_color:
             self.rgb_control_queue = self.device.getInputQueue(self.rgb_control_in_name)
-            self.rgb_isp_queue = self.device.getOutputQueue(name=self.rgb_isp_stream_name, maxSize=self.queue_max_size,
-                                                            blocking=False)
-            self.rgb_queue = self.device.getOutputQueue(name=self.rgb_stream_name, maxSize=self.queue_max_size,
-                                                        blocking=False)
-            self.rgb_still_queue = self.device.getOutputQueue(name=self.rgb_still_stream_name,
-                                                              maxSize=self.queue_max_size, blocking=False)
+            self.rgb_isp_queue = self.device.getOutputQueue(
+                name=self.rgb_isp_stream_name, maxSize=self.queue_max_size, blocking=False
+            )
+            self.rgb_queue = self.device.getOutputQueue(
+                name=self.rgb_stream_name, maxSize=self.queue_max_size, blocking=False
+            )
+            self.rgb_still_queue = self.device.getOutputQueue(
+                name=self.rgb_still_stream_name, maxSize=self.queue_max_size, blocking=False
+            )
 
             # wait for the first isp frame
             rgb_isp_frame = typing.cast(dai.ImgFrame, self.rgb_isp_queue.get())

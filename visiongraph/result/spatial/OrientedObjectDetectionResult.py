@@ -26,8 +26,14 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
         super().__init__(class_id, class_name, score, bounding_box)
         self.theta = theta
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        **kwargs,
+    ):
         """
         Annotates the given image with the bounding box and optional information.
 
@@ -54,10 +60,16 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
             if self.class_name is not None:
                 info_text += f"{self.class_name}"
 
-        cv2.putText(image, info_text,
-                    (round(self.bounding_box.x_min * w) - 5,
-                     round(self.bounding_box.y_min * h) - 5),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+        cv2.putText(
+            image,
+            info_text,
+            (round(self.bounding_box.x_min * w) - 5, round(self.bounding_box.y_min * h) - 5),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            color,
+            1,
+            cv2.LINE_AA,
+        )
 
     def draw_oriented_bbox2d(self, image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thickness: int = 2):
         """
@@ -71,12 +83,28 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
         h, w = image.shape[:2]
 
         center = bbox.center
-        self.draw_oriented_bbox(image, round(center.x * w), round(center.y * h),
-                                round(bbox.width * w), round(bbox.height * h),
-                                self.theta, color, thickness)
+        self.draw_oriented_bbox(
+            image,
+            round(center.x * w),
+            round(center.y * h),
+            round(bbox.width * w),
+            round(bbox.height * h),
+            self.theta,
+            color,
+            thickness,
+        )
 
-    def draw_oriented_bbox(self, image: np.ndarray, cx: int, cy: int, w: int, h: int, theta: float,
-                           color: Sequence[int], thickness: int = 2) -> None:
+    def draw_oriented_bbox(
+        self,
+        image: np.ndarray,
+        cx: int,
+        cy: int,
+        w: int,
+        h: int,
+        theta: float,
+        color: Sequence[int],
+        thickness: int = 2,
+    ) -> None:
         """
         Draws an oriented bounding box with the specified properties.
 

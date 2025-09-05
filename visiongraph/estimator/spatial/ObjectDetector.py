@@ -7,7 +7,7 @@ from visiongraph.estimator.VisionClassifier import VisionClassifier
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
-OutputType = TypeVar('OutputType', bound=ObjectDetectionResult)
+OutputType = TypeVar("OutputType", bound=ObjectDetectionResult)
 
 
 class ObjectDetector(VisionClassifier[ResultList[OutputType]], ABC):

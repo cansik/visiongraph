@@ -4,8 +4,8 @@ from typing import TypeVar
 from visiongraph.estimator.BaseEstimator import BaseEstimator
 from visiongraph.result.BaseResult import BaseResult
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType', bound=BaseResult)
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
 class ScoreThresholdEstimator(BaseEstimator[InputType, OutputType], ABC):

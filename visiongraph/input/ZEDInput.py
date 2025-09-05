@@ -13,6 +13,7 @@ class ZEDCapture:
     """
     A class for capturing ZED camera data.
     """
+
     timestamp: float = 0
     left_image: sl.Mat = sl.Mat()
     depth: sl.Mat = sl.Mat()
@@ -225,11 +226,7 @@ class ZEDInput(BaseDepthCamera):
         :return: The camera matrix as a 3x3 numpy array.
         """
         cam = self._get_camera_params()
-        return np.array([
-            [cam.fx, 0, cam.cx],
-            [0, cam.fy, cam.cy],
-            [0, 0, 1]
-        ], dtype=float)
+        return np.array([[cam.fx, 0, cam.cx], [0, cam.fy, cam.cy], [0, 0, 1]], dtype=float)
 
     def get_fisheye_distortion(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray:
         """
@@ -267,8 +264,9 @@ class ZEDInput(BaseDepthCamera):
 
         return str(self.camera.get_camera_information().serial_number)
 
-    def pre_process_image(self, image: np.ndarray,
-                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def pre_process_image(
+        self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
+    ) -> Optional[np.ndarray]:
         """
         Pre-processes the input image based on the stream type.
 

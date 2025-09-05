@@ -24,12 +24,14 @@ class ModuleAnalysisResult:
 
 
 class ModuleAnalyzer:
-    def __init__(self,
-                 root_package: str,
-                 excluded_modules: Set[str],
-                 late_import_modules: Set[str],
-                 optional_modules: Set[str],
-                 module_with_methods: Set[str]) -> None:
+    def __init__(
+        self,
+        root_package: str,
+        excluded_modules: Set[str],
+        late_import_modules: Set[str],
+        optional_modules: Set[str],
+        module_with_methods: Set[str],
+    ) -> None:
         self.root_package = root_package
         self.excluded_modules = excluded_modules
         self.late_import_modules = late_import_modules
@@ -156,20 +158,16 @@ class VisiongraphAnalyzer:
             "OpenGL",
             "syphon",
             "SpoutGL",
-            "filterpy"
+            "filterpy",
         }
-        self.module_with_methods = {
-            "visiongraph.util",
-            "visiongraph.VisionGraphBuilder",
-            "visiongraph.estimator"
-        }
+        self.module_with_methods = {"visiongraph.util", "visiongraph.VisionGraphBuilder", "visiongraph.estimator"}
 
         self.module_analyzer = ModuleAnalyzer(
             root_package=self.root_package,
             excluded_modules=self.excluded_modules,
             late_import_modules=self.late_import_modules,
             optional_modules=self.optional_modules,
-            module_with_methods=self.module_with_methods
+            module_with_methods=self.module_with_methods,
         )
 
     def analyze(self) -> ModuleAnalysisResult:

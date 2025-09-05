@@ -10,9 +10,9 @@ class RepositoryAsset(Asset):
     Represents an asset stored in a repository.
     """
 
-    def __init__(self, name: str,
-                 repository_url: str = PUBLIC_DATA_URL,
-                 headers: Optional[Dict[str, Any]] = PUBLIC_DATA_HEADERS):
+    def __init__(
+        self, name: str, repository_url: str = PUBLIC_DATA_URL, headers: Optional[Dict[str, Any]] = PUBLIC_DATA_HEADERS
+    ):
         """
         Initializes a RepositoryAsset object.
 
@@ -53,9 +53,7 @@ class RepositoryAsset(Asset):
         """
         Prepares the asset by downloading its contents from the repository URL and saving it locally.
         """
-        self._local_path = prepare_data_file(self.name,
-                                             f"{self.repository_url}{self.name}",
-                                             headers=self.headers)
+        self._local_path = prepare_data_file(self.name, f"{self.repository_url}{self.name}", headers=self.headers)
 
     def __repr__(self):
         return self.name

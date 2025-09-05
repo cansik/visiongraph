@@ -22,10 +22,16 @@ class KAPAOPoseConfig(Enum):
 
 
 class KAPAOPoseEstimator(PoseEstimator):
-    def __init__(self, *assets: Asset, num_keypoints: int,
-                 min_score: float = 0.7, nms_threshold: float = 0.45,
-                 kp_min_score: float = 0.1, kp_nms_threshold: float = 0.95,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(
+        self,
+        *assets: Asset,
+        num_keypoints: int,
+        min_score: float = 0.7,
+        nms_threshold: float = 0.45,
+        kp_min_score: float = 0.1,
+        kp_nms_threshold: float = 0.95,
+        engine: InferenceEngine = InferenceEngine.ONNX,
+    ):
         """
         Initializes the KAPAOPoseEstimator with the given parameters.
 
@@ -47,17 +53,14 @@ class KAPAOPoseEstimator(PoseEstimator):
 
         self.overwrite_tol = 25
 
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    scale=255.0,
-                                                    padding=True)
+        self.engine = InferenceEngineFactory.create(engine, assets, flip_channels=True, scale=255.0, padding=True)
         # set padding color
         self.engine.padding_color = (114, 114, 114)
 
     def setup(self):
         """
-Sets up the inference engine.
-"""
+        Sets up the inference engine.
+        """
         self.engine.setup()
 
     def process(self, image: np.ndarray) -> ResultList[COCOPose]:
@@ -75,8 +78,9 @@ Sets up the inference engine.
         prediction = output[self.engine.output_names[0]]
 
         person_dets = self._nms_predictions(prediction, self.min_score, self.nms_threshold, classes=[0])
-        kp_dets = self._nms_predictions(prediction, self.kp_min_score, self.kp_nms_threshold,
-                                        classes=list(range(1, 1 + self.num_keypoints)))
+        kp_dets = self._nms_predictions(
+            prediction, self.kp_min_score, self.kp_nms_threshold, classes=list(range(1, 1 + self.num_keypoints))
+        )
 
         _, raw_poses, pose_scores, _, _ = self._post_process_batch(person_dets, kp_dets)
 
@@ -97,12 +101,13 @@ Sets up the inference engine.
 
     def release(self):
         """
-Releases resources held by the inference engine.
-"""
+        Releases resources held by the inference engine.
+        """
         self.engine.release()
 
-    def _nms_predictions(self, prediction: np.ndarray, threshold: float, nms_threshold: float,
-                         classes: Optional[List[int]] = None) -> List[np.ndarray]:
+    def _nms_predictions(
+        self, prediction: np.ndarray, threshold: float, nms_threshold: float, classes: Optional[List[int]] = None
+    ) -> List[np.ndarray]:
         """
         Applies Non-Maximum Suppression (NMS) to filter predictions.
 
@@ -123,12 +128,12 @@ Releases resources held by the inference engine.
             x = x[xc[xi]]
 
             # calculate confidence
-            x[:, 5:5 + self.num_keypoints] *= x[:, 4:5]
+            x[:, 5 : 5 + self.num_keypoints] *= x[:, 4:5]
 
-            kp_conf = x[:, 5:5 + self.num_keypoints]
-            j = np.argmax(x[:, 5:5 + self.num_keypoints], 1, keepdims=True)
+            kp_conf = x[:, 5 : 5 + self.num_keypoints]
+            j = np.argmax(x[:, 5 : 5 + self.num_keypoints], 1, keepdims=True)
             confidences = kp_conf[range(kp_conf.shape[0]), j.flatten()]
-            kp = x[:, 5 + self.num_keypoints + 1:]
+            kp = x[:, 5 + self.num_keypoints + 1 :]
             boxes = self._xywh2xyxy(x[:, :4])
 
             # Filter by class

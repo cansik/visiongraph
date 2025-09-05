@@ -13,15 +13,70 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
 from visiongraph.util.VectorUtils import list_of_vector4D
 
-_MAP_INDEX = [[31, 32], [39, 40], [33, 34], [35, 36], [41, 42], [43, 44], [19, 20], [21, 22], [23, 24], [25, 26],
-              [27, 28], [29, 30], [47, 48], [49, 50], [53, 54], [51, 52], [55, 56], [37, 38], [45, 46]]
+_MAP_INDEX = [
+    [31, 32],
+    [39, 40],
+    [33, 34],
+    [35, 36],
+    [41, 42],
+    [43, 44],
+    [19, 20],
+    [21, 22],
+    [23, 24],
+    [25, 26],
+    [27, 28],
+    [29, 30],
+    [47, 48],
+    [49, 50],
+    [53, 54],
+    [51, 52],
+    [55, 56],
+    [37, 38],
+    [45, 46],
+]
 
-_POSE_PAIRS = [[1, 2], [1, 5], [2, 3], [3, 4], [5, 6], [6, 7], [1, 8], [8, 9], [9, 10], [1, 11], [11, 12], [12, 13],
-               [1, 0], [0, 14], [14, 16], [0, 15], [15, 17], [2, 17], [5, 16]]
+_POSE_PAIRS = [
+    [1, 2],
+    [1, 5],
+    [2, 3],
+    [3, 4],
+    [5, 6],
+    [6, 7],
+    [1, 8],
+    [8, 9],
+    [9, 10],
+    [1, 11],
+    [11, 12],
+    [12, 13],
+    [1, 0],
+    [0, 14],
+    [14, 16],
+    [0, 15],
+    [15, 17],
+    [2, 17],
+    [5, 16],
+]
 
-_COLORS = [[0, 100, 255], [0, 100, 255], [0, 255, 255], [0, 100, 255], [0, 255, 255], [0, 100, 255], [0, 255, 0],
-           [255, 200, 100], [255, 0, 255], [0, 255, 0], [255, 200, 100], [255, 0, 255], [0, 0, 255], [255, 0, 0],
-           [200, 200, 0], [255, 0, 0], [200, 200, 0], [0, 0, 0]]
+_COLORS = [
+    [0, 100, 255],
+    [0, 100, 255],
+    [0, 255, 255],
+    [0, 100, 255],
+    [0, 255, 255],
+    [0, 100, 255],
+    [0, 255, 0],
+    [255, 200, 100],
+    [255, 0, 255],
+    [0, 255, 0],
+    [255, 200, 100],
+    [255, 0, 255],
+    [0, 0, 255],
+    [255, 0, 0],
+    [200, 200, 0],
+    [255, 0, 0],
+    [200, 200, 0],
+    [0, 0, 0],
+]
 
 
 class MobileNetV2PoseEstimatorConfig(Enum):
@@ -29,6 +84,7 @@ class MobileNetV2PoseEstimatorConfig(Enum):
     Enumeration of MobileNetV2 Pose Estimator configurations.
     Each configuration corresponds to a specific model and weight variant.
     """
+
     MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp16")
     MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp32")
     MNV2PE_0_5_224_QUANT_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224_quant-fp16")
@@ -53,8 +109,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
     :param device: Device type for running the model. Defaults to "AUTO".
     """
 
-    def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.2, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, min_score: float = 0.2, device: str = "AUTO"):
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
@@ -204,12 +259,20 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
                             d_ij = d_ij / norm
                         else:
                             continue
-                        interp_coord = list(zip(np.linspace(candA[i][0], candB[j][0], num=n_interp_samples),
-                                                np.linspace(candA[i][1], candB[j][1], num=n_interp_samples)))
+                        interp_coord = list(
+                            zip(
+                                np.linspace(candA[i][0], candB[j][0], num=n_interp_samples),
+                                np.linspace(candA[i][1], candB[j][1], num=n_interp_samples),
+                            )
+                        )
                         paf_interp = []
                         for k in range(len(interp_coord)):
-                            paf_interp.append([pafA[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))],
-                                               pafB[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))]])
+                            paf_interp.append(
+                                [
+                                    pafA[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))],
+                                    pafB[int(round(interp_coord[k][1])), int(round(interp_coord[k][0]))],
+                                ]
+                            )
                         paf_scores = np.dot(paf_interp, d_ij)
                         avg_paf_score = sum(paf_scores) / len(paf_scores)
 
@@ -257,8 +320,9 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
 
                     if found:
                         personwiseKeypoints[person_idx][indexB] = partBs[i]
-                        personwiseKeypoints[person_idx][-1] += keypoints_list[partBs[i].astype(int), 2] + \
-                            valid_pairs[k][i][2]
+                        personwiseKeypoints[person_idx][-1] += (
+                            keypoints_list[partBs[i].astype(int), 2] + valid_pairs[k][i][2]
+                        )
 
                     elif not found and k < 17:
                         row = -1 * np.ones(19)
@@ -269,8 +333,9 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         return personwiseKeypoints
 
     @staticmethod
-    def create(config: MobileNetV2PoseEstimatorConfig
-               = MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32) -> "MobileNetV2PoseEstimator":
+    def create(
+        config: MobileNetV2PoseEstimatorConfig = MobileNetV2PoseEstimatorConfig.MNV2PE_1_4_224_FP32,
+    ) -> "MobileNetV2PoseEstimator":
         """
         Factory method to create a MobileNetV2PoseEstimator instance.
 

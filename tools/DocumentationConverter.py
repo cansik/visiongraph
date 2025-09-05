@@ -95,12 +95,7 @@ def convert_docstring_to_rst(code: str) -> str:
         return '"""' + "\n" + "\n".join(rst_lines) + "\n" + intent + '"""'
 
     # Replace Python docstrings with reStructuredText docstrings
-    rst_code = re.sub(
-        r'"""(\s*.*?\s*)"""',
-        extract_and_convert_docstring,
-        code,
-        flags=re.DOTALL
-    )
+    rst_code = re.sub(r'"""(\s*.*?\s*)"""', extract_and_convert_docstring, code, flags=re.DOTALL)
 
     return rst_code
 

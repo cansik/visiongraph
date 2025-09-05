@@ -111,8 +111,13 @@ class _VisionGraphBuilder:
         return graph
 
 
-def create_graph(input_node: Optional[BaseInput] = None, name: str = "VisionGraph", multi_threaded: bool = False,
-                 daemon: bool = False, handle_signals: bool = False) -> _VisionGraphBuilder:
+def create_graph(
+    input_node: Optional[BaseInput] = None,
+    name: str = "VisionGraph",
+    multi_threaded: bool = False,
+    daemon: bool = False,
+    handle_signals: bool = False,
+) -> _VisionGraphBuilder:
     """
     Creates a new VisionGraph instance with the given input node and options.
 
@@ -124,5 +129,8 @@ def create_graph(input_node: Optional[BaseInput] = None, name: str = "VisionGrap
 
     :return: The builder instance for creating the VisionGraph.
     """
-    return _VisionGraphBuilder(VisionGraph(input=input_node, name=name, multi_threaded=multi_threaded,
-                                           daemon=daemon, handle_signals=handle_signals))
+    return _VisionGraphBuilder(
+        VisionGraph(
+            input=input_node, name=name, multi_threaded=multi_threaded, daemon=daemon, handle_signals=handle_signals
+        )
+    )

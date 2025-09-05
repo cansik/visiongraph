@@ -4,7 +4,7 @@ import numpy as np
 
 from visiongraph.result.BaseResult import BaseResult
 
-ResultType = TypeVar('ResultType', bound=BaseResult)
+ResultType = TypeVar("ResultType", bound=BaseResult)
 
 
 class ResultList(List[ResultType], BaseResult):

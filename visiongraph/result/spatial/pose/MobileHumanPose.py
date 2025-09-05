@@ -4,10 +4,30 @@ import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
-MOBILE_HUMAN_POSE_CONNECTIONS = frozenset([
-    (0, 16), (16, 1), (1, 15), (15, 14), (14, 8), (14, 11), (8, 9), (9, 10), (10, 19), (11, 12), (12, 13), (13, 20),
-    (1, 2), (2, 3), (3, 4), (4, 17), (1, 5), (5, 6), (6, 7), (7, 18)
-])
+MOBILE_HUMAN_POSE_CONNECTIONS = frozenset(
+    [
+        (0, 16),
+        (16, 1),
+        (1, 15),
+        (15, 14),
+        (14, 8),
+        (14, 11),
+        (8, 9),
+        (9, 10),
+        (10, 19),
+        (11, 12),
+        (12, 13),
+        (13, 20),
+        (1, 2),
+        (2, 3),
+        (3, 4),
+        (4, 17),
+        (1, 5),
+        (5, 6),
+        (6, 7),
+        (7, 18),
+    ]
+)
 """
 A frozen set of tuples representing the connections between key points
 of a mobile human pose model.

@@ -4,8 +4,8 @@ from typing import TypeVar, Optional
 
 from visiongraph.GraphNode import GraphNode
 
-InputType = TypeVar('InputType')
-OutputType = TypeVar('OutputType')
+InputType = TypeVar("InputType")
+OutputType = TypeVar("OutputType")
 
 
 class AsyncGraphNode(GraphNode[InputType, OutputType]):
@@ -16,9 +16,13 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
     with support for asynchronous execution.
     """
 
-    def __init__(self, node: GraphNode[InputType, OutputType],
-                 input_queue_size: int = 1, output_queue_size: int = 1,
-                 daemon: bool = True):
+    def __init__(
+        self,
+        node: GraphNode[InputType, OutputType],
+        input_queue_size: int = 1,
+        output_queue_size: int = 1,
+        daemon: bool = True,
+    ):
         """
         Initializes an instance of the AsyncGraphNode class.
 

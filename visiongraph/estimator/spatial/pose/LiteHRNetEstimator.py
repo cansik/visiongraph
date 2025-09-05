@@ -19,6 +19,7 @@ class LiteHRNetConfig(Enum):
     """
     Enumeration for LiteHRNet model configurations with corresponding assets.
     """
+
     LiteHRNet_18_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp16")
     LiteHRNet_18_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp32")
     LiteHRNet_18_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp16")
@@ -41,11 +42,16 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
     A pose estimator based on the LiteHRNet architecture for detecting human poses.
     """
 
-    def __init__(self,
-                 model: Asset, weights: Asset,
-                 human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
-                 min_score: float = 0.3, enable_nms: bool = True, iou_threshold: float = 0.4,
-                 device: str = "AUTO"):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Asset,
+        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
+        min_score: float = 0.3,
+        enable_nms: bool = True,
+        iou_threshold: float = 0.4,
+        device: str = "AUTO",
+    ):
         """
         Initializes the LiteHRNetPoseEstimator with the specified model, weights, and parameters.
 

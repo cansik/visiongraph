@@ -48,10 +48,10 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
         super(BaseDepthInput, BaseDepthInput).add_params(parser)
 
         try:
-            parser.add_argument("--depth", action="store_true",
-                                help="Enable RealSense depth stream.")
-            parser.add_argument("--depth-as-input", action="store_true",
-                                help="Use colored depth stream as input stream.")
+            parser.add_argument("--depth", action="store_true", help="Enable RealSense depth stream.")
+            parser.add_argument(
+                "--depth-as-input", action="store_true", help="Use colored depth stream as input stream."
+            )
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return

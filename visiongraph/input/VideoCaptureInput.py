@@ -18,8 +18,7 @@ class VideoCaptureInput(BaseInput):
     A class to handle video capture from a camera or video file.
     """
 
-    def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1,
-                 loop: bool = True, fps_lock: bool = False):
+    def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1, loop: bool = True, fps_lock: bool = False):
         """
         Initializes the VideoCaptureInput with specified parameters.
 
@@ -131,12 +130,22 @@ class VideoCaptureInput(BaseInput):
         super(VideoCaptureInput, VideoCaptureInput).add_params(parser)
 
         try:
-            parser.add_argument("--channel", type=str, default=0,
-                                help="Input device channel (camera id, video path, image sequence).")
-            parser.add_argument("--input-skip", type=int, default=-1,
-                                help="If set the input will be skipped to the value in milliseconds.")
-            add_dict_choice_argument(parser, VideoCaptureBackend, "--input-backend",
-                                     help="VideoCapture API backends identifier.", default="any")
+            parser.add_argument(
+                "--channel", type=str, default=0, help="Input device channel (camera id, video path, image sequence)."
+            )
+            parser.add_argument(
+                "--input-skip",
+                type=int,
+                default=-1,
+                help="If set the input will be skipped to the value in milliseconds.",
+            )
+            add_dict_choice_argument(
+                parser,
+                VideoCaptureBackend,
+                "--input-backend",
+                help="VideoCapture API backends identifier.",
+                default="any",
+            )
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return
@@ -153,8 +162,10 @@ class VideoCaptureInput(BaseInput):
         if not self._is_cap_open():
             logging.warning("Could not open VideoCapture, please check if channel is correct.")
 
-        if not (self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width) and
-                self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)):
+        if not (
+            self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, self.width)
+            and self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, self.height)
+        ):
             # if not settable-try to read
             self.width = int(self._cap.get(cv2.CAP_PROP_FRAME_WIDTH))
             self.height = int(self._cap.get(cv2.CAP_PROP_FRAME_HEIGHT))

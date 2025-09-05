@@ -23,10 +23,17 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
     :param ABC: Abstract Base Class for defining abstract methods.
     """
 
-    def __init__(self, *assets: Asset, labels: List[str], min_score: float = 0.3,
-                 nms: bool = True, nms_threshold: float = 0.5,
-                 nms_eta: Optional[float] = None, nms_top_k: Optional[int] = None,
-                 engine: InferenceEngine = InferenceEngine.ONNX):
+    def __init__(
+        self,
+        *assets: Asset,
+        labels: List[str],
+        min_score: float = 0.3,
+        nms: bool = True,
+        nms_threshold: float = 0.5,
+        nms_eta: Optional[float] = None,
+        nms_top_k: Optional[int] = None,
+        engine: InferenceEngine = InferenceEngine.ONNX,
+    ):
         """
         Initializes the UltralyticsYOLODetector instance.
 
@@ -40,10 +47,7 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         :param engine: Inference engine type.
         """
         super().__init__(min_score)
-        self.engine = InferenceEngineFactory.create(engine, assets,
-                                                    flip_channels=True,
-                                                    scale=255.0,
-                                                    padding=True)
+        self.engine = InferenceEngineFactory.create(engine, assets, flip_channels=True, scale=255.0, padding=True)
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
@@ -83,8 +87,9 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
             results.append(detection)
 
         if self.nms:
-            results = ResultList(non_maximum_suppression(results, self.min_score, self.nms_threshold,
-                                                         self.nms_eta, self.nms_top_k))
+            results = ResultList(
+                non_maximum_suppression(results, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k)
+            )
         return results
 
     def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
@@ -98,7 +103,7 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         """
         predictions = predictions.T
 
-        scores = np.max(predictions[:, 4:4 + len(self.labels)], axis=1)
+        scores = np.max(predictions[:, 4 : 4 + len(self.labels)], axis=1)
         valid_indices = scores > self.min_score
         predictions = predictions[valid_indices, :]
         return predictions, scores[valid_indices]
@@ -132,8 +137,7 @@ class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
         wh = pred_bbox[2:]
         xy = pred_bbox[:2]
         xy -= wh * 0.5
-        bbox = BoundingBox2D(float(xy[0]), float(xy[1]),
-                             float(wh[0]), float(wh[1])).scale(1 / w, 1 / h)
+        bbox = BoundingBox2D(float(xy[0]), float(xy[1]), float(wh[0]), float(wh[1])).scale(1 / w, 1 / h)
 
         return ObjectDetectionResult(label_index, self.labels[label_index], float(score), bbox)
 

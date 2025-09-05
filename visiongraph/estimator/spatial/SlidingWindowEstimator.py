@@ -9,7 +9,7 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.util import ResultUtils
 
-OutputType = TypeVar('OutputType', bound=ObjectDetectionResult)
+OutputType = TypeVar("OutputType", bound=ObjectDetectionResult)
 """
 Generic type variable for the output type of the Object Detection result derived from ObjectDetectionResult.
 """
@@ -20,9 +20,14 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
     Sliding Window Estimator that applies object detection on sliding windows.
     """
 
-    def __init__(self, network: ObjectDetector[OutputType],
-                 step_size: int, window_size: Tuple[int, int],
-                 min_score: float = 0.5, iou_threshold: float = 0.3):
+    def __init__(
+        self,
+        network: ObjectDetector[OutputType],
+        step_size: int,
+        window_size: Tuple[int, int],
+        min_score: float = 0.5,
+        iou_threshold: float = 0.3,
+    ):
         """
         Initializes the Sliding Window Estimator.
 
@@ -86,14 +91,14 @@ class SlidingWindowEstimator(ObjectDetector[OutputType]):
     @staticmethod
     def _sliding_window(image, step_size, window_size) -> Tuple[int, int, np.ndarray]:
         """
-        Generate sliding windows over an input image.
+                Generate sliding windows over an input image.
 
-        :param image: The input image.
-        :param step_size: The step size for sliding the window.
-        :param window_size: The size of the sliding window.
+                :param image: The input image.
+                :param step_size: The step size for sliding the window.
+                :param window_size: The size of the sliding window.
 
-:param Yields: 
+        :param Yields:
         """
         for y in range(0, image.shape[0], step_size):
             for x in range(0, image.shape[1], step_size):
-                yield x, y, image[y:y + window_size[1], x:x + window_size[0]]
+                yield x, y, image[y : y + window_size[1], x : x + window_size[0]]

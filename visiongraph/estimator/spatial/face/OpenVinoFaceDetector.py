@@ -18,6 +18,7 @@ class OpenVinoFaceConfig(Enum):
     """
     Enumeration of available OpenVino face detection model configurations.
     """
+
     MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8")
     MobileNetV2_256_FP16 = RepositoryAsset.openVino("face-detection-0200-fp16")
     MobileNetV2_256_FP32 = RepositoryAsset.openVino("face-detection-0200-fp32")

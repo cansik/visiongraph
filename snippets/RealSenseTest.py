@@ -3,9 +3,7 @@ import numpy as np
 
 
 def camera_matrix(intrinsics):
-    return np.array([[intrinsics.fx, 0, intrinsics.ppx],
-                     [0, intrinsics.fy, intrinsics.ppy],
-                     [0, 0, 1]])
+    return np.array([[intrinsics.fx, 0, intrinsics.ppx], [0, intrinsics.fy, intrinsics.ppy], [0, 0, 1]])
 
 
 def fisheye_distortion(intrinsics):

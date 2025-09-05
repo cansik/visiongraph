@@ -14,6 +14,7 @@ def _get_onnx_vision_engine_type():
     :return: The ONNXVisionEngine class type.
     """
     from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
+
     return ONNXVisionEngine
 
 
@@ -24,6 +25,7 @@ def _get_open_vino_engine_type():
     :return: The OpenVinoEngine class type.
     """
     from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
+
     return OpenVinoEngine
 
 
@@ -36,6 +38,7 @@ class InferenceEngine(Enum):
     - OpenVINO: OpenVinoEngine
     - OpenVINO2: OpenVinoEngine (deprecated, use OpenVINO)
     """
+
     ONNX = partial(_get_onnx_vision_engine_type)
     OpenVINO = partial(_get_open_vino_engine_type)
     OpenVINO2 = partial(_get_open_vino_engine_type)
@@ -44,15 +47,15 @@ class InferenceEngine(Enum):
 class InferenceEngineFactory:
     @staticmethod
     def create(
-            engine: InferenceEngine,
-            assets: Sequence[Asset],
-            flip_channels: bool = True,
-            scale: Optional[Union[float, Sequence[float]]] = None,
-            mean: Optional[Union[float, Sequence[float]]] = None,
-            padding: bool = False,
-            transpose: bool = True,
-            order: InputShapeOrder = InputShapeOrder.NCHW,
-            **engine_options: Any
+        engine: InferenceEngine,
+        assets: Sequence[Asset],
+        flip_channels: bool = True,
+        scale: Optional[Union[float, Sequence[float]]] = None,
+        mean: Optional[Union[float, Sequence[float]]] = None,
+        padding: bool = False,
+        transpose: bool = True,
+        order: InputShapeOrder = InputShapeOrder.NCHW,
+        **engine_options: Any,
     ) -> BaseVisionEngine:
         """
         Creates an instance of a vision engine based on the selected inference engine type.
@@ -75,8 +78,9 @@ class InferenceEngineFactory:
             raise Exception("No model or weights provided for vision engine! At least one is required!")
 
         engine_type = engine.value()
-        instance = engine_type(*assets, flip_channels=flip_channels, scale=scale, mean=mean,
-                               padding=padding, **engine_options)
+        instance = engine_type(
+            *assets, flip_channels=flip_channels, scale=scale, mean=mean, padding=padding, **engine_options
+        )
         instance.transpose = transpose
         instance.order = order
         return instance

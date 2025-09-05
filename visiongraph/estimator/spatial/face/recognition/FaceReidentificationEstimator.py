@@ -40,12 +40,16 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
 
         # left eye, right eye, tip of nose, left lip corner, right lip corner
         # https://docs.openvino.ai/latest/omz_models_model_face_reidentification_retail_0095.html
-        self.normalized_keypoints = np.array([[0.31556875000000000, 0.4615741071428571],
-                                              [0.68262291666666670, 0.4615741071428571],
-                                              [0.50026249999999990, 0.6405053571428571],
-                                              [0.34947187500000004, 0.8246919642857142],
-                                              [0.65343645833333330, 0.8246919642857142]
-                                              ], dtype=np.float32)
+        self.normalized_keypoints = np.array(
+            [
+                [0.31556875000000000, 0.4615741071428571],
+                [0.68262291666666670, 0.4615741071428571],
+                [0.50026249999999990, 0.6405053571428571],
+                [0.34947187500000004, 0.8246919642857142],
+                [0.65343645833333330, 0.8246919642857142],
+            ],
+            dtype=np.float32,
+        )
 
     def setup(self):
         """
@@ -93,8 +97,9 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         pass
 
     @staticmethod
-    def create(config: FaceReidentificationConfig = FaceReidentificationConfig.Retail_0095_FP32) -> \
-            "FaceReidentificationEstimator":
+    def create(
+        config: FaceReidentificationConfig = FaceReidentificationConfig.Retail_0095_FP32,
+    ) -> "FaceReidentificationEstimator":
         """
         Creates a new instance of the estimator based on a given configuration.
 

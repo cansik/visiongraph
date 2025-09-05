@@ -9,6 +9,7 @@ class RealSenseColorScheme(Enum):
     including common ones like Jet, Classic, and Quantized, as well as some specialized ones
     like Bio and Cold. These schemes can be used to adjust the color balance of the camera's output.
     """
+
     Jet = 0
     Classic = 1
     WhiteToBlack = 2

@@ -58,9 +58,11 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return ix, iy
 
     @staticmethod
-    def _colorize(image: np.ndarray,
-                  clipping_range: Tuple[Optional[int], Optional[int]] = (None, None),
-                  colormap: Optional[int] = None) -> np.ndarray:
+    def _colorize(
+        image: np.ndarray,
+        clipping_range: Tuple[Optional[int], Optional[int]] = (None, None),
+        colormap: Optional[int] = None,
+    ) -> np.ndarray:
         """
         Colorizes a depth image within a specified clipping range.
 
@@ -85,8 +87,9 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return img
 
     @abstractmethod
-    def pre_process_image(self, image: np.ndarray,
-                          stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def pre_process_image(
+        self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
+    ) -> Optional[np.ndarray]:
         """
         Pre-processes the input image based on the stream type.
 
@@ -108,8 +111,12 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         """
         pass
 
-    def get_image(self, stream_type: CameraStreamType = CameraStreamType.Color,
-                  pre_processed: bool = True, post_processed: bool = True) -> Optional[np.ndarray]:
+    def get_image(
+        self,
+        stream_type: CameraStreamType = CameraStreamType.Color,
+        pre_processed: bool = True,
+        post_processed: bool = True,
+    ) -> Optional[np.ndarray]:
         """
         Retrieves and processes the image from the camera stream.
 
@@ -200,8 +207,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         BaseDepthInput.add_params(parser)
 
         try:
-            parser.add_argument("-ir", "--infrared", action="store_true",
-                                help="Use infrared as input stream.")
+            parser.add_argument("-ir", "--infrared", action="store_true", help="Use infrared as input stream.")
         except ArgumentError as ex:
             if ex.message.startswith("conflicting"):
                 return

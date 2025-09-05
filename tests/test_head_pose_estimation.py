@@ -5,7 +5,6 @@ from visiongraph import vg
 
 
 class HeadPoseEstimationTests(unittest.TestCase):
-
     @staticmethod
     def _test_model(model: vg.HeadPoseEstimator):
         image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
@@ -18,5 +17,5 @@ class HeadPoseEstimationTests(unittest.TestCase):
         self._test_model(vg.AdasHeadPoseEstimator())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

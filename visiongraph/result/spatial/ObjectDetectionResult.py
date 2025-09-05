@@ -30,8 +30,14 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         self._staleness = 0
         self._bounding_box = bounding_box
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        **kwargs,
+    ):
         """
         Annotates an image with the object detection result.
 
@@ -60,10 +66,16 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
             if self.class_name is not None:
                 info_text += f"{self.class_name}"
 
-        cv2.putText(image, info_text,
-                    (round(self.bounding_box.x_min * w) - 5,
-                     round(self.bounding_box.y_min * h) - 5),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1, cv2.LINE_AA)
+        cv2.putText(
+            image,
+            info_text,
+            (round(self.bounding_box.x_min * w) - 5, round(self.bounding_box.y_min * h) - 5),
+            cv2.FONT_HERSHEY_SIMPLEX,
+            0.5,
+            color,
+            1,
+            cv2.LINE_AA,
+        )
 
     @property
     def bounding_box(self) -> BoundingBox2D:
@@ -137,8 +149,13 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         """
         return self._staleness > 0
 
-    def map_coordinates(self, src_size: Union[Sequence[float], Size2D], dest_size: Union[Sequence[float], Size2D],
-                        src_roi: Optional[BoundingBox2D] = None, dest_roi: Optional[BoundingBox2D] = None):
+    def map_coordinates(
+        self,
+        src_size: Union[Sequence[float], Size2D],
+        dest_size: Union[Sequence[float], Size2D],
+        src_roi: Optional[BoundingBox2D] = None,
+        dest_roi: Optional[BoundingBox2D] = None,
+    ):
         """
         Maps the coordinates of the bounding box from source size to destination size.
 

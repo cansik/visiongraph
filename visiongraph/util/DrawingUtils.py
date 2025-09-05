@@ -28,7 +28,7 @@ COLOR_SEQUENCE = [
     (170, 255, 195),
     (128, 128, 0),
     (255, 215, 180),
-    (255, 255, 255)
+    (255, 255, 255),
 ]
 
 """
@@ -113,27 +113,25 @@ COCO80_COLORS = [
     (145, 145, 145),
     (182, 182, 182),
     (218, 218, 218),
-    (255, 255, 255)
+    (255, 255, 255),
 ]
 
 """
 Colors used for drawing axes: blue for x-axis, green for y-axis, and red for z-axis.
 """
-AXIS_COLORS = [
-    (0, 0, 255),
-    (0, 255, 0),
-    (255, 0, 0)
-]
+AXIS_COLORS = [(0, 0, 255), (0, 255, 0), (255, 0, 0)]
 
 
-def draw_text(image: np.ndarray,
-              text: str,
-              position: Sequence[int],
-              font: int = cv2.FONT_HERSHEY_SIMPLEX,
-              font_scale: float = 1.0,
-              color: Sequence[int] = (255, 255, 255),
-              thickness: int = 1,
-              **kwargs):
+def draw_text(
+    image: np.ndarray,
+    text: str,
+    position: Sequence[int],
+    font: int = cv2.FONT_HERSHEY_SIMPLEX,
+    font_scale: float = 1.0,
+    color: Sequence[int] = (255, 255, 255),
+    thickness: int = 1,
+    **kwargs,
+):
     """
     Draws text on an image at a specified position.
 
@@ -149,14 +147,16 @@ def draw_text(image: np.ndarray,
     cv2.putText(image, text, position, font, font_scale, color, thickness, **kwargs)
 
 
-def draw_text_normalized(image: np.ndarray,
-                         text: str,
-                         position: Union[vector.Vector2D, vector._methods.VectorProtocol],
-                         font: int = cv2.FONT_HERSHEY_SIMPLEX,
-                         font_scale: float = 1.0,
-                         color: Sequence[int] = (255, 255, 255),
-                         thickness: int = 1,
-                         **kwargs):
+def draw_text_normalized(
+    image: np.ndarray,
+    text: str,
+    position: Union[vector.Vector2D, vector._methods.VectorProtocol],
+    font: int = cv2.FONT_HERSHEY_SIMPLEX,
+    font_scale: float = 1.0,
+    color: Sequence[int] = (255, 255, 255),
+    thickness: int = 1,
+    **kwargs,
+):
     """
     Draws normalized text on an image, converting (0, 1) coordinate range to pixel coordinates.
 
@@ -176,8 +176,7 @@ def draw_text_normalized(image: np.ndarray,
     draw_text(image, text, (x, y), font, font_scale, color, thickness, **kwargs)
 
 
-def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
-              center: vector.Vector2D, length: float = 0.1):
+def draw_axis(image: np.ndarray, rotation: vector.Vector3D, center: vector.Vector2D, length: float = 0.1):
     """
     Draws 3D axes on a 2D image based on the given rotation and center.
 
@@ -187,9 +186,7 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
     :param length: The length of the axes to be drawn.
     """
     h, w = image.shape[:2]
-    rays = [vector.obj(x=length, y=0, z=0),
-            vector.obj(x=0, y=length, z=0),
-            vector.obj(x=0, y=0, z=length)]
+    rays = [vector.obj(x=length, y=0, z=0), vector.obj(x=0, y=length, z=0), vector.obj(x=0, y=0, z=length)]
 
     for i, p in enumerate(rays):
         color = AXIS_COLORS[i]
@@ -198,8 +195,7 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D,
         x = (pp.x + center.x) * w
         y = (-pp.y + center.y) * h
 
-        cv2.line(image, (round(center.x * w), round(center.y * h)),
-                 (round(x), round(y)), color=color, thickness=2)
+        cv2.line(image, (round(center.x * w), round(center.y * h)), (round(x), round(y)), color=color, thickness=2)
 
 
 def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thickness: int = 2):
@@ -212,17 +208,24 @@ def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thic
     :param thickness: Thickness of the rectangle edges.
     """
     h, w = image.shape[:2]
-    cv2.rectangle(image, (round(bbox.x_min * w), round(bbox.y_min * h)),
-                  (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
-                  color, thickness=thickness)
+    cv2.rectangle(
+        image,
+        (round(bbox.x_min * w), round(bbox.y_min * h)),
+        (round((bbox.x_min + bbox.width) * w), round((bbox.y_min + bbox.height) * h)),
+        color,
+        thickness=thickness,
+    )
 
 
-def draw_landmark(image: np.ndarray, landmark: vector.Vector4D,
-                  color: Sequence[int] = (0, 0, 255),
-                  size: int = 5,
-                  thickness: int = 1,
-                  draw_marker: bool = True,
-                  marker_type: int = cv2.MARKER_CROSS):
+def draw_landmark(
+    image: np.ndarray,
+    landmark: vector.Vector4D,
+    color: Sequence[int] = (0, 0, 255),
+    size: int = 5,
+    thickness: int = 1,
+    draw_marker: bool = True,
+    marker_type: int = cv2.MARKER_CROSS,
+):
     """
     Draws a landmark point on the image.
 

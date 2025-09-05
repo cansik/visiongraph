@@ -20,6 +20,7 @@ class LitePoseEstimatorConfig(Enum):
     Enum representing different configurations for the LitePoseEstimator model.
     Each option corresponds to a specific OpenVINO model asset.
     """
+
     LitePose_S_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-s-coco-fp32")
     LitePose_M_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-m-coco-fp32")
     LitePose_L_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-l-coco-fp32")
@@ -32,8 +33,7 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
     Inherits from the PoseEstimator class and utilizes an OpenVINO engine for model inference.
     """
 
-    def __init__(self, model: Asset, weights: Asset,
-                 min_score: float = 0.2, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, min_score: float = 0.2, device: str = "AUTO"):
         """
         Initializes the LitePoseEstimator with the specified model and weights.
 
@@ -79,10 +79,14 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
             x = max_indx[0] / w
             y = max_indx[1] / h
             score = heatmap[max_indx[1], max_indx[0]]
-            key_points.append((
-                MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
-                MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
-                0.0, float(score)))
+            key_points.append(
+                (
+                    MathUtils.map_value(x - padding_box.x_min, 0, padding_box.width, 0, 1),
+                    MathUtils.map_value(y - padding_box.y_min, 0, padding_box.height, 0, 1),
+                    0.0,
+                    float(score),
+                )
+            )
             total_score += score
 
         pose_score = total_score / len(key_points)
@@ -100,8 +104,7 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         self.engine.release()
 
     @staticmethod
-    def create(config: LitePoseEstimatorConfig
-               = LitePoseEstimatorConfig.LitePose_S_COCO_FP32) -> "LitePoseEstimator":
+    def create(config: LitePoseEstimatorConfig = LitePoseEstimatorConfig.LitePose_S_COCO_FP32) -> "LitePoseEstimator":
         """
         Creates an instance of LitePoseEstimator based on the specified configuration.
 

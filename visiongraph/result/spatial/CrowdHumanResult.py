@@ -21,8 +21,14 @@ class CrowdHumanResult(ObjectDetectionResult):
         super().__init__(person.class_id, person.class_name, person.score, person.bounding_box)
         self.head = head
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 color: Optional[Sequence[int]] = None, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        color: Optional[Sequence[int]] = None,
+        **kwargs,
+    ):
         """
         Annotates the given image with the detected person's and their head's information.
 

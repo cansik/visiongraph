@@ -15,10 +15,17 @@ class VisionGraph(BaseGraph):
     A class representing a graph for machine learning pipelines.
     """
 
-    def __init__(self, input: Optional[BaseInput] = None,
-                 name: str = "VisionPipeline", skip_none_frame: bool = True,
-                 multi_threaded: bool = False, daemon: bool = False, handle_signals: bool = False,
-                 new_process: bool = False, *nodes: GraphNode):
+    def __init__(
+        self,
+        input: Optional[BaseInput] = None,
+        name: str = "VisionPipeline",
+        skip_none_frame: bool = True,
+        multi_threaded: bool = False,
+        daemon: bool = False,
+        handle_signals: bool = False,
+        new_process: bool = False,
+        *nodes: GraphNode,
+    ):
         """
         Initializes the VisionGraph object.
 

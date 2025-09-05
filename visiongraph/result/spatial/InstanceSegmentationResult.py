@@ -14,8 +14,7 @@ class InstanceSegmentationResult(ObjectDetectionResult):
     a mask for the segmented area, and the bounding box for the instance.
     """
 
-    def __init__(self, class_id: int, class_name: str, score: float,
-                 mask: np.ndarray, bounding_box: BoundingBox2D):
+    def __init__(self, class_id: int, class_name: str, score: float, mask: np.ndarray, bounding_box: BoundingBox2D):
         """
         Initializes an InstanceSegmentationResult with class details, segmentation mask,
         and corresponding bounding box.
@@ -29,8 +28,16 @@ class InstanceSegmentationResult(ObjectDetectionResult):
         super().__init__(class_id, class_name, score, bounding_box)
         self.mask = mask
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None,
-                 show_bounding_box: bool = True, use_class_color: bool = True, min_score: float = 0, **kwargs):
+    def annotate(
+        self,
+        image: np.ndarray,
+        show_info: bool = True,
+        info_text: Optional[str] = None,
+        show_bounding_box: bool = True,
+        use_class_color: bool = True,
+        min_score: float = 0,
+        **kwargs,
+    ):
         """
         Annotates the given image with the instance segmentation result.
 

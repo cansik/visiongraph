@@ -28,7 +28,7 @@ class AutoMock(MagicMock):
 
     def __getattr__(self, name):
         # Avoid recursion for internal MagicMock attributes
-        if name.startswith('_'):
+        if name.startswith("_"):
             return super().__getattr__(name)
 
         # For any other attribute access, return another AutoMock
@@ -51,9 +51,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
 
     def linkify_repl(m: re.Match):
         text = m.group(0)
-        plain_text = text.replace(
-            '</span><span class="o">.</span><span class="n">', "."
-        )
+        plain_text = text.replace('</span><span class="o">.</span><span class="n">', ".")
         identifier = plain_text.removesuffix("()")
         mod: pdoc.doc.Module = context["module"]
 
@@ -84,15 +82,9 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
         qualname = ""
         try:
             # Check if the object we are interested in is imported and re-exposed in the current namespace.
-            for module, qualname in possible_sources(
-                    context["all_modules"], identifier
-            ):
+            for module, qualname in possible_sources(context["all_modules"], identifier):
                 doc = mod.get(qualname)
-                if (
-                        doc
-                        and doc.taken_from == (module, qualname)
-                        and context["is_public"](doc).strip()
-                ):
+                if doc and doc.taken_from == (module, qualname) and context["is_public"](doc).strip():
                     if plain_text.endswith("()"):
                         plain_text = f"{doc.qualname}()"
                     else:
@@ -107,9 +99,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
             if qualname:
                 assert isinstance(doc, pdoc.doc.Module)
                 doc = doc.get(qualname)
-            target_exists_and_public = (
-                    doc is not None and context["is_public"](doc).strip()
-            )
+            target_exists_and_public = doc is not None and context["is_public"](doc).strip()
             if target_exists_and_public:
                 assert doc is not None  # mypy
                 if qualname:
@@ -157,14 +147,16 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
     )
 
 
-def generate_doc(package_name: str,
-                 package_version: str,
-                 package_url: Optional[str],
-                 output_path: Union[str, os.PathLike],
-                 package_paths: List[Union[str, os.PathLike]],
-                 optional_modules: Sequence[str] = None,
-                 extra_asset_path: Union[str, os.PathLike] = "doc",
-                 launch: bool = False):
+def generate_doc(
+    package_name: str,
+    package_version: str,
+    package_url: Optional[str],
+    output_path: Union[str, os.PathLike],
+    package_paths: List[Union[str, os.PathLike]],
+    optional_modules: Sequence[str] = None,
+    extra_asset_path: Union[str, os.PathLike] = "doc",
+    launch: bool = False,
+):
     if optional_modules is None:
         optional_modules = []
 
@@ -182,7 +174,7 @@ def generate_doc(package_name: str,
         logo_link=package_url,
         template_directory=extra_asset_path.joinpath("theme"),
         math=True,
-        mermaid=True
+        mermaid=True,
     )
 
     # add additional filters
@@ -212,9 +204,7 @@ def generate_doc(package_name: str,
                 # Couldn't bind, let's try again with a random port.
                 httpd = pdoc.web.DocServer((host, port or 0), package_paths)
         except OSError as e:
-            print(
-                f"Cannot start web server on {host}:{port}: {e}"
-            )
+            print(f"Cannot start web server on {host}:{port}: {e}")
             sys.exit(1)
 
         with httpd:

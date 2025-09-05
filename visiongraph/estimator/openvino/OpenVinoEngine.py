@@ -13,12 +13,17 @@ class OpenVinoEngine(BaseVisionEngine):
     A class representing an OpenVINO engine (API 2.0) with inference capabilities.
     """
 
-    def __init__(self, model: Asset,
-                 weights: Optional[Asset] = None,
-                 flip_channels: bool = True,
-                 scale: Optional[Union[float, Sequence[float]]] = None,
-                 mean: Optional[Union[float, Sequence[float]]] = None,
-                 padding: bool = False, device: str = "AUTO", **config):
+    def __init__(
+        self,
+        model: Asset,
+        weights: Optional[Asset] = None,
+        flip_channels: bool = True,
+        scale: Optional[Union[float, Sequence[float]]] = None,
+        mean: Optional[Union[float, Sequence[float]]] = None,
+        padding: bool = False,
+        device: str = "AUTO",
+        **config,
+    ):
         """
         Initializes the OpenVINO engine.
 
@@ -128,9 +133,11 @@ class OpenVinoEngine(BaseVisionEngine):
         :return: The VisionEngineModelLayer objects.
         """
         return [
-            VisionEngineModelLayer(name=layer.any_name,
-                                   shape=list(layer.partial_shape),
-                                   numpy_dtype=layer.element_type.to_dtype(),
-                                   layer_names=list(layer.names))
+            VisionEngineModelLayer(
+                name=layer.any_name,
+                shape=list(layer.partial_shape),
+                numpy_dtype=layer.element_type.to_dtype(),
+                layer_names=list(layer.names),
+            )
             for layer in compiled_layers
         ]

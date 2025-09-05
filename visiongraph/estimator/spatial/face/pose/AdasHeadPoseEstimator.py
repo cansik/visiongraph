@@ -40,11 +40,13 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
         :return: The head pose result containing the estimated position.
         """
         output = self.engine.process(data)
-        return HeadPoseResult(vector.obj(
-            x=float(output["angle_p_fc"][0][0]),
-            y=float(output["angle_y_fc"][0][0]),
-            z=float(output["angle_r_fc"][0][0])
-        ))
+        return HeadPoseResult(
+            vector.obj(
+                x=float(output["angle_p_fc"][0][0]),
+                y=float(output["angle_y_fc"][0][0]),
+                z=float(output["angle_r_fc"][0][0]),
+            )
+        )
 
     def _transform_result(self, result: HeadPoseResult, image: np.ndarray, roi: np.ndarray, xs: float, ys: float):
         """

@@ -26,14 +26,17 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
     and transformation matrices using MediaPipe's Face Landmarker.
     """
 
-    def __init__(self, static_image_mode: bool = False,
-                 max_num_faces: int = 1,
-                 min_face_detection_confidence: float = 0.5,
-                 min_face_presence_confidence: float = 0.5,
-                 min_tracking_confidence: float = 0.5,
-                 output_face_blendshapes: bool = False,
-                 output_facial_transformation_matrixes: bool = False,
-                 task: Asset = RepositoryAsset("face_landmarker.task")):
+    def __init__(
+        self,
+        static_image_mode: bool = False,
+        max_num_faces: int = 1,
+        min_face_detection_confidence: float = 0.5,
+        min_face_presence_confidence: float = 0.5,
+        min_tracking_confidence: float = 0.5,
+        output_face_blendshapes: bool = False,
+        output_facial_transformation_matrixes: bool = False,
+        task: Asset = RepositoryAsset("face_landmarker.task"),
+    ):
         """
         Initializes a MediaPipe FaceMeshEstimator.
 
@@ -72,14 +75,16 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
 
         # buffer loading because of https://github.com/google-ai-edge/mediapipe/issues/5343
         base_options = python.BaseOptions(model_asset_buffer=open(self.task.path, "rb").read())
-        options = vision.FaceLandmarkerOptions(base_options=base_options,
-                                               running_mode=running_mode,
-                                               min_face_detection_confidence=self.min_score,
-                                               min_face_presence_confidence=self.min_face_presence_confidence,
-                                               min_tracking_confidence=self.min_tracking_confidence,
-                                               output_face_blendshapes=self.output_face_blendshapes,
-                                               output_facial_transformation_matrixes=self.output_facial_transformation_matrixes,
-                                               num_faces=self.max_num_faces)
+        options = vision.FaceLandmarkerOptions(
+            base_options=base_options,
+            running_mode=running_mode,
+            min_face_detection_confidence=self.min_score,
+            min_face_presence_confidence=self.min_face_presence_confidence,
+            min_tracking_confidence=self.min_tracking_confidence,
+            output_face_blendshapes=self.output_face_blendshapes,
+            output_facial_transformation_matrixes=self.output_facial_transformation_matrixes,
+            num_faces=self.max_num_faces,
+        )
         self.detector = vision.FaceLandmarker.create_from_options(options)
 
     def process(self, image: np.ndarray, timestamp_ms: Optional[int] = None) -> ResultList[BlazeFaceMesh]:

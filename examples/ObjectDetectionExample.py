@@ -16,7 +16,6 @@ from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 
 
 class ObjectDetectionExample(BaseGraph):
-
     def __init__(self, input: BaseInput, sliding_window=False):
         super().__init__()
         self.input = input

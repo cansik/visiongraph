@@ -9,8 +9,8 @@ from visiongraph.dsp.BaseFilterNumpy import BaseFilterNumpy
 from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
 from visiongraph.util.VectorUtils import vector_to_array, array_to_vector
 
-InputType = TypeVar('InputType', bound=VectorNumpy)
-OutputType = TypeVar('OutputType', bound=VectorNumpy)
+InputType = TypeVar("InputType", bound=VectorNumpy)
+OutputType = TypeVar("OutputType", bound=VectorNumpy)
 
 
 class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):

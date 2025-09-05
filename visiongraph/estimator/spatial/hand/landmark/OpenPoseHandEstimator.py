@@ -15,7 +15,6 @@ OPEN_POSE_KEYPOINT_COUNT = 21
 
 
 class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
-
     def __init__(self, min_score: float = 0.5):
         """
         Initializes the OpenPoseHandEstimator.
@@ -48,8 +47,9 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
 
         :return: A list of detected hands with their corresponding pose scores.
         """
-        blob = cv2.dnn.blobFromImage(image, 1.0 / 255, (self.input_size, self.input_size), (0, 0, 0),
-                                     swapRB=False, crop=False)
+        blob = cv2.dnn.blobFromImage(
+            image, 1.0 / 255, (self.input_size, self.input_size), (0, 0, 0), swapRB=False, crop=False
+        )
 
         self.network.setInput(blob)
         output = self.network.forward()
