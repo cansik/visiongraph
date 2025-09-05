@@ -2,7 +2,6 @@ import unittest
 
 import cv2
 from visiongraph import vg
-from visiongraph.util import OSUtils
 
 
 class HandLandmarkTests(unittest.TestCase):

@@ -352,7 +352,7 @@ class RealSenseInput(BaseDepthCamera):
         :param json_config: The JSON configuration data as a string.
         """
         if self.device is None:
-            logging.warning(f"No device available to apply json config.")
+            logging.warning("No device available to apply json config.")
             return
 
         if not self.device.supports(rs.camera_info.advanced_mode):
@@ -373,7 +373,7 @@ class RealSenseInput(BaseDepthCamera):
         :return: The serialized JSON configuration of the device.
         """
         if self.device is None:
-            logging.warning(f"No device available to apply json config.")
+            logging.warning("No device available to apply json config.")
             return ""
 
         if not self.device.supports(rs.camera_info.advanced_mode):

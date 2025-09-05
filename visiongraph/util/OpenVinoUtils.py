@@ -25,7 +25,7 @@ def get_inference_engine_device() -> str:
             break
 
     # list all devices
-    logging.info(f"OpenVino Devices")
+    logging.info("OpenVino Devices")
     for i, device in enumerate(devices):
         default_sign = ""
 

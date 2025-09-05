@@ -5,7 +5,6 @@ from argparse import ArgumentParser
 import cv2
 import numpy as np
 
-from visiongraph.estimator.spatial.camera.ChArUcoCalibrator import ChArUcoCalibrator
 from visiongraph.estimator.spatial.camera.ChessboardCalibrator import ChessboardCalibrator
 from visiongraph.util.ArgUtils import add_step_choice_argument
 from visiongraph.util.TimeUtils import current_millis

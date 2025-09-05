@@ -1,10 +1,8 @@
 import unittest
 
 import cv2
-import pytest
 
 from visiongraph import vg
-from visiongraph.util import OSUtils
 
 
 class ImageTranslationTests(unittest.TestCase):

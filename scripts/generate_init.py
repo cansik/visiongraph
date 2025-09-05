@@ -13,13 +13,13 @@ def generate_init():
 
         if imp.optional:
             line = (
-                f"    try:\n    {import_line}\n"
-                f"    except ModuleNotFoundError as ex:\n"
-                f"        logging.info(f\"Module {imp.name} not found\")"
+                f"    try:\n    {import_line} # noqa: F401\n"
+                f"    except ModuleNotFoundError:\n"
+                f"        logging.info(\"Module {imp.name} not found\")"
             )
             lines.append(line)
         else:
-            lines.append(f"{import_line}  # noqa")
+            lines.append(f"{import_line}  # noqa: F401")
 
     # append header, imports and empty line at the end
     lines.insert(0,

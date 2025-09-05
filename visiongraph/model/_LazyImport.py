@@ -68,7 +68,7 @@ class _LazyImport:
         """
         try:
             return self._import()
-        except ModuleNotFoundError as ex:
+        except ModuleNotFoundError:
             logging.info(f"Module {self.module_name} not found")
 
         # create stub to return
