@@ -55,7 +55,7 @@ If you’re happy to stick with NumPy <2.0, you can skip our custom package enti
 pip install visiongraph mediapipe
 ```
 
-This will install Visiongraph plus the official `mediapipe` package (which requires `numpy<2.0`). Just make sure your environment’s NumPy version is below 2.0 when using this route.
+This will install Visiongraph plus the official `mediapipe` package (which requires `numpy<2.0`). Make sure your environment’s NumPy version is below 2.0 when using this route.
 
 
 ## Examples
