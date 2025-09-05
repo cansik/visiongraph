@@ -2,6 +2,7 @@
 
 # Visiongraph
 
+[![Ruff](https://github.com/cansik/visiongraph/actions/workflows/code.yml/badge.svg)](https://github.com/cansik/visiongraph/actions/workflows/code.yml)
 [![PyPI](https://img.shields.io/pypi/v/visiongraph)](https://pypi.org/project/visiongraph/)
 ![Pepy Total Downloads](https://img.shields.io/pepy/dt/visiongraph)
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/visiongraph/visiongraph.html#documentation)
