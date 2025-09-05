@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "visiongraph"
-version = "1.1.0.1"
+version = "1.2.0"
 description = "Visiongraph is a high level computer vision framework."
 readme = "README.md"
 license = "MIT"
@@ -33,11 +33,11 @@ requires-python = ">=3.10,<3.13"
 dependencies = [
     "requests",
     "tqdm",
-    "vector~=1.6.2",
+    "vector~=1.6.3",
     "scipy",
     "numpy>2",
     "opencv-python~=4.7.0; python_version <= '3.9'",
-    "opencv-python~=4.11; python_version > '3.9'",
+    "opencv-python~=4.12; python_version > '3.9'",
 ]
 
 [project.urls]
@@ -51,7 +51,7 @@ dev = [
     "setuptools>=80.9.0",
     "pytest",
     "autopep8~=2.3.2",
-    "ty>=0.0.1a12",
+    "ty>=0.0.1a20",
     "ruff>=0.12.0",
 ]
 
