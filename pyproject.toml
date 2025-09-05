@@ -120,6 +120,11 @@ override-dependencies = [
 target-version = "py310"
 line-length = 120
 indent-width = 4
+respect-gitignore = true
+
+exclude = [
+    "visiongraph/external"
+]
 
 [tool.ruff.lint]
 # select = ["FA100", "UP006"]
