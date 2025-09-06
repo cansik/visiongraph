@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -11,7 +11,7 @@ from visiongraph.result.spatial.hand.HandLandmarkResult import HandLandmarkResul
 OutputType = TypeVar("OutputType", bound=HandLandmarkResult)
 
 
-class HandLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):
+class HandLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC, Generic[OutputType]):
     """
     Abstract base class for hand landmark estimators.
 

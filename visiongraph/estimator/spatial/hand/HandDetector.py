@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from visiongraph.result.spatial.hand.HandDetectionResult import HandDetectionRes
 OutputType = TypeVar("OutputType", bound=HandDetectionResult)
 
 
-class HandDetector(ObjectDetector[OutputType], ABC):
+class HandDetector(ObjectDetector[OutputType], ABC, Generic[OutputType]):
     """
     Abstract base class for hand detectors.
 

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 from visiongraph.estimator.BaseEstimator import BaseEstimator
 from visiongraph.result.BaseResult import BaseResult
@@ -8,7 +8,7 @@ InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
-class ScoreThresholdEstimator(BaseEstimator[InputType, OutputType], ABC):
+class ScoreThresholdEstimator(BaseEstimator[InputType, OutputType], ABC, Generic[InputType, OutputType]):
     """
     An estimator that determines the threshold score for a model based on a minimum required score.
     """

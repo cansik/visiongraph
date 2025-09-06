@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from visiongraph.result.BaseResult import BaseResult
 OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
-class VisionEstimator(BaseEstimator[np.ndarray, OutputType], ABC):
+class VisionEstimator(BaseEstimator[np.ndarray, OutputType], ABC, Generic[OutputType]):
     """
     Abstract base class for estimators in the VisionGraph framework.
 

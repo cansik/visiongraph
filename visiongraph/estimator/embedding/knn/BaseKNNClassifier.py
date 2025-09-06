@@ -2,7 +2,7 @@ import logging
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TypeVar, Optional, Union
+from typing import TypeVar, Optional, Union, Generic
 
 import numpy as np
 
@@ -14,7 +14,7 @@ from visiongraph.result.ResultList import ResultList
 T = TypeVar("T", bound=EmbeddingResult)
 
 
-class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationResult]], ABC):
+class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationResult]], ABC, Generic[T]):
     def __init__(
         self, min_score: float, store_training_data: bool = True, data_path: Optional[Union[str, os.PathLike]] = None
     ):

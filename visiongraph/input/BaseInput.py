@@ -37,7 +37,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         self.raw_input = False
 
     @abstractmethod
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads a frame from the input source.
 
@@ -56,7 +56,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         ts, image = self.read()
         return image
 
-    def _post_process(self, ts: int, image: Optional[np.ndarray]) -> (int, Optional[np.ndarray]):
+    def _post_process(self, ts: int, image: Optional[np.ndarray]) -> tuple[int, Optional[np.ndarray]]:
         """
         Applies the processing pipeline on the input image including pre-processing, cropping, masking,
         rotation, and flipping.

@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, List, Dict
+from typing import TypeVar, List, Dict, Generic
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
@@ -11,7 +11,7 @@ InputType = TypeVar("InputType", bound=List[LandmarkDetectionResult])
 OutputType = TypeVar("OutputType", bound=List[LandmarkDetectionResult])
 
 
-class LandmarkSmoothFilter(GraphNode[InputType, OutputType]):
+class LandmarkSmoothFilter(GraphNode[InputType, OutputType], Generic[InputType, OutputType]):
     """
     A class to smooth landmark detections using OneEuro filter and VectorNumpySmoothFilter.
     """

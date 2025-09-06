@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.BaseResult import BaseResult
@@ -8,7 +8,7 @@ InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
-class BaseEstimator(GraphNode[InputType, OutputType], ABC):
+class BaseEstimator(GraphNode[InputType, OutputType], ABC, Generic[InputType, OutputType]):
     """
     Abstract base class for estimators in VisionGraph.
 

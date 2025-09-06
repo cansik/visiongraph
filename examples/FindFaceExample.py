@@ -23,11 +23,12 @@ from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult
 from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
-def get_images_in_path(path: str) -> [str]:
+def get_images_in_path(path: str) -> list[str]:
     return get_files_in_path(path, ["*.jpg", "*.jpeg", "*.png", "*.bmp", "*.gif"])
 
 
-def get_files_in_path(path: str, extensions: [str] = ["*.*"]) -> [str]:
+def get_files_in_path(path: str, extensions: list[str] | None = None) -> list[str]:
+    extensions = ["*.*"] if extensions is None else extensions
     return sorted([f for ext in extensions for f in glob.glob(os.path.join(path, ext))])
 
 

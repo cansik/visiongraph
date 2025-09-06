@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 OutputType = TypeVar("OutputType", bound=ObjectDetectionResult)
 
 
-class ObjectDetector(VisionClassifier[ResultList[OutputType]], ABC):
+class ObjectDetector(VisionClassifier[ResultList[OutputType]], ABC, Generic[OutputType]):
     """
     Abstract base class for object detectors based on vision classifiers.
 

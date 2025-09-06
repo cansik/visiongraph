@@ -15,7 +15,7 @@ from visiongraph.util.ResultUtils import non_maximum_suppression
 R = TypeVar("R", bound=ObjectDetectionResult)
 
 
-class UltralyticsYOLODetector(ObjectDetector, Generic[R], ABC):
+class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
     """
     A generic class representing an Ultralytics YOLO detector for object detection.
 

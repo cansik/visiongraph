@@ -1,16 +1,24 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
 from argparse import Namespace
-from typing import TypeVar
+from types import TracebackType
+from typing import TypeVar, Generic
 
 from visiongraph.Processable import Processable
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
 
-NodeType = TypeVar("NodeType", bound="GraphNode")
+# Import Self (supporting 3.10 and 3.11)
+try:
+    from typing_extensions import Self
+except ImportError:
+    from typing import Self
+
 InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType")
 
 
-class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC):
+class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC, Generic[InputType, OutputType]):
     """
     Abstract base class for nodes in a graph that can be configured and processed.
     """
@@ -48,9 +56,14 @@ class GraphNode(Processable[InputType, OutputType], ArgumentConfigurable, ABC):
         self.configure(args)
         self.setup()
 
-    def __enter__(self) -> NodeType:
+    def __enter__(self) -> Self:
         self.setup()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def __exit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc_val: BaseException | None,
+        exc_tb: TracebackType | None,
+    ) -> None:
         self.release()

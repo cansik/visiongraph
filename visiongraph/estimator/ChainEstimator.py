@@ -1,17 +1,17 @@
 from abc import ABC
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
-from visiongraph import GraphNode
+from visiongraph.GraphNode import GraphNode
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.BaseResult import BaseResult
 
 OutputType = TypeVar("OutputType", bound=BaseResult)
 
 
-class ChainEstimator(VisionEstimator[OutputType], ABC):
+class ChainEstimator(VisionEstimator[OutputType], ABC, Generic[OutputType]):
     """
     A base class for chain estimators in the VisionGraph framework.
 
@@ -19,7 +19,7 @@ class ChainEstimator(VisionEstimator[OutputType], ABC):
     allowing for modular and extensible vision graph processing pipelines.
     """
 
-    def __init__(self, *links: GraphNode):
+    def __init__(self, *links: GraphNode[np.ndarray, OutputType]):
         """
         Initializes the ChainEstimator with a list of linked nodes.
 

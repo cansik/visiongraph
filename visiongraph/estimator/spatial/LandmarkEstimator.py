@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetection
 OutputType = TypeVar("OutputType", bound=LandmarkDetectionResult)
 
 
-class LandmarkEstimator(ObjectDetector[OutputType], ABC):
+class LandmarkEstimator(ObjectDetector[OutputType], ABC, Generic[OutputType]):
     """
     A generic abstract class for a landmark estimator that extends ObjectDetector.
 

@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmen
 OutputType = TypeVar("OutputType", bound=InstanceSegmentationResult)
 
 
-class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC):
+class InstanceSegmentationEstimator(ObjectDetector[OutputType], ABC, Generic[OutputType]):
     """
     Abstract base class for instance segmentation estimators that detect objects in spatial images.
 

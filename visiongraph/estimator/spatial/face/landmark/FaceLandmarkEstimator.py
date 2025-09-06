@@ -1,5 +1,5 @@
 from abc import abstractmethod, ABC
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -11,7 +11,7 @@ from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResul
 OutputType = TypeVar("OutputType", bound=FaceLandmarkResult)
 
 
-class FaceLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC):
+class FaceLandmarkEstimator(LandmarkEstimator[OutputType], RoiEstimator, ABC, Generic[OutputType]):
     """
     An abstract class to estimate face landmarks from images.
 

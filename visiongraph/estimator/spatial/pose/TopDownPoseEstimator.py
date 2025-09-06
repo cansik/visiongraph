@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Optional, Set, List
+from typing import TypeVar, Optional, Set, List, Generic
 
 import numpy as np
 
@@ -14,7 +14,7 @@ from visiongraph.util import ImageUtils
 OutputType = TypeVar("OutputType", bound=PoseLandmarkResult)
 
 
-class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC):
+class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputType]):
     """
     A top-down pose estimator that uses a human detector to detect people and then estimates their pose.
     """

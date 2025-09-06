@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -10,7 +10,7 @@ from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResul
 OutputType = TypeVar("OutputType", bound=PoseLandmarkResult)
 
 
-class PoseEstimator(LandmarkEstimator[OutputType], ABC):
+class PoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputType]):
     """
     Abstract base class for pose estimators.
 

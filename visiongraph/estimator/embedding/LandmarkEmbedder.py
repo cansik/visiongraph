@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, Callable, Optional
+from typing import TypeVar, Callable, Optional, Generic
 
 import numpy as np
 
@@ -11,7 +11,7 @@ from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetection
 T = TypeVar("T", bound=LandmarkDetectionResult)
 
 
-class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResult]]):
+class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResult]], Generic[T]):
     def __init__(self, embedding_function: Callable[[T], Optional[np.ndarray]]):
         """
         Initializes the LandmarkEmbedder node with a given embedding function.

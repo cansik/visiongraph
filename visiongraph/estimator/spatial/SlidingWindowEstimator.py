@@ -1,5 +1,5 @@
 from argparse import Namespace
-from typing import TypeVar, Tuple, List
+from typing import TypeVar, Tuple, List, Generic
 
 import numpy as np
 
@@ -15,7 +15,7 @@ Generic type variable for the output type of the Object Detection result derived
 """
 
 
-class SlidingWindowEstimator(ObjectDetector[OutputType]):
+class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
     """
     Sliding Window Estimator that applies object detection on sliding windows.
     """

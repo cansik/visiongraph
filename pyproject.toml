@@ -50,7 +50,6 @@ dev = [
     "wheel",
     "setuptools>=80.9.0",
     "pytest",
-    "autopep8~=2.3.2",
     "ty>=0.0.1a20",
     "ruff>=0.12.0",
 ]

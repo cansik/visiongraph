@@ -70,13 +70,17 @@ class CameraIntrinsics:
         return CameraIntrinsics(intrinsic_mat, distortion_coeff)
 
     @property
+    def camera_matrix(self) -> np.ndarray:
+        return self.intrinsic_matrix
+
+    @property
     def px(self) -> float:
         """
         Gets the pixel distance from the principal point.
 
         :return: The pixel distance.
         """
-        return self.intrinsic_matrix[0, 2]
+        return float(self.intrinsic_matrix[0, 2])
 
     @property
     def py(self) -> float:
@@ -85,7 +89,7 @@ class CameraIntrinsics:
 
         :return: The pixel distance.
         """
-        return self.intrinsic_matrix[1, 2]
+        return float(self.intrinsic_matrix[1, 2])
 
     @property
     def fx(self) -> float:
@@ -94,7 +98,7 @@ class CameraIntrinsics:
 
         :return: The focal length.
         """
-        return self.intrinsic_matrix[0, 0]
+        return float(self.intrinsic_matrix[0, 0])
 
     @property
     def fy(self) -> float:
@@ -103,7 +107,7 @@ class CameraIntrinsics:
 
         :return: The focal length.
         """
-        return self.intrinsic_matrix[1, 1]
+        return float(self.intrinsic_matrix[1, 1])
 
     def __repr__(self):
         """

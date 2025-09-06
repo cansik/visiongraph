@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -11,7 +11,7 @@ from visiongraph.result.ClassificationResult import ClassificationResult
 OutputType = TypeVar("OutputType", bound=ClassificationResult)
 
 
-class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, OutputType], ABC):
+class VisionClassifier(VisionEstimator[OutputType], BaseClassifier[np.ndarray, OutputType], ABC, Generic[OutputType]):
     """
     Abstract base class for vision classifiers.
 

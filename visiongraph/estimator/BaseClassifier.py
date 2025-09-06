@@ -8,7 +8,7 @@ InputType = TypeVar("InputType")
 OutputType = TypeVar("OutputType", bound=ClassificationResult)
 
 
-class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], Generic[InputType, OutputType], ABC):
+class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC, Generic[InputType, OutputType]):
     """
     A base class for classification estimators that inherit the score thresholding functionality.
     """
