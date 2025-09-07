@@ -88,7 +88,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
                 if a.t > min_score and b.t > min_score:
                     point01 = (round(a.x * w), round(a.y * h))
                     point02 = (round(b.x * w), round(b.y * h))
-                    cv2.line(image, point01, point02, color, stroke_width)
+                    cv2.line(image, point01, point02, color, stroke_width, cv2.LINE_AA)
 
         # mark landmark joints
         if landmark_colors is None:

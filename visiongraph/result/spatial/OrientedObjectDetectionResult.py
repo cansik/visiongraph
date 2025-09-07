@@ -126,4 +126,4 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
 
         # Mark start of orientation
         cv2.circle(image, box[0], max(1, round(w * 0.1)), color=(255, 0, 255), thickness=-1)
-        cv2.line(image, box[0], box[1], color=(255, 0, 255), thickness=2)
+        cv2.line(image, box[0], box[1], color=(255, 0, 255), thickness=2, lineType=cv2.LINE_AA)

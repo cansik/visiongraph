@@ -195,7 +195,14 @@ def draw_axis(image: np.ndarray, rotation: vector.Vector3D, center: vector.Vecto
         x = (pp.x + center.x) * w
         y = (-pp.y + center.y) * h
 
-        cv2.line(image, (round(center.x * w), round(center.y * h)), (round(x), round(y)), color=color, thickness=2)
+        cv2.line(
+            image,
+            (round(center.x * w), round(center.y * h)),
+            (round(x), round(y)),
+            color=color,
+            thickness=2,
+            lineType=cv2.LINE_AA,
+        )
 
 
 def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thickness: int = 2):
