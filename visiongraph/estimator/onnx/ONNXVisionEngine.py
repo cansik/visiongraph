@@ -43,7 +43,12 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.session: Optional[rt.InferenceSession] = None
         self.session_options = rt.SessionOptions()
 
-        self.preferred_execution_providers = ["CUDAExecutionProvider", "DmlExecutionProvider", "CPUExecutionProvider"]
+        self.preferred_execution_providers = [
+            "CUDAExecutionProvider",
+            "DmlExecutionProvider",
+            "CoreMLExecutionProvider",
+            "CPUExecutionProvider",
+        ]
 
         self.dtype_conversion_table = {
             "tensor(float)": np.float32,
