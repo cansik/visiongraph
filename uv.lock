@@ -44,19 +44,6 @@ wheels = [
 ]
 
 [[package]]
-name = "autopep8"
-version = "2.3.2"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "pycodestyle" },
-    { name = "tomli", marker = "python_full_version < '3.11'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/50/d8/30873d2b7b57dee9263e53d142da044c4600a46f2d28374b3e38b023df16/autopep8-2.3.2.tar.gz", hash = "sha256:89440a4f969197b69a995e4ce0661b031f455a9f776d2c5ba3dbd83466931758", size = 92210, upload-time = "2025-01-14T14:46:18.454Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/9e/43/53afb8ba17218f19b77c7834128566c5bbb100a0ad9ba2e8e89d089d7079/autopep8-2.3.2-py2.py3-none-any.whl", hash = "sha256:ce8ad498672c845a0c3de2629c15b635ec2b05ef8177a6e7c91c74f3e9b51128", size = 45807, upload-time = "2025-01-14T14:46:15.466Z" },
-]
-
-[[package]]
 name = "certifi"
 version = "2025.4.26"
 source = { registry = "https://pypi.org/simple" }
@@ -1128,15 +1115,6 @@ wheels = [
 ]
 
 [[package]]
-name = "pycodestyle"
-version = "2.13.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/04/6e/1f4a62078e4d95d82367f24e685aef3a672abfd27d1a868068fed4ed2254/pycodestyle-2.13.0.tar.gz", hash = "sha256:c8415bf09abe81d9c7f872502a6eee881fbe85d8763dd5b9924bb0a01d67efae", size = 39312, upload-time = "2025-03-29T17:33:30.669Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/07/be/b00116df1bfb3e0bb5b45e29d604799f7b91dd861637e4d448b4e09e6a3e/pycodestyle-2.13.0-py2.py3-none-any.whl", hash = "sha256:35863c5974a271c7a726ed228a14a4f6daf49df369d8c50cd9a6f58a5e143ba9", size = 31424, upload-time = "2025-03-29T17:33:29.405Z" },
-]
-
-[[package]]
 name = "pycparser"
 version = "2.22"
 source = { registry = "https://pypi.org/simple" }
@@ -1765,7 +1743,6 @@ realsense = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "autopep8" },
     { name = "pytest" },
     { name = "ruff" },
     { name = "setuptools" },
@@ -1803,13 +1780,12 @@ requires-dist = [
     { name = "syphon-python", marker = "sys_platform == 'darwin' and extra == 'fbs'", specifier = "~=0.1.1" },
     { name = "tqdm" },
     { name = "vector", specifier = "~=1.6.3" },
-    { name = "vidgear", extras = ["core"], marker = "extra == 'media'" },
+    { name = "vidgear", extras = ["core"], marker = "extra == 'media'", specifier = "~=0.3.3" },
 ]
 provides-extras = ["realsense", "azure", "depthai", "openvino", "mediapipe", "onnx", "onnx-gpu", "onnx-directml", "media", "numba", "fbs", "faiss", "mot"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "autopep8", specifier = "~=2.3.2" },
     { name = "pytest" },
     { name = "ruff", specifier = ">=0.12.0" },
     { name = "setuptools", specifier = ">=80.9.0" },

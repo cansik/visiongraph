@@ -94,7 +94,7 @@ onnx = ["onnxruntime~=1.22.0"]
 
 media = [
     "moviepy",
-    "vidgear[core]",
+    "vidgear[core]~=0.3.3",
 ]
 
 numba = ["numba~=0.61"]
