@@ -1,6 +1,6 @@
 import logging
 
-from openvino.runtime import Core
+from openvino import Core
 
 
 def get_inference_engine_device() -> str:
