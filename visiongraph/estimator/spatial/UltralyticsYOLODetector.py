@@ -32,6 +32,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         nms_threshold: float = 0.5,
         nms_eta: Optional[float] = None,
         nms_top_k: Optional[int] = None,
+        nms_batched: bool = True,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
@@ -44,6 +45,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         :param nms_threshold: Threshold for non-maximum suppression.
         :param nms_eta: Epsilon value for non-maximum suppression.
         :param nms_top_k: Top K value for non-maximum suppression.
+        :param nms_batched: Flag to enable per-class nms.
         :param engine: Inference engine type.
         """
         super().__init__(min_score)
@@ -56,6 +58,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         self.nms: bool = nms
         self.nms_eta = nms_eta
         self.nms_top_k = nms_top_k
+        self.nms_batched = nms_batched
 
     def setup(self):
         """
@@ -88,7 +91,9 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
 
         if self.nms:
             results = ResultList(
-                non_maximum_suppression(results, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k)
+                non_maximum_suppression(
+                    results, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k, self.nms_batched
+                )
             )
         return results
 

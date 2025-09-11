@@ -22,6 +22,8 @@ class ObjectDetectionExample(BaseGraph):
         self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
 
         self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_N)
+        self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_S_Open_Images_V7)
+
         # self.network = YOLOv5Detector.create(YOLOv5Config.YOLOv5_N)
         # self.network = YOLOv8OBBDetector.create(YOLOv8OBBConfig.YOLOv8_OBB_N)
 

@@ -119,7 +119,7 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
         """
         rect = ((cx, cy), (w, h), theta)
         box = cv2.boxPoints(rect)
-        box = np.int0(box)
+        box = np.int32(box)
 
         # Draw the bounding box on the image
         cv2.drawContours(image, [box], 0, color, thickness)

@@ -1,5 +1,5 @@
 """
-List of DOTA game objects from the V1.0 version.
+List of DOTA objects from the V1.0 version.
 """
 
 DOTA_v1_0: list[str] = [

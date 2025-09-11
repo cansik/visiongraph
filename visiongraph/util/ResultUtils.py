@@ -14,7 +14,12 @@ ODR = TypeVar("ODR", bound=ObjectDetectionResult)
 
 
 def non_maximum_suppression(
-    results: List[ODR], min_score: float, iou_threshold: float, eta: Optional[float] = None, top_k: Optional[int] = None
+    results: List[ODR],
+    min_score: float,
+    iou_threshold: float,
+    eta: Optional[float] = None,
+    top_k: Optional[int] = None,
+    batched: bool = False,
 ) -> List[ODR]:
     """
     Applies Non-Maximum Suppression (NMS) to filter out overlapping bounding boxes.
@@ -24,12 +29,19 @@ def non_maximum_suppression(
     :param iou_threshold: IOU threshold for merging boxes.
     :param eta: Optional parameter for adjusting NMS.
     :param top_k: Optional parameter to limit the number of boxes.
+    :param batched: Calculate the NMS separately for each class.
 
     :return: List of filtered object detection results after NMS.
     """
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
-    indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold, eta, top_k)
+
+    if batched:
+        class_ids = [result.class_id for result in results]
+        indices = cv2.dnn.NMSBoxesBatched(boxes, confidences, class_ids, min_score, iou_threshold, eta, top_k)
+    else:
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold, eta, top_k)
+
     return [results[int(i)] for i in list(indices)]
 
 
