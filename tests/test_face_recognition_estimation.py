@@ -2,6 +2,7 @@ import unittest
 
 import cv2
 
+from tests.utils_for_testing import save_annotation_image
 from visiongraph import vg
 
 
@@ -22,6 +23,7 @@ class FaceRecognitionEstimationTests(unittest.TestCase):
         model.setup()
         result = model.process_detection(image, result)
         result.annotate(image)
+        save_annotation_image(image, self._testMethodName)
         model.release()
 
     def test_face_reidentification_estimator_int8(self):

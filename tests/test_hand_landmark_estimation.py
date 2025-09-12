@@ -7,10 +7,9 @@ from visiongraph import vg
 
 
 class HandLandmarkTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.HandLandmarkEstimator):
+    def _test_model(self, model: vg.HandLandmarkEstimator):
         image = cv2.imread("assets/hands-pexels-ketut-subiyanto-4126739.jpg")
-        run_estimator_test(model, image)
+        run_estimator_test(model, image, self._testMethodName)
 
     def test_mediapipe_hand_estimator(self):
         self._test_model(vg.MediaPipeHandEstimator())

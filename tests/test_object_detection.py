@@ -8,10 +8,9 @@ from visiongraph.util import OSUtils
 
 
 class ObjectDetectionTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.ObjectDetector):
+    def _test_model(self, model: vg.ObjectDetector):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-        run_estimator_test(model, image)
+        run_estimator_test(model, image, self._testMethodName)
 
     def test_center_net_fp16(self):
         self._test_model(vg.CenterNetDetector.create(vg.CenterNetConfig.CenterNet_FP16))

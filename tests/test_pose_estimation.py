@@ -14,10 +14,9 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 
 class PoseEstimationTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.PoseEstimator):
+    def _test_model(self, model: vg.PoseEstimator):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-        run_estimator_test(model, image)
+        run_estimator_test(model, image, self._testMethodName)
 
     def test_aepose_estimator_fp32(self):
         self._test_model(vg.AEPoseEstimator.create(vg.AEPoseConfig.EfficientHRNet_288_FP32))

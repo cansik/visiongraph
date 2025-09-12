@@ -7,10 +7,9 @@ from visiongraph import vg
 
 
 class ImageTranslationTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.VisionEstimator[vg.ImageResult]):
+    def _test_model(self, model: vg.VisionEstimator[vg.ImageResult]):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-        run_estimator_test(model, image)
+        run_estimator_test(model, image, self._testMethodName)
 
     def test_deblurv2_gan_fp32(self):
         self._test_model(vg.DeblurGANv2.create(vg.DeblurGANv2Config.DeblurGANv2_FP32))

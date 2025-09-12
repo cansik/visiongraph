@@ -2,18 +2,19 @@ import unittest
 
 import cv2
 
+from tests.utils_for_testing import save_annotation_image
 from visiongraph import vg
 
 
 class InpaintTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.BaseInpainter):
+    def _test_model(self, model: vg.BaseInpainter):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
         mask = cv2.imread("assets/inpaint-mask.png")
 
         model.setup()
         result = model.inpaint(image, mask)
         result.annotate(image)
+        save_annotation_image(image, self._testMethodName)
         model.release()
 
     def test_gmcnn_inpainter_fp32(self):

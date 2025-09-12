@@ -7,10 +7,9 @@ from visiongraph import vg
 
 
 class HeadPoseEstimationTests(unittest.TestCase):
-    @staticmethod
-    def _test_model(model: vg.HeadPoseEstimator):
+    def _test_model(self, model: vg.HeadPoseEstimator):
         image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
-        run_estimator_test(model, image)
+        run_estimator_test(model, image, self._testMethodName)
 
     def test_adas_head_pose_estimator(self):
         self._test_model(vg.AdasHeadPoseEstimator())

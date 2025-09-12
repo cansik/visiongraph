@@ -2,6 +2,7 @@ import unittest
 
 import cv2
 
+from tests.utils_for_testing import save_annotation_image
 from visiongraph import vg
 
 
@@ -20,6 +21,7 @@ class FaceCascadeRegressionEstimationTests(unittest.TestCase):
         model.setup()
         result = model.process_detection(image, face_result)
         result.annotate(image)
+        save_annotation_image(image, self._testMethodName)
         model.release()
 
     def test_face_affect_net_emotion_classifier_int8(self):
