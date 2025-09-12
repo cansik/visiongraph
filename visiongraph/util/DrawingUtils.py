@@ -224,6 +224,60 @@ def draw_bbox(image: np.ndarray, bbox: BoundingBox2D, color: Sequence[int], thic
     )
 
 
+def draw_bbox_yolo_style(
+    image: np.ndarray,
+    bbox: BoundingBox2D,
+    label: str,
+    color: Sequence[int],
+    text_color: Sequence[int] = (0, 0, 0),
+    thickness: int = 2,
+) -> None:
+    """
+    Draws a YOLO-style bounding box on the image with optional label.
+
+    :param image: The image on which to draw.
+    :param bbox: The bounding box with normalized coordinates.
+    :param label: The label text. If empty, no label is drawn.
+    :param color: The color of the rectangle and label background (BGR format).
+    :param text_color: The color of the label (BGR format).
+    :param thickness: Thickness of the rectangle edges.
+    """
+    h, w = image.shape[:2]
+
+    x_min = round(bbox.x_min * w)
+    y_min = round(bbox.y_min * h)
+    x_max = round((bbox.x_min + bbox.width) * w)
+    y_max = round((bbox.y_min + bbox.height) * h)
+
+    # Draw bounding box
+    cv2.rectangle(image, (x_min, y_min), (x_max, y_max), color, thickness=thickness)
+
+    if label:
+        font = cv2.FONT_HERSHEY_DUPLEX
+        font_scale = 0.5
+        text_thickness = 1
+        thickness_shift = thickness - 1
+
+        (text_w, text_h), baseline = cv2.getTextSize(label, font, font_scale, text_thickness)
+        y_label = max(y_min - text_h - baseline, 0)
+        x_label = x_min - thickness_shift
+
+        # Background rectangle for text
+        cv2.rectangle(image, (x_label, y_label), (x_label + text_w, y_label + text_h + baseline), color, cv2.FILLED)
+
+        # Label text
+        cv2.putText(
+            image,
+            label,
+            (x_min, y_label + text_h),
+            font,
+            font_scale,
+            text_color,
+            text_thickness,
+            cv2.LINE_AA,
+        )
+
+
 def draw_landmark(
     image: np.ndarray,
     landmark: vector.Vector4D,

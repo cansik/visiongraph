@@ -1,13 +1,12 @@
 from typing import Optional, Sequence, Union
 
-import cv2
 import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.model.tracker.Trackable import Trackable
 from visiongraph.result.ClassificationResult import ClassificationResult
-from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox
+from visiongraph.util.DrawingUtils import COLOR_SEQUENCE, draw_bbox, draw_bbox_yolo_style
 
 
 class ObjectDetectionResult(ClassificationResult, Trackable):
@@ -52,9 +51,8 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         h, w = image.shape[:2]
         color = self.annotation_color if color is None else color
 
-        draw_bbox(image, self.bounding_box, color=color)
-
         if not show_info:
+            draw_bbox(image, self.bounding_box, color=color)
             return
 
         if info_text is None:
@@ -66,16 +64,7 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
             if self.class_name is not None:
                 info_text += f"{self.class_name}"
 
-        cv2.putText(
-            image,
-            info_text,
-            (round(self.bounding_box.x_min * w) - 5, round(self.bounding_box.y_min * h) - 5),
-            cv2.FONT_HERSHEY_SIMPLEX,
-            0.5,
-            color,
-            1,
-            cv2.LINE_AA,
-        )
+        draw_bbox_yolo_style(image, self.bounding_box, info_text, color)
 
     @property
     def bounding_box(self) -> BoundingBox2D:
@@ -98,11 +87,12 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
     @property
     def annotation_color(self):
         """
-        Gets the color used for annotation based on the tracking ID.
+        Gets the color used for annotation based on the tracking ID or class ID.
 
         :return: The color RGB values for annotation.
         """
-        return COLOR_SEQUENCE[self.tracking_id % len(COLOR_SEQUENCE)]
+        color_id = self.tracking_id if self.tracking_id >= 0 else self.class_id
+        return COLOR_SEQUENCE[color_id % len(COLOR_SEQUENCE)]
 
     @property
     def tracking_id(self) -> int:

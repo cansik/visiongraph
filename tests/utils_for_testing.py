@@ -20,9 +20,4 @@ def save_annotation_image(image: np.ndarray, name: str):
 
     output = Path("annotations") / f"{name}.png"
     output.parent.mkdir(exist_ok=True, parents=True)
-
-    i = 0
-    while output.exists():
-        output = Path("annotations") / f"{name}-{i}.png"
-        i += 1
     cv2.imwrite(str(output), image)
