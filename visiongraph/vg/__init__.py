@@ -383,6 +383,8 @@ if TYPE_CHECKING:
     from visiongraph.model.CameraIntrinsics import CameraIntrinsics  # noqa: F401
     from visiongraph.model.CameraStreamType import CameraStreamType  # noqa: F401
     from visiongraph.model.DepthBuffer import DepthBuffer  # noqa: F401
+    from visiongraph.model.NMSOptions import NMSBatchMode  # noqa: F401
+    from visiongraph.model.NMSOptions import NMSOptions  # noqa: F401
     from visiongraph.model.RollingBufferNumpy import RollingBufferNumpy  # noqa: F401
     from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer  # noqa: F401
     from visiongraph.model.VisionEngineOutput import VisionEngineOutput  # noqa: F401
@@ -545,6 +547,7 @@ if TYPE_CHECKING:
     from visiongraph.util.ResultUtils import bbox_from_landmarks  # noqa: F401
     from visiongraph.util.ResultUtils import extract_object_detection_roi  # noqa: F401
     from visiongraph.util.ResultUtils import non_maximum_suppression  # noqa: F401
+    from visiongraph.util.ResultUtils import non_maximum_suppression_from_options  # noqa: F401
     from visiongraph.util.TimeUtils import FPSTracer  # noqa: F401
     from visiongraph.util.TimeUtils import HighPrecisionTimer  # noqa: F401
     from visiongraph.util.TimeUtils import ProfileWatch  # noqa: F401
@@ -729,6 +732,8 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "CameraIntrinsics": _LazyImport("CameraIntrinsics", "visiongraph.model.CameraIntrinsics", False),
     "CameraStreamType": _LazyImport("CameraStreamType", "visiongraph.model.CameraStreamType", False),
     "DepthBuffer": _LazyImport("DepthBuffer", "visiongraph.model.DepthBuffer", False),
+    "NMSBatchMode": _LazyImport("NMSBatchMode", "visiongraph.model.NMSOptions", False),
+    "NMSOptions": _LazyImport("NMSOptions", "visiongraph.model.NMSOptions", False),
     "RollingBufferNumpy": _LazyImport("RollingBufferNumpy", "visiongraph.model.RollingBufferNumpy", False),
     "VisionEngineModelLayer": _LazyImport("VisionEngineModelLayer", "visiongraph.model.VisionEngineModelLayer", False),
     "VisionEngineOutput": _LazyImport("VisionEngineOutput", "visiongraph.model.VisionEngineOutput", False),
@@ -858,6 +863,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "bbox_from_landmarks": _LazyImport("bbox_from_landmarks", "visiongraph.util.ResultUtils", False),
     "extract_object_detection_roi": _LazyImport("extract_object_detection_roi", "visiongraph.util.ResultUtils", False),
     "non_maximum_suppression": _LazyImport("non_maximum_suppression", "visiongraph.util.ResultUtils", False),
+    "non_maximum_suppression_from_options": _LazyImport("non_maximum_suppression_from_options", "visiongraph.util.ResultUtils", False),
     "FPSTracer": _LazyImport("FPSTracer", "visiongraph.util.TimeUtils", False),
     "HighPrecisionTimer": _LazyImport("HighPrecisionTimer", "visiongraph.util.TimeUtils", False),
     "ProfileWatch": _LazyImport("ProfileWatch", "visiongraph.util.TimeUtils", False),
