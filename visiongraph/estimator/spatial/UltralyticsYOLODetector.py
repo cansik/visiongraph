@@ -6,11 +6,12 @@ import numpy as np
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 
 R = TypeVar("R", bound=ObjectDetectionResult)
 
@@ -28,11 +29,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         *assets: Asset,
         labels: List[str],
         min_score: float = 0.3,
-        nms: bool = True,
-        nms_threshold: float = 0.5,
-        nms_eta: Optional[float] = None,
-        nms_top_k: Optional[int] = None,
-        nms_batched: bool = True,
+        nms_options: Optional[NMSOptions] = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
@@ -41,11 +38,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         :param *assets: Variable number of assets.
         :param labels: List of labels.
         :param min_score: Minimum score for predictions.
-        :param nms: Flag to enable non-maximum suppression.
-        :param nms_threshold: Threshold for non-maximum suppression.
-        :param nms_eta: Epsilon value for non-maximum suppression.
-        :param nms_top_k: Top K value for non-maximum suppression.
-        :param nms_batched: Flag to enable per-class nms.
+        :param nms_options: Non-Maximum-Suppression options.
         :param engine: Inference engine type.
         """
         super().__init__(min_score)
@@ -54,11 +47,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         self.engine.padding_color = (125, 125, 125)
 
         self.labels: List[str] = labels
-        self.nms_threshold: float = nms_threshold
-        self.nms: bool = nms
-        self.nms_eta = nms_eta
-        self.nms_top_k = nms_top_k
-        self.nms_batched = nms_batched
+        self.nms_options = nms_options or NMSOptions()
 
     def setup(self):
         """
@@ -89,12 +78,8 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
             detection.map_coordinates(output.image_size, Size2D.from_image(image), src_roi=output.padding_box)
             results.append(detection)
 
-        if self.nms:
-            results = ResultList(
-                non_maximum_suppression(
-                    results, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k, self.nms_batched
-                )
-            )
+        if self.nms_options.enabled:
+            results = ResultList(non_maximum_suppression_from_options(results, self.nms_options))
         return results
 
     def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:

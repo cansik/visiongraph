@@ -40,7 +40,7 @@ class CrowdHumanDetector(YOLOv5Detector):
         :param *assets: Sequence of asset objects.
         :param assign_head_to_person: A flag to determine if assigning head to person is enabled.
         """
-        super().__init__(*assets, labels=["person", "head"], nms=True)
+        super().__init__(*assets, labels=["person", "head"])
 
         self.assign_head_to_person = assign_head_to_person
         self.assignment_solver = ObjectAssignmentSolver(self.crowd_human_l2_cost_function)

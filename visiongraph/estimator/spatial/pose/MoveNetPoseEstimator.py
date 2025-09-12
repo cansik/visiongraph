@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import numpy as np
 
@@ -7,9 +7,10 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
@@ -52,8 +53,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         weights: Asset,
         multi_pose: bool = False,
         min_score: float = 0.3,
-        enable_nms: bool = False,
-        iou_threshold: float = 0.4,
+        nms_options: Optional[NMSOptions] = None,
         device: str = "AUTO",
     ):
         """
@@ -63,15 +63,13 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         :param weights: The weights asset for the model.
         :param multi_pose: Flag to indicate if multi-pose estimation is enabled.
         :param min_score: Minimum score threshold for valid pose detection.
-        :param enable_nms: Flag to enable Non-Maximum Suppression.
-        :param iou_threshold: IOU threshold for NMS.
+        :param nms_options: Non-Maximum-Suppression options.
         :param device: The device to run the model on (e.g., "AUTO").
         """
         super().__init__(min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, device=device)
-        self.enable_nms = enable_nms
-        self.iou_threshold = iou_threshold
+        self.nms_options = nms_options or NMSOptions()
         self.multi_pose = multi_pose
 
     def setup(self):
@@ -123,8 +121,8 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
 
             poses.append(COCOPose(max_score, list_of_vector4D(key_points)))
 
-        if self.enable_nms:
-            poses = ResultList(non_maximum_suppression(poses, self.min_score, self.iou_threshold))
+        if self.nms_options.enabled:
+            poses = ResultList(non_maximum_suppression_from_options(poses, self.nms_options))
 
         return poses
 

@@ -7,11 +7,12 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
@@ -48,10 +49,7 @@ class UltralyticsPoseEstimator(PoseEstimator):
         *assets: Asset,
         num_keypoints: int,
         min_score: float = 0.7,
-        nms: bool = True,
-        nms_threshold: float = 0.5,
-        nms_eta: Optional[float] = None,
-        nms_top_k: Optional[int] = None,
+        nms_options: Optional[NMSOptions] = None,
         engine: InferenceEngine = InferenceEngine.OpenVINO2,
     ):
         """
@@ -60,18 +58,12 @@ class UltralyticsPoseEstimator(PoseEstimator):
         :param assets: Assets required for the pose estimation model.
         :param num_keypoints: The number of keypoints to detect.
         :param min_score: Minimum score threshold for keypoints detection.
-        :param nms: Whether to apply non-maximum suppression.
-        :param nms_threshold: Threshold for non-maximum suppression.
-        :param nms_eta: Eta parameter for non-maximum suppression.
-        :param nms_top_k: Maximum number of detections to keep after non-maximum suppression.
+        :param nms_options: Non-Maximum-Suppression options.
         :param engine: Inference engine to run the pose estimation model.
         """
         super().__init__(min_score)
 
-        self.nms_threshold: float = nms_threshold
-        self.nms: bool = nms
-        self.nms_eta = nms_eta
-        self.nms_top_k = nms_top_k
+        self.nms_options = nms_options or NMSOptions()
 
         self.num_keypoints = num_keypoints
 
@@ -125,10 +117,8 @@ class UltralyticsPoseEstimator(PoseEstimator):
             pose.map_coordinates(output.image_size, Size2D.from_image(image), src_roi=output.padding_box)
             poses.append(pose)
 
-        if self.nms:
-            poses = ResultList(
-                non_maximum_suppression(poses, self.min_score, self.nms_threshold, self.nms_eta, self.nms_top_k)
-            )
+        if self.nms_options.enabled:
+            poses = ResultList(non_maximum_suppression_from_options(poses, self.nms_options))
 
         return poses
 

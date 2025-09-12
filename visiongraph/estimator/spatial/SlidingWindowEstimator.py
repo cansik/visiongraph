@@ -1,9 +1,10 @@
 from argparse import Namespace
-from typing import TypeVar, Tuple, List, Generic
+from typing import TypeVar, Tuple, List, Generic, Optional, Any, Generator
 
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
@@ -26,7 +27,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
         step_size: int,
         window_size: Tuple[int, int],
         min_score: float = 0.5,
-        iou_threshold: float = 0.3,
+        nms_options: Optional[NMSOptions] = None,
     ):
         """
         Initializes the Sliding Window Estimator.
@@ -35,14 +36,14 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
         :param step_size: The step size for sliding the window.
         :param window_size: The size of the sliding window.
         :param min_score: The minimum score threshold for detections (default is 0.5).
-        :param iou_threshold: The Intersection over Union threshold for non-maximum suppression (default is 0.3).
+        :param nms_options: Non-Maximum-Suppression options.
         """
         super().__init__(min_score)
 
         self.network = network
         self.step_size = step_size
         self.window_size = window_size
-        self.iou_threshold = iou_threshold
+        self.nms_options = nms_options or NMSOptions()
 
     def setup(self):
         """
@@ -70,7 +71,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
                 detections.append(result)
 
         # perform nms on detections
-        final_detections = ResultUtils.non_maximum_suppression(detections, self.min_score, self.iou_threshold)
+        final_detections = ResultUtils.non_maximum_suppression_from_options(detections, self.nms_options)
 
         return ResultList(final_detections)
 
@@ -89,13 +90,13 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
         self.network.configure(args)
 
     @staticmethod
-    def _sliding_window(image, step_size, window_size) -> Tuple[int, int, np.ndarray]:
+    def _sliding_window(image, step_size, window_size) -> Generator[tuple[int, int, Any], Any, None]:
         """
-                Generate sliding windows over an input image.
+        Generate sliding windows over an input image.
 
-                :param image: The input image.
-                :param step_size: The step size for sliding the window.
-                :param window_size: The size of the sliding window.
+        :param image: The input image.
+        :param step_size: The step size for sliding the window.
+        :param window_size: The size of the sliding window.
 
         :param Yields:
         """

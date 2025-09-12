@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 import vector
 
+from visiongraph.model.NMSOptions import NMSOptions, NMSBatchMode
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
@@ -13,10 +14,34 @@ from visiongraph.util import ImageUtils
 ODR = TypeVar("ODR", bound=ObjectDetectionResult)
 
 
+def non_maximum_suppression_from_options(results: List[ODR], options: NMSOptions) -> List[ODR]:
+    """
+    Applies non-maximum suppression to a list of detection results based on the provided options.
+
+    :param results: List of object detection results to be filtered.
+    :param options: Configuration options specifying how NMS should be applied.
+
+    :return: List of filtered detection results after applying NMS.
+    """
+    if not options.enabled:
+        return results
+
+    use_batched = options.batch_mode == NMSBatchMode.Enabled
+
+    if len(results) > 0 and options.batch_mode == NMSBatchMode.Auto:
+        # check if there are multiple distinct classes, if yes, use batched mode
+        first_id = results[0].class_id
+        use_batched = any(r.class_id != first_id for r in results[1:])
+
+    return non_maximum_suppression(
+        results, options.score_threshold, options.nms_threshold, options.eta, options.top_k, use_batched
+    )
+
+
 def non_maximum_suppression(
     results: List[ODR],
-    min_score: float,
-    iou_threshold: float,
+    score_threshold: float,
+    nms_threshold: float,
     eta: Optional[float] = None,
     top_k: Optional[int] = None,
     batched: bool = False,
@@ -25,8 +50,8 @@ def non_maximum_suppression(
     Applies Non-Maximum Suppression (NMS) to filter out overlapping bounding boxes.
 
     :param results: List of object detection results.
-    :param min_score: Minimum score threshold to consider a box.
-    :param iou_threshold: IOU threshold for merging boxes.
+    :param score_threshold: Minimum score threshold to consider a box.
+    :param nms_threshold: IOU threshold for merging boxes.
     :param eta: Optional parameter for adjusting NMS.
     :param top_k: Optional parameter to limit the number of boxes.
     :param batched: Calculate the NMS separately for each class.
@@ -36,11 +61,14 @@ def non_maximum_suppression(
     boxes = [list(result.bounding_box) for result in results]
     confidences = [result.score for result in results]
 
+    if len(boxes) == 0:
+        return []
+
     if batched:
         class_ids = [result.class_id for result in results]
-        indices = cv2.dnn.NMSBoxesBatched(boxes, confidences, class_ids, min_score, iou_threshold, eta, top_k)
+        indices = cv2.dnn.NMSBoxesBatched(boxes, confidences, class_ids, score_threshold, nms_threshold, eta, top_k)
     else:
-        indices = cv2.dnn.NMSBoxes(boxes, confidences, min_score, iou_threshold, eta, top_k)
+        indices = cv2.dnn.NMSBoxes(boxes, confidences, score_threshold, nms_threshold, eta, top_k)
 
     return [results[int(i)] for i in list(indices)]
 

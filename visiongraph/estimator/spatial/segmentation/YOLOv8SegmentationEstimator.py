@@ -10,12 +10,14 @@ from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
-from visiongraph.util import ImageUtils, ResultUtils
+from visiongraph.util import ImageUtils
 from visiongraph.util.MathUtils import sigmoid
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 
 
 class YOLOv8SegmentationConfig(Enum):
@@ -41,10 +43,7 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         *assets: Asset,
         labels: List[str],
         min_score: float = 0.3,
-        nms: bool = True,
-        nms_threshold: float = 0.5,
-        nms_eta: Optional[float] = None,
-        nms_top_k: Optional[int] = None,
+        nms_options: Optional[NMSOptions] = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
         allowed_classes: Optional[Set[int]] = None,
         mask_threshold: float = 0.5,
@@ -55,10 +54,7 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
         :param assets: The model assets.
         :param labels: The list of class labels.
         :param min_score: Minimum score for detections. Defaults to 0.3.
-        :param nms: Whether to apply non-maximum suppression. Defaults to True.
-        :param nms_threshold: Threshold for NMS. Defaults to 0.5.
-        :param nms_eta: Eta parameter for NMS. Defaults to None.
-        :param nms_top_k: Maximum number of boxes to keep after NMS. Defaults to None.
+        :param nms_options: Non-Maximum-Suppression options.
         :param engine: The inference engine to use. Defaults to InferenceEngine.ONNX.
         :param allowed_classes: Set of allowed class IDs. Defaults to None.
         :param mask_threshold: Threshold for mask predictions. Defaults to 0.5.
@@ -67,10 +63,7 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
             *assets,
             labels=labels,
             min_score=min_score,
-            nms=nms,
-            nms_threshold=nms_threshold,
-            nms_eta=nms_eta,
-            nms_top_k=nms_top_k,
+            nms_options=nms_options,
             engine=engine,
         )
 
@@ -161,8 +154,8 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
             result.map_coordinates(Size2D.from_image(mask), (iw, ih), src_roi=mask_box)
             results.append(result)
 
-        if self.nms:
-            results = ResultList(ResultUtils.non_maximum_suppression(results, self.min_score, self.nms_threshold))
+        if self.nms_options.enabled:
+            results = ResultList(non_maximum_suppression_from_options(results, self.nms_options))
         return results
 
     @staticmethod

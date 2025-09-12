@@ -1,6 +1,8 @@
 import unittest
 
 import cv2
+
+from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
 
 
@@ -8,10 +10,7 @@ class FaceDetectionTests(unittest.TestCase):
     @staticmethod
     def _test_model(model: vg.FaceDetector):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-
-        model.setup()
-        model.process(image)
-        model.release()
+        run_estimator_test(model, image)
 
     def test_adas_face_detection_fp32(self):
         self._test_model(vg.AdasFaceDetector.create(vg.AdasFaceConfig.MobileNet_672x384_FP32))

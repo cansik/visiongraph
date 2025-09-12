@@ -4,6 +4,7 @@ import cv2
 import numpy as np
 from vector import VectorNumpy4D
 
+from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
 from visiongraph.estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
 from visiongraph.result.ResultList import ResultList
@@ -16,10 +17,7 @@ class PoseEstimationTests(unittest.TestCase):
     @staticmethod
     def _test_model(model: vg.PoseEstimator):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-
-        model.setup()
-        model.process(image)
-        model.release()
+        run_estimator_test(model, image)
 
     def test_aepose_estimator_fp32(self):
         self._test_model(vg.AEPoseEstimator.create(vg.AEPoseConfig.EfficientHRNet_288_FP32))

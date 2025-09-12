@@ -1,6 +1,8 @@
 import unittest
 
 import cv2
+
+from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
 from visiongraph.util import OSUtils
 
@@ -9,10 +11,7 @@ class ObjectDetectionTests(unittest.TestCase):
     @staticmethod
     def _test_model(model: vg.ObjectDetector):
         image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
-
-        model.setup()
-        model.process(image)
-        model.release()
+        run_estimator_test(model, image)
 
     def test_center_net_fp16(self):
         self._test_model(vg.CenterNetDetector.create(vg.CenterNetConfig.CenterNet_FP16))
@@ -79,11 +78,19 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_ultralytics_yolov8_detector_s(self):
         self._test_model(vg.YOLOv8Detector.create(vg.YOLOv8Config.YOLOv8_S))
 
+    def test_ultralytics_yolov8_oiv7_detector_s(self):
+        self._test_model(vg.YOLOv8Detector.create(vg.YOLOv8Config.YOLOv8_S_Open_Images_V7))
+
     def test_ultralytics_yolov8_detector_obb_s(self):
         self._test_model(vg.YOLOv8OBBDetector.create(vg.YOLOv8OBBConfig.YOLOv8_OBB_S))
 
     def test_crowdhuman_detector(self):
         self._test_model(vg.CrowdHumanDetector.create(vg.CrowdHumanConfig.YOLOv5_N_640))
+
+    def test_sliding_window_estimator(self):
+        self._test_model(
+            vg.SlidingWindowEstimator(vg.YOLOv8OBBDetector.create(vg.YOLOv8OBBConfig.YOLOv8_OBB_S), 128, (256, 256))
+        )
 
 
 if __name__ == "__main__":

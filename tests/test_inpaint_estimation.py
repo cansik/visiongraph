@@ -1,6 +1,7 @@
 import unittest
 
 import cv2
+
 from visiongraph import vg
 
 
@@ -11,7 +12,8 @@ class InpaintTests(unittest.TestCase):
         mask = cv2.imread("assets/inpaint-mask.png")
 
         model.setup()
-        model.inpaint(image, mask)
+        result = model.inpaint(image, mask)
+        result.annotate(image)
         model.release()
 
     def test_gmcnn_inpainter_fp32(self):

@@ -15,10 +15,11 @@ class FaceCascadeRegressionEstimationTests(unittest.TestCase):
 
     def _test_model(self, model: vg.FaceEmotionEstimator):
         image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
-        result = self.network.process(image)[0]
+        face_result = self.network.process(image)[0]
 
         model.setup()
-        model.process_detection(image, result)
+        result = model.process_detection(image, face_result)
+        result.annotate(image)
         model.release()
 
     def test_face_affect_net_emotion_classifier_int8(self):

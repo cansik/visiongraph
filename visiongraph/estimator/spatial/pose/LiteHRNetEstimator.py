@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 import numpy as np
 
@@ -9,9 +9,10 @@ from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
@@ -48,8 +49,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         weights: Asset,
         human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
         min_score: float = 0.3,
-        enable_nms: bool = True,
-        iou_threshold: float = 0.4,
+        nms_options: Optional[NMSOptions] = None,
         device: str = "AUTO",
     ):
         """
@@ -59,15 +59,13 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         :param weights: The weights asset for pose estimation.
         :param human_detector: An object detector for detecting humans. Defaults to SSDDetector.
         :param min_score: The minimum score for detected poses. Defaults to 0.3.
-        :param enable_nms: Flag to enable non-maximum suppression. Defaults to True.
-        :param iou_threshold: The IoU threshold for NMS. Defaults to 0.4.
+        :param nms_options: Non-Maximum-Suppression options.
         :param device: The device to use for inference. Defaults to "AUTO".
         """
         super().__init__(human_detector, min_score)
 
         self.engine = OpenVinoEngine(model, weights, flip_channels=True, scale=255, device=device)
-        self.enable_nms = enable_nms
-        self.iou_threshold = iou_threshold
+        self.nms_options = nms_options or NMSOptions()
 
         self.roi_rectified = False
 
@@ -119,8 +117,8 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
 
             poses.append(COCOPose(max_score, list_of_vector4D(key_points)))
 
-        if self.enable_nms and len(poses) > 1:
-            poses = ResultList(non_maximum_suppression(poses, self.min_score, self.iou_threshold))
+        if self.nms_options.enabled and len(poses) > 1:
+            poses = ResultList(non_maximum_suppression_from_options(poses, self.nms_options))
 
         return poses
 

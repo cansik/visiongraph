@@ -9,7 +9,7 @@ from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.OrientedObjectDetectionResult import OrientedObjectDetectionResult
-from visiongraph.util.ResultUtils import non_maximum_suppression
+from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 
 
 class YOLOv8OBBConfig(Enum):
@@ -75,8 +75,8 @@ class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):
             detection.map_coordinates(output.image_size, Size2D.from_image(image), src_roi=output.padding_box)
             results.append(detection)
 
-        if self.nms:
-            results = ResultList(non_maximum_suppression(results, self.min_score, self.nms_threshold))
+        if self.nms_options.enabled:
+            results = ResultList(non_maximum_suppression_from_options(results, self.nms_options))
         return results
 
     @staticmethod

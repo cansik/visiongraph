@@ -1,6 +1,8 @@
 import unittest
 
 import cv2
+
+from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
 
 
@@ -8,10 +10,7 @@ class FaceLandmarkEstimationTests(unittest.TestCase):
     @staticmethod
     def _test_model(model: vg.FaceLandmarkEstimator):
         image = cv2.imread("assets/head-pexels-ike-louie-natividad-2709388.jpg")
-
-        model.setup()
-        model.process(image)
-        model.release()
+        run_estimator_test(model, image)
 
     def test_mediapipe_face_landmark_detector(self):
         self._test_model(vg.MediaPipeFaceDetector())

@@ -20,7 +20,8 @@ class FaceRecognitionEstimationTests(unittest.TestCase):
         result = self.network.process(image)[0]
 
         model.setup()
-        model.process_detection(image, result)
+        result = model.process_detection(image, result)
+        result.annotate(image)
         model.release()
 
     def test_face_reidentification_estimator_int8(self):
