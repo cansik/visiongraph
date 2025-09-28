@@ -3,9 +3,13 @@ from typing import Union, Optional, Tuple
 
 import cv2
 import numpy as np
-from vidgear.gears import CamGear
 
-from visiongraph.input.VideoCaptureInput import VideoCaptureInput
+import warnings
+
+warnings.filterwarnings("ignore", message="pkg_resources is deprecated as an API.*")
+
+from vidgear.gears import CamGear  # noqa: E402
+from visiongraph.input.VideoCaptureInput import VideoCaptureInput  # noqa: E402
 
 
 class CamGearInput(VideoCaptureInput):
