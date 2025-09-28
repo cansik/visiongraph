@@ -73,6 +73,8 @@ if TYPE_CHECKING:
         logging.info("Module CenterNetDetector not found")
     from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanConfig  # noqa: F401
     from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanDetector  # noqa: F401
+    from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Config  # noqa: F401
+    from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Detector  # noqa: F401
     try:
         from visiongraph.estimator.spatial.DETRDetector import DETRConfig # noqa: F401
     except ModuleNotFoundError:
@@ -505,6 +507,7 @@ if TYPE_CHECKING:
     from visiongraph.util.CommonArgs import add_source_argument  # noqa: F401
     from visiongraph.util.DrawingUtils import draw_axis  # noqa: F401
     from visiongraph.util.DrawingUtils import draw_bbox  # noqa: F401
+    from visiongraph.util.DrawingUtils import draw_bbox_yolo_style  # noqa: F401
     from visiongraph.util.DrawingUtils import draw_landmark  # noqa: F401
     from visiongraph.util.DrawingUtils import draw_text  # noqa: F401
     from visiongraph.util.DrawingUtils import draw_text_normalized  # noqa: F401
@@ -620,6 +623,8 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "CenterNetDetector": _LazyImport("CenterNetDetector", "visiongraph.estimator.spatial.CenterNetDetector", True),
     "CrowdHumanConfig": _LazyImport("CrowdHumanConfig", "visiongraph.estimator.spatial.CrowdHumanDetector", False),
     "CrowdHumanDetector": _LazyImport("CrowdHumanDetector", "visiongraph.estimator.spatial.CrowdHumanDetector", False),
+    "DEIMv2Config": _LazyImport("DEIMv2Config", "visiongraph.estimator.spatial.DEIMv2Detector", False),
+    "DEIMv2Detector": _LazyImport("DEIMv2Detector", "visiongraph.estimator.spatial.DEIMv2Detector", False),
     "DETRConfig": _LazyImport("DETRConfig", "visiongraph.estimator.spatial.DETRDetector", True),
     "DETRDetector": _LazyImport("DETRDetector", "visiongraph.estimator.spatial.DETRDetector", True),
     "InstanceSegmentationEstimator": _LazyImport("InstanceSegmentationEstimator", "visiongraph.estimator.spatial.InstanceSegmentationEstimator", False),
@@ -824,6 +829,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "add_source_argument": _LazyImport("add_source_argument", "visiongraph.util.CommonArgs", False),
     "draw_axis": _LazyImport("draw_axis", "visiongraph.util.DrawingUtils", False),
     "draw_bbox": _LazyImport("draw_bbox", "visiongraph.util.DrawingUtils", False),
+    "draw_bbox_yolo_style": _LazyImport("draw_bbox_yolo_style", "visiongraph.util.DrawingUtils", False),
     "draw_landmark": _LazyImport("draw_landmark", "visiongraph.util.DrawingUtils", False),
     "draw_text": _LazyImport("draw_text", "visiongraph.util.DrawingUtils", False),
     "draw_text_normalized": _LazyImport("draw_text_normalized", "visiongraph.util.DrawingUtils", False),

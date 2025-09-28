@@ -81,7 +81,7 @@ mp_pose = vg.MediaPipePoseEstimator()
 mp_pose.setup()
 
 # process a frame
-mp_pose.process(my_np_image)
+result = mp_pose.process(my_np_image)
 
 # release the resources
 mp_pose.release()
@@ -97,7 +97,7 @@ from visiongraph import vg
 
 with vg.MediaPipePoseEstimator() as mp_pose:
     # process a frame
-    mp_pose.process(my_np_image)
+    result = mp_pose.process(my_np_image)
 ```
 
 ## Input
@@ -231,13 +231,13 @@ over face detectors to specific human crowd detectors. Each object detector retu
 to extract further information about the object instance.
 
 ```python
-from visiongraph import vg
 import numpy as np
+
+from visiongraph import vg
 
 face_image: np.ndarray
 
 with vg.MediaPipeFaceDetector() as face_detector:
-    face_detector: vg.MediaPipeFaceDetector
     results: vg.ResultList[vg.FaceDetectionResult] = face_detector.process(face_image)
 
     for face in results:
@@ -251,7 +251,8 @@ with vg.MediaPipeFaceDetector() as face_detector:
 ```
 
 Since machine learning frameworks usually need specific model and weight descriptions, visiongraph already provides a
-list of configurations per detector. Here are some examples:
+list of configurations per detector. These configurations are only available, if the model and weights are already
+hosted in the repository (see [assets](#Assets)). Here are some examples:
 
 ```python
 from visiongraph import vg
@@ -269,6 +270,11 @@ with vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8) as seg
     pass
 ```
 
+![pexels-jimbear-2926723-crowdhuman.jpg](doc/pexels-jimbear-2926723-crowdhuman.jpg)
+
+#### Non-Maximum-Suppression (NMS)
+Most of the object detection models need a post non-maximum-suppression to remove bounding boxes that have been annotated more than once.
+
 ### Pose Estimator
 
 #### Landmark Embeddings
@@ -285,7 +291,7 @@ with vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8) as seg
 
 ## Object Detection Tracker
 
-Object detection trackers allow a detected object to be assigned an id that remains the same across successive frames.
+Object detection trackers allow a detected object to be assigned an `tracking_id` that remains the same across successive frames.
 
 ## DSP (Digital Signal Processing)
 

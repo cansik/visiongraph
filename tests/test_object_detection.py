@@ -9,7 +9,7 @@ from visiongraph.util import OSUtils
 
 class ObjectDetectionTests(unittest.TestCase):
     def _test_model(self, model: vg.ObjectDetector):
-        image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
+        image = cv2.imread("assets/pexels-joshsorenson-139303.jpg")
         run_estimator_test(model, image, self._testMethodName)
 
     def test_center_net_fp16(self):
@@ -86,10 +86,18 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_crowdhuman_detector(self):
         self._test_model(vg.CrowdHumanDetector.create(vg.CrowdHumanConfig.YOLOv5_N_640))
 
+    def test_deimv2_pico_detector(self):
+        self._test_model(vg.DEIMv2Detector.create(vg.DEIMv2Config.DEIMv2_HgNetv2_Pico_COCO))
+
+    def test_deimv2_s_detector(self):
+        self._test_model(vg.DEIMv2Detector.create(vg.DEIMv2Config.DEIMv2_Dino3_S_COCO))
+
     def test_sliding_window_estimator(self):
-        self._test_model(
-            vg.SlidingWindowEstimator(vg.YOLOv8OBBDetector.create(vg.YOLOv8OBBConfig.YOLOv8_OBB_S), 128, (256, 256))
-        )
+        nms_options = vg.NMSOptions(score_threshold=0.05)
+        model = vg.YOLOv8Detector.create(vg.YOLOv8Config.YOLOv8_L)
+        model.nms_options.enabled = False
+        model.min_score = 0.05
+        self._test_model(vg.SlidingWindowEstimator(model, 128, (640, 480), min_score=0.05, nms_options=nms_options))
 
 
 if __name__ == "__main__":
