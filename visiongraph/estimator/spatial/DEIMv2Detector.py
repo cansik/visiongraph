@@ -43,7 +43,6 @@ class DEIMv2Detector(ObjectDetector):
         *assets: Asset,
         labels: List[str],
         min_score: float = 0.3,
-        batch_size: int = 1,
         nms_options: Optional[NMSOptions] = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
@@ -53,7 +52,6 @@ class DEIMv2Detector(ObjectDetector):
         :param *assets: Variable length argument list of model assets.
         :param labels: List of label names corresponding to detection classes.
         :param min_score: Minimum confidence score threshold for detections (default is 0.3).
-        :param batch_size: Number of images to process in a batch (default is 1).
         :param nms_options: Configuration for non-maximum suppression.
         :param engine: The inference engine to use (default is ONNX).
         """
@@ -62,7 +60,6 @@ class DEIMv2Detector(ObjectDetector):
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
-        self.batch_size = batch_size
         self.labels: List[str] = labels
         self.nms_options = nms_options or NMSOptions(enabled=False)
 
