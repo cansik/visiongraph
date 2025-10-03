@@ -61,11 +61,12 @@ docs = [
 [project.optional-dependencies]
 realsense = [
     "pyrealsense2-macosx~=2.54.2; platform_system == 'Darwin'",
-    "pyrealsense2~=2.55.1; platform_system != 'Darwin'",
+    "pyrealsense2~=2.56.5; platform_system != 'Darwin'",
 ]
 
 azure = [
-    "pyk4a-bundle~=1.5; platform_system == 'Windows' or platform_system == 'Linux'",
+    # "pyk4a-bundle~=1.5; platform_system == 'Windows' or platform_system == 'Linux'",
+    "pyk4a~=1.5; platform_system == 'Windows' or platform_system == 'Linux'",
 ]
 
 depthai = [
@@ -80,16 +81,16 @@ mediapipe = [
     "mediapipe-numpy2~=0.10.21"
 ]
 
-onnx = ["onnxruntime~=1.22.0"]
+onnx = ["onnxruntime~=1.23.0"]
 
 "onnx-gpu" = [
-    "onnxruntime~=1.22.0; platform_system == 'Darwin'",
-    "onnxruntime-gpu~=1.22.0; platform_system != 'Darwin'",
+    "onnxruntime~=1.23.0; platform_system == 'Darwin'",
+    "onnxruntime-gpu~=1.23.0; platform_system != 'Darwin'",
 ]
 
 "onnx-directml" = [
-    "onnxruntime~=1.22.0; platform_system == 'Darwin' or platform_system == 'Linux'",
-    "onnxruntime-directml~=1.22.0; platform_system == 'Windows'",
+    "onnxruntime~=1.23.0; platform_system == 'Darwin' or platform_system == 'Linux'",
+    "onnxruntime-directml~=1.23.0; platform_system == 'Windows'",
 ]
 
 media = [
