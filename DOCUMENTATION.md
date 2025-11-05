@@ -333,7 +333,18 @@ result.right_knee
 
 Similar to the human pose estimators, there are pose estimators for the hand pose detection task. It returns a list of landmarks of a hand and can be used in combination with the human pose estimation (holistic human pose detection).
 
+```python
+from visiongraph import vg
 
+image: np.ndarray
+
+with vg.MediaPipeHandEstimator() as network:
+    results = network.process(image)
+
+    for hand in results:
+        if hand.handedness == vg.Handedness.LEFT:
+            print(hand.index_finger_ip)
+```
 
 ### Landmark Embeddings
 
@@ -343,13 +354,49 @@ For classification or re-identification tasks it can be necessary to embed the l
 from visiongraph import vg
 poses: list[vg.PoseLandmarkResult] = []
 
-with vg.LandmarkEmbedder(vg.embed_pose) as embedder:
-    embeddings = embedder.process(poses)
+with vg.LandmarkEmbedder(vg.embed_pose) as model:
+    embeddings = model.process(poses)
 ```
 
 ### Object Segmentation
 
+Object segmentation estimators not only predict the bounding box around an object, but predict a pixel-based mask to define the visible shape of the object. `visiongraph.estimator.spatial.InstanceSegmentationEstimator.InstanceSegmentationEstimator` inherits ` visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` and extends the object detection results with a binary mask.
+
+```python
+from visiongraph import vg
+
+image: np.ndarray
+
+with vg.ModNetEstimator.create() as model:
+    results = model.process(image)
+
+    for instance in results:
+        mask: np.ndarray = instance.mask
+```
+
+Please be aware that the mask is a binary mask (containing only 0 or 1) and is of type `np.uint8`. The size of the mask is the same as the input frame. This can be quite memory intense depending on the amount of instances that are detected.
+
+
 ### Camera Pose Estimator
+
+At the moment there are only a few tools implemented for camera calibration and pose estimation. One of them is the `visiongraph.estimator.spatial.camera.ArUcoCameraPoseEstimator.ArUcoCameraPoseEstimator` which requires camera intrinsics to detect ArUco markers and predict the relative camera pose.
+
+```python
+from visiongraph import vg
+
+intrinsics = vg.CameraIntrinsics.load("media/calibration.json")
+image: np.ndarray
+
+with vg.ArUcoCameraPoseEstimator(
+            camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
+        ) as model:
+    
+    pose = model.process(image)
+    print(f"Camera position: {pose.position} / rotation {pose.rotation}")
+    print(f"Distance: {pose.position.mag:.2f}")
+```
+
+For creating an intrinsic camera calibration, have a look at `visiongraph.estimator.spatial.camera.ChessboardCalibrator.ChessboardCalibrator` or `visiongraph.estimator.spatial.camera.ChArUcoCalibrator.ChArUcoCalibrator`.
 
 ### Result
 
