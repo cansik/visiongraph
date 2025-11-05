@@ -11,6 +11,7 @@ class NMSBatchMode(Enum):
     - Disabled: Apply NMS independently for each input.
     - Enabled: Apply NMS across all inputs in a batch.
     """
+
     Auto = 1 << 0
     Disabled = 1 << 1
     Enabled = 1 << 2
