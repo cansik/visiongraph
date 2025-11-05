@@ -2,7 +2,7 @@
 
 This documentation is intended to provide an overview of the framework.
 
-## Overview
+## Getting Started
 
 ### Structure
 
@@ -226,7 +226,9 @@ removing blur or generating a depth map.
 
 ### Object Detection
 
-There are various implementations of object detectors in visiongraph, spanning from SSD, YOLO (X, v5, v8, v8OBB, etc.)
+![pexels-jimbear-2926723-crowdhuman.jpg](doc/pexels-jimbear-2926723-crowdhuman.jpg)
+
+There are various implementations of object detectors in visiongraph, spanning from [SSD](https://arxiv.org/abs/1512.02325), [YOLO](https://arxiv.org/abs/1506.02640) (X, v5, v8, v8OBB, etc.)
 over face detectors to specific human crowd detectors. Each object detector returns a list of results which can be used
 to extract further information about the object instance.
 
@@ -270,16 +272,80 @@ with vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8) as seg
     pass
 ```
 
-![pexels-jimbear-2926723-crowdhuman.jpg](doc/pexels-jimbear-2926723-crowdhuman.jpg)
+#### Non-Maximum-Suppression ([NMS](https://learnopencv.com/non-maximum-suppression-theory-and-implementation-in-pytorch/))
 
-#### Non-Maximum-Suppression (NMS)
 Most of the object detection models need a post non-maximum-suppression to remove bounding boxes that have been annotated more than once.
 
-### Pose Estimator
+```python
+results = [vg.ObjectDetectionResult(...), ...]
+vg.non_maximum_suppression(results, batched=True)
+```
 
-#### Landmark Embeddings
+It is possible to either run NMS over all object detection results, or make it class-aware (`batched`). By default, it is not class-aware. Usually, estimators allow to pass a `visiongraph.model.NMSOptions.NMSOptions` to configure the internal NMS call.
+
+### Human Pose Estimator
+
+Human pose estimation is a task very common in interactive systems and is basically a subtask of object detection (on a result level). That is why visiongraph models the human pose estimation task as a `visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` but adds additional methods to work with landmarks (keypoints).
+
+```python
+from visiongraph import vg
+
+pose_image: np.ndarray
+
+with vg.AEPoseEstimator.create() as pose_detector:
+    results = pose_detector.process(pose_image)
+    for pose in results:
+        eye = pose.left_eye
+        print(f"Eye Position: {eye.x}, {eye.y}")
+        print(f"Landmark count: {len(pose.landmarks)}")
+```
+
+There are various models implemented, usually it's recommended to use the mediapipe pose model which is very efficient. Here you find a selection of models.
+
+```python
+from visiongraph import vg
+
+vg.MediaPipePoseEstimator.create(vg.MediaPipePoseConfig.Light)
+vg.AEPoseEstimator.create(vg.AEPoseConfig.EfficientHRNet_288_FP16)
+vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_S_COCO_640)
+vg.UltralyticsPoseEstimator.create(vg.UltralyticsPoseConfig.YOLOv8_N_640_INT8)
+vg.LiteHRNetPoseEstimator.create(vg.LiteHRNetConfig.LiteHRNet_30_COCO_384x288_FP16)
+vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_MultiPose_320x320_FP32)
+vg.OpenPoseEstimator.create(vg.OpenPoseConfig.LightWeightOpenPose_INT8)
+```
+
+Since human pose datasets are not always use the same amount of landmarks, there is a generic `visiongraph.result.spatial.pose.PoseLandmarkResult.PoseLandmarkResult` which allows to access default landmarks, available in all pose definitions (COCO, BlazePose, OpenPose, etc.).
+
+```python
+from visiongraph import vg
+
+result: vg.COCOOpenPose
+
+result.nose
+result.neck
+result.left_knee
+result.right_knee
+
+# and so on
+```
 
 ### Hand Estimator
+
+Similar to the human pose estimators, there are pose estimators for the hand pose detection task. It returns a list of landmarks of a hand and can be used in combination with the human pose estimation (holistic human pose detection).
+
+
+
+### Landmark Embeddings
+
+For classification or re-identification tasks it can be necessary to embed the landmark result into a position and scale invariant format (normalisation). For that purpose there is already a pre-defined `visiongraph.estimator.embedding.LandmarkEmbedder.LandmarkEmbedder` which requires an embedding method and a list of pose results.
+
+```python
+from visiongraph import vg
+poses: list[vg.PoseLandmarkResult] = []
+
+with vg.LandmarkEmbedder(vg.embed_pose) as embedder:
+    embeddings = embedder.process(poses)
+```
 
 ### Object Segmentation
 
