@@ -1,3 +1,4 @@
+import importlib.resources as resources
 import logging
 import os
 import shutil
@@ -5,10 +6,9 @@ import sys
 from typing import Any, Dict, Optional, Tuple
 
 import requests
+import visiongraph.cache
 from requests.exceptions import RequestException
 from tqdm import tqdm
-
-import visiongraph.cache
 
 PUBLIC_DATA_HEADERS = {}
 
@@ -142,7 +142,8 @@ def prepare_data_file(file_name: str, url: Optional[str] = None, headers: Option
     if url is None:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 
-    data_dir = os.path.abspath(os.path.dirname(visiongraph.cache.__file__))
+    cache_path = resources.path(visiongraph.cache.__name__, ".").__enter__()
+    data_dir = str(cache_path.absolute())
     if hasattr(sys, "_MEIPASS"):
         data_dir = "./cache"
 
