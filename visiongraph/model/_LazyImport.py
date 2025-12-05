@@ -64,16 +64,26 @@ class _LazyImport:
         """
         Tries to import the module and returns its attribute.
 
-        :return: The value of the imported attribute.
+        If the import fails, a stub type is returned that raises an ImportError
+        on any usage.
+
+        :return: The value of the imported attribute or an import stub type.
         """
+        reason: str | None = None
         try:
             return self._import()
-        except ModuleNotFoundError:
-            logging.info(f"Module {self.module_name} not found")
+        except ModuleNotFoundError as ex:
+            reason = str(ex)
+            logging.info(f"Lazy module import {self.module_name} not found (Reason: {reason})")
 
-        # create stub to return
-        stub = type(self.module_name, _ImportStub.__bases__, dict(_ImportStub.__dict__))
+        # Create a stub class named like the missing module or attribute.
+        # Using _ImportStub as a base ensures the metaclass _ImportStubMeta
+        # is reused and all traps remain active on the new type.
+        stub = type(self.module_name, (_ImportStub,), {})
+
         stub.name = self.module_name
+        stub.reason = reason
+
         return stub
 
     def _import(self) -> Any:
