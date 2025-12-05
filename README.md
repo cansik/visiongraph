@@ -81,6 +81,7 @@ To demonstrate the possibilities of visiongraph there are already implemented [e
 There are even more examples where visiongraph is currently in use:
 
 - [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over spout or syphon.
+- [NDI Input / Output](https://github.com/cansik/visiongraph-ndi) - Receive and share video frames over NDI
 - [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph
 
 ## Development
