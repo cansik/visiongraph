@@ -18,3 +18,9 @@
     --def: #0cdd0c;
     --annotation: #00c037;
 }
+
+.pdoc .docstring img {
+    max-width: 95%;
+    margin-left: 1em;
+    margin-right: 1em;
+}

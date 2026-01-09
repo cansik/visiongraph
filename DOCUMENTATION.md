@@ -8,18 +8,18 @@ This documentation is intended to provide an overview of the framework.
 
 The visiongraph package structure contains the following main packages.
 
-- `vg` - Supports lazy and optional access to all modules via a single package import.
-- `input` - Contains camera support for various cameras (like UVC, Azure Kinect, RealSense and so on).
-- `estimator` - Implements the machine learning models and computer vision algorithms.
-- `result` - Contains the models for the estimator results.
-- `output` - Adds output support like NDI, Syphon, Spout and image preview.
+- `visiongraph.vg` - Supports lazy and optional access to all modules via a single package import.
+- `visiongraph.input` - Contains camera support for various cameras (like UVC, Azure Kinect, RealSense and so on).
+- `visiongraph.estimator` - Implements the machine learning models and computer vision algorithms.
+- `visiongraph.result` - Contains the models for the estimator results.
+- `visiongraph.output` - Adds output support like NDI, Syphon, Spout and image preview.
 
 Additionally, there are the following packages.
 
-- `model` - Contains class models that are necessary for visiongraph.
-- `dsp` - Contains filters and DSP algorithms.
-- `recorder` - Adds support for video recordings using various frameworks.
-- `tracker` - Contains object-detection tracker implementations.
+- `visiongraph.model` - Contains class models that are necessary for visiongraph.
+- `visiongraph.dsp` - Contains filters and DSP algorithms.
+- `visiongraph.recorder` - Adds support for video recordings using various frameworks.
+- `visiongraph.tracker` - Contains object-detection tracker implementations.
 
 ### Import Visiongraph
 
@@ -218,7 +218,7 @@ with vg.AzureKinectInput() as cam:
     cam.gain = 100
 ```
 
-## Estimator
+## Estimators / Detectors
 
 An estimator is typically a graph node that takes an image as input and produces information about its content. Examples
 include pose estimation or face detection. In some cases, the estimator may also transform the image itself, such as by
@@ -226,9 +226,10 @@ removing blur or generating a depth map.
 
 ### Object Detection
 
-![pexels-jimbear-2926723-crowdhuman.jpg](doc/pexels-jimbear-2926723-crowdhuman.jpg)
+![Object Detection Image](doc/pexels-jimbear-2926723-crowdhuman.webp)
 
-There are various implementations of object detectors in visiongraph, spanning from [SSD](https://arxiv.org/abs/1512.02325), [YOLO](https://arxiv.org/abs/1506.02640) (X, v5, v8, v8OBB, etc.)
+There are various implementations of object detectors in visiongraph, spanning
+from [SSD](https://arxiv.org/abs/1512.02325), [YOLO](https://arxiv.org/abs/1506.02640) (X, v5, v8, v8OBB, etc.)
 over face detectors to specific human crowd detectors. Each object detector returns a list of results which can be used
 to extract further information about the object instance.
 
@@ -254,7 +255,7 @@ with vg.MediaPipeFaceDetector() as face_detector:
 
 Since machine learning frameworks usually need specific model and weight descriptions, visiongraph already provides a
 list of configurations per detector. These configurations are only available, if the model and weights are already
-hosted in the repository (see [assets](#Assets)). Here are some examples:
+hosted in the repository (see [assets](#assets)). Here are some examples:
 
 ```python
 from visiongraph import vg
@@ -274,18 +275,24 @@ with vg.MaskRCNNEstimator.create(vg.MaskRCNNConfig.EfficientNet_480_INT8) as seg
 
 #### Non-Maximum-Suppression ([NMS](https://learnopencv.com/non-maximum-suppression-theory-and-implementation-in-pytorch/))
 
-Most of the object detection models need a post non-maximum-suppression to remove bounding boxes that have been annotated more than once.
+Most of the object detection models need a post non-maximum-suppression to remove bounding boxes that have been
+annotated more than once.
 
 ```python
 results = [vg.ObjectDetectionResult(...), ...]
 vg.non_maximum_suppression(results, batched=True)
 ```
 
-It is possible to either run NMS over all object detection results, or make it class-aware (`batched`). By default, it is not class-aware. Usually, estimators allow to pass a `visiongraph.model.NMSOptions.NMSOptions` to configure the internal NMS call.
+It is possible to either run NMS over all object detection results, or make it class-aware (`batched`). By default, it
+is not class-aware. Usually, estimators allow to pass a `visiongraph.model.NMSOptions.NMSOptions` to configure the
+internal NMS call.
 
 ### Human Pose Estimator
 
-Human pose estimation is a task very common in interactive systems and is basically a subtask of object detection (on a result level). That is why visiongraph models the human pose estimation task as a `visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` but adds additional methods to work with landmarks (keypoints).
+Human pose estimation is a task very common in interactive systems and is basically a subtask of object detection (on a
+result level). That is why visiongraph models the human pose estimation task as a
+`visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` but adds additional methods to work with landmarks (
+keypoints).
 
 ```python
 from visiongraph import vg
@@ -300,7 +307,8 @@ with vg.AEPoseEstimator.create() as pose_detector:
         print(f"Landmark count: {len(pose.landmarks)}")
 ```
 
-There are various models implemented, usually it's recommended to use the mediapipe pose model which is very efficient. Here you find a selection of models.
+There are various models implemented, usually it's recommended to use the mediapipe pose model which is very efficient.
+Here you find a selection of models.
 
 ```python
 from visiongraph import vg
@@ -314,7 +322,9 @@ vg.MoveNetPoseEstimator.create(vg.MoveNetConfig.MoveNet_MultiPose_320x320_FP32)
 vg.OpenPoseEstimator.create(vg.OpenPoseConfig.LightWeightOpenPose_INT8)
 ```
 
-Since human pose datasets are not always use the same amount of landmarks, there is a generic `visiongraph.result.spatial.pose.PoseLandmarkResult.PoseLandmarkResult` which allows to access default landmarks, available in all pose definitions (COCO, BlazePose, OpenPose, etc.).
+Since human pose datasets are not always use the same amount of landmarks, there is a generic
+`visiongraph.result.spatial.pose.PoseLandmarkResult.PoseLandmarkResult` which allows to access default landmarks,
+available in all pose definitions (COCO, BlazePose, OpenPose, etc.).
 
 ```python
 from visiongraph import vg
@@ -331,7 +341,8 @@ result.right_knee
 
 ### Hand Estimator
 
-Similar to the human pose estimators, there are pose estimators for the hand pose detection task. It returns a list of landmarks of a hand and can be used in combination with the human pose estimation (holistic human pose detection).
+Similar to the human pose estimators, there are pose estimators for the hand pose detection task. It returns a list of
+landmarks of a hand and can be used in combination with the human pose estimation (holistic human pose detection).
 
 ```python
 from visiongraph import vg
@@ -348,10 +359,14 @@ with vg.MediaPipeHandEstimator() as network:
 
 ### Landmark Embeddings
 
-For classification or re-identification tasks it can be necessary to embed the landmark result into a position and scale invariant format (normalisation). For that purpose there is already a pre-defined `visiongraph.estimator.embedding.LandmarkEmbedder.LandmarkEmbedder` which requires an embedding method and a list of pose results.
+For classification or re-identification tasks it can be necessary to embed the landmark result into a position and scale
+invariant format (normalisation). For that purpose there is already a pre-defined
+`visiongraph.estimator.embedding.LandmarkEmbedder.LandmarkEmbedder` which requires an embedding method and a list of
+pose results.
 
 ```python
 from visiongraph import vg
+
 poses: list[vg.PoseLandmarkResult] = []
 
 with vg.LandmarkEmbedder(vg.embed_pose) as model:
@@ -360,7 +375,11 @@ with vg.LandmarkEmbedder(vg.embed_pose) as model:
 
 ### Object Segmentation
 
-Object segmentation estimators not only predict the bounding box around an object, but predict a pixel-based mask to define the visible shape of the object. `visiongraph.estimator.spatial.InstanceSegmentationEstimator.InstanceSegmentationEstimator` inherits ` visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` and extends the object detection results with a binary mask.
+Object segmentation estimators not only predict the bounding box around an object, but predict a pixel-based mask to
+define the visible shape of the object.
+`visiongraph.estimator.spatial.InstanceSegmentationEstimator.InstanceSegmentationEstimator` inherits
+` visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` and extends the object detection results with a binary
+mask.
 
 ```python
 from visiongraph import vg
@@ -374,12 +393,14 @@ with vg.ModNetEstimator.create() as model:
         mask: np.ndarray = instance.mask
 ```
 
-Please be aware that the mask is a binary mask (containing only 0 or 1) and is of type `np.uint8`. The size of the mask is the same as the input frame. This can be quite memory intense depending on the amount of instances that are detected.
-
+Please be aware that the mask is a binary mask (containing only 0 or 1) and is of type `np.uint8`. The size of the mask
+is the same as the input frame. This can be quite memory intense depending on the amount of instances that are detected.
 
 ### Camera Pose Estimator
 
-At the moment there are only a few tools implemented for camera calibration and pose estimation. One of them is the `visiongraph.estimator.spatial.camera.ArUcoCameraPoseEstimator.ArUcoCameraPoseEstimator` which requires camera intrinsics to detect ArUco markers and predict the relative camera pose.
+At the moment there are only a few tools implemented for camera calibration and pose estimation. One of them is the
+`visiongraph.estimator.spatial.camera.ArUcoCameraPoseEstimator.ArUcoCameraPoseEstimator` which requires camera
+intrinsics to detect ArUco markers and predict the relative camera pose.
 
 ```python
 from visiongraph import vg
@@ -388,32 +409,143 @@ intrinsics = vg.CameraIntrinsics.load("media/calibration.json")
 image: np.ndarray
 
 with vg.ArUcoCameraPoseEstimator(
-            camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
-        ) as model:
-    
+        camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
+) as model:
     pose = model.process(image)
     print(f"Camera position: {pose.position} / rotation {pose.rotation}")
     print(f"Distance: {pose.position.mag:.2f}")
 ```
 
-For creating an intrinsic camera calibration, have a look at `visiongraph.estimator.spatial.camera.ChessboardCalibrator.ChessboardCalibrator` or `visiongraph.estimator.spatial.camera.ChArUcoCalibrator.ChArUcoCalibrator`.
+For creating an intrinsic camera calibration, have a look at
+`visiongraph.estimator.spatial.camera.ChessboardCalibrator.ChessboardCalibrator` or
+`visiongraph.estimator.spatial.camera.ChArUcoCalibrator.ChArUcoCalibrator`.
 
 ### Result
 
+The result of an estimator is usually a `visiongraph.result.BaseResult.BaseResult` or a list of it. The result object
+contains the information about the detected object, like the bounding box, the score, the class id and so on. It also
+provides methods to annotate the result on an image.
+
+```python
+from visiongraph import vg
+
+result: vg.ObjectDetectionResult
+
+# access the bounding box
+print(result.bounding_box)
+
+# annotate the result on the image
+result.annotate(image)
+```
+
+Since most estimators return multiple results, there is a `visiongraph.result.ResultList.ResultList` which inherits from
+`list` and adds the `annotate` method to annotate all results in the list at once.
+
+```python
+from visiongraph import vg
+
+results: vg.ResultList[vg.ObjectDetectionResult]
+
+# annotate all results
+results.annotate(image)
+```
+
 ### Inference Engine
 
-## Object Detection Tracker
+To support multiple machine learning frameworks, visiongraph uses a generic inference engine concept. The
+`visiongraph.estimator.engine.InferenceEngineFactory.InferenceEngineFactory` allows to create an inference engine based
+on the available frameworks. The `visiongraph.estimator.BaseVisionEngine.BaseVisionEngine` is the base class for all
+inference engines and provides a common interface to run the inference.
 
-Object detection trackers allow a detected object to be assigned an `tracking_id` that remains the same across successive frames.
+Currently, the following engines are supported:
 
-## DSP (Digital Signal Processing)
+- `ONNX` - Uses the ONNXRuntime to run ONNX models.
+- `OpenVINO` - Uses the OpenVINO toolkit to run OpenVINO models.
+
+Here is an example of how to use the inference engine factory:
+
+```python
+from visiongraph import vg
+
+# run inference with the onnx engine
+with vg.InferenceEngineFactory.create(
+        vg.InferenceEngine.ONNX,
+        assets=[vg.RepositoryAsset("model.onnx")]) as engine:
+    result = engine.process(image)
+```
+
+## Tracker
+
+Object detection trackers allow a detected object to be assigned an `tracking_id` that remains the same across
+successive frames. This is especially useful for counting objects or following a specific object over time.
+
+### Flate Tracker
+
+The `visiongraph.tracker.FlateTracker.FlateTracker` (Fast Localization and Tracking Engine) is a simple tracker that
+uses the intersection over union (IoU) or other cost functions to match objects between frames. It is very fast and
+works well for most use cases.
+
+```python
+import visiongraph.result.spatial.ObjectDetectionResult
+from visiongraph import vg
+
+tracker = vg.FlateTracker()
+
+# process the detections
+tracked_results = tracker.process(detections)
+
+for result in tracked_results:
+    print(f"Track ID: {result.tracking_id} Age: {result.staleness}")
+
+    # check if is stale
+    if result.is_stale:
+        pass
+```
+
+By default, the `tracking_id` attribute of an `visiongraph.result.spatial.ObjectDetectionResult.ObjectDetectionResult`
+is initialized with `-1` to indicate that this object has never been tracked.
+
+## Filter
 
 To filter noisy estimations or inputs, the DSP package provides different filters which can be applied directly into a
 graph.
 
-## Recorder
+### One Euro Filter
 
-To record incoming frames or annotated results, multiple frame recorders are provided.
+The `visiongraph.dsp.OneEuroFilter.OneEuroFilter` is an implementation of the very
+popular [OneEuro filter](https://gery.casiez.net/1euro/) for smoothing noisy signals. It is an adaptive low-pass filter
+that minimizes jitter while maintaining lag. It is especially useful for smoothing pose estimation results.
+
+```python
+from visiongraph import vg
+
+value = 1
+
+# create a filter for a single value (x0 is the start value)
+one_euro_filter = vg.OneEuroFilter(x0=0, min_cutoff=1.0, beta=0.0)
+
+# filter a value
+filtered_value = one_euro_filter(value)
+```
+
+There are also implementations for numpy arrays (`visiongraph.dsp.OneEuroFilterNumpy.OneEuroFilterNumpy`) and numba
+optimized versions (`visiongraph.dsp.OneEuroFilterNumba.OneEuroFilterNumba`).
+
+### Landmark Smoothing
+
+For smoothing landmark detections (like pose or hand landmarks), the
+`visiongraph.dsp.LandmarkSmoothFilter.LandmarkSmoothFilter` can be used. It applies the OneEuro filter to each landmark
+individually and handles the tracking IDs automatically.
+
+```python
+from visiongraph import vg
+
+# create a landmark smooth filter
+smoother = vg.LandmarkSmoothFilter(min_cutoff=1.0, beta=0.0)
+
+# filter the landmarks
+smoothed_results = smoother.process(results)
+```
 
 ## Assets
 
@@ -421,12 +553,45 @@ Most estimators use big model and weight descriptions for their neural networks.
 install, these assets are hosted externally on github. Visiongraph provides a system to directly download and cache
 these files.
 
+An asset is defined by the `visiongraph.data.Asset.Asset` interface. The most common implementation is the
+`visiongraph.data.RepositoryAsset.RepositoryAsset` which downloads the asset from a repository URL.
+
+```python
+from visiongraph import vg
+
+# create a repository asset
+asset = vg.RepositoryAsset("model.onnx")
+
+# prepare the asset (download if not exists)
+asset.prepare()
+
+# get the path to the asset
+print(asset.path)
+```
+
+The default repository is located
+at [huggingface.co/cansik/visiongraph](https://huggingface.co/cansik/visiongraph/tree/main). It is possible to change
+the repository URL or add custom headers for authentication.
+
 ## Utilities
+
+### Recorder
+
+To record incoming frames or annotated results, multiple frame recorders are provided. The
+`visiongraph.recorder.BaseFrameRecorder.BaseFrameRecorder` is the base class for all recorders.
+
+```python
+from visiongraph import vg
+
+# create a video recorder
+with vg.CV2VideoRecorder("output.mp4", fps=30) as recorder:
+    recorder.process(image)
+```
 
 ### Argparse
 
 To support rapid prototyping, many graph and estimator options are already provided to add to the argparse parser.
-Please have a look at [Logging](#Logging) or [Input](#Input).
+Please have a look at [Logging](#logging) or [Input](#input).
 
 ### Logging
 

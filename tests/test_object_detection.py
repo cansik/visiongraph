@@ -9,7 +9,7 @@ from visiongraph.util import OSUtils
 
 class ObjectDetectionTests(unittest.TestCase):
     def _test_model(self, model: vg.ObjectDetector):
-        image = cv2.imread("assets/pexels-joshsorenson-139303.jpg")
+        image = cv2.imread("assets/pexels-jimbear-2926723.jpg")
         run_estimator_test(model, image, self._testMethodName)
 
     def test_center_net_fp16(self):
