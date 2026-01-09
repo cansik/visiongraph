@@ -4,25 +4,31 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.CrowdHumanDetector import CrowdHumanDetector, CrowdHumanConfig
+from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Detector, DEIMv2Config
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
-from visiongraph.estimator.spatial.YOLOv8Detector import YOLOv8Detector, YOLOv8Config
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
+from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.tracker.FlateTracker import FlateTracker
+from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
+from visiongraph.util.TimeUtils import Watch
 
 
 class ObjectDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput, sliding_window=False):
         super().__init__()
         self.input = input
-        self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
+        # self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
 
-        self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_N)
-        self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_S_Open_Images_V7)
+        # self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_N)
+        # self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_S_Open_Images_V7)
+
+        self.network = DEIMv2Detector.create(DEIMv2Config.DEIMv2_HgNetv2_Pico_COCO)
+        # self.network = DEIMv2Detector.create(DEIMv2Config.DEIMv2_HgNetv2_N_COCO)
+        self.network.nms_options = NMSOptions()
 
         # self.network = YOLOv5Detector.create(YOLOv5Config.YOLOv5_N)
         # self.network = YOLOv8OBBDetector.create(YOLOv8OBBConfig.YOLOv8_OBB_N)
@@ -32,7 +38,8 @@ class ObjectDetectionExample(BaseGraph):
                 SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32), 128, (256, 256), 0.8
             )
 
-        self.tracker = FlateTracker()
+        self.tracker = FlateTracker(class_aware=True, cost_function=ObjectAssignmentSolver.iou_cost_function)
+        self.tracker.include_stale = False
 
         self.add_nodes(self.input, self.network, self.tracker)
 
@@ -42,7 +49,9 @@ class ObjectDetectionExample(BaseGraph):
         if frame is None:
             return
 
-        results = self.network.process(frame)
+        with Watch("Process"):
+            results = self.network.process(frame)
+
         results = self.tracker.process(results)
 
         for result in results:

@@ -1,17 +1,12 @@
 from argparse import ArgumentParser
+from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Callable, Optional
-
-import numpy as np
-from scipy.optimize import linear_sum_assignment
-from scipy.spatial.distance import cdist
+from typing import List, Optional, Dict
 
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker
-from visiongraph.util.VectorUtils import vector_as_list
-
-CostFunctionType = Callable[[List[ObjectDetectionResult], List[ObjectDetectionResult]], np.ndarray]
+from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver, CostFunctionType
 
 
 @dataclass
@@ -30,13 +25,22 @@ class FlateTracker(BaseObjectDetectionTracker):
     Fast localization and tracking engine.
     """
 
-    def __init__(self, max_cost: float = 0.2, min_alive: int = 0, max_lost: int = 5):
+    def __init__(
+        self,
+        max_cost: float = 0.5,
+        min_alive: int = 0,
+        max_lost: int = 5,
+        class_aware: bool = False,
+        cost_function: Optional[CostFunctionType] = None,
+    ):
         """
         Initializes the FlateTracker with specified parameters.
 
         :param max_cost: Maximum cost for a trackable match.
         :param min_alive: Minimum number of frames a track must be visible to be considered alive.
         :param max_lost: Maximum number of frames a track can be lost before it is removed.
+        :param class_aware: If True, run class-aware matching.
+        :param cost_function: Cost function to use for matching. Defaults to L2 distance.
         """
         self.max_cost: float = max_cost
 
@@ -45,7 +49,10 @@ class FlateTracker(BaseObjectDetectionTracker):
 
         self.include_stale: bool = False
 
-        self.cost_function: Optional[CostFunctionType] = self._l2_cost_function
+        self.class_aware: bool = class_aware
+        self.cost_function: CostFunctionType = (
+            cost_function if cost_function is not None else ObjectAssignmentSolver.l2_cost_function
+        )
 
         self._tracks: List[_FlateTrack] = []
         self._unique_id: int = 0
@@ -75,86 +82,122 @@ class FlateTracker(BaseObjectDetectionTracker):
 
         :return: A list of tracked objects.
         """
-        # create cost matrix
-        if len(self._tracks) == 0 or len(detections) == 0:
-            cost_mat = np.zeros(shape=(0, 0), dtype=float)
+        if not self._tracks and not detections:
+            return ResultList([])
+
+        if not self._tracks:
+            for det in detections:
+                tr = _FlateTrack(self._new_id(), det)
+                tr.update_reference()
+                self._tracks.append(tr)
+            return ResultList([t.reference for t in self._tracks])
+
+        if not detections:
+            for t in self._tracks:
+                t.stale += 1
+                t.reference.staleness = t.stale
+            self._tracks = [t for t in self._tracks if t.stale <= self.max_lost]
+            return ResultList(
+                [t.reference for t in self._tracks if t.age >= self.min_alive and (self.include_stale or t.stale == 0)]
+            )
+
+        tracks_ref = [t.reference for t in self._tracks]
+
+        solver = ObjectAssignmentSolver(self.cost_function, self.max_cost)
+
+        assignments: Dict[ObjectDetectionResult, Optional[ObjectDetectionResult]] = {}
+        unassigned_destinations: List[ObjectDetectionResult] = []
+
+        if not self.class_aware:
+            result = solver.solve(tracks_ref, detections)
+            assignments = result.assignments
+            unassigned_destinations = result.unassigned_destinations
         else:
-            cost_mat = self.cost_function([t.reference for t in self._tracks], detections)
+            # Class-aware matching
+            track_classes = [r.class_id for r in tracks_ref]
+            det_classes = [d.class_id for d in detections]
 
-        row_indices, col_indices = linear_sum_assignment(cost_mat)
-        row_indices = set(row_indices)
+            # Group by class
+            tracks_by_class = defaultdict(list)
+            for i, c in enumerate(track_classes):
+                if c is not None:
+                    tracks_by_class[c].append(tracks_ref[i])
 
-        # find all matches between tracks and detections
-        matched_detections = set()
-        index = 0
-        for ti, track in enumerate(self._tracks):
-            if ti in row_indices:
-                # match has been found
-                x = col_indices[index]
-                score = cost_mat[ti, x]
+            dets_by_class = defaultdict(list)
+            for i, c in enumerate(det_classes):
+                if c is not None:
+                    dets_by_class[c].append(detections[i])
 
-                if score <= self.max_cost:
-                    # match is valid
-                    track.age += 1
-                    track.stale = 0
-                    track.reference = detections[x]
-                    track.update_reference()
-                    matched_detections.add(x)
+            known_classes = sorted(set(tracks_by_class.keys()) | set(dets_by_class.keys()))
 
-                index += 1
-                continue
+            matched_tracks = set()
+            matched_dets = set()
 
-            # track is lost
-            track.stale += 1
+            # Step 1: per-class matching for known classes
+            for cls_id in known_classes:
+                t_subset = tracks_by_class.get(cls_id, [])
+                d_subset = dets_by_class.get(cls_id, [])
 
-        # process unmatched detections
-        for di, detection in enumerate(detections):
-            if di not in matched_detections:
-                # new detection found
-                track = _FlateTrack(self._new_id(), detection)
+                if not t_subset or not d_subset:
+                    continue
+
+                res = solver.solve(t_subset, d_subset)
+
+                for src, dst in res.assignments.items():
+                    assignments[src] = dst
+                    matched_tracks.add(src)
+                    if dst:
+                        matched_dets.add(dst)
+
+            # Step 2: handle unknown-class tracks against any remaining detections
+            unknown_class_tracks = [
+                t for i, t in enumerate(tracks_ref) if track_classes[i] is None and t not in matched_tracks
+            ]
+            rem_dets = [d for d in detections if d not in matched_dets]
+
+            if unknown_class_tracks and rem_dets:
+                res = solver.solve(unknown_class_tracks, rem_dets)
+                for src, dst in res.assignments.items():
+                    assignments[src] = dst
+                    matched_tracks.add(src)
+                    if dst:
+                        matched_dets.add(dst)
+
+            # Fill unassigned destinations
+            unassigned_destinations = [d for d in detections if d not in matched_dets]
+
+            # Ensure all tracks are in assignments
+            for t in tracks_ref:
+                if t not in assignments:
+                    assignments[t] = None
+
+        # Update tracks
+        for track in self._tracks:
+            dest = assignments.get(track.reference)
+
+            if dest is not None:
+                track.age += 1
+                track.stale = 0
+                track.reference = dest
                 track.update_reference()
-                self._tracks.append(track)
+            else:
+                track.stale += 1
 
-        # clean up stale tracks
+            track.reference.staleness = track.stale
+
+        # Create new tracks
+        for det in unassigned_destinations:
+            tr = _FlateTrack(self._new_id(), det)
+            tr.update_reference()
+            tr.reference.staleness = 0
+            self._tracks.append(tr)
+
+        # Clean up stale tracks
         self._tracks = [t for t in self._tracks if t.stale <= self.max_lost]
 
         return ResultList(
             [t.reference for t in self._tracks if t.age >= self.min_alive and (self.include_stale or t.stale == 0)]
         )
-
-    @staticmethod
-    def _l2_cost_function(tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]) -> np.ndarray:
-        """
-        Computes the L2 cost matrix between tracks and detections based on their center positions.
-
-        :param tracks: A list of tracked object detection results.
-        :param detections: A list of detected object results.
-
-        :return: The L2 cost matrix representing distances between tracks and detections.
-        """
-        track_centers = np.array([vector_as_list(h.bounding_box.center) for h in tracks], dtype=float)
-        detection_centers = np.array([vector_as_list(h.bounding_box.center) for h in detections], dtype=float)
-
-        distances = cdist(track_centers, detection_centers, metric="euclid")
-        return distances
-
-    @staticmethod
-    def _iou_cost_function(tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]) -> np.ndarray:
-        """
-        Computes the Intersection over Union (IoU) cost matrix between tracks and detections.
-
-        :param tracks: A list of tracked object detection results.
-        :param detections: A list of detected object results.
-
-        :return: The IoU cost matrix representing the overlap between tracks and detections.
-        """
-        cost_mat = np.zeros((len(tracks), len(detections)), dtype=float)
-
-        for y, track in enumerate(tracks):
-            for x, detection in enumerate(detections):
-                cost_mat[y, x] = track.bounding_box.intersection_over_union(detection.bounding_box)
-
-        return cost_mat
 
     def release(self):
         """
@@ -165,8 +208,6 @@ class FlateTracker(BaseObjectDetectionTracker):
     def configure(self, args):
         """
         Configures the tracker with parameters from the provided argument parser.
-
-        :param args: Argument parser containing configuration parameters.
         """
         self.max_cost = self._get_param(args, "tracker_max_cost", self.max_cost)
         self.min_alive = self._get_param(args, "tracker_min_alive", self.min_alive)
@@ -176,9 +217,7 @@ class FlateTracker(BaseObjectDetectionTracker):
     def add_params(parser: ArgumentParser):
         """
         Adds command line parameters for configuring the tracker.
-
-        :param parser: The argument parser to add parameters to.
         """
-        parser.add_argument("--tracker-max-cost", type=float, default=0.2, help="Max cost for trackable match.")
+        parser.add_argument("--tracker-max-cost", type=float, default=0.5, help="Max cost for trackable match.")
         parser.add_argument("--tracker-min-alive", type=int, default=0, help="Min frames trackable visible.")
         parser.add_argument("--tracker-max-lost", type=int, default=5, help="Max frames trackable not visible.")
