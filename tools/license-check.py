@@ -1,33 +1,64 @@
 import argparse
 import importlib.metadata
+import sys
 from typing import List, Set
 
 import requests
 from packaging.requirements import Requirement
 
+# Try to import tomllib (Python 3.11+) or tomli
+if sys.version_info >= (3, 11):
+    import tomllib
+else:
+    try:
+        import tomli as tomllib
+    except ImportError:
+        sys.exit("Error: This script requires Python 3.11+ or the 'tomli' package to parse pyproject.toml.")
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Print licenses of dependencies.")
     parser.add_argument(
-        "requirements_file",
+        "pyproject_file",
         nargs="?",
-        default="requirements.txt",
-        help="Path to the requirements.txt file (default: requirements.txt)",
+        default="pyproject.toml",
+        help="Path to the pyproject.toml file (default: pyproject.toml)",
     )
     return parser.parse_args()
 
 
-def parse_requirements(lines: List[str]) -> Set[str]:
+def extract_requirements_from_list(req_list: List[str]) -> Set[str]:
     requirements = set()
-    for line in lines:
-        line = line.strip()
-        if not line or line.startswith("#"):
+    for line in req_list:
+        if not isinstance(line, str):
             continue
         try:
             req = Requirement(line)
             requirements.add(req.name)
         except Exception:
-            pass  # Skip invalid requirement lines
+            pass
+    return requirements
+
+
+def parse_pyproject(path: str) -> Set[str]:
+    with open(path, "rb") as f:
+        data = tomllib.load(f)
+
+    requirements = set()
+
+    project = data.get("project", {})
+
+    # Main dependencies
+    requirements.update(extract_requirements_from_list(project.get("dependencies", [])))
+
+    # Optional dependencies
+    for group in project.get("optional-dependencies", {}).values():
+        requirements.update(extract_requirements_from_list(group))
+
+    # Dependency groups (PEP 735)
+    for group in data.get("dependency-groups", {}).values():
+        requirements.update(extract_requirements_from_list(group))
+
     return requirements
 
 
@@ -107,10 +138,17 @@ def get_license_from_pypi(package_name: str) -> str:
 
 def main() -> None:
     args = parse_args()
-    requirements_path = args.requirements_file
-    with open(requirements_path, "r") as f:
-        lines = f.readlines()
-    requirement_names = parse_requirements(lines)
+    pyproject_path = args.pyproject_file
+
+    try:
+        requirement_names = parse_pyproject(pyproject_path)
+    except FileNotFoundError:
+        print(f"Error: File not found: {pyproject_path}")
+        return
+    except Exception as e:
+        print(f"Error parsing {pyproject_path}: {e}")
+        return
+
     packages = sorted(requirement_names, key=lambda s: s.lower())
 
     # Calculate the maximum length for alignment

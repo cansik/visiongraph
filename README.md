@@ -130,34 +130,40 @@ Here you can find a list of the dependencies of visiongraph and their license (n
 
 ```
 depthai               MIT License
-faiss-cpu             MIT License
+faiss-cpu             MIT License & BSD-3-Clause
 filterpy              MIT License
-mediapipe             Apache License 2.0
+mediapipe-numpy2      Apache License 2.0
 moviepy               MIT License
 numba                 BSD License
+numpy                 MIT License
 onnxruntime           MIT License
 onnxruntime-directml  MIT License
 onnxruntime-gpu       MIT License
 opencv-python         Apache License 2.0
 openvino              Apache License 2.0
-pyk4a-bundle          MIT License
+pdoc                  MIT License
+pyk4a                 MIT License
 pyopengl              BSD License
 pyrealsense2          Apache License 2.0
 pyrealsense2-macosx   Apache License 2.0
+pytest                MIT License
 requests              Apache License 2.0
+ruff                  MIT License
 scipy                 MIT License
+setuptools            MIT License
 SpoutGL               BSD License
 syphon-python         MIT License
 tqdm                  MIT License
+ty                    MIT License
 vector                BSD License
 vidgear               Apache License 2.0
 wheel                 MIT License
 ```
 
-For more information about the dependencies, have a look at the [requirements.txt](https://github.com/cansik/visiongraph/blob/main/requirements.txt).
+For more information about the dependencies, have a look at the [pyproject.toml](pyproject.toml).
 
 Please **note** that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
 
 ## About
-Copyright (c) 2025 Florian Bruggisser  
+Copyright (c) 2026 Florian Bruggisser  
 Released under the MIT License. See [LICENSE](LICENSE) for details.
