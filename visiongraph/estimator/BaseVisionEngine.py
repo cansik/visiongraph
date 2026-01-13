@@ -1,9 +1,11 @@
 from abc import abstractmethod, ABC
+from argparse import Namespace, ArgumentParser
 from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
 
 import cv2
 import numpy as np
 
+from visiongraph.GraphNode import GraphNode
 from visiongraph.model.VisionEngineModelLayer import VisionEngineModelLayer
 from visiongraph.model.VisionEngineOutput import VisionEngineOutput
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -12,7 +14,7 @@ from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.util import ImageUtils
 
 
-class BaseVisionEngine(ABC):
+class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
     """
     An abstract base class for a vision engine that processes images and performs inference.
     """
@@ -252,4 +254,11 @@ class BaseVisionEngine(ABC):
 
         :return: A list of output layers.
         """
+        pass
+
+    def configure(self, args: Namespace):
+        pass
+
+    @staticmethod
+    def add_params(parser: ArgumentParser):
         pass
