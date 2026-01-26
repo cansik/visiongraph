@@ -1,10 +1,8 @@
 import argparse
 from argparse import ArgumentParser
-from collections import defaultdict, deque
 
 import cv2
 import numpy as np
-
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Detector, DEIMv2Config
 from visiongraph.input import add_input_step_choices
@@ -12,6 +10,7 @@ from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.tracker.FlateTracker import FlateTracker
 from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
+from visiongraph.tracker.storage.ObjectDetectionTrackingStorage import ObjectDetectionTrackingStorage
 from visiongraph.util.DrawingUtils import COLOR_SEQUENCE
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
 
@@ -27,9 +26,9 @@ class ObjectDetectionAndTrackingExample(BaseGraph):
         self.tracker = FlateTracker(class_aware=True, cost_function=ObjectAssignmentSolver.iou_cost_function)
         self.tracker.include_stale = False
 
-        self.add_nodes(self.input, self.network, self.tracker)
+        self.storage = ObjectDetectionTrackingStorage(maxlen=30)
 
-        self.track_history = defaultdict(lambda: deque(maxlen=30))
+        self.add_nodes(self.input, self.network, self.tracker, self.storage)
 
     def _process(self):
         ts, frame = self.input.read()
@@ -41,31 +40,20 @@ class ObjectDetectionAndTrackingExample(BaseGraph):
 
         results = self.network.process(frame)
         results = self.tracker.process(results)
+        tracks = self.storage.process(results)
 
-        active_track_ids = set()
-        for result in results:
-            result.annotate(frame)
+        for track in tracks:
+            track.annotate(frame)
 
-            if result.tracking_id >= 0:
-                active_track_ids.add(result.tracking_id)
-                center = result.bounding_box.center
-                # center is relative, so we scale it to image dimensions
-                center_x = int(center.x * w)
-                center_y = int(center.y * h)
-                self.track_history[result.tracking_id].append((center_x, center_y))
-
-        # Clean up old tracks that are no longer active
-        inactive_track_ids = set(self.track_history.keys()) - active_track_ids
-        for track_id in inactive_track_ids:
-            del self.track_history[track_id]
-
-        # draw the tracks
-        for track_id, history in self.track_history.items():
-            if len(history) > 1:
-                color = COLOR_SEQUENCE[track_id % len(COLOR_SEQUENCE)]
+            if len(track.history) > 1:
+                color = COLOR_SEQUENCE[track.tracking_id % len(COLOR_SEQUENCE)]
 
                 # convert to list of points
-                points = np.array(history, dtype=np.int32)
+                points = []
+                for x, y in track.history:
+                    points.append((int(x * w), int(y * h)))
+
+                points = np.array(points, dtype=np.int32)
                 points = points.reshape((-1, 1, 2))
                 cv2.polylines(frame, [points], isClosed=False, color=color, thickness=2)
 

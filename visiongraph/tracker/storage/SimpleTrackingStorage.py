@@ -1,28 +1,31 @@
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace
-from typing import List
+from typing import List, TypeVar, Generic
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ResultList import ResultList
 from visiongraph.tracker.storage.TrackingStorage import T, TrackingStorage
 
 
-class SimpleTrackable(ABC):
+class SimpleTrackable(Generic[T], ABC):
     """
     Abstract base class for trackable objects.
     """
 
     @abstractmethod
-    def update_track(self, track: "SimpleTrackable"):
+    def update_track(self, detection: T):
         """
         Update the current trackable object with data from another trackable object.
 
-        :param track: The trackable object to update from.
+        :param detection: The trackable object to update from.
         """
         pass
 
 
-class SimpleTrackingStorage(TrackingStorage[T, T], GraphNode[List[T], ResultList[T]]):
+K = TypeVar("K", bound=SimpleTrackable)
+
+
+class SimpleTrackingStorage(TrackingStorage[T, K], GraphNode[List[T], ResultList[K]], ABC):
     """
     A simple tracking storage implementation that integrates tracking and graph processing.
 
@@ -35,19 +38,18 @@ class SimpleTrackingStorage(TrackingStorage[T, T], GraphNode[List[T], ResultList
         """
         super().__init__(self._on_create, self._on_update)
 
-    @staticmethod
-    def _on_create(track: T) -> T:
+    @abstractmethod
+    def _on_create(self, detection: T) -> K:
         """
         Handles the creation of a new track.
 
-        :param track: The detected object to be stored as a new track.
+        :param detection: The detected object to be stored as a new track.
 
-        :return: The newly created track, which is identical to the detected object.
+        :return: The newly created track.
         """
-        return track
+        pass
 
-    @staticmethod
-    def _on_update(detection: T, track: T) -> T:
+    def _on_update(self, detection: T, track: K) -> K:
         """
         Handles the update of an existing track with a new detection.
 
@@ -56,7 +58,7 @@ class SimpleTrackingStorage(TrackingStorage[T, T], GraphNode[List[T], ResultList
 
         :return: The updated track after incorporating the detected object's data.
         """
-        detection.update_track(track)
+        track.update_track(detection)
         return track
 
     def setup(self) -> None:
@@ -65,7 +67,7 @@ class SimpleTrackingStorage(TrackingStorage[T, T], GraphNode[List[T], ResultList
         """
         pass
 
-    def process(self, detections: List[T]) -> ResultList[T]:
+    def process(self, detections: List[T]) -> ResultList[K]:
         """
         Processes a list of detections, updating tracks accordingly.
 
