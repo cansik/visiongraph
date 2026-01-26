@@ -227,6 +227,7 @@ removing blur or generating a depth map.
 ### Object Detection
 
 ![Object Detection Image](doc/pexels-jimbear-2926723-crowdhuman.webp)
+*Object detection example using [CrowdHuman](https://www.crowdhuman.org/) trained model.*
 
 There are various implementations of object detectors in visiongraph, spanning
 from [SSD](https://arxiv.org/abs/1512.02325), [YOLO](https://arxiv.org/abs/1506.02640) (X, v5, v8, v8OBB, etc.)
@@ -294,6 +295,9 @@ result level). That is why visiongraph models the human pose estimation task as 
 `visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` but adds additional methods to work with landmarks (
 keypoints).
 
+![Pose Estimation Example](doc/pexels-pavel-danilyuk-6203560-humanpose.webp)
+*[KAPAO](https://github.com/wmcnally/kapao) based pose estimation example.*
+
 ```python
 from visiongraph import vg
 
@@ -344,6 +348,9 @@ result.right_knee
 Similar to the human pose estimators, there are pose estimators for the hand pose detection task. It returns a list of
 landmarks of a hand and can be used in combination with the human pose estimation (holistic human pose detection).
 
+![Hand Estimation Example](doc/test_mediapipe_hand_estimator.webp)
+*[MediaPipe Hand](https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker) estimation example.*
+
 ```python
 from visiongraph import vg
 
@@ -380,6 +387,9 @@ define the visible shape of the object.
 `visiongraph.estimator.spatial.InstanceSegmentationEstimator.InstanceSegmentationEstimator` inherits
 ` visiongraph.estimator.spatial.ObjectDetector.ObjectDetector` and extends the object detection results with a binary
 mask.
+
+![Instance Segmentation Example](doc/test_ultralytics_yolov8_segmentation_l.webp)
+*Instance segmentation example.*
 
 ```python
 from visiongraph import vg
@@ -484,6 +494,9 @@ successive frames. This is especially useful for counting objects or following a
 The `visiongraph.tracker.FlateTracker.FlateTracker` (Fast Localization and Tracking Engine) is a simple tracker that
 uses the intersection over union (IoU) or other cost functions to match objects between frames. It is very fast and
 works well for most use cases.
+
+![Tracking Example](doc/tracking-example.webp)
+*Object detection tracking example.*
 
 ```python
 import visiongraph.result.spatial.ObjectDetectionResult

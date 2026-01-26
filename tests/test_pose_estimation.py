@@ -2,9 +2,8 @@ import unittest
 
 import cv2
 import numpy as np
-from vector import VectorNumpy4D
-
 from tests.utils_for_testing import run_estimator_test
+from vector import VectorNumpy4D
 from visiongraph import vg
 from visiongraph.estimator.embedding.LandmarkEmbedder import LandmarkEmbedder
 from visiongraph.result.ResultList import ResultList
@@ -15,7 +14,7 @@ from visiongraph.util.VectorUtils import list_of_vector4D
 
 class PoseEstimationTests(unittest.TestCase):
     def _test_model(self, model: vg.PoseEstimator):
-        image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
+        image = cv2.imread("assets/pexels-pavel-danilyuk-6203560.jpg")
         run_estimator_test(model, image, self._testMethodName)
 
     def test_aepose_estimator_fp32(self):

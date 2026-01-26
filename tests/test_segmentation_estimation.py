@@ -1,14 +1,13 @@
 import unittest
 
 import cv2
-
 from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
 
 
 class SegmentationEstimationTests(unittest.TestCase):
     def _test_model(self, model: vg.InstanceSegmentationEstimator):
-        image = cv2.imread("assets/multi-pose-pexels-rodnae-productions-7502572.jpg")
+        image = cv2.imread("assets/pexels-nguyendesigner-32123175.jpg")
         run_estimator_test(model, image, self._testMethodName)
 
     def test_maskrcnn_segmentation_fp32(self):
@@ -28,6 +27,9 @@ class SegmentationEstimationTests(unittest.TestCase):
 
     def test_ultralytics_yolov8_segmentation_s(self):
         self._test_model(vg.YOLOv8SegmentationEstimator.create(vg.YOLOv8SegmentationConfig.YOLOv8_SEG_S))
+
+    def test_ultralytics_yolov8_segmentation_l(self):
+        self._test_model(vg.YOLOv8SegmentationEstimator.create(vg.YOLOv8SegmentationConfig.YOLOv8_SEG_L))
 
     def test_modnet_segmentation(self):
         self._test_model(vg.ModNetEstimator.create())
