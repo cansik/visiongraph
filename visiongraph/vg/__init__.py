@@ -493,6 +493,8 @@ if TYPE_CHECKING:
     from visiongraph.tracker.MotpyTracker import MotpyTracker  # noqa: F401
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentResult  # noqa: F401
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver  # noqa: F401
+    from visiongraph.tracker.storage.ObjectDetectionTrackingStorage import ObjectDetectionTrack  # noqa: F401
+    from visiongraph.tracker.storage.ObjectDetectionTrackingStorage import ObjectDetectionTrackingStorage  # noqa: F401
     from visiongraph.tracker.storage.SimpleTrackingStorage import SimpleTrackable  # noqa: F401
     from visiongraph.tracker.storage.SimpleTrackingStorage import SimpleTrackingStorage  # noqa: F401
     from visiongraph.tracker.storage.TrackingStorage import TrackingStorage  # noqa: F401
@@ -815,6 +817,8 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "MotpyTracker": _LazyImport("MotpyTracker", "visiongraph.tracker.MotpyTracker", False),
     "ObjectAssignmentResult": _LazyImport("ObjectAssignmentResult", "visiongraph.tracker.ObjectAssignmentSolver", False),
     "ObjectAssignmentSolver": _LazyImport("ObjectAssignmentSolver", "visiongraph.tracker.ObjectAssignmentSolver", False),
+    "ObjectDetectionTrack": _LazyImport("ObjectDetectionTrack", "visiongraph.tracker.storage.ObjectDetectionTrackingStorage", False),
+    "ObjectDetectionTrackingStorage": _LazyImport("ObjectDetectionTrackingStorage", "visiongraph.tracker.storage.ObjectDetectionTrackingStorage", False),
     "SimpleTrackable": _LazyImport("SimpleTrackable", "visiongraph.tracker.storage.SimpleTrackingStorage", False),
     "SimpleTrackingStorage": _LazyImport("SimpleTrackingStorage", "visiongraph.tracker.storage.SimpleTrackingStorage", False),
     "TrackingStorage": _LazyImport("TrackingStorage", "visiongraph.tracker.storage.TrackingStorage", False),
