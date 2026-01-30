@@ -13,20 +13,36 @@
 
 Visiongraph is a computer vision pipeline designed to simplify prototyping of image-based algorithms with ready-to-use modules. Built on top of OpenCV, it also integrates popular frameworks such as [Intel OpenVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), and [DepthAI](https://pypi.org/project/depthai/). The library is optimized for real-time applications and edge performance.
 
-Here is an example on how to start a webcam capture and display the image:
+![Readme Example](doc/visiongraph-readme-street.webp)
+
+*Object detection, segmentation and pose estimation example.*
+
+Here is an example on how to start a live webcam capture, detect objects with SSD and display the results.
 
 ```python
+import cv2
 from visiongraph import vg
 
-vg.create_graph(vg.VideoCaptureInput()).then(vg.ImagePreview()).open()
+with (vg.VideoCaptureInput() as cam,
+      vg.SSDDetector.create() as ssd):
+    while True:
+        _, frame = cam.read()
+        if frame is None:
+            break
+
+        results = ssd.process(frame)
+        results.annotate(frame)
+
+        cv2.imshow("Frame", frame)
+        cv2.waitKey(1)
 ```
 
 Get started with `visiongraph` by reading the **[documentation](https://cansik.github.io/visiongraph/visiongraph.html#documentation)**.
 
 ## Installation
-Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. Usually this is a third-party dependency problem, and not directly connected to visiongraph.
+Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. Usually it is a third-party dependency, that does not support a newer Python version.
 
-To install visiongraph with all dependencies call [pip](https://pypi.org/project/pip/) like this:
+To install visiongraph with all dependencies use [pip](https://pypi.org/project/pip/) like this:
 
 ```bash
 pip install "visiongraph[all]"
@@ -164,6 +180,10 @@ For more information about the dependencies, have a look at the [pyproject.toml]
 
 Please **note** that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
 
-## About
-Copyright (c) 2026 Florian Bruggisser  
+## Credits
+
+Developed at the [Immersive Arts Space](https://blog.zhdk.ch/immersivearts/),
+[Zurich University of the Arts (ZHdK)](https://www.zhdk.ch/).  
+Maintained by Florian Bruggisser.  
+
 Released under the MIT License. See [LICENSE](LICENSE) for details.

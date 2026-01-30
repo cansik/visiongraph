@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Bruggisser"
+    given-names: "Florian"
+    orcid: "https://orcid.org/0009-0003-0645-6746"
+    affiliation: "Zurich University of the Arts (ZHdK)"
+title: "visiongraph"
+type: software
+version: "1.2.0"
+license: "MIT"
+url: "https://github.com/cansik/visiongraph"
+repository-code: "https://github.com/cansik/visiongraph"
+keywords:
+  - python
+  - computer vision
+  - image processing
+  - pattern recognition
+  - framework

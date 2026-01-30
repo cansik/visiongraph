@@ -135,3 +135,6 @@ videos
 media
 docs/
 annotations/
+
+/*.mp4
+doc/source/
