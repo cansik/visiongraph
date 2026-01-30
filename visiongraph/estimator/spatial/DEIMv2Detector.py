@@ -1,5 +1,11 @@
 from enum import Enum
-from typing import List, Optional, Self
+from typing import List, Optional
+
+# Import Self (supporting 3.10 and 3.11)
+try:
+    from typing_extensions import Self
+except ImportError:
+    from typing import Self
 
 import numpy as np
 
