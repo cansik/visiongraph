@@ -59,6 +59,20 @@ docs = [
 ]
 
 [project.optional-dependencies]
+all = [
+    "visiongraph[realsense]",
+    "visiongraph[azure]",
+    "visiongraph[depthai]",
+    "visiongraph[openvino]",
+    "visiongraph[mediapipe]",
+    "visiongraph[onnx]",
+    "visiongraph[media]",
+    "visiongraph[numba]",
+    "visiongraph[fbs]",
+    "visiongraph[faiss]",
+    "visiongraph[mot]",
+]
+
 realsense = [
     "pyrealsense2-macosx~=2.54.2; platform_system == 'Darwin'",
     "pyrealsense2~=2.56.5; platform_system != 'Darwin'",
