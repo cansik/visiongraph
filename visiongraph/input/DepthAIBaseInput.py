@@ -187,7 +187,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
                 self.color_still_encoder.bitstream.link(self.color_still_out.input)
 
     @abstractmethod
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the next RGB frame from the camera queue and updates internal properties.
 

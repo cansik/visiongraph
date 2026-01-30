@@ -42,7 +42,7 @@ class ImageInput(BaseInput):
 
         self.image = cv2.imread(self.path)
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the image and captures the current timestamp.
 

@@ -54,7 +54,7 @@ class VideoCaptureInput(BaseInput):
         """
         self._release_cap()
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the next frame from the video capture.
 

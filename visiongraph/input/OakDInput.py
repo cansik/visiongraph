@@ -144,7 +144,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.device.setIrLaserDotProjectorIntensity(self._ir_laser_dot_projector_intensity)
         self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the most recent infrared and depth frames from the respective queues.
 

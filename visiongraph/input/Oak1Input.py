@@ -11,7 +11,7 @@ class Oak1Input(DepthAIBaseInput):
     inheriting from the DepthAIBaseInput class.
     """
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the latest timestamp and RGB frame from the Oak1 device.
 

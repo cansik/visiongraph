@@ -147,7 +147,7 @@ class AzureKinectInput(BaseDepthCamera):
             self._record = PyK4ARecord(device=self.device, config=config, path=self.output_mkv_file)
             self._record.create()
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the next frame from the Azure Kinect device.
 

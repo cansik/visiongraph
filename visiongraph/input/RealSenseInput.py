@@ -193,7 +193,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         self.pipeline.stop()
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Reads the next frame from the camera.
 

@@ -60,7 +60,7 @@ class ZEDInput(BaseDepthCamera):
             raise Exception(f"Could not start ZED camera: {err}")
         print("camera has been opened")
 
-    def read(self) -> (int, Optional[np.ndarray]):
+    def read(self) -> tuple[int, Optional[np.ndarray]]:
         """
         Captures the next frame from the ZED camera.
 
