@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10, <3.13"
 resolution-markers = [
     "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'",
@@ -290,7 +290,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e1/54/5b056e10555acadf356a1480639a85327606e5c90f6ace3d1f57ad25111c/depthai-2.30.0.0.tar.gz", hash = "sha256:6f1de5abdca2a615eb29803d82a002da42ebf1d3c6d261187762f0dcc5b2a836", size = 453954, upload-time = "2025-03-18T15:07:32.26Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b0/a0/89c977958d6f5b5027e7ac1afb69aa49294a0cf842f6cc6016ec6ca6cf0f/depthai-2.30.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1e8f2fb002a95395c398f1c843cf761425b98619737c6c088b110f72382a3597", size = 12746115, upload-time = "2025-03-18T15:05:11.259Z" },
-    { url = "https://files.pythonhosted.org/packages/87/4d/fe2085af19c6019bda502b30a60ee1daf82baf29688d8a2a8889e7c03ecf/depthai-2.30.0.0-cp310-cp310-macosx_13_0_x86_64.whl", hash = "sha256:dce435678ba01c4396cd9adfdfef7fabeb7c598abcccee0cfe18cf2817f36525", size = 13336417, upload-time = "2025-03-18T15:05:14.883Z" },
     { url = "https://files.pythonhosted.org/packages/8b/5a/463ee9975a1cdbc3094a6620996e1e170df3c2c561d88e2ebdbc17761c53/depthai-2.30.0.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:2a185107326570cf2681a42bb6a3d952b58813a9e76308c6649ddb40ace79f0e", size = 13629705, upload-time = "2025-03-18T15:05:17.784Z" },
     { url = "https://files.pythonhosted.org/packages/59/2e/441f474157a09d1e127e7b0b85986eb91f1db1cdd63d2b8c89b8f1d0415f/depthai-2.30.0.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:a3bb410e84fa882afe26626c3966f2451faff545e340323bd1ec643f1f1ea8d7", size = 14122922, upload-time = "2025-03-18T15:05:22.874Z" },
     { url = "https://files.pythonhosted.org/packages/25/19/774d30555ff1e0c15eadc5c6a215bded89429ea6f7f8ce3726dda40e0c33/depthai-2.30.0.0-cp310-cp310-win32.whl", hash = "sha256:4e32f4d74caa70fbfabf956ba6a059e47918c890c3a009ebc6f69af5da1ac0ba", size = 10855702, upload-time = "2025-03-18T15:05:25.618Z" },
@@ -1136,13 +1135,20 @@ wheels = [
 ]
 
 [[package]]
-name = "pyk4a"
-version = "1.5.0"
+name = "pyk4a-bundle"
+version = "1.5.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "numpy", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5a/f9/92c3f43caf0a8ad5ca1414be0096b8e046604a90cabe84f12173794ac130/pyk4a-1.5.0.tar.gz", hash = "sha256:57e1c69a39e936e1610771401ad68f0c9b3788d14c2f4998678854904d3c2d1b", size = 24449, upload-time = "2023-02-03T21:14:33.692Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/67/db/8fe45be023dfe1345529df1b439fe57193f2b9c382c06e97762c198bc216/pyk4a_bundle-1.5.0.1-cp310-cp310-manylinux_2_38_x86_64.manylinux_2_39_x86_64.whl", hash = "sha256:b9271f840b18e73d73e82e75dde5ecf4e6d3af92e3e4b976417d3d93e8631d06", size = 7555800, upload-time = "2026-01-31T18:31:19.037Z" },
+    { url = "https://files.pythonhosted.org/packages/c9/2b/870862d41956847460451b435ce4996fe72de50fb7df40286d39a1dce20c/pyk4a_bundle-1.5.0.1-cp310-cp310-win_amd64.whl", hash = "sha256:899d68c67a1853bd912ef9c413899805d18a23f46e1cfc396622ae09dfb569ad", size = 933808, upload-time = "2026-01-31T18:31:20.904Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/55/baeedf94f2819aca3d56152e579726d4a21a3d95d84817cde0ef7175bee5/pyk4a_bundle-1.5.0.1-cp311-cp311-manylinux_2_38_x86_64.manylinux_2_39_x86_64.whl", hash = "sha256:e50097cd2cec55147001aa6f2063bc907071b1b7ed5a48417e217f2f25d95f47", size = 7556959, upload-time = "2026-01-31T18:31:22.749Z" },
+    { url = "https://files.pythonhosted.org/packages/17/6b/de4ae0492332048a516e53ebcc06acc69ee277ac6fd65268dcb76e694087/pyk4a_bundle-1.5.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:ad4a19aa1a3a28f397644d8b5f633a1750efb515c88334f9e16b7ae05c1f8b90", size = 933806, upload-time = "2026-01-31T18:31:24.48Z" },
+    { url = "https://files.pythonhosted.org/packages/81/80/7256cb094307fd34ec03ba0e7647af2a5d93da0d309e090524629eac68c9/pyk4a_bundle-1.5.0.1-cp312-cp312-manylinux_2_38_x86_64.manylinux_2_39_x86_64.whl", hash = "sha256:133d24971a3e5527e16a449a18da70210ac47fd68a9ca1ab38c7f1a7ab973047", size = 7557030, upload-time = "2026-01-31T18:31:26.294Z" },
+    { url = "https://files.pythonhosted.org/packages/3e/20/1684a995eaefb8364d288a1ba86e0081dccc18745966f34699118730b57b/pyk4a_bundle-1.5.0.1-cp312-cp312-win_amd64.whl", hash = "sha256:8a1550a752d4858657ef0f68f06f4cb25edcd39380f837077157ad335962b0ec", size = 933842, upload-time = "2026-01-31T18:31:27.753Z" },
+]
 
 [[package]]
 name = "pyobjc-core"
@@ -1702,7 +1708,7 @@ all = [
     { name = "numba" },
     { name = "onnxruntime" },
     { name = "openvino" },
-    { name = "pyk4a", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "pyk4a-bundle", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
     { name = "pyopengl", marker = "sys_platform == 'darwin' or sys_platform == 'win32'" },
     { name = "pyrealsense2", marker = "sys_platform != 'darwin'" },
     { name = "pyrealsense2-macosx", marker = "sys_platform == 'darwin'" },
@@ -1711,7 +1717,7 @@ all = [
     { name = "vidgear", extra = ["core"] },
 ]
 azure = [
-    { name = "pyk4a", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+    { name = "pyk4a-bundle", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
 ]
 depthai = [
     { name = "depthai", marker = "platform_machine == 'arm64' or sys_platform != 'darwin'" },
@@ -1785,7 +1791,7 @@ requires-dist = [
     { name = "opencv-python", marker = "python_full_version < '3.10'", specifier = "~=4.7.0" },
     { name = "opencv-python", marker = "python_full_version >= '3.10'", specifier = "~=4.12" },
     { name = "openvino", marker = "extra == 'openvino'", specifier = "~=2025.3.0" },
-    { name = "pyk4a", marker = "(sys_platform == 'linux' and extra == 'azure') or (sys_platform == 'win32' and extra == 'azure')", specifier = "~=1.5" },
+    { name = "pyk4a-bundle", marker = "(sys_platform == 'linux' and extra == 'azure') or (sys_platform == 'win32' and extra == 'azure')", specifier = "~=1.5.0.1" },
     { name = "pyopengl", marker = "(sys_platform == 'darwin' and extra == 'fbs') or (sys_platform == 'win32' and extra == 'fbs')" },
     { name = "pyrealsense2", marker = "sys_platform != 'darwin' and extra == 'realsense'", specifier = "~=2.56.5" },
     { name = "pyrealsense2-macosx", marker = "sys_platform == 'darwin' and extra == 'realsense'", specifier = "~=2.54.2" },
