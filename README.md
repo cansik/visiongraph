@@ -48,6 +48,10 @@ To install visiongraph with all dependencies use [pip](https://pypi.org/project/
 pip install "visiongraph[all]"
 ```
 
+```bash
+uv sync --all-extras
+```
+
 It is also possible to only install certain packages depending on your needs (recommended):
 
 ```bash

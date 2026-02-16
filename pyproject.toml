@@ -74,7 +74,7 @@ all = [
 ]
 
 realsense = [
-    "pyrealsense2-macosx~=2.54.2; platform_system == 'Darwin'",
+    "pyrealsense2-macosx~=2.56.5; platform_system == 'Darwin'",
     "pyrealsense2~=2.56.5; platform_system != 'Darwin'",
 ]
 
@@ -86,7 +86,7 @@ depthai = [
     "depthai~=2.30; platform_system != 'Darwin' or platform.machine == 'arm64'",
 ]
 
-openvino = ["openvino~=2025.3.0"]
+openvino = ["openvino~=2025.4.1"]
 
 mediapipe = [
     # currently we use a custom mediapipe package
