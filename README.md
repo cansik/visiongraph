@@ -24,7 +24,7 @@ import cv2
 from visiongraph import vg
 
 with (vg.VideoCaptureInput() as cam,
-      vg.SSDDetector.create() as ssd):
+      vg.SSDDetector.create(vg.SSDConfig.SSDLiteMobileNetV2_FP32) as ssd):
     while True:
         _, frame = cam.read()
         if frame is None:
