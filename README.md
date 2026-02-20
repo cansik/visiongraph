@@ -11,7 +11,7 @@
 ![Pepy Total Downloads](https://img.shields.io/pepy/dt/visiongraph)
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/visiongraph/visiongraph.html#documentation)
 
-Visiongraph is a computer vision pipeline designed to simplify prototyping of image-based algorithms with ready-to-use modules. Built on top of OpenCV, it also integrates popular frameworks such as [Intel OpenVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), and [DepthAI](https://pypi.org/project/depthai/). The library is optimized for real-time applications and edge performance.
+Visiongraph is a computer vision pipeline designed to simplify prototyping of image-based algorithms with ready-to-use modules. Built on top of OpenCV, it also integrates popular frameworks such as [Intel OpenVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), and [DepthAI](https://pypi.org/project/depthai/). The library is designed with a focus on real-time applications and edge deployment.
 
 ![Readme Example](doc/visiongraph-readme-street.webp)
 
