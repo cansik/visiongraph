@@ -2,45 +2,45 @@ name: Publish Docs
 
 # build the documentation whenever there are new commits on main
 on:
-  workflow_dispatch:
   push:
-    # Alternative: only build for tags.
     tags:
-      - '*'
+      - "*"
+  workflow_dispatch:
 
-# security: restrict permissions for CI jobs.
 permissions:
   contents: read
 
 jobs:
   # Build the documentation and upload the static HTML files as an artifact.
   build:
-    runs-on: 'windows-latest'
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
+          submodules: recursive
 
-      - name: Preqrequisites
-        run: |
-          git submodule update --init --recursive
-          pip install uv
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-      # install relevant files
-      - run: uv sync --all-extras --dev --group docs
-      - run: uv run python setup.py generate_init
-      - run: uv build
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
 
-      # build documentation into docs/.
-      - run: uv run python setup.py doc
+      - name: Sync dependencies
+        run: uv sync --all-extras --dev --group docs
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Generate code
+        run: uv run python setup.py generate_init
+
+      - name: Build documentation
+        run: uv run python setup.py doc
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: docs/
 
-  # Deploy the artifact to GitHub pages.
-  # This is a separate job so that only actions/deploy-pages has the necessary permissions.
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -51,5 +51,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - id: deployment
+      - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@v4

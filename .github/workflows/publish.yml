@@ -4,62 +4,122 @@ on:
   workflow_dispatch:
     inputs:
       publishReleases:
-        description: 'Publish to Releases'
+        description: "Publish to Releases"
         required: false
-        default: 'true'
+        default: "true"
+      isPreRelease:
+        description: "Is Pre-Release"
+        required: false
+        default: "false"
+      isDraft:
+        description: "Is Draft"
+        required: false
+        default: "false"
       publishPyPI:
-        description: 'Publish to PyPI'
+        description: "Publish to PyPI"
         required: false
-        default: 'true'
-
+        default: "true"
 
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
-    # environment: production
+    permissions:
+      contents: read
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Get library version
+        id: get_version
+        run: |
+          version=$(python - <<'EOF'
+          import tomllib
+          with open("pyproject.toml", "rb") as f:
+              print(tomllib.load(f)["project"]["version"])
+          EOF
+          )
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Install dependencies
+        run: uv sync --all-extras --dev
 
       - name: Build
         run: |
-          pip install --upgrade pip
-          pip install uv
-
-          uv sync --all-extras --dev
           uv run python setup.py generate_init
           uv build
 
-      - name: Get Library Version
-        id: get_version
+      - name: Upload dist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-dist
+          path: dist/*
+          if-no-files-found: error
+
+  github-release:
+    needs: build
+    if: ${{ github.event.inputs.publishReleases == 'true' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Guard: fail if release tag already exists"
         run: |
-          lib_version=$(uv run python setup.py --version)
-          echo "Library Version: $lib_version"
+          TAG="v${{ needs.build.outputs.version }}"
+          if git ls-remote --exit-code --tags origin "refs/tags/${TAG}" >/dev/null 2>&1; then
+            echo "Error: tag ${TAG} already exists on origin."
+            echo "Please bump project.version in pyproject.toml and rerun the workflow."
+            exit 1
+          fi
 
-          echo ::set-output name=version::"$lib_version"
-          echo ::set-output name=v_version::"v$lib_version"
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: python-dist
+          path: dist
 
-      # upload dist
       - name: Upload binaries to release
-        if: ${{ github.event.inputs.publishReleases == 'true' }}
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: dist/*.whl
-          tag: ${{ steps.get_version.outputs.v_version }}
-          release_name: "Version ${{ steps.get_version.outputs.version }}"
-          body: "Prebuilt wheel packages version ${{ steps.get_version.outputs.version }}."
+          file: dist/*
+          tag: v${{ needs.build.outputs.version }}
+          release_name: "Version ${{ needs.build.outputs.version }}"
+          body: "Prebuilt package version ${{ needs.build.outputs.version }}."
           overwrite: true
           file_glob: true
+          prerelease: ${{ github.event.inputs.isPreRelease == 'true' }}
+          draft: ${{ github.event.inputs.isDraft == 'true' }}
 
-      # publish to PyPI
-      - name: Publish package to PyPI
-        if: ${{ github.event.inputs.publishPyPI == 'true' }}
-        uses: pypa/gh-action-pypi-publish@release/v1
+  pypi-publish:
+    needs: build
+    if: ${{ github.event.inputs.publishPyPI == 'true' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/visiongraph
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Download dist artifacts
+        uses: actions/download-artifact@v4
         with:
-          user: __token__
-          password: ${{ secrets.PYPI_API_TOKEN }}
+          name: python-dist
+          path: dist
+
+      - name: Publish package to PyPI (Trusted Publishing)
+        uses: pypa/gh-action-pypi-publish@release/v1
