@@ -1,0 +1,36 @@
+name: Release Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Build & Test (Ubuntu)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+
+      - name: Build package
+        run: |
+          uv run python setup.py generate_init
+          uv build
+
+      - name: Install from wheel
+        run: |
+          WHEEL=$(ls dist/*.whl)
+          pip install "${WHEEL}[mediapipe,depthai]"
+
+      - name: Run MediaPipe Pose E2E Test
+        run: |
+          # Run a single model test to verify the installation and automatic model download
+          python -m unittest discover -s ./tests -t ./ -v -k test_mediapipe_pose_estimator
