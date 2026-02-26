@@ -140,11 +140,7 @@ ruff format && ruff check --fix
 
 ## Dependencies
 
-Parts of these libraries are directly included and adapted to work with visiongraph.
-
-* [motpy](https://github.com/wmuron/motpy) - Simple multi-object tracking library (MIT License)
-* [motrackers](https://github.com/adipandas/multi-object-tracker) - Multi-object trackers in Python (MIT License)
-* [OneEuroFilter-Numpy](https://github.com/HoBeom/OneEuroFilter-Numpy) - (MIT License)
+Parts of these libraries are directly included and adapted to work with visiongraph. For more information, please have a look at the [third party notices](THIRD_PARTY_NOTICES.md).
 
 Here you can find a list of the dependencies of visiongraph and their license (no guarantee of correctness):
 
