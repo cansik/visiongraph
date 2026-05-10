@@ -1,16 +1,5 @@
-from pathlib import Path
-import sys
-
-
-def _bootstrap_project_root() -> None:
-    root_dir = Path(__file__).resolve().parents[1]
-    if str(root_dir) not in sys.path:
-        sys.path.insert(0, str(root_dir))
-
-
 def main() -> None:
-    _bootstrap_project_root()
-    from tools.model_asset_inventory import iter_config_enums
+    from scripts.model_asset_inventory import iter_config_enums
 
     config_enums, failed_imports = iter_config_enums()
 

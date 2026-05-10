@@ -116,7 +116,10 @@ uv sync --all-extras --dev --group docs
 To build a new wheel package of visiongraph, run the following commands in the repository root. The generated wheel and source distribution will be placed in `./dist`.
 
 ```bash
-uv run python setup.py generate_init
+# regenerate distributable repo artefacts
+make generate-repo
+
+# build wheel and source distribution
 uv build
 ```
 
@@ -126,10 +129,10 @@ To generate the documentation, use the following commands:
 
 ```bash
 # create the documentation into "./docs"
-uv run python setup.py doc
+uv run python -m scripts.generate_doc
 
 # launch pdoc webserver
-uv run python setup.py doc --launch
+uv run python -m scripts.generate_doc --launch
 ```
 
 ### Linter
@@ -166,7 +169,7 @@ pytest                MIT License
 requests              Apache License 2.0
 ruff                  MIT License
 scipy                 MIT License
-setuptools            MIT License
+hatchling             MIT License
 SpoutGL               BSD License
 syphon-python         MIT License
 tqdm                  MIT License

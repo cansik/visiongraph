@@ -2,7 +2,7 @@ import ast
 import unittest
 from pathlib import Path
 
-from tools.model_asset_inventory import collect_asset_references
+from scripts.model_asset_inventory import collect_asset_references
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]

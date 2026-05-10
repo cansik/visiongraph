@@ -1,25 +1,12 @@
 import argparse
 from collections import defaultdict
 from pathlib import Path
-import sys
 from typing import Dict, List, Tuple
 
-
-def _bootstrap_project_root() -> None:
-    root_dir = Path(__file__).resolve().parents[1]
-    if str(root_dir) not in sys.path:
-        sys.path.insert(0, str(root_dir))
-
-
-def _collect_asset_references():
-    _bootstrap_project_root()
-    from tools.model_asset_inventory import collect_asset_references
-
-    return collect_asset_references
+from scripts.model_asset_inventory import collect_asset_references
 
 
 def build_markdown() -> str:
-    collect_asset_references = _collect_asset_references()
     asset_references, failed_imports = collect_asset_references(repository_only=True)
 
     grouped_assets: Dict[Tuple[str, str, str, str], List[str]] = defaultdict(list)
@@ -91,7 +78,7 @@ def _metadata_key(metadata) -> Tuple[str, str, str, str]:
     )
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description="Generate a markdown inventory of model attributions.")
     parser.add_argument("--output", type=Path, help="Optional output path. Writes to stdout when omitted.")
     args = parser.parse_args()

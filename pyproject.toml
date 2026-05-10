@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=80.9.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling>=1.27.0"]
+build-backend = "hatchling.build"
 
 [project]
 name = "visiongraph"
@@ -47,8 +47,6 @@ Repository = "https://github.com/cansik/visiongraph.git"
 
 [dependency-groups]
 dev = [
-    "wheel",
-    "setuptools>=80.9.0",
     "pytest",
     "ty>=0.0.1a20",
     "ruff>=0.12.0",
@@ -156,16 +154,27 @@ exclude = [
     "visiongraph/vg/__init__.py"
 ]
 
-[project.entry-points."distutils.commands"]
-generate_init = "scripts.commands:GenerateInitPy"
-doc = "scripts.commands:GenerateDoc"
+[tool.hatch.build.targets.wheel]
+packages = ["visiongraph"]
 
-[tool.setuptools]
-packages = { find = { exclude = [
-    "tests",
-    "examples",
-    "snippets",
-    "assets",
-    "tools",
-    "scripts"
-] } }
+[tool.hatch.build.targets.wheel.force-include]
+"DOCUMENTATION.md" = "DOCUMENTATION.md"
+"MODEL_ATTRIBUTIONS.md" = "MODEL_ATTRIBUTIONS.md"
+"THIRD_PARTY_NOTICES.md" = "THIRD_PARTY_NOTICES.md"
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/visiongraph",
+    "/scripts",
+    "/tests",
+    "/doc",
+    "/README.md",
+    "/DOCUMENTATION.md",
+    "/MODEL_ATTRIBUTIONS.md",
+    "/THIRD_PARTY_NOTICES.md",
+    "/LICENSE",
+    "/pyproject.toml",
+    "/CITATION.cff",
+    "/MODEL_LICENSES.md",
+    "/MODELS.md",
+]

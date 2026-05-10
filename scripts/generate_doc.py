@@ -1,7 +1,9 @@
+import argparse
 import os
 import re
 import shutil
 import sys
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Union, Optional, List, Sequence
 from unittest.mock import MagicMock
@@ -14,6 +16,35 @@ from markupsafe import Markup
 from pdoc.render_helpers import qualname_candidates, possible_sources, relative_link
 
 from scripts import pdoc_monkeypatch
+
+
+@dataclass
+class ProjectConfig:
+    name: str
+    version: str
+    url: str | None
+    doc_modules: list[str]
+
+
+def load_project_config(path: Path = Path("pyproject.toml")) -> ProjectConfig:
+    if sys.version_info >= (3, 11):
+        import tomllib
+    else:
+        import tomli as tomllib
+
+    with path.open("rb") as file:
+        data = tomllib.load(file)
+
+    project = data["project"]
+    urls = project.get("urls", {})
+    name = project["name"]
+
+    return ProjectConfig(
+        name=name,
+        version=project["version"],
+        url=urls.get("Homepage"),
+        doc_modules=[name, f"!{name}.external"],
+    )
 
 
 class AutoMock(MagicMock):
@@ -225,3 +256,30 @@ def generate_doc(
 
     # copy doc content
     shutil.copytree(extra_asset_path, output_path.joinpath(extra_asset_path.name))
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Generate pdoc documentation for visiongraph.")
+    parser.add_argument("--output", default="docs", help="Output path for the generated documentation.")
+    parser.add_argument("--launch", action="store_true", help="Launch the pdoc web server instead of exiting.")
+    parser.add_argument("--extra-assets", default="doc", help="Path to extra documentation assets.")
+    args = parser.parse_args()
+
+    from scripts.import_analyzer import VisiongraphAnalyzer
+
+    config = load_project_config()
+    result = VisiongraphAnalyzer().analyze()
+    generate_doc(
+        config.name,
+        config.version,
+        config.url,
+        args.output,
+        config.doc_modules,
+        result.optional_modules,
+        extra_asset_path=args.extra_assets,
+        launch=args.launch,
+    )
+
+
+if __name__ == "__main__":
+    main()

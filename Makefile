@@ -1,16 +1,110 @@
-.PHONY: fmt fmt-check lint autoformat
+.PHONY: \
+	autoformat \
+	attributions \
+	build \
+	build-ci \
+	check \
+	ci-code \
+	clean \
+	clean-dist \
+	clean-docs \
+	default \
+	docs \
+	docs-serve \
+	fmt \
+	fmt-check \
+	generate-init \
+	generate-repo \
+	help \
+	license-check \
+	lint \
+	list-estimators \
+	sync \
+	test \
+	test-metadata
+
+UV := uv
+PYTHON := $(UV) run python
+ATTRIBUTIONS_FILE := MODEL_ATTRIBUTIONS.md
 
 default: autoformat
 
-# Code Style
+help:
+	@echo "Available targets:"
+	@echo "  sync              Install project dependencies used by local development, docs, and CI"
+	@echo "  fmt               Format the repository with Ruff"
+	@echo "  fmt-check         Check formatting with Ruff"
+	@echo "  lint              Run Ruff lint checks"
+	@echo "  autoformat        Format the repository and apply auto-fixable Ruff rules"
+	@echo "  generate-init     Regenerate the top-level visiongraph __init__.py"
+	@echo "  attributions      Generate $(ATTRIBUTIONS_FILE) from repository model metadata"
+	@echo "  generate-repo     Regenerate repository-generated artifacts needed for distribution"
+	@echo "  list-estimators   Print discovered estimator config enums"
+	@echo "  license-check     Print dependency licenses from pyproject.toml"
+	@echo "  test              Run the full unittest suite"
+	@echo "  test-metadata     Run the repository model metadata enforcement tests"
+	@echo "  docs              Generate the static documentation into ./docs"
+	@echo "  docs-serve        Launch the pdoc documentation web server"
+	@echo "  build             Regenerate distributable artifacts and build sdist/wheel artifacts"
+	@echo "  build-ci          Alias for the CI package build sequence"
+	@echo "  clean-docs        Remove generated documentation"
+	@echo "  clean-dist        Remove generated build artifacts"
+	@echo "  clean             Remove generated documentation and build artifacts"
+
+sync:
+	$(UV) sync --all-extras --dev --group docs
+
 fmt:
-	uv run lint ruff format .
+	$(UV) run ruff format .
 
 fmt-check:
-	uv run ruff format --check .
+	$(UV) run ruff format --check .
 
 lint:
-	uv run ruff check .
+	$(UV) run ruff check .
 
 autoformat:
-	uv run ruff format . && uv run ruff check --fix .
+	$(UV) run ruff format . && $(UV) run ruff check --fix .
+
+ci-code: lint fmt-check
+
+check: ci-code test
+
+generate-init:
+	$(PYTHON) -m scripts.generate_init
+
+attributions:
+	$(PYTHON) -m scripts.generate_model_attributions --output $(ATTRIBUTIONS_FILE)
+
+generate-repo: generate-init attributions
+
+list-estimators:
+	$(PYTHON) -m scripts.list_estimators
+
+license-check:
+	$(PYTHON) -m scripts.license_check
+
+test:
+	$(PYTHON) -m unittest discover -s ./tests -t ./ -v
+
+test-metadata:
+	$(PYTHON) -m unittest tests.test_repository_asset_metadata -v
+
+docs: generate-init
+	$(PYTHON) -m scripts.generate_doc
+
+docs-serve: generate-init
+	$(PYTHON) -m scripts.generate_doc --launch
+
+build: generate-repo
+	$(UV) build
+
+build-ci: build
+
+clean-docs:
+	rm -rf docs
+
+clean-dist:
+	rm -rf build dist *.egg-info
+
+clean: clean-docs clean-dist

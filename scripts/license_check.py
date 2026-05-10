@@ -41,21 +41,18 @@ def extract_requirements_from_list(req_list: List[str]) -> Set[str]:
 
 
 def parse_pyproject(path: str) -> Set[str]:
-    with open(path, "rb") as f:
-        data = tomllib.load(f)
+    with open(path, "rb") as file:
+        data = tomllib.load(file)
 
     requirements = set()
 
     project = data.get("project", {})
 
-    # Main dependencies
     requirements.update(extract_requirements_from_list(project.get("dependencies", [])))
 
-    # Optional dependencies
     for group in project.get("optional-dependencies", {}).values():
         requirements.update(extract_requirements_from_list(group))
 
-    # Dependency groups (PEP 735)
     for group in data.get("dependency-groups", {}).values():
         requirements.update(extract_requirements_from_list(group))
 
@@ -130,8 +127,7 @@ def get_license_from_pypi(package_name: str) -> str:
                         license_str = classifier
                         break
             return normalize_license(license_str)
-        else:
-            return "Unknown"
+        return "Unknown"
     except Exception:
         return "Unknown"
 
@@ -145,22 +141,19 @@ def main() -> None:
     except FileNotFoundError:
         print(f"Error: File not found: {pyproject_path}")
         return
-    except Exception as e:
-        print(f"Error parsing {pyproject_path}: {e}")
+    except Exception as exc:
+        print(f"Error parsing {pyproject_path}: {exc}")
         return
 
-    packages = sorted(requirement_names, key=lambda s: s.lower())
-
-    # Calculate the maximum length for alignment
+    packages = sorted(requirement_names, key=lambda name: name.lower())
     max_name_length = max(len(name) for name in packages) if packages else 0
 
-    # Print header
     print(f"{'Package'.ljust(max_name_length)}  License")
     print(f"{'-' * max_name_length}  {'-' * 20}")
 
     for name in packages:
-        license = get_license(name)
-        print(f"{name.ljust(max_name_length)}  {license}")
+        license_name = get_license(name)
+        print(f"{name.ljust(max_name_length)}  {license_name}")
 
 
 if __name__ == "__main__":

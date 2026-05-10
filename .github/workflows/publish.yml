@@ -55,7 +55,7 @@ jobs:
 
       - name: Build
         run: |
-          uv run python setup.py generate_init
+          make generate-repo
           uv build
 
       - name: Upload dist artifacts

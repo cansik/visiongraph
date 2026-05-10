@@ -22,7 +22,7 @@ jobs:
 
       - name: Build package
         run: |
-          uv run python setup.py generate_init
+          make generate-repo
           uv build
 
       - name: Install from wheel

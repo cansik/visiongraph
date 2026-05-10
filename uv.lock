@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.10, <3.13"
 resolution-markers = [
     "python_full_version >= '3.12' and platform_machine == 'arm64' and sys_platform == 'darwin'",
@@ -290,7 +290,6 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/e1/54/5b056e10555acadf356a1480639a85327606e5c90f6ace3d1f57ad25111c/depthai-2.30.0.0.tar.gz", hash = "sha256:6f1de5abdca2a615eb29803d82a002da42ebf1d3c6d261187762f0dcc5b2a836", size = 453954, upload-time = "2025-03-18T15:07:32.26Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b0/a0/89c977958d6f5b5027e7ac1afb69aa49294a0cf842f6cc6016ec6ca6cf0f/depthai-2.30.0.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:1e8f2fb002a95395c398f1c843cf761425b98619737c6c088b110f72382a3597", size = 12746115, upload-time = "2025-03-18T15:05:11.259Z" },
-    { url = "https://files.pythonhosted.org/packages/87/4d/fe2085af19c6019bda502b30a60ee1daf82baf29688d8a2a8889e7c03ecf/depthai-2.30.0.0-cp310-cp310-macosx_13_0_x86_64.whl", hash = "sha256:dce435678ba01c4396cd9adfdfef7fabeb7c598abcccee0cfe18cf2817f36525", size = 13336417, upload-time = "2025-03-18T15:05:14.883Z" },
     { url = "https://files.pythonhosted.org/packages/8b/5a/463ee9975a1cdbc3094a6620996e1e170df3c2c561d88e2ebdbc17761c53/depthai-2.30.0.0-cp310-cp310-manylinux_2_28_aarch64.whl", hash = "sha256:2a185107326570cf2681a42bb6a3d952b58813a9e76308c6649ddb40ace79f0e", size = 13629705, upload-time = "2025-03-18T15:05:17.784Z" },
     { url = "https://files.pythonhosted.org/packages/59/2e/441f474157a09d1e127e7b0b85986eb91f1db1cdd63d2b8c89b8f1d0415f/depthai-2.30.0.0-cp310-cp310-manylinux_2_28_x86_64.whl", hash = "sha256:a3bb410e84fa882afe26626c3966f2451faff545e340323bd1ec643f1f1ea8d7", size = 14122922, upload-time = "2025-03-18T15:05:22.874Z" },
     { url = "https://files.pythonhosted.org/packages/25/19/774d30555ff1e0c15eadc5c6a215bded89429ea6f7f8ce3726dda40e0c33/depthai-2.30.0.0-cp310-cp310-win32.whl", hash = "sha256:4e32f4d74caa70fbfabf956ba6a059e47918c890c3a009ebc6f69af5da1ac0ba", size = 10855702, upload-time = "2025-03-18T15:05:25.618Z" },
@@ -1462,15 +1461,6 @@ wheels = [
 ]
 
 [[package]]
-name = "setuptools"
-version = "80.9.0"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/18/5d/3bf57dcd21979b887f014ea83c24ae194cfcd12b9e0fda66b957c69d1fca/setuptools-80.9.0.tar.gz", hash = "sha256:f36b47402ecde768dbfafc46e8e4207b4360c654f1f3bb84475f0a28628fb19c", size = 1319958, upload-time = "2025-05-27T00:56:51.443Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/a3/dc/17031897dae0efacfea57dfd3a82fdd2a2aeb58e0ff71b77b87e44edc772/setuptools-80.9.0-py3-none-any.whl", hash = "sha256:062d34222ad13e0cc312a4c02d73f059e86a4acbfbdea8f8f76b28c99f306922", size = 1201486, upload-time = "2025-05-27T00:56:49.664Z" },
-]
-
-[[package]]
 name = "simplejpeg"
 version = "1.8.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1765,9 +1755,7 @@ realsense = [
 dev = [
     { name = "pytest" },
     { name = "ruff" },
-    { name = "setuptools" },
     { name = "ty" },
-    { name = "wheel" },
 ]
 docs = [
     { name = "pdoc" },
@@ -1820,22 +1808,11 @@ provides-extras = ["all", "realsense", "azure", "depthai", "openvino", "mediapip
 dev = [
     { name = "pytest" },
     { name = "ruff", specifier = ">=0.12.0" },
-    { name = "setuptools", specifier = ">=80.9.0" },
     { name = "ty", specifier = ">=0.0.1a20" },
-    { name = "wheel" },
 ]
 docs = [
     { name = "pdoc", specifier = "~=15.0.4" },
     { name = "tomli", marker = "python_full_version < '3.11'", specifier = ">=2.4.0" },
-]
-
-[[package]]
-name = "wheel"
-version = "0.45.1"
-source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8a/98/2d9906746cdc6a6ef809ae6338005b3f21bb568bea3165cfc6a243fdc25c/wheel-0.45.1.tar.gz", hash = "sha256:661e1abd9198507b1409a20c02106d9670b2576e916d58f520316666abca6729", size = 107545, upload-time = "2024-11-23T00:18:23.513Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/0b/2c/87f3254fd8ffd29e4c02732eee68a83a1d3c346ae39bc6822dcbcb697f2b/wheel-0.45.1-py3-none-any.whl", hash = "sha256:708e7481cc80179af0e556bbf0cc00b8444c7321e2700b8d8580231d13017248", size = 72494, upload-time = "2024-11-23T00:18:21.207Z" },
 ]
 
 [[package]]
