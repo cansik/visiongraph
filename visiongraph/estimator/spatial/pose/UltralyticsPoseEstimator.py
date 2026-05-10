@@ -7,6 +7,7 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
+from visiongraph.model.metadata.Ultralytics import ULTRALYTICS_YOLO_METADATA
 from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
@@ -16,22 +17,33 @@ from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = ULTRALYTICS_YOLO_METADATA
+
+
 class UltralyticsPoseConfig(Enum):
     """
     Configuration options for the Ultralytics pose estimation models.
     """
 
-    YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx"), InferenceEngine.ONNX, 17
-    YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx"), InferenceEngine.ONNX, 17
-    YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx"), InferenceEngine.ONNX, 17
-    YOLOv8_L_640 = RepositoryAsset("yolov8l-pose-8-1.onnx"), InferenceEngine.ONNX, 17
-    YOLOv8_X_640 = RepositoryAsset("yolov8x-pose-8-1.onnx"), InferenceEngine.ONNX, 17
+    YOLOv8_N_640 = RepositoryAsset("yolov8n-pose-8-1.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
+    YOLOv8_S_640 = RepositoryAsset("yolov8s-pose-8-1.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
+    YOLOv8_M_640 = RepositoryAsset("yolov8m-pose-8-1.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
+    YOLOv8_L_640 = RepositoryAsset("yolov8l-pose-8-1.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
+    YOLOv8_X_640 = RepositoryAsset("yolov8x-pose-8-1.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
 
-    YOLOv8_N_640_INT8 = *RepositoryAsset.openVino("yolov8n-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
-    YOLOv8_S_640_INT8 = *RepositoryAsset.openVino("yolov8s-pose-8-1-INT8"), InferenceEngine.OpenVINO2, 17
+    YOLOv8_N_640_INT8 = (
+        *RepositoryAsset.openVino("yolov8n-pose-8-1-INT8", metadata=_MODEL_METADATA),
+        InferenceEngine.OpenVINO2,
+        17,
+    )
+    YOLOv8_S_640_INT8 = (
+        *RepositoryAsset.openVino("yolov8s-pose-8-1-INT8", metadata=_MODEL_METADATA),
+        InferenceEngine.OpenVINO2,
+        17,
+    )
 
-    YOLOv11_N_640 = RepositoryAsset("yolo11n-pose.onnx"), InferenceEngine.ONNX, 17
-    YOLOv11_S_640 = RepositoryAsset("yolo11s-pose.onnx"), InferenceEngine.ONNX, 17
+    YOLOv11_N_640 = RepositoryAsset("yolo11n-pose.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
+    YOLOv11_S_640 = RepositoryAsset("yolo11s-pose.onnx", metadata=_MODEL_METADATA), InferenceEngine.ONNX, 17
 
 
 class UltralyticsPoseEstimator(PoseEstimator):

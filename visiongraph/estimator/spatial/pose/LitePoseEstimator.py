@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -15,15 +16,23 @@ from visiongraph.util import MathUtils
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="LitePose pose estimation",
+    source_url="https://github.com/mit-han-lab/litepose",
+    license_name="MIT License",
+    license_url="https://github.com/mit-han-lab/litepose/blob/main/LICENSE",
+)
+
+
 class LitePoseEstimatorConfig(Enum):
     """
     Enum representing different configurations for the LitePoseEstimator model.
     Each option corresponds to a specific OpenVINO model asset.
     """
 
-    LitePose_S_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-s-coco-fp32")
-    LitePose_M_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-m-coco-fp32")
-    LitePose_L_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-l-coco-fp32")
+    LitePose_S_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-s-coco-fp32", metadata=_MODEL_METADATA)
+    LitePose_M_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-m-coco-fp32", metadata=_MODEL_METADATA)
+    LitePose_L_COCO_FP32 = RepositoryAsset.openVino("litepose-auto-l-coco-fp32", metadata=_MODEL_METADATA)
 
 
 class LitePoseEstimator(PoseEstimator[COCOPose]):

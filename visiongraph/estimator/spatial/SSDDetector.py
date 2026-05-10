@@ -4,14 +4,24 @@ from typing import List, Tuple
 import openvino
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_90_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.detection_model import DetectionModel
 from visiongraph.external.intel.models.ssd import SSD
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 _PERSON_LABELS = ["person"]
+
+_INTEL_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
+_SSDLITE_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="SSDLite MobileNetV2 object detection",
+    source_url="https://github.com/tensorflow/models",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/tensorflow/models/blob/master/LICENSE",
+)
 
 
 def _person_net(name: str) -> Tuple:
@@ -22,7 +32,7 @@ def _person_net(name: str) -> Tuple:
 
     :return: A tuple containing model and labels for the person detection.
     """
-    return (*RepositoryAsset.openVino(name), _PERSON_LABELS)
+    return (*RepositoryAsset.openVino(name, metadata=_INTEL_MODEL_METADATA), _PERSON_LABELS)
 
 
 class SSDConfig(Enum):
@@ -30,7 +40,10 @@ class SSDConfig(Enum):
     An enumeration of SSD configurations with pre-defined settings for specific models.
     """
 
-    SSDLiteMobileNetV2_FP32 = (*RepositoryAsset.openVino("ssdlite_mobilenet_v2_fp32"), COCO_90_LABELS)
+    SSDLiteMobileNetV2_FP32 = (
+        *RepositoryAsset.openVino("ssdlite_mobilenet_v2_fp32", metadata=_SSDLITE_MODEL_METADATA),
+        COCO_90_LABELS,
+    )
 
     PersonDetection_0200_256x256_FP16_INT8 = _person_net("person-detection-0200-fp16-int8")
 

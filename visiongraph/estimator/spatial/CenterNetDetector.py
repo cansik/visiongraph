@@ -4,6 +4,7 @@ from typing import List
 import openvino
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
@@ -12,13 +13,21 @@ from visiongraph.external.intel.models.centernet import CenterNet
 from visiongraph.external.intel.models.detection_model import DetectionModel
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="CenterNet object detection",
+    source_url="https://github.com/xingyizhou/CenterNet",
+    license_name="MIT License",
+    license_url="https://github.com/xingyizhou/CenterNet/blob/master/LICENSE",
+)
+
+
 class CenterNetConfig(Enum):
     """
     Enum class for predefined CenterNet configurations.
     """
 
-    CenterNet_FP16 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp16"), COCO_80_LABELS)
-    CenterNet_FP32 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp32"), COCO_80_LABELS)
+    CenterNet_FP16 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp16", metadata=_MODEL_METADATA), COCO_80_LABELS)
+    CenterNet_FP32 = (*RepositoryAsset.openVino("ctdet_coco_dlav0_512-fp32", metadata=_MODEL_METADATA), COCO_80_LABELS)
 
 
 class CenterNetDetector(OpenVinoObjectDetector):

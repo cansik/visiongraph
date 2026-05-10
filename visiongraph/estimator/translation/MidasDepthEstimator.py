@@ -7,14 +7,23 @@ import numpy as np
 import onnxruntime as rt
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.translation.DepthEstimator import DepthEstimator
 from visiongraph.external.midas.transforms import Resize, PrepareForNet
 from visiongraph.result.DepthMap import DepthMap
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MiDaS monocular depth estimation",
+    source_url="https://github.com/isl-org/MiDaS",
+    license_name="MIT License",
+    license_url="https://github.com/isl-org/MiDaS/blob/master/LICENSE",
+)
+
+
 class MidasConfig(Enum):
-    MidasSmall = (RepositoryAsset("model-small.simp.onnx"), 256)
+    MidasSmall = (RepositoryAsset("model-small.simp.onnx", metadata=_MODEL_METADATA), 256)
 
 
 class MidasDepthEstimator(DepthEstimator):

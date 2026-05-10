@@ -21,6 +21,9 @@ if TYPE_CHECKING:
     from visiongraph.VisionGraphBuilder import passthrough  # noqa: F401
     from visiongraph.VisionGraphBuilder import sequence  # noqa: F401
     from visiongraph.data.Asset import Asset  # noqa: F401
+    from visiongraph.data.AssetMetadata import AssetLicense  # noqa: F401
+    from visiongraph.data.AssetMetadata import AssetMetadata  # noqa: F401
+    from visiongraph.data.AssetMetadata import AssetSource  # noqa: F401
     from visiongraph.data.LocalAsset import LocalAsset  # noqa: F401
     from visiongraph.data.RepositoryAsset import RepositoryAsset  # noqa: F401
     from visiongraph.dsp.BaseFilterNumpy import BaseFilterNumpy  # noqa: F401
@@ -594,6 +597,9 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "passthrough": _LazyImport("passthrough", "visiongraph.VisionGraphBuilder", False),
     "sequence": _LazyImport("sequence", "visiongraph.VisionGraphBuilder", False),
     "Asset": _LazyImport("Asset", "visiongraph.data.Asset", False),
+    "AssetLicense": _LazyImport("AssetLicense", "visiongraph.data.AssetMetadata", False),
+    "AssetMetadata": _LazyImport("AssetMetadata", "visiongraph.data.AssetMetadata", False),
+    "AssetSource": _LazyImport("AssetSource", "visiongraph.data.AssetMetadata", False),
     "LocalAsset": _LazyImport("LocalAsset", "visiongraph.data.LocalAsset", False),
     "RepositoryAsset": _LazyImport("RepositoryAsset", "visiongraph.data.RepositoryAsset", False),
     "BaseFilterNumpy": _LazyImport("BaseFilterNumpy", "visiongraph.dsp.BaseFilterNumpy", False),

@@ -6,6 +6,10 @@ import numpy as np
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
+from visiongraph.model.metadata.Ultralytics import ULTRALYTICS_YOLO_METADATA
+
+
+_MODEL_METADATA = ULTRALYTICS_YOLO_METADATA
 
 
 class YOLOv5Config(Enum):
@@ -13,11 +17,11 @@ class YOLOv5Config(Enum):
     An enumeration of YOLOv5 model configurations including the model asset and labels.
     """
 
-    YOLOv5_N = RepositoryAsset("yolov5n.onnx"), COCO_80_LABELS
-    YOLOv5_S = RepositoryAsset("yolov5s.onnx"), COCO_80_LABELS
-    YOLOv5_M = RepositoryAsset("yolov5m.onnx"), COCO_80_LABELS
-    YOLOv5_L = RepositoryAsset("yolov5l.onnx"), COCO_80_LABELS
-    YOLOv5_X = RepositoryAsset("yolov5x.onnx"), COCO_80_LABELS
+    YOLOv5_N = RepositoryAsset("yolov5n.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv5_S = RepositoryAsset("yolov5s.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv5_M = RepositoryAsset("yolov5m.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv5_L = RepositoryAsset("yolov5l.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv5_X = RepositoryAsset("yolov5x.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
 
 class YOLOv5Detector(UltralyticsYOLODetector):

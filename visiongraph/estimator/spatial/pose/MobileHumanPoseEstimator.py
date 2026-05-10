@@ -7,6 +7,7 @@ import onnxruntime as rt
 from scipy.special import softmax
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
 from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
@@ -17,6 +18,13 @@ from visiongraph.result.spatial.pose.MobileHumanPose import MobileHumanPose
 from visiongraph.util import VectorUtils
 
 MOBILE_HUMAN_POSE_JOINT_NUM = 21
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="ONNX Mobile Human Pose 3D",
+    source_url="https://github.com/ibaiGorordo/ONNX-Mobile-Human-Pose-3D",
+    license_name="MIT License",
+    license_url="https://github.com/ibaiGorordo/ONNX-Mobile-Human-Pose-3D/blob/main/LICENSE",
+)
 
 
 @dataclass
@@ -41,7 +49,7 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
     def __init__(
         self,
         human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
-        model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx"),
+        model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx", metadata=_MODEL_METADATA),
         intrinsics: Optional[CameraIntrinsics] = None,
         abs_depth: float = 1.0,
         min_score: float = 0.5,

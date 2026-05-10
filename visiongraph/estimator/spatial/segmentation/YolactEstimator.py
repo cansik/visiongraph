@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.onnx.ONNXVisionEngine import ONNXVisionEngine
@@ -16,12 +17,23 @@ from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmen
 from visiongraph.util import ImageUtils
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="YolactEdge instance segmentation",
+    source_url="https://github.com/WisconsinAIVision/yolact_edge",
+    license_name="MIT License",
+    license_url="https://github.com/WisconsinAIVision/yolact_edge/blob/master/LICENSE",
+)
+
+
 class YolactConfig(Enum):
     """
     Enum containing configuration options for the Yolcat estimator.
     """
 
-    YolactEdge_MobileNetV2_550 = (RepositoryAsset("yolact_edge_mobilenetv2_550x550.onnx"), COCO_80_LABELS)
+    YolactEdge_MobileNetV2_550 = (
+        RepositoryAsset("yolact_edge_mobilenetv2_550x550.onnx", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
 
 
 class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):

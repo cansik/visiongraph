@@ -10,6 +10,7 @@ from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
+from visiongraph.model.metadata.Ultralytics import ULTRALYTICS_YOLO_METADATA
 from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
@@ -20,16 +21,19 @@ from visiongraph.util.MathUtils import sigmoid
 from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 
 
+_MODEL_METADATA = ULTRALYTICS_YOLO_METADATA
+
+
 class YOLOv8SegmentationConfig(Enum):
     """
     Configuration options for YOLOv8 segmentation models.
     """
 
-    YOLOv8_SEG_N = RepositoryAsset("yolov8n-seg.onnx"), COCO_80_LABELS
-    YOLOv8_SEG_S = RepositoryAsset("yolov8s-seg.onnx"), COCO_80_LABELS
-    YOLOv8_SEG_M = RepositoryAsset("yolov8m-seg.onnx"), COCO_80_LABELS
-    YOLOv8_SEG_L = RepositoryAsset("yolov8l-seg.onnx"), COCO_80_LABELS
-    YOLOv8_SEG_X = RepositoryAsset("yolov8x-seg.onnx"), COCO_80_LABELS
+    YOLOv8_SEG_N = RepositoryAsset("yolov8n-seg.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_SEG_S = RepositoryAsset("yolov8s-seg.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_SEG_M = RepositoryAsset("yolov8m-seg.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_SEG_L = RepositoryAsset("yolov8l-seg.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_SEG_X = RepositoryAsset("yolov8x-seg.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
 
 class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationResult], InstanceSegmentationEstimator):

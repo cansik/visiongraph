@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
@@ -14,8 +15,16 @@ from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MODNet portrait matting",
+    source_url="https://github.com/ZHKKKe/MODNet",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/ZHKKKe/MODNet/blob/master/LICENSE",
+)
+
+
 class ModNetConfig(Enum):
-    ModNetBasic = RepositoryAsset("modnet.onnx")
+    ModNetBasic = RepositoryAsset("modnet.onnx", metadata=_MODEL_METADATA)
     """
     Enum representing the configuration for ModNet.
     Contains the path to the basic ModNet model asset.

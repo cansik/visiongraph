@@ -8,8 +8,12 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.recognition.FaceRecognitionEstimator import FaceRecognitionEstimator
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.result.EmbeddingResult import EmbeddingResult
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class FaceReidentificationConfig(Enum):
@@ -17,9 +21,11 @@ class FaceReidentificationConfig(Enum):
     Enumerates possible face re-identification configurations.
     """
 
-    Retail_0095_FP16_INT8 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16-int8")
-    Retail_0095_FP16 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16")
-    Retail_0095_FP32 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp32")
+    Retail_0095_FP16_INT8 = RepositoryAsset.openVino(
+        "face-reidentification-retail-0095-fp16-int8", metadata=_MODEL_METADATA
+    )
+    Retail_0095_FP16 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp16", metadata=_MODEL_METADATA)
+    Retail_0095_FP32 = RepositoryAsset.openVino("face-reidentification-retail-0095-fp32", metadata=_MODEL_METADATA)
 
 
 class FaceReidentificationEstimator(FaceRecognitionEstimator):

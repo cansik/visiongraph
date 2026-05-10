@@ -1,45 +1,31 @@
-import inspect
-import importlib
-import enum
-from inspect import isclass
+from pathlib import Path
+import sys
 
-from visiongraph import vg
 
-# object detection models and configurations
+def _bootstrap_project_root() -> None:
+    root_dir = Path(__file__).resolve().parents[1]
+    if str(root_dir) not in sys.path:
+        sys.path.insert(0, str(root_dir))
 
-for name, item in vg._visiongraph_imports.items():
-    cls = item.attribute
-    if not isclass(cls):
-        continue
-    if issubclass(cls, vg.ObjectDetector):
-        if inspect.isabstract(cls):
-            continue
 
-        module_name = item.attribute.__module__
-        print(f"- `{module_name}` ()")
+def main() -> None:
+    _bootstrap_project_root()
+    from tools.model_asset_inventory import iter_config_enums
 
-        try:
-            mod = importlib.import_module(module_name)
-        except Exception as e:
-            print(f"  [warn] could not import module: {e}")
-            continue
+    config_enums, failed_imports = iter_config_enums()
 
-        enums_found = []
-        for attr_name, attr_value in inspect.getmembers(mod):
-            if attr_name.startswith("_"):
-                continue
-            if inspect.isclass(attr_value) and issubclass(attr_value, enum.Enum) and attr_value is not enum.Enum:
-                member_names = [member.name for member in attr_value]
-                enums_found.append((attr_name, member_names))
+    current_module = None
+    for config_ref in config_enums:
+        if config_ref.module_name != current_module:
+            current_module = config_ref.module_name
+            print(f"- `{current_module}` ()")
 
-        if not enums_found:
-            continue
-        else:
-            for enum_name, member_names in enums_found:
-                if "config" not in enum_name.lower():
-                    continue
+        for enum_member in config_ref.enum_class:
+            print(f" - {enum_member.name}")
 
-                # print(f' - {enum_name}')
+    for failed_import in failed_imports:
+        print(f"  [warn] could not import {failed_import.import_name}: {failed_import.error}")
 
-                for enum_member in member_names:
-                    print(f" - {enum_member}")
+
+if __name__ == "__main__":
+    main()

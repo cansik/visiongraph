@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+from typing import Optional
+
+from visiongraph.data.AssetMetadata import AssetMetadata
 
 
 class Asset(ABC):
@@ -25,6 +28,15 @@ class Asset(ABC):
         :return: The file or directory path of the asset.
         """
         pass
+
+    @property
+    def metadata(self) -> Optional[AssetMetadata]:
+        """
+        Optional structured metadata describing the asset provenance.
+
+        :return: The metadata associated with the asset, or None if not specified.
+        """
+        return None
 
     def prepare(self) -> bool:
         """

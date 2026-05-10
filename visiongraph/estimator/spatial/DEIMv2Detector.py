@@ -10,6 +10,7 @@ except ImportError:
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
@@ -22,20 +23,37 @@ from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResu
 from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="DEIMv2 object detection",
+    source_url="https://github.com/Intellindust-AI-Lab/DEIMv2",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/Intellindust-AI-Lab/DEIMv2/blob/main/LICENSE",
+)
+
+
 class DEIMv2Config(Enum):
     """
     Enumeration of available DEIMv2 model configurations with their associated assets and label sets.
     """
 
-    DEIMv2_HgNetv2_Atto_COCO = RepositoryAsset("deimv2_hgnetv2_atto_coco.onnx"), COCO_80_LABELS
-    DEIMv2_HgNetv2_Femto_COCO = RepositoryAsset("deimv2_hgnetv2_femto_coco.onnx"), COCO_80_LABELS
-    DEIMv2_HgNetv2_Pico_COCO = RepositoryAsset("deimv2_hgnetv2_pico_coco.onnx"), COCO_80_LABELS
-    DEIMv2_HgNetv2_N_COCO = RepositoryAsset("deimv2_hgnetv2_n_coco.onnx"), COCO_80_LABELS
+    DEIMv2_HgNetv2_Atto_COCO = (
+        RepositoryAsset("deimv2_hgnetv2_atto_coco.onnx", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    DEIMv2_HgNetv2_Femto_COCO = (
+        RepositoryAsset("deimv2_hgnetv2_femto_coco.onnx", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    DEIMv2_HgNetv2_Pico_COCO = (
+        RepositoryAsset("deimv2_hgnetv2_pico_coco.onnx", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    DEIMv2_HgNetv2_N_COCO = RepositoryAsset("deimv2_hgnetv2_n_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
-    DEIMv2_Dino3_S_COCO = RepositoryAsset("deimv2_dinov3_s_coco.onnx"), COCO_80_LABELS
-    DEIMv2_Dino3_M_COCO = RepositoryAsset("deimv2_dinov3_m_coco.onnx"), COCO_80_LABELS
-    DEIMv2_Dino3_L_COCO = RepositoryAsset("deimv2_dinov3_l_coco.onnx"), COCO_80_LABELS
-    DEIMv2_Dino3_X_COCO = RepositoryAsset("deimv2_dinov3_x_coco.onnx"), COCO_80_LABELS
+    DEIMv2_Dino3_S_COCO = RepositoryAsset("deimv2_dinov3_s_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_M_COCO = RepositoryAsset("deimv2_dinov3_m_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_L_COCO = RepositoryAsset("deimv2_dinov3_l_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_X_COCO = RepositoryAsset("deimv2_dinov3_x_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
 
 class DEIMv2Detector(ObjectDetector):

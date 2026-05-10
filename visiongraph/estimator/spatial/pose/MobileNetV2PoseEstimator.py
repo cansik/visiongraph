@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -12,6 +13,14 @@ from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose, COCO_OPEN_POSE_KEYPOINT_COUNT
 from visiongraph.util.VectorUtils import list_of_vector4D
+
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MobileNetV2 pose estimation",
+    source_url="https://github.com/PINTO0309/MobileNetV2-PoseEstimation",
+    license_name="MIT License",
+    license_url="https://github.com/PINTO0309/MobileNetV2-PoseEstimation/blob/master/LICENSE",
+)
 
 _MAP_INDEX = [
     [31, 32],
@@ -85,18 +94,26 @@ class MobileNetV2PoseEstimatorConfig(Enum):
     Each configuration corresponds to a specific model and weight variant.
     """
 
-    MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp16")
-    MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp32")
-    MNV2PE_0_5_224_QUANT_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224_quant-fp16")
-    MNV2PE_0_5_224_QUANT_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224_quant-fp32")
-    MNV2PE_0_75_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp16")
-    MNV2PE_0_75_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp32")
-    MNV2PE_1_0_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp16")
-    MNV2PE_1_0_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp32")
-    MNV2PE_1_4_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp16")
-    MNV2PE_1_4_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp32")
-    MNV2PE_1_4_224_QUANT_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224_quant-fp16")
-    MNV2PE_1_4_224_QUANT_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224_quant-fp32")
+    MNV2PE_0_5_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp16", metadata=_MODEL_METADATA)
+    MNV2PE_0_5_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.5_224-fp32", metadata=_MODEL_METADATA)
+    MNV2PE_0_5_224_QUANT_FP16 = RepositoryAsset.openVino(
+        "mobilenet_v2_pose_0.5_224_quant-fp16", metadata=_MODEL_METADATA
+    )
+    MNV2PE_0_5_224_QUANT_FP32 = RepositoryAsset.openVino(
+        "mobilenet_v2_pose_0.5_224_quant-fp32", metadata=_MODEL_METADATA
+    )
+    MNV2PE_0_75_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp16", metadata=_MODEL_METADATA)
+    MNV2PE_0_75_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_0.75_224-fp32", metadata=_MODEL_METADATA)
+    MNV2PE_1_0_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp16", metadata=_MODEL_METADATA)
+    MNV2PE_1_0_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.0_224-fp32", metadata=_MODEL_METADATA)
+    MNV2PE_1_4_224_FP16 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp16", metadata=_MODEL_METADATA)
+    MNV2PE_1_4_224_FP32 = RepositoryAsset.openVino("mobilenet_v2_pose_1.4_224-fp32", metadata=_MODEL_METADATA)
+    MNV2PE_1_4_224_QUANT_FP16 = RepositoryAsset.openVino(
+        "mobilenet_v2_pose_1.4_224_quant-fp16", metadata=_MODEL_METADATA
+    )
+    MNV2PE_1_4_224_QUANT_FP32 = RepositoryAsset.openVino(
+        "mobilenet_v2_pose_1.4_224_quant-fp32", metadata=_MODEL_METADATA
+    )
 
 
 class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):

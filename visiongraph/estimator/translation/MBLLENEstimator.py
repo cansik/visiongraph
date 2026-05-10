@@ -5,18 +5,37 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.result.ImageResult import ImageResult
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MBLLEN low-light enhancement",
+    source_url="https://github.com/Lvfeifan/MBLLEN",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/Lvfeifan/MBLLEN/blob/master/LICENSE",
+)
+
+
 class MBLLENConfig(Enum):
-    MBLLEN_Syn_LowLight_Noise_720x1280 = RepositoryAsset("MBLLEN-syn-lowlight-noise-720x1280.onnx")
-    MBLLEN_Syn_LowLight_Noise_480x640 = RepositoryAsset("MBLLEN-syn-lowlight-noise-480x640.onnx")
-    MBLLEN_Syn_LowLight_Noise_360x640 = RepositoryAsset("MBLLEN-syn-lowlight-noise-360x640.onnx")
-    MBLLEN_Syn_LowLight_Noise_240x320 = RepositoryAsset("MBLLEN-syn-lowlight-noise-240x320.onnx")
-    MBLLEN_Syn_LowLight_Noise_180x320 = RepositoryAsset("MBLLEN-syn-lowlight-noise-180x320.onnx")
+    MBLLEN_Syn_LowLight_Noise_720x1280 = RepositoryAsset(
+        "MBLLEN-syn-lowlight-noise-720x1280.onnx", metadata=_MODEL_METADATA
+    )
+    MBLLEN_Syn_LowLight_Noise_480x640 = RepositoryAsset(
+        "MBLLEN-syn-lowlight-noise-480x640.onnx", metadata=_MODEL_METADATA
+    )
+    MBLLEN_Syn_LowLight_Noise_360x640 = RepositoryAsset(
+        "MBLLEN-syn-lowlight-noise-360x640.onnx", metadata=_MODEL_METADATA
+    )
+    MBLLEN_Syn_LowLight_Noise_240x320 = RepositoryAsset(
+        "MBLLEN-syn-lowlight-noise-240x320.onnx", metadata=_MODEL_METADATA
+    )
+    MBLLEN_Syn_LowLight_Noise_180x320 = RepositoryAsset(
+        "MBLLEN-syn-lowlight-noise-180x320.onnx", metadata=_MODEL_METADATA
+    )
 
 
 class MBLLENEstimator(VisionEstimator[ImageResult]):

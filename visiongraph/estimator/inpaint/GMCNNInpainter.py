@@ -5,10 +5,19 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.inpaint.BaseInpainter import BaseInpainter
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.result.ImageResult import ImageResult
+
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="GMCNN inpainting",
+    source_url="https://github.com/shepnerd/inpainting_gmcnn",
+    license_name="MIT License",
+    license_url="https://github.com/shepnerd/inpainting_gmcnn/blob/master/LICENSE",
+)
 
 
 class GMCNNConfig(Enum):
@@ -16,8 +25,8 @@ class GMCNNConfig(Enum):
     Enum to represent different configurations for the GMCNN model.
     """
 
-    GMCNN_Places2_FP16 = RepositoryAsset.openVino("gmcnn-places2-tf-fp16")
-    GMCNN_Places2_FP32 = RepositoryAsset.openVino("gmcnn-places2-tf-fp32")
+    GMCNN_Places2_FP16 = RepositoryAsset.openVino("gmcnn-places2-tf-fp16", metadata=_MODEL_METADATA)
+    GMCNN_Places2_FP32 = RepositoryAsset.openVino("gmcnn-places2-tf-fp32", metadata=_MODEL_METADATA)
 
 
 class GMCNNInpainter(BaseInpainter):

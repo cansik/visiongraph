@@ -5,11 +5,15 @@ import numpy as np
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.DOTA import DOTA_v1_0
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
+from visiongraph.model.metadata.Ultralytics import ULTRALYTICS_YOLO_METADATA
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.model.geometry.Size2D import Size2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.OrientedObjectDetectionResult import OrientedObjectDetectionResult
 from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
+
+
+_MODEL_METADATA = ULTRALYTICS_YOLO_METADATA
 
 
 class YOLOv8OBBConfig(Enum):
@@ -18,11 +22,11 @@ class YOLOv8OBBConfig(Enum):
     Each configuration includes the model asset and the dataset version.
     """
 
-    YOLOv8_OBB_N = RepositoryAsset("yolov8n-obb.onnx"), DOTA_v1_0
-    YOLOv8_OBB_S = RepositoryAsset("yolov8s-obb.onnx"), DOTA_v1_0
-    YOLOv8_OBB_M = RepositoryAsset("yolov8m-obb.onnx"), DOTA_v1_0
-    YOLOv8_OBB_L = RepositoryAsset("yolov8l-obb.onnx"), DOTA_v1_0
-    YOLOv8_OBB_X = RepositoryAsset("yolov8x-obb.onnx"), DOTA_v1_0
+    YOLOv8_OBB_N = RepositoryAsset("yolov8n-obb.onnx", metadata=_MODEL_METADATA), DOTA_v1_0
+    YOLOv8_OBB_S = RepositoryAsset("yolov8s-obb.onnx", metadata=_MODEL_METADATA), DOTA_v1_0
+    YOLOv8_OBB_M = RepositoryAsset("yolov8m-obb.onnx", metadata=_MODEL_METADATA), DOTA_v1_0
+    YOLOv8_OBB_L = RepositoryAsset("yolov8l-obb.onnx", metadata=_MODEL_METADATA), DOTA_v1_0
+    YOLOv8_OBB_X = RepositoryAsset("yolov8x-obb.onnx", metadata=_MODEL_METADATA), DOTA_v1_0
 
 
 class YOLOv8OBBDetector(UltralyticsYOLODetector[OrientedObjectDetectionResult]):

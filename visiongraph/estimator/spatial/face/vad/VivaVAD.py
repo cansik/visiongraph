@@ -6,6 +6,7 @@ import numpy as np
 from scipy.special import softmax
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.BaseClassifier import BaseClassifier
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
@@ -14,14 +15,34 @@ from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 from visiongraph.result.spatial.face.VivaVADResult import VivaVADResult, NON_SPEAKING_LABEL, SPEAKING_LABEL
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="Viva visual voice activity detection",
+    source_url="https://github.com/cansik/viva",
+    license_name="MIT License",
+    license_url="https://github.com/cansik/viva/blob/main/LICENSE",
+)
+
+
 class VivaVADConfig(Enum):
     """
     Configuration options for the VivaVAD model.
     """
 
-    I_TCN_148_10_2 = (RepositoryAsset("viva-10-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 10)
-    I_TCN_148_15_2 = (RepositoryAsset("viva-15-2-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 15)
-    I_TCN_148_30_1 = (RepositoryAsset("viva-30-1-148-simplified.onnx"), BlazeFaceMesh.FEATURES_148, 30)
+    I_TCN_148_10_2 = (
+        RepositoryAsset("viva-10-2-148-simplified.onnx", metadata=_MODEL_METADATA),
+        BlazeFaceMesh.FEATURES_148,
+        10,
+    )
+    I_TCN_148_15_2 = (
+        RepositoryAsset("viva-15-2-148-simplified.onnx", metadata=_MODEL_METADATA),
+        BlazeFaceMesh.FEATURES_148,
+        15,
+    )
+    I_TCN_148_30_1 = (
+        RepositoryAsset("viva-30-1-148-simplified.onnx", metadata=_MODEL_METADATA),
+        BlazeFaceMesh.FEATURES_148,
+        30,
+    )
 
 
 class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):

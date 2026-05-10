@@ -9,6 +9,10 @@ from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEst
 from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.hpe_associative_embedding import HpeAssociativeEmbedding
 from visiongraph.external.intel.models.model import Model
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class AEPoseConfig(Enum):
@@ -18,12 +22,12 @@ class AEPoseConfig(Enum):
     Each configuration corresponds to a specific pre-trained model and its weights.
     """
 
-    EfficientHRNet_288_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp16"),)
-    EfficientHRNet_288_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp32"),)
-    EfficientHRNet_352_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp16"),)
-    EfficientHRNet_352_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp32"),)
-    EfficientHRNet_448_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0007-fp16"),)
-    EfficientHRNet_448_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0007-fp32"),)
+    EfficientHRNet_288_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp16", metadata=_MODEL_METADATA),)
+    EfficientHRNet_288_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0005-fp32", metadata=_MODEL_METADATA),)
+    EfficientHRNet_352_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp16", metadata=_MODEL_METADATA),)
+    EfficientHRNet_352_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0006-fp32", metadata=_MODEL_METADATA),)
+    EfficientHRNet_448_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0007-fp16", metadata=_MODEL_METADATA),)
+    EfficientHRNet_448_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0007-fp32", metadata=_MODEL_METADATA),)
 
 
 class AEPoseEstimator(OpenVinoPoseEstimator):

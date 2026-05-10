@@ -4,10 +4,19 @@ import numpy as np
 from scipy.special import softmax
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.face.emotion.FaceEmotionEstimator import FaceEmotionEstimator
 from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionClassificationResult
+
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="ONNX model zoo FERPlus emotion recognition",
+    source_url="https://github.com/onnx/models/tree/main/validated/vision/body_analysis/emotion_ferplus",
+    license_name="MIT License",
+    license_url="https://github.com/onnx/models/blob/main/LICENSE",
+)
 
 
 class FERPlusEmotionClassifier(FaceEmotionEstimator):
@@ -18,7 +27,9 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
     """
 
     def __init__(
-        self, model: Asset = RepositoryAsset("emotion-ferplus-8.onnx"), engine: InferenceEngine = InferenceEngine.ONNX
+        self,
+        model: Asset = RepositoryAsset("emotion-ferplus-8.onnx", metadata=_MODEL_METADATA),
+        engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
         Initializes the FERPlusEmotionClassifier object.

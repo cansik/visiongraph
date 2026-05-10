@@ -4,6 +4,7 @@ from typing import List, Tuple, Optional
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -14,26 +15,70 @@ from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MoveNet pose estimation",
+    source_url="https://www.tensorflow.org/hub/tutorials/movenet",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/tensorflow/tensorflow/blob/master/LICENSE",
+)
+
+
 class MoveNetConfig(Enum):
     """
     Enumeration for different configurations of the MoveNet model, including
     different architectures and precision levels.
     """
 
-    MoveNet_Single_Lightning_FP16 = (*RepositoryAsset.openVino("movenet-single-lightning-fp16"), False)
-    MoveNet_Single_Lightning_FP32 = (*RepositoryAsset.openVino("movenet-single-lightning-fp32"), False)
+    MoveNet_Single_Lightning_FP16 = (
+        *RepositoryAsset.openVino("movenet-single-lightning-fp16", metadata=_MODEL_METADATA),
+        False,
+    )
+    MoveNet_Single_Lightning_FP32 = (
+        *RepositoryAsset.openVino("movenet-single-lightning-fp32", metadata=_MODEL_METADATA),
+        False,
+    )
 
-    MoveNet_Single_Thunder_FP16 = (*RepositoryAsset.openVino("movenet-single-thunder-fp16"), False)
-    MoveNet_Single_Thunder_FP32 = (*RepositoryAsset.openVino("movenet-single-thunder-fp32"), False)
+    MoveNet_Single_Thunder_FP16 = (
+        *RepositoryAsset.openVino("movenet-single-thunder-fp16", metadata=_MODEL_METADATA),
+        False,
+    )
+    MoveNet_Single_Thunder_FP32 = (
+        *RepositoryAsset.openVino("movenet-single-thunder-fp32", metadata=_MODEL_METADATA),
+        False,
+    )
 
-    MoveNet_MultiPose_192x192_FP32 = (*RepositoryAsset.openVino("movenet-multipose-192x192-fp32"), True)
-    MoveNet_MultiPose_192x256_FP32 = (*RepositoryAsset.openVino("movenet-multipose-192x256-fp32"), True)
-    MoveNet_MultiPose_256x256_FP32 = (*RepositoryAsset.openVino("movenet-multipose-256x256-fp32"), True)
-    MoveNet_MultiPose_256x320_FP32 = (*RepositoryAsset.openVino("movenet-multipose-256x320-fp32"), True)
-    MoveNet_MultiPose_320x320_FP32 = (*RepositoryAsset.openVino("movenet-multipose-320x320-fp32"), True)
-    MoveNet_MultiPose_480x640_FP32 = (*RepositoryAsset.openVino("movenet-multipose-480x640-fp32"), True)
-    MoveNet_MultiPose_736x1280_FP32 = (*RepositoryAsset.openVino("movenet-multipose-736x1280-fp32"), True)
-    MoveNet_MultiPose_1280x1920_FP32 = (*RepositoryAsset.openVino("movenet-multipose-1280x1920-fp32"), True)
+    MoveNet_MultiPose_192x192_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-192x192-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_192x256_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-192x256-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_256x256_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-256x256-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_256x320_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-256x320-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_320x320_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-320x320-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_480x640_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-480x640-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_736x1280_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-736x1280-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
+    MoveNet_MultiPose_1280x1920_FP32 = (
+        *RepositoryAsset.openVino("movenet-multipose-1280x1920-fp32", metadata=_MODEL_METADATA),
+        True,
+    )
 
 
 MOVE_NET_KEY_POINT_COUNT = 17

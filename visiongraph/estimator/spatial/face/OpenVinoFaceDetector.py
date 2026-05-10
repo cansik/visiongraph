@@ -7,11 +7,14 @@ from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.FaceDetector import FaceDetector
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.FaceDetectionResult import FaceDetectionResult
 
 BOXES_NAME = "boxes"
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class OpenVinoFaceConfig(Enum):
@@ -19,21 +22,21 @@ class OpenVinoFaceConfig(Enum):
     Enumeration of available OpenVino face detection model configurations.
     """
 
-    MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8")
-    MobileNetV2_256_FP16 = RepositoryAsset.openVino("face-detection-0200-fp16")
-    MobileNetV2_256_FP32 = RepositoryAsset.openVino("face-detection-0200-fp32")
-    MobileNetV2_384_FP16_INT8 = RepositoryAsset.openVino("face-detection-0202-fp16-int8")
-    MobileNetV2_384_FP16 = RepositoryAsset.openVino("face-detection-0202-fp16")
-    MobileNetV2_384_FP32 = RepositoryAsset.openVino("face-detection-0202-fp32")
-    MobileNetV2_448_FP16_INT8 = RepositoryAsset.openVino("face-detection-0204-fp16-int8")
-    MobileNetV2_448_FP16 = RepositoryAsset.openVino("face-detection-0204-fp16")
-    MobileNetV2_448_FP32 = RepositoryAsset.openVino("face-detection-0204-fp32")
-    MobileNetV2_416_FP16_INT8 = RepositoryAsset.openVino("face-detection-0205-fp16-int8")
-    MobileNetV2_416_FP16 = RepositoryAsset.openVino("face-detection-0205-fp16")
-    MobileNetV2_416_FP32 = RepositoryAsset.openVino("face-detection-0205-fp32")
-    MobileNetV2_640_FP16_INT8 = RepositoryAsset.openVino("face-detection-0206-fp16-int8")
-    MobileNetV2_640_FP16 = RepositoryAsset.openVino("face-detection-0206-fp16")
-    MobileNetV2_640_FP32 = RepositoryAsset.openVino("face-detection-0206-fp32")
+    MobileNetV2_256_FP16_INT8 = RepositoryAsset.openVino("face-detection-0200-fp16-int8", metadata=_MODEL_METADATA)
+    MobileNetV2_256_FP16 = RepositoryAsset.openVino("face-detection-0200-fp16", metadata=_MODEL_METADATA)
+    MobileNetV2_256_FP32 = RepositoryAsset.openVino("face-detection-0200-fp32", metadata=_MODEL_METADATA)
+    MobileNetV2_384_FP16_INT8 = RepositoryAsset.openVino("face-detection-0202-fp16-int8", metadata=_MODEL_METADATA)
+    MobileNetV2_384_FP16 = RepositoryAsset.openVino("face-detection-0202-fp16", metadata=_MODEL_METADATA)
+    MobileNetV2_384_FP32 = RepositoryAsset.openVino("face-detection-0202-fp32", metadata=_MODEL_METADATA)
+    MobileNetV2_448_FP16_INT8 = RepositoryAsset.openVino("face-detection-0204-fp16-int8", metadata=_MODEL_METADATA)
+    MobileNetV2_448_FP16 = RepositoryAsset.openVino("face-detection-0204-fp16", metadata=_MODEL_METADATA)
+    MobileNetV2_448_FP32 = RepositoryAsset.openVino("face-detection-0204-fp32", metadata=_MODEL_METADATA)
+    MobileNetV2_416_FP16_INT8 = RepositoryAsset.openVino("face-detection-0205-fp16-int8", metadata=_MODEL_METADATA)
+    MobileNetV2_416_FP16 = RepositoryAsset.openVino("face-detection-0205-fp16", metadata=_MODEL_METADATA)
+    MobileNetV2_416_FP32 = RepositoryAsset.openVino("face-detection-0205-fp32", metadata=_MODEL_METADATA)
+    MobileNetV2_640_FP16_INT8 = RepositoryAsset.openVino("face-detection-0206-fp16-int8", metadata=_MODEL_METADATA)
+    MobileNetV2_640_FP16 = RepositoryAsset.openVino("face-detection-0206-fp16", metadata=_MODEL_METADATA)
+    MobileNetV2_640_FP32 = RepositoryAsset.openVino("face-detection-0206-fp32", metadata=_MODEL_METADATA)
 
 
 class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):

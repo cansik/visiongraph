@@ -9,6 +9,10 @@ from visiongraph.estimator.openvino.OpenVinoPoseEstimator import OpenVinoPoseEst
 from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.model import Model
 from visiongraph.external.intel.models.open_pose import OpenPose
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class OpenPoseConfig(Enum):
@@ -16,9 +20,9 @@ class OpenPoseConfig(Enum):
     Enumeration for OpenPose model configurations with various precision options.
     """
 
-    LightWeightOpenPose_INT8 = (*RepositoryAsset.openVino("human-pose-estimation-0001-int8"),)
-    LightWeightOpenPose_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0001-fp16"),)
-    LightWeightOpenPose_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0001-fp32"),)
+    LightWeightOpenPose_INT8 = (*RepositoryAsset.openVino("human-pose-estimation-0001-int8", metadata=_MODEL_METADATA),)
+    LightWeightOpenPose_FP16 = (*RepositoryAsset.openVino("human-pose-estimation-0001-fp16", metadata=_MODEL_METADATA),)
+    LightWeightOpenPose_FP32 = (*RepositoryAsset.openVino("human-pose-estimation-0001-fp32", metadata=_MODEL_METADATA),)
 
 
 class OpenPoseEstimator(OpenVinoPoseEstimator):

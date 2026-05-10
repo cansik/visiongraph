@@ -9,6 +9,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks.python.vision.core.vision_task_running_mode import VisionTaskRunningMode
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator
 from visiongraph.result.ResultList import ResultList
@@ -16,6 +17,14 @@ from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 from visiongraph.result.spatial.face.BlendShape import BlendShape
 from visiongraph.util.TimeUtils import HighPrecisionTimer
 from visiongraph.util.VectorUtils import list_of_vector4D
+
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MediaPipe face landmarker tasks",
+    source_url="https://github.com/google-ai-edge/mediapipe",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE",
+)
 
 
 class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
@@ -35,7 +44,7 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         min_tracking_confidence: float = 0.5,
         output_face_blendshapes: bool = False,
         output_facial_transformation_matrixes: bool = False,
-        task: Asset = RepositoryAsset("face_landmarker.task"),
+        task: Asset = RepositoryAsset("face_landmarker.task", metadata=_MODEL_METADATA),
     ):
         """
         Initializes a MediaPipe FaceMeshEstimator.

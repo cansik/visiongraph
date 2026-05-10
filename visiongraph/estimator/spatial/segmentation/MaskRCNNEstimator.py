@@ -10,11 +10,14 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
 
 _IS_NAME = "instance-segmentation-security"
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class MaskRCNNConfig(Enum):
@@ -24,29 +27,68 @@ class MaskRCNNConfig(Enum):
     """
 
     # 0002 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0002.html
-    ResNet50_1024x768_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16-int8"), COCO_80_LABELS)
-    ResNet50_1024x768_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16"), COCO_80_LABELS)
-    ResNet50_1024x768_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp32"), COCO_80_LABELS)
+    ResNet50_1024x768_INT8 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16-int8", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    ResNet50_1024x768_FP16 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp16", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    ResNet50_1024x768_FP32 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0002-fp32", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
 
     # 0091 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0091.html
-    ResNet101_1344x800_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16-int8"), COCO_80_LABELS)
-    ResNet101_1344x800_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16"), COCO_80_LABELS)
-    ResNet101_1344x800_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp32"), COCO_80_LABELS)
+    ResNet101_1344x800_INT8 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16-int8", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    ResNet101_1344x800_FP16 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp16", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    ResNet101_1344x800_FP32 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0091-fp32", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
 
     # 0228 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_0228.html
-    ResNet101_608_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16-int8"), COCO_80_LABELS)
-    ResNet101_608_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16"), COCO_80_LABELS)
-    ResNet101_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp32"), COCO_80_LABELS)
+    ResNet101_608_INT8 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16-int8", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    ResNet101_608_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp16", metadata=_MODEL_METADATA), COCO_80_LABELS)
+    ResNet101_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-0228-fp32", metadata=_MODEL_METADATA), COCO_80_LABELS)
 
     # 1039 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_1039.html
-    EfficientNet_480_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16-int8"), COCO_80_LABELS)
-    EfficientNet_480_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16"), COCO_80_LABELS)
-    EfficientNet_480_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp32"), COCO_80_LABELS)
+    EfficientNet_480_INT8 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16-int8", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    EfficientNet_480_FP16 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp16", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    EfficientNet_480_FP32 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1039-fp32", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
 
     # 1040 = https://docs.openvino.ai/2021.4/omz_models_model_instance_segmentation_security_1040.html
-    EfficientNet_608_INT8 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16-int8"), COCO_80_LABELS)
-    EfficientNet_608_FP16 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16"), COCO_80_LABELS)
-    EfficientNet_608_FP32 = (*RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp32"), COCO_80_LABELS)
+    EfficientNet_608_INT8 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16-int8", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    EfficientNet_608_FP16 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp16", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
+    EfficientNet_608_FP32 = (
+        *RepositoryAsset.openVino(f"{_IS_NAME}-1040-fp32", metadata=_MODEL_METADATA),
+        COCO_80_LABELS,
+    )
 
 
 @dataclass

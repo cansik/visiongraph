@@ -5,6 +5,10 @@ import numpy as np
 
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.face.OpenVinoFaceDetector import OpenVinoFaceDetector
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class AdasFaceConfig(Enum):
@@ -12,7 +16,7 @@ class AdasFaceConfig(Enum):
     Enumerates possible configuration options for the Adas Face detector.
     """
 
-    MobileNet_672x384_FP32 = RepositoryAsset.openVino("face-detection-adas-0001")
+    MobileNet_672x384_FP32 = RepositoryAsset.openVino("face-detection-adas-0001", metadata=_MODEL_METADATA)
 
 
 class AdasFaceDetector(OpenVinoFaceDetector):

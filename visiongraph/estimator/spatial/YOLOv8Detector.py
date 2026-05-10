@@ -4,7 +4,11 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.data.labels.OpenImagesV7 import Open_Images_V7
 from visiongraph.estimator.spatial.UltralyticsYOLODetector import UltralyticsYOLODetector
+from visiongraph.model.metadata.Ultralytics import ULTRALYTICS_YOLO_METADATA
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
+
+
+_MODEL_METADATA = ULTRALYTICS_YOLO_METADATA
 
 
 class YOLOv8Config(Enum):
@@ -12,17 +16,17 @@ class YOLOv8Config(Enum):
     An enumeration class that defines YOLOv8 model configurations with their corresponding ONNX models and labels.
     """
 
-    YOLOv8_N = RepositoryAsset("yolov8n.onnx"), COCO_80_LABELS
-    YOLOv8_S = RepositoryAsset("yolov8s.onnx"), COCO_80_LABELS
-    YOLOv8_M = RepositoryAsset("yolov8m.onnx"), COCO_80_LABELS
-    YOLOv8_L = RepositoryAsset("yolov8l.onnx"), COCO_80_LABELS
-    YOLOv8_X = RepositoryAsset("yolov8x.onnx"), COCO_80_LABELS
+    YOLOv8_N = RepositoryAsset("yolov8n.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_S = RepositoryAsset("yolov8s.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_M = RepositoryAsset("yolov8m.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_L = RepositoryAsset("yolov8l.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    YOLOv8_X = RepositoryAsset("yolov8x.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
-    YOLOv8_N_Open_Images_V7 = RepositoryAsset("yolov8n-oiv7.onnx"), Open_Images_V7
-    YOLOv8_S_Open_Images_V7 = RepositoryAsset("yolov8s-oiv7.onnx"), Open_Images_V7
-    YOLOv8_M_Open_Images_V7 = RepositoryAsset("yolov8m-oiv7.onnx"), Open_Images_V7
-    YOLOv8_L_Open_Images_V7 = RepositoryAsset("yolov8l-oiv7.onnx"), Open_Images_V7
-    YOLOv8_X_Open_Images_V7 = RepositoryAsset("yolov8x-oiv7.onnx"), Open_Images_V7
+    YOLOv8_N_Open_Images_V7 = RepositoryAsset("yolov8n-oiv7.onnx", metadata=_MODEL_METADATA), Open_Images_V7
+    YOLOv8_S_Open_Images_V7 = RepositoryAsset("yolov8s-oiv7.onnx", metadata=_MODEL_METADATA), Open_Images_V7
+    YOLOv8_M_Open_Images_V7 = RepositoryAsset("yolov8m-oiv7.onnx", metadata=_MODEL_METADATA), Open_Images_V7
+    YOLOv8_L_Open_Images_V7 = RepositoryAsset("yolov8l-oiv7.onnx", metadata=_MODEL_METADATA), Open_Images_V7
+    YOLOv8_X_Open_Images_V7 = RepositoryAsset("yolov8x-oiv7.onnx", metadata=_MODEL_METADATA), Open_Images_V7
 
 
 class YOLOv8Detector(UltralyticsYOLODetector[ObjectDetectionResult]):

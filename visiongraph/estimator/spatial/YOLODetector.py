@@ -4,12 +4,35 @@ from typing import List
 import openvino
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
 from visiongraph.external.intel.adapters.openvino_adapter import OpenvinoAdapter
 from visiongraph.external.intel.models.detection_model import DetectionModel
 from visiongraph.external.intel.models.yolo import YOLO, YoloV4, YOLOX, YOLOF
+
+
+_YOLO_V3_V4_METADATA = AssetMetadata.from_values(
+    source_name="YOLOv3 and YOLOv4 TensorFlow exports used by OMZ",
+    source_url="https://github.com/david8862/keras-YOLOv3-model-set",
+    license_name="MIT License",
+    license_url="https://github.com/david8862/keras-YOLOv3-model-set/blob/master/LICENSE",
+)
+
+_YOLOF_METADATA = AssetMetadata.from_values(
+    source_name="YOLOF object detection",
+    source_url="https://github.com/megvii-model/YOLOF",
+    license_name="MIT License",
+    license_url="https://github.com/megvii-model/YOLOF/blob/main/LICENSE",
+)
+
+_YOLOX_METADATA = AssetMetadata.from_values(
+    source_name="YOLOX Tiny object detection",
+    source_url="https://github.com/Megvii-BaseDetection/YOLOX",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/Megvii-BaseDetection/YOLOX/blob/main/LICENSE",
+)
 
 
 class YOLOArchitecture(Enum):
@@ -28,21 +51,69 @@ class YOLOConfig(Enum):
     An enumeration to store different configurations for YOLO models.
     """
 
-    YOLOv3_FP32 = (*RepositoryAsset.openVino("yolo-v3-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLO)
-    YOLOv3_FP16 = (*RepositoryAsset.openVino("yolo-v3-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLO)
-    YOLOv3_Tiny_FP32 = (*RepositoryAsset.openVino("yolo-v3-tiny-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLO)
-    YOLOv3_Tiny_FP16 = (*RepositoryAsset.openVino("yolo-v3-tiny-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLO)
+    YOLOv3_FP32 = (
+        *RepositoryAsset.openVino("yolo-v3-tf-fp32", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLO,
+    )
+    YOLOv3_FP16 = (
+        *RepositoryAsset.openVino("yolo-v3-tf-fp16", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLO,
+    )
+    YOLOv3_Tiny_FP32 = (
+        *RepositoryAsset.openVino("yolo-v3-tiny-tf-fp32", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLO,
+    )
+    YOLOv3_Tiny_FP16 = (
+        *RepositoryAsset.openVino("yolo-v3-tiny-tf-fp16", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLO,
+    )
 
-    YOLOv4_FP32 = (*RepositoryAsset.openVino("yolo-v4-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
-    YOLOv4_FP16 = (*RepositoryAsset.openVino("yolo-v4-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
-    YOLOv4_Tiny_FP32 = (*RepositoryAsset.openVino("yolo-v4-tiny-tf-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
-    YOLOv4_Tiny_FP16 = (*RepositoryAsset.openVino("yolo-v4-tiny-tf-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOv4)
+    YOLOv4_FP32 = (
+        *RepositoryAsset.openVino("yolo-v4-tf-fp32", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOv4,
+    )
+    YOLOv4_FP16 = (
+        *RepositoryAsset.openVino("yolo-v4-tf-fp16", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOv4,
+    )
+    YOLOv4_Tiny_FP32 = (
+        *RepositoryAsset.openVino("yolo-v4-tiny-tf-fp32", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOv4,
+    )
+    YOLOv4_Tiny_FP16 = (
+        *RepositoryAsset.openVino("yolo-v4-tiny-tf-fp16", metadata=_YOLO_V3_V4_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOv4,
+    )
 
-    YOLOF_FP32 = (*RepositoryAsset.openVino("yolof-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOF)
-    YOLOF_FP16 = (*RepositoryAsset.openVino("yolof-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOF)
+    YOLOF_FP32 = (
+        *RepositoryAsset.openVino("yolof-fp32", metadata=_YOLOF_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOF,
+    )
+    YOLOF_FP16 = (
+        *RepositoryAsset.openVino("yolof-fp16", metadata=_YOLOF_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOF,
+    )
 
-    YOLOX_Tiny_FP32 = (*RepositoryAsset.openVino("yolox-tiny-fp32"), COCO_80_LABELS, YOLOArchitecture.YOLOX)
-    YOLOX_Tiny_FP16 = (*RepositoryAsset.openVino("yolox-tiny-fp16"), COCO_80_LABELS, YOLOArchitecture.YOLOX)
+    YOLOX_Tiny_FP32 = (
+        *RepositoryAsset.openVino("yolox-tiny-fp32", metadata=_YOLOX_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOX,
+    )
+    YOLOX_Tiny_FP16 = (
+        *RepositoryAsset.openVino("yolox-tiny-fp16", metadata=_YOLOX_METADATA),
+        COCO_80_LABELS,
+        YOLOArchitecture.YOLOX,
+    )
 
 
 class YOLODetector(OpenVinoObjectDetector):

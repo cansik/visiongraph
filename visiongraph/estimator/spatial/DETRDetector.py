@@ -4,6 +4,7 @@ from typing import List
 import openvino
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.data.labels.COCO import COCO_80_LABELS
 from visiongraph.estimator.openvino.OpenVinoObjectDetector import OpenVinoObjectDetector
@@ -12,13 +13,21 @@ from visiongraph.external.intel.models.detection_model import DetectionModel
 from visiongraph.external.intel.models.detr import DETR
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="DETR ResNet-50 object detection",
+    source_url="https://docs.openvino.ai/2023.3/omz_models_model_detr_resnet50.html",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/openvinotoolkit/open_model_zoo/blob/master/LICENSE",
+)
+
+
 class DETRConfig(Enum):
     """
     An enumeration class representing different configurations for the DETR model.
     """
 
-    DETR_Resnet50_FP16 = (*RepositoryAsset.openVino("detr-resnet50-fp16"), COCO_80_LABELS)
-    DETR_Resnet50_FP32 = (*RepositoryAsset.openVino("detr-resnet50-fp32"), COCO_80_LABELS)
+    DETR_Resnet50_FP16 = (*RepositoryAsset.openVino("detr-resnet50-fp16", metadata=_MODEL_METADATA), COCO_80_LABELS)
+    DETR_Resnet50_FP32 = (*RepositoryAsset.openVino("detr-resnet50-fp32", metadata=_MODEL_METADATA), COCO_80_LABELS)
 
 
 class DETRDetector(OpenVinoObjectDetector):

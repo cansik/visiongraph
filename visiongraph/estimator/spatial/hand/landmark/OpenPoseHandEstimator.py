@@ -4,6 +4,7 @@ from typing import Optional
 import cv2
 import numpy as np
 
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator
 from visiongraph.result.ResultList import ResultList
@@ -12,6 +13,13 @@ from visiongraph.result.spatial.hand.OpenPoseHand import OpenPoseHand
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 OPEN_POSE_KEYPOINT_COUNT = 21
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="OpenPose hand estimation",
+    source_url="https://github.com/CMU-Perceptual-Computing-Lab/openpose",
+    license_name="OpenPose License",
+    license_url="https://github.com/CMU-Perceptual-Computing-Lab/openpose/blob/master/LICENSE",
+)
 
 
 class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
@@ -23,8 +31,8 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         """
         super().__init__(min_score)
 
-        self.model = RepositoryAsset("hand_pose_deploy.prototxt")
-        self.weights = RepositoryAsset("hand_pose_iter_102000.caffemodel")
+        self.model = RepositoryAsset("hand_pose_deploy.prototxt", metadata=_MODEL_METADATA)
+        self.weights = RepositoryAsset("hand_pose_iter_102000.caffemodel", metadata=_MODEL_METADATA)
         self.input_size = 368
         self.resize_heatmaps: bool = False
 

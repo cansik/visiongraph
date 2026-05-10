@@ -6,6 +6,7 @@ import numpy as np
 from scipy.ndimage import gaussian_filter
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -14,6 +15,14 @@ from visiongraph.model.types.InputShapeOrder import InputShapeOrder
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.pose.EfficientPose import EfficientPose
 from visiongraph.util import VectorUtils, MathUtils
+
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="EfficientPose pose estimation",
+    source_url="https://github.com/daniegr/EfficientPose",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/daniegr/EfficientPose/blob/master/LICENSE",
+)
 
 _BODY_PARTS = [
     "head_top",
@@ -40,23 +49,23 @@ class EfficientPoseEstimatorConfig(Enum):
     Enumeration for EfficientPose estimator configurations with associated model and weights.
     """
 
-    EFFICIENT_POSE_I_FP16 = RepositoryAsset.openVino("EfficientPoseI-fp16")
-    EFFICIENT_POSE_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32")
-    EFFICIENT_POSE_II_FP16 = RepositoryAsset.openVino("EfficientPoseII-fp16")
-    EFFICIENT_POSE_II_FP32 = RepositoryAsset.openVino("EfficientPoseII-fp32")
-    EFFICIENT_POSE_III_FP16 = RepositoryAsset.openVino("EfficientPoseIII-fp16")
-    EFFICIENT_POSE_III_FP32 = RepositoryAsset.openVino("EfficientPoseIII-fp32")
-    EFFICIENT_POSE_IV_FP16 = RepositoryAsset.openVino("EfficientPoseIV-fp16")
-    EFFICIENT_POSE_IV_FP32 = RepositoryAsset.openVino("EfficientPoseIV-fp32")
-    EFFICIENT_POSE_RT_FP16 = RepositoryAsset.openVino("EfficientPoseRT-fp16")
-    EFFICIENT_POSE_RT_FP32 = RepositoryAsset.openVino("EfficientPoseRT-fp32")
+    EFFICIENT_POSE_I_FP16 = RepositoryAsset.openVino("EfficientPoseI-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_I_FP32 = RepositoryAsset.openVino("EfficientPoseI-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_II_FP16 = RepositoryAsset.openVino("EfficientPoseII-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_II_FP32 = RepositoryAsset.openVino("EfficientPoseII-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_III_FP16 = RepositoryAsset.openVino("EfficientPoseIII-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_III_FP32 = RepositoryAsset.openVino("EfficientPoseIII-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_IV_FP16 = RepositoryAsset.openVino("EfficientPoseIV-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_IV_FP32 = RepositoryAsset.openVino("EfficientPoseIV-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_RT_FP16 = RepositoryAsset.openVino("EfficientPoseRT-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_RT_FP32 = RepositoryAsset.openVino("EfficientPoseRT-fp32", metadata=_MODEL_METADATA)
 
-    EFFICIENT_POSE_II_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp16")
-    EFFICIENT_POSE_II_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp32")
-    EFFICIENT_POSE_I_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp16")
-    EFFICIENT_POSE_I_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp32")
-    EFFICIENT_POSE_RT_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp16")
-    EFFICIENT_POSE_RT_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp32")
+    EFFICIENT_POSE_II_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_II_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseII_LITE-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_I_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_I_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseI_LITE-fp32", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_RT_LITE_FP16 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp16", metadata=_MODEL_METADATA)
+    EFFICIENT_POSE_RT_LITE_FP32 = RepositoryAsset.openVino("EfficientPoseRT_LITE-fp32", metadata=_MODEL_METADATA)
 
 
 class EfficientPoseEstimator(PoseEstimator[EfficientPose]):

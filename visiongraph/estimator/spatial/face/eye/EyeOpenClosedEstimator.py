@@ -7,8 +7,12 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.BaseClassifier import BaseClassifier
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.result.HeadPoseResult import HeadPoseResult
 from visiongraph.result.spatial.face.EyeOpenClosedResult import EyeOpenClosedResult
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
@@ -23,7 +27,7 @@ class EyeOpenClosedEstimator(RoiEstimator, BaseClassifier):
         :param device: The target device. Defaults to "AUTO".
         """
         super().__init__(0.5)
-        model, weights = RepositoryAsset.openVino("open-closed-eye-0001-fp32")
+        model, weights = RepositoryAsset.openVino("open-closed-eye-0001-fp32", metadata=_MODEL_METADATA)
         self.engine = OpenVinoEngine(model, weights, device=device)
 
         self.labels = ["closed", "open"]

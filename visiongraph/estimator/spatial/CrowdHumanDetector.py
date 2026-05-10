@@ -6,6 +6,7 @@ import numpy as np
 from scipy.spatial.distance import cdist
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.YOLOv5Detector import YOLOv5Detector
 from visiongraph.result.ResultList import ResultList
@@ -15,17 +16,25 @@ from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
 from visiongraph.util.VectorUtils import vector_as_list, lerp_vector_2d
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="CrowdHuman YOLOv5 object detection",
+    source_url="https://www.crowdhuman.org/",
+    license_name="AGPL-3.0 (or Enterprise License from Ultralytics)",
+    license_url="https://github.com/ultralytics/yolov5/blob/master/LICENSE",
+)
+
+
 class CrowdHumanConfig(Enum):
     """
     Enumeration of different CrowdHuman model configurations.
     """
 
-    YOLOv5_N_640 = RepositoryAsset("crowdhuman-yolov5n-640.onnx")
-    YOLOv5_N_P34_640 = RepositoryAsset("crowdhuman-yolov5n-p34-640.onnx")
-    YOLOv5_N_P2_640 = RepositoryAsset("crowdhuman-yolov5n-p2-640.onnx")
-    YOLOv5_S_640 = RepositoryAsset("crowdhuman-yolov5s-640.onnx")
-    YOLOv5_S_P34_640 = RepositoryAsset("crowdhuman-yolov5s-p34-640.onnx")
-    YOLOv5_S_P2_640 = RepositoryAsset("crowdhuman-yolov5s-p2-640.onnx")
+    YOLOv5_N_640 = RepositoryAsset("crowdhuman-yolov5n-640.onnx", metadata=_MODEL_METADATA)
+    YOLOv5_N_P34_640 = RepositoryAsset("crowdhuman-yolov5n-p34-640.onnx", metadata=_MODEL_METADATA)
+    YOLOv5_N_P2_640 = RepositoryAsset("crowdhuman-yolov5n-p2-640.onnx", metadata=_MODEL_METADATA)
+    YOLOv5_S_640 = RepositoryAsset("crowdhuman-yolov5s-640.onnx", metadata=_MODEL_METADATA)
+    YOLOv5_S_P34_640 = RepositoryAsset("crowdhuman-yolov5s-p34-640.onnx", metadata=_MODEL_METADATA)
+    YOLOv5_S_P2_640 = RepositoryAsset("crowdhuman-yolov5s-p2-640.onnx", metadata=_MODEL_METADATA)
 
 
 class CrowdHumanDetector(YOLOv5Detector):

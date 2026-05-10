@@ -6,8 +6,12 @@ from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.VisionClassifier import VisionClassifier
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.RoiEstimator import RoiEstimator
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.result.spatial.face.RegressionFace import RegressionFace
 from visiongraph.util.VectorUtils import list_of_vector4D
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator):
@@ -23,7 +27,7 @@ class RegressionLandmarkEstimator(VisionClassifier[RegressionFace], RoiEstimator
         :param device: The device to use for inference. Defaults to "AUTO".
         """
         super().__init__(min_score)
-        model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009")
+        model, weights = RepositoryAsset.openVino("landmarks-regression-retail-0009", metadata=_MODEL_METADATA)
         self.engine = OpenVinoEngine(model, weights, device=device)
 
     def setup(self):

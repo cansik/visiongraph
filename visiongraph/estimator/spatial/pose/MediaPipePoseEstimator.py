@@ -10,6 +10,7 @@ from mediapipe.tasks.python import vision
 from mediapipe.tasks.python.vision.core.vision_task_running_mode import VisionTaskRunningMode
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
 from visiongraph.result.ResultList import ResultList
@@ -19,10 +20,18 @@ from visiongraph.util.TimeUtils import HighPrecisionTimer
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MediaPipe pose landmarker tasks",
+    source_url="https://github.com/google-ai-edge/mediapipe",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE",
+)
+
+
 class MediaPipePoseConfig(Enum):
-    Light = RepositoryAsset("pose_landmarker_lite.task")
-    Full = RepositoryAsset("pose_landmarker_full.task")
-    Heavy = RepositoryAsset("pose_landmarker_heavy.task")
+    Light = RepositoryAsset("pose_landmarker_lite.task", metadata=_MODEL_METADATA)
+    Full = RepositoryAsset("pose_landmarker_full.task", metadata=_MODEL_METADATA)
+    Heavy = RepositoryAsset("pose_landmarker_heavy.task", metadata=_MODEL_METADATA)
 
 
 class MediaPipePoseEstimator(PoseEstimator[BlazePose]):

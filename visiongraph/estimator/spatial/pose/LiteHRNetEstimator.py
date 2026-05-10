@@ -4,6 +4,7 @@ from typing import Tuple, List, Optional
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
@@ -16,20 +17,44 @@ from visiongraph.util.ResultUtils import non_maximum_suppression_from_options
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="Lite-HRNet pose estimation",
+    source_url="https://github.com/HRNet/Lite-HRNet",
+    license_name="Apache License 2.0",
+    license_url="https://github.com/HRNet/Lite-HRNet/blob/hrnet/LICENSE",
+)
+
+
 class LiteHRNetConfig(Enum):
     """
     Enumeration for LiteHRNet model configurations with corresponding assets.
     """
 
-    LiteHRNet_18_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp16")
-    LiteHRNet_18_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_256x192-fp32")
-    LiteHRNet_18_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp16")
-    LiteHRNet_18_COCO_384x288_FP32 = RepositoryAsset.openVino("litehrnet_18_coco_384x288-fp32")
+    LiteHRNet_18_COCO_256x192_FP16 = RepositoryAsset.openVino(
+        "litehrnet_18_coco_256x192-fp16", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_18_COCO_256x192_FP32 = RepositoryAsset.openVino(
+        "litehrnet_18_coco_256x192-fp32", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_18_COCO_384x288_FP16 = RepositoryAsset.openVino(
+        "litehrnet_18_coco_384x288-fp16", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_18_COCO_384x288_FP32 = RepositoryAsset.openVino(
+        "litehrnet_18_coco_384x288-fp32", metadata=_MODEL_METADATA
+    )
 
-    LiteHRNet_30_COCO_256x192_FP16 = RepositoryAsset.openVino("litehrnet_30_coco_256x192-fp16")
-    LiteHRNet_30_COCO_256x192_FP32 = RepositoryAsset.openVino("litehrnet_30_coco_256x192-fp32")
-    LiteHRNet_30_COCO_384x288_FP16 = RepositoryAsset.openVino("litehrnet_30_coco_384x288-fp16")
-    LiteHRNet_30_COCO_384x288_FP32 = RepositoryAsset.openVino("litehrnet_30_coco_384x288-fp32")
+    LiteHRNet_30_COCO_256x192_FP16 = RepositoryAsset.openVino(
+        "litehrnet_30_coco_256x192-fp16", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_30_COCO_256x192_FP32 = RepositoryAsset.openVino(
+        "litehrnet_30_coco_256x192-fp32", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_30_COCO_384x288_FP16 = RepositoryAsset.openVino(
+        "litehrnet_30_coco_384x288-fp16", metadata=_MODEL_METADATA
+    )
+    LiteHRNet_30_COCO_384x288_FP32 = RepositoryAsset.openVino(
+        "litehrnet_30_coco_384x288-fp32", metadata=_MODEL_METADATA
+    )
 
 
 LITE_HRNET_KEY_POINT_COUNT = 17

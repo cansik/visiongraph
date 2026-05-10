@@ -5,6 +5,7 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.engine.InferenceEngineFactory import InferenceEngine, InferenceEngineFactory
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
@@ -14,11 +15,19 @@ from visiongraph.result.spatial.pose.COCOPose import COCOPose
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="KAPAO pose estimation",
+    source_url="https://github.com/wmcnally/kapao",
+    license_name="GNU GPL v3.0",
+    license_url="https://github.com/wmcnally/kapao/blob/master/LICENSE",
+)
+
+
 class KAPAOPoseConfig(Enum):
-    KAPAO_N_COCO_640 = RepositoryAsset("kapao_n_coco_640.onnx"), 17
-    KAPAO_S_COCO_640 = RepositoryAsset("kapao_s_coco_640.onnx"), 17
-    KAPAO_S_COCO_1280 = RepositoryAsset("kapao_s_coco_1280.onnx"), 17
-    KAPAO_L_COCO_1280 = RepositoryAsset("kapao_l_coco_1280.onnx"), 17
+    KAPAO_N_COCO_640 = RepositoryAsset("kapao_n_coco_640.onnx", metadata=_MODEL_METADATA), 17
+    KAPAO_S_COCO_640 = RepositoryAsset("kapao_s_coco_640.onnx", metadata=_MODEL_METADATA), 17
+    KAPAO_S_COCO_1280 = RepositoryAsset("kapao_s_coco_1280.onnx", metadata=_MODEL_METADATA), 17
+    KAPAO_L_COCO_1280 = RepositoryAsset("kapao_l_coco_1280.onnx", metadata=_MODEL_METADATA), 17
 
 
 class KAPAOPoseEstimator(PoseEstimator):

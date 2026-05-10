@@ -5,15 +5,24 @@ import cv2
 import numpy as np
 
 from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.result.ImageResult import ImageResult
 
 
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="DeblurGAN-v2",
+    source_url="https://docs.openvino.ai/2023.3/omz_models_model_deblurgan_v2.html",
+    license_name="BSD 3-Clause License",
+    license_url="https://github.com/VITA-Group/DeblurGANv2/blob/master/LICENSE",
+)
+
+
 class DeblurGANv2Config(Enum):
-    DeblurGANv2_FP16 = RepositoryAsset.openVino("deblurgan-v2-fp16")
-    DeblurGANv2_FP32 = RepositoryAsset.openVino("deblurgan-v2-fp32")
+    DeblurGANv2_FP16 = RepositoryAsset.openVino("deblurgan-v2-fp16", metadata=_MODEL_METADATA)
+    DeblurGANv2_FP32 = RepositoryAsset.openVino("deblurgan-v2-fp32", metadata=_MODEL_METADATA)
 
 
 class DeblurGANv2(VisionEstimator[ImageResult]):

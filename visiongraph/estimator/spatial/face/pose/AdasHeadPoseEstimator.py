@@ -6,7 +6,11 @@ import vector
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.face.pose.HeadPoseEstimator import HeadPoseEstimator
+from visiongraph.model.metadata.OpenVINO import OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 from visiongraph.result.HeadPoseResult import HeadPoseResult
+
+
+_MODEL_METADATA = OPENVINO_OPEN_MODEL_ZOO_INTEL_METADATA
 
 
 class AdasHeadPoseEstimator(HeadPoseEstimator):
@@ -22,7 +26,7 @@ class AdasHeadPoseEstimator(HeadPoseEstimator):
 
         :param device: The device to use for inference. Defaults to "AUTO".
         """
-        model, weights = RepositoryAsset.openVino("head-pose-estimation-adas-0001")
+        model, weights = RepositoryAsset.openVino("head-pose-estimation-adas-0001", metadata=_MODEL_METADATA)
         self.engine = OpenVinoEngine(model, weights, device=device)
 
     def setup(self):
