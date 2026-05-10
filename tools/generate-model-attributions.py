@@ -46,7 +46,7 @@ def build_markdown() -> str:
         lines.append("")
         lines.append(f"Origin: {source_url}  ")
         if license_url:
-            lines.append(f"License: {license_name} ({license_url})")
+            lines.append(f"License: [{license_name}]({license_url})")
         else:
             lines.append(f"License: {license_name}")
         lines.append("")
