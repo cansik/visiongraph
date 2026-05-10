@@ -28,6 +28,7 @@ class NetworkUtilsTests(unittest.TestCase):
     def test_prepare_data_file_allows_asset_directory_override(self):
         with tempfile.TemporaryDirectory() as asset_dir:
             with patch.dict(os.environ, {ASSET_DIR_ENV_VAR: asset_dir}, clear=False):
+
                 def fake_download(_url, path, _description, with_progress=True, headers=None):
                     del with_progress, headers
                     with open(path, "wb") as f:
