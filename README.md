@@ -11,13 +11,13 @@
 ![Pepy Total Downloads](https://img.shields.io/pepy/dt/visiongraph)
 [![Documentation](https://img.shields.io/badge/read-documentation-blue)](https://cansik.github.io/visiongraph/visiongraph.html#documentation)
 
-Visiongraph is a computer vision pipeline designed to simplify prototyping of image-based algorithms with ready-to-use modules. Built on top of OpenCV, it also integrates popular frameworks such as [Intel OpenVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), and [DepthAI](https://pypi.org/project/depthai/). The library is designed with a focus on real-time applications and edge deployment.
+Visiongraph is a computer-vision pipeline library designed to simplify the prototyping of image-based algorithms with ready-to-use modules and composable graph nodes. Built on top of OpenCV, it also integrates popular frameworks such as [Intel OpenVINO](https://github.com/openvinotoolkit/openvino), [Google MediaPipe](https://github.com/google-ai-edge/mediapipe), and [DepthAI](https://pypi.org/project/depthai/). The library is designed with a focus on real-time applications and edge deployment.
 
 ![Readme Example](doc/visiongraph-readme-street.webp)
 
 *Object detection, segmentation and pose estimation example.*
 
-Here is an example on how to start a live webcam capture, detect objects with SSD and display the results.
+Here is a minimal example that opens a live webcam capture, runs SSD object detection, and displays the annotated result.
 
 ```python
 import cv2
@@ -40,22 +40,22 @@ with (vg.VideoCaptureInput() as cam,
 Get started with `visiongraph` by reading the **[documentation](https://cansik.github.io/visiongraph/visiongraph.html#documentation)**.
 
 ## Installation
-Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. Usually it is a third-party dependency, that does not support a newer Python version.
+Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In practice, version compatibility is usually limited by third-party dependencies rather than by visiongraph itself.
 
-To install visiongraph with all dependencies use [pip](https://pypi.org/project/pip/) like this:
+To install visiongraph with all available optional dependencies, use [pip](https://pypi.org/project/pip/) like this:
 
 ```bash
 pip install "visiongraph[all]"
 ```
 
 ```bash
-uv sync --all-extras
+uv add "visiongraph[all]"
 ```
 
-It is also possible to only install certain packages depending on your needs (recommended):
+It is also possible, and usually preferable, to install only the extras you actually need:
 
 ```bash
-# example on how to install realsense and openvino support only
+# example: install RealSense and OpenVINO support only
 pip install "visiongraph[realsense, openvino]"
 ```
 
@@ -63,7 +63,7 @@ Please read more about the extra packages in the [documentation](https://cansik.
 
 ### Optional Mediapipe Support
 
-Visiongraph can integrate Google’s [MediaPipe](https://github.com/google/mediapipe) for advanced hand, face and object tracking pipelines. Unfortunately, the official PyPI MediaPipe wheels declare a strict dependency on `numpy<2.0`, which prevents installation alongside NumPy 2.x, even though most functionality works fine with NumPy 2.0 and above. To work around this limitation, we maintain a custom [mediapipe-numpy2](https://github.com/cansik/mediapipe-numpy2) build that removes the `<2.0` pin.
+Visiongraph can integrate Google’s [MediaPipe](https://github.com/google-ai-edge/mediapipe) for advanced hand, face, pose and tracking pipelines. Unfortunately, the official PyPI MediaPipe wheels declare a strict dependency on `numpy<2.0`, which prevents installation alongside NumPy 2.x, even though most functionality works fine with NumPy 2.0 and above. To work around this limitation, we maintain a custom [mediapipe-numpy2](https://github.com/cansik/mediapipe-numpy2) build that removes the `<2.0` pin.
 
 When you install with the `mediapipe` extra, pip will automatically fetch the matching patched wheel for your OS and Python version.
 
@@ -75,45 +75,45 @@ If you’re happy to stick with NumPy <2.0, you can skip our custom package enti
 pip install visiongraph mediapipe
 ```
 
-This will install Visiongraph plus the official `mediapipe` package (which requires `numpy<2.0`). Make sure your environment’s NumPy version is below 2.0 when using this route.
+This installs Visiongraph together with the official `mediapipe` package, which requires `numpy<2.0`. Make sure your environment uses a NumPy version below 2.0 when choosing this route.
 
 
 ## Examples
-To demonstrate the possibilities of visiongraph there are already implemented [examples](examples) ready for you to try out. Here is a list of the current examples:
+To demonstrate the possibilities of visiongraph, the repository already contains a number of ready-to-run [examples](examples). Here is a selection of the current examples:
 
-- [SimpleVisionGraph](examples/SimpleVisionGraph.py) - SSD object detection & tracking of live webcam input with `5` lines of code.
-- [VisionGraphExample](examples/VisionGraphExample.py) - A face detection and tracking example with custom events.
-- [InputExample](examples/InputExample.py) - A basic input example that determines the center if possible.
-- [RealSenseDepthExample](examples/DepthCameraExample.py) - Display the RealSense or Azure Kinect depth map.
+- [SimpleVisionGraph](examples/SimpleVisionGraph.py) - A minimal graph example for live object detection and tracking.
+- [VisionGraphExample](examples/VisionGraphExample.py) - A face detection and tracking example with custom callbacks.
+- [InputExample](examples/InputExample.py) - A basic input example that previews the stream and reports depth when available.
+- [DepthCameraExample](examples/DepthCameraExample.py) - Display the depth map next to the color image for a supported depth camera.
 - [FaceDetectionExample](examples/FaceDetectionExample.py) - A face detection pipeline example.
 - [FindFaceExample](examples/FindFaceExample.py) - A face recognition example to find a target face.
-- [CascadeFaceDetectionExample](examples/CascadeFaceDetectionExample.py) -  A face detection pipeline that also predicts other feature points of the face.
+- [CascadeFaceDetectionExample](examples/CascadeFaceDetectionExample.py) - A face detection pipeline that also predicts facial landmarks.
 - [HandDetectionExample](examples/HandDetectionExample.py) - A hand detection pipeline example.
-- [PoseEstimationExample](examples/PoseEstimationExample.py) - A pose estimation pipeline which annotates the generic pose keypoints.
-- [ProjectedPoseExample](examples/ProjectedPoseExample.py) -  Project the pose estimation into 3d space with the RealSense camera.
-- [ObjectDetectionExample](examples/ObjectDetectionExample.py) - An object detection & tracking example.
-- [InstanceSegmentationExample](examples/InstanceSegmentationExample.py) - Intance Segmentation based on COCO80 dataset.
-- [InpaintExample](examples/InpaintExample.py) - GAN based inpainting example.
-- [MidasDepthExample](examples/MidasDepthExample.py) - Realtime depth prediction with the [midas-small](https://github.com/isl-org/MiDaS) network.
+- [PoseEstimationExample](examples/PoseEstimationExample.py) - A pose estimation pipeline that annotates generic pose keypoints.
+- [ProjectedPoseExample](examples/ProjectedPoseExample.py) - Project pose estimation into 3D space with a RealSense camera.
+- [ObjectDetectionExample](examples/ObjectDetectionExample.py) - An object detection example.
+- [InstanceSegmentationExample](examples/InstanceSegmentationExample.py) - Instance segmentation based on the COCO dataset.
+- [InpaintExample](examples/InpaintExample.py) - A GAN-based inpainting example.
+- [MidasDepthExample](examples/MidasDepthExample.py) - Real-time monocular depth prediction with the [midas-small](https://github.com/isl-org/MiDaS) network.
 - [RGBDSmoother](examples/RGBDSmoother.py) - Smooth RGB-D depth map videos with a one-euro filter per pixel.
 - [FaceMeshVVADExample](examples/FaceMeshVVADExample.py) - Detect voice activation by landmark sequence classification.
 
-There are even more examples where visiongraph is currently in use:
+There are also additional projects that use visiongraph in practice:
 
-- [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over spout or syphon.
-- [NDI Input / Output](https://github.com/cansik/visiongraph-ndi) - Receive and share video frames over NDI
-- [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph
+- [Spout/Syphon RGB-D Example](https://github.com/cansik/spout-rgbd-example) - Share RGB-D images over Spout or Syphon.
+- [NDI Input / Output](https://github.com/cansik/visiongraph-ndi) - Receive and share video frames over NDI.
+- [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph.
 
 ## Development
-To develop on visiongraph it is recommended to clone this repository and install the dependencies like this. First install the [uv](https://docs.astral.sh/uv/getting-started/installation/) package manager.
+To develop visiongraph itself, clone this repository and install the dependencies with [uv](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-# in the visiongraph directory install all dependencies
+# from the repository root, install all dependencies
 uv sync --all-extras --dev --group docs
 ```
 
 ### Build
-To build a new wheel package of visiongraph run the following command in the root directory. Please find the wheel and source distribution in `./dist`.
+To build a new wheel package of visiongraph, run the following commands in the repository root. The generated wheel and source distribution will be placed in `./dist`.
 
 ```bash
 uv run python setup.py generate_init
@@ -122,10 +122,10 @@ uv build
 
 ### Docs
 
-To generate the documentation, use the following commands.
+To generate the documentation, use the following commands:
 
 ```bash
-# create documentation into "./docs
+# create the documentation into "./docs"
 uv run python setup.py doc
 
 # launch pdoc webserver
@@ -140,9 +140,9 @@ ruff format && ruff check --fix
 
 ## Dependencies
 
-Parts of these libraries are directly included and adapted to work with visiongraph. For more information, please have a look at the [third party notices](THIRD_PARTY_NOTICES.md).
+Parts of these libraries are directly included and adapted to work with visiongraph. For more information, please see the [third party notices](THIRD_PARTY_NOTICES.md).
 
-Here you can find a list of the dependencies of visiongraph and their license (no guarantee of correctness):
+Below is a list of visiongraph dependencies and their licenses, provided without guarantee of correctness:
 
 ```
 depthai               MIT License
@@ -176,9 +176,9 @@ vidgear               Apache License 2.0
 wheel                 MIT License
 ```
 
-For more information about the dependencies, have a look at the [pyproject.toml](pyproject.toml).
+For more information about the dependencies, see [pyproject.toml](pyproject.toml).
 
-Please **note** that some models (such as Ultralytics YOLOv8 and YOLOv11) have specific licenses (AGPLv3). Always check the model license before using the model.
+Please **note** that some models, such as Ultralytics YOLOv8 and YOLOv11, have their own licenses (for example AGPLv3). Always check the model license before using it.
 
 ## Credits
 
