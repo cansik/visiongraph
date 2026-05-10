@@ -3,6 +3,7 @@ import os
 import shutil
 import sys
 from typing import Any, Dict, Optional, Tuple
+from urllib.parse import urljoin
 
 import requests
 from requests.exceptions import RequestException
@@ -48,7 +49,11 @@ def handle_redirects(url: str, headers: Optional[Dict[str, Any]] = None) -> str:
 
         # redirect?
         if response.status_code in (301, 302, 303, 307, 308):
-            url = response.headers.get("Location", url)
+            redirect_url = response.headers.get("Location")
+            if not redirect_url:
+                break
+
+            url = urljoin(url, redirect_url)
             continue
 
         # non-redirect: check for HTTP errors
@@ -87,13 +92,12 @@ def download_file(
     # simple download without progress
     if not with_progress:
         try:
-            r = requests.get(resolved_url, headers=headers, stream=True)
-            r.raise_for_status()
+            with requests.get(resolved_url, headers=headers, stream=True) as response:
+                response.raise_for_status()
+                with open(path, "wb") as out_file:
+                    shutil.copyfileobj(response.raw, out_file)
         except RequestException as e:
             raise HTTPDownloadError(f"GET request failed for {resolved_url}: {e}") from e
-
-        with open(path, "wb") as out_file:
-            shutil.copyfileobj(r.raw, out_file)
         return
 
     # with progress: first get content length
@@ -101,7 +105,9 @@ def download_file(
         head_req = requests.head(resolved_url, headers=headers)
         head_req.raise_for_status()
     except RequestException as e:
-        raise HTTPDownloadError(f"HEAD request failed for {resolved_url}: {e}") from e
+        logging.warning(f"Download progress disabled because HEAD request failed for {resolved_url}: {e}")
+        download_file(resolved_url, path, description, with_progress=False, headers=headers)
+        return
 
     filesize = int(head_req.headers.get("Content-Length", 0))
 
