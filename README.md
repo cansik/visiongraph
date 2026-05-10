@@ -77,6 +77,10 @@ pip install visiongraph mediapipe
 
 This installs Visiongraph together with the official `mediapipe` package, which requires `numpy<2.0`. Make sure your environment uses a NumPy version below 2.0 when choosing this route.
 
+## Model Assets
+
+Most estimators download their model files on demand and store them in `~/.visiongraph/assets/` by default. Set `VISIONGRAPH_ASSET_DIR` to use a different location.
+
 
 ## Examples
 To demonstrate the possibilities of visiongraph, the repository already contains a number of ready-to-run [examples](examples). Here is a selection of the current examples:
@@ -181,7 +185,7 @@ wheel                 MIT License
 
 For more information about the dependencies, see [pyproject.toml](pyproject.toml).
 
-Please **note** that some models, such as Ultralytics YOLOv8 and YOLOv11, have their own licenses (for example AGPLv3). Always check the model license before using it.
+Please **note** that some models, such as Ultralytics YOLOv8 and YOLOv11, have their own licenses (for example AGPLv3). Model provenance and license information is listed in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md).
 
 ## Credits
 

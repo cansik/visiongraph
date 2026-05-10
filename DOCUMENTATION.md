@@ -22,7 +22,7 @@ Additionally, there are the following packages.
 - `visiongraph.dsp` - Contains filters and DSP algorithms for temporal smoothing and signal processing.
 - `visiongraph.recorder` - Adds support for frame and video recording using different backends.
 - `visiongraph.tracker` - Contains object-detection tracker implementations.
-- `visiongraph.data` - Contains abstractions for downloading and caching external model assets.
+- `visiongraph.data` - Contains abstractions for downloading and managing external model assets.
 - `visiongraph.node` - Contains helper nodes used to compose more complex graphs.
 
 ### Import Visiongraph
@@ -580,7 +580,21 @@ smoothed_results = smoother.process(results)
 
 Most estimators use large model and weight files for their neural networks. To keep visiongraph small and easy to
 install, these assets are hosted externally and downloaded on demand. Visiongraph provides a system to directly
-download and cache these files.
+download and store these files locally.
+
+By default, downloaded assets are stored in `~/.visiongraph/assets/`. This location can be overridden with the
+`VISIONGRAPH_ASSET_DIR` environment variable.
+
+```bash
+# zsh / bash
+export VISIONGRAPH_ASSET_DIR="$HOME/.cache/visiongraph-assets"
+
+# cmd
+set VISIONGRAPH_ASSET_DIR=%USERPROFILE%\\visiongraph-assets
+
+# powershell
+$env:VISIONGRAPH_ASSET_DIR="$HOME/.visiongraph/assets"
+```
 
 An asset is defined by the `visiongraph.data.Asset.Asset` interface. The most common implementation is the
 `visiongraph.data.RepositoryAsset.RepositoryAsset` which downloads the asset from a repository URL.
@@ -600,7 +614,8 @@ print(asset.path)
 
 The default repository is located
 at [huggingface.co/cansik/visiongraph](https://huggingface.co/cansik/visiongraph/tree/main). It is possible to change
-the repository URL or add custom headers for authentication.
+the repository URL or add custom headers for authentication. Model provenance and license details for bundled and
+repository-hosted assets are documented in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md).
 
 ## Utilities
 

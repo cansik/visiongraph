@@ -541,6 +541,7 @@ if TYPE_CHECKING:
     from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_vector4d  # noqa: F401
     from visiongraph.util.NetworkUtils import HTTPDownloadError  # noqa: F401
     from visiongraph.util.NetworkUtils import download_file  # noqa: F401
+    from visiongraph.util.NetworkUtils import get_asset_dir  # noqa: F401
     from visiongraph.util.NetworkUtils import handle_redirects  # noqa: F401
     from visiongraph.util.NetworkUtils import prepare_data_file  # noqa: F401
     from visiongraph.util.NetworkUtils import prepare_openvino_model  # noqa: F401
@@ -868,6 +869,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "mediapipe_landmarks_to_vector4d": _LazyImport("mediapipe_landmarks_to_vector4d", "visiongraph.util.MediaPipeUtils", False),
     "HTTPDownloadError": _LazyImport("HTTPDownloadError", "visiongraph.util.NetworkUtils", False),
     "download_file": _LazyImport("download_file", "visiongraph.util.NetworkUtils", False),
+    "get_asset_dir": _LazyImport("get_asset_dir", "visiongraph.util.NetworkUtils", False),
     "handle_redirects": _LazyImport("handle_redirects", "visiongraph.util.NetworkUtils", False),
     "prepare_data_file": _LazyImport("prepare_data_file", "visiongraph.util.NetworkUtils", False),
     "prepare_openvino_model": _LazyImport("prepare_openvino_model", "visiongraph.util.NetworkUtils", False),

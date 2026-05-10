@@ -1,4 +1,3 @@
-import importlib.resources as resources
 import logging
 import os
 import shutil
@@ -6,19 +5,30 @@ import sys
 from typing import Any, Dict, Optional, Tuple
 
 import requests
-import visiongraph.cache
 from requests.exceptions import RequestException
 from tqdm import tqdm
 
 PUBLIC_DATA_HEADERS = {}
 
 PUBLIC_DATA_URL = "https://huggingface.co/cansik/visiongraph/resolve/main/"
+ASSET_DIR_ENV_VAR = "VISIONGRAPH_ASSET_DIR"
+DEFAULT_ASSET_DIR = os.path.join("~", ".visiongraph", "assets")
 
 
 class HTTPDownloadError(Exception):
     """Raised when an HTTP error or connection error occurs during download."""
 
     pass
+
+
+def get_asset_dir() -> str:
+    """
+    Resolve the local directory used for downloaded model assets.
+
+    :return: absolute path to the configured asset directory
+    """
+    asset_dir = os.environ.get(ASSET_DIR_ENV_VAR, DEFAULT_ASSET_DIR)
+    return os.path.abspath(os.path.expanduser(asset_dir))
 
 
 def handle_redirects(url: str, headers: Optional[Dict[str, Any]] = None) -> str:
@@ -142,10 +152,7 @@ def prepare_data_file(file_name: str, url: Optional[str] = None, headers: Option
     if url is None:
         url = f"{PUBLIC_DATA_URL}{file_name}"
 
-    cache_path = resources.path(visiongraph.cache.__name__, ".").__enter__()
-    data_dir = str(cache_path.absolute())
-    if hasattr(sys, "_MEIPASS"):
-        data_dir = "./cache"
+    data_dir = get_asset_dir()
 
     os.makedirs(data_dir, exist_ok=True)
     file_path = os.path.join(data_dir, file_name)
