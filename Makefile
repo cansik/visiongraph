@@ -9,6 +9,7 @@
 	clean-dist \
 	clean-docs \
 	default \
+	download-model-licenses \
 	docs \
 	docs-serve \
 	fmt \
@@ -40,6 +41,7 @@ help:
 	@echo "  generate-init     Regenerate the top-level visiongraph __init__.py"
 	@echo "  generate-public-markdown Generate build-only markdown variants with absolute GitHub links"
 	@echo "  attributions      Generate $(ATTRIBUTIONS_FILE) from repository model metadata"
+	@echo "  download-model-licenses Download model license files into build/licenses"
 	@echo "  generate-artifacts Regenerate repository-generated artifacts committed to the repository"
 	@echo "  list-estimators   Print discovered estimator config enums"
 	@echo "  license-check     Print dependency licenses from pyproject.toml"
@@ -80,6 +82,9 @@ generate-public-markdown:
 
 attributions:
 	$(PYTHON) -m scripts.generate_model_attributions --output $(ATTRIBUTIONS_FILE)
+
+download-model-licenses:
+	$(PYTHON) -m scripts.download_model_licenses --output-dir build/licenses
 
 generate-artifacts: generate-init attributions
 
