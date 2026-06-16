@@ -19,6 +19,9 @@ class _ImportStubMeta(type):
         :param key: The name of the accessed attribute.
         :raises ImportError: Always, because the target module has not been imported.
         """
+        if key.startswith("__") and key.endswith("__"):
+            raise AttributeError(key)
+
         raise ImportError(cls._error_message())
 
 
@@ -46,6 +49,9 @@ class _ImportStub(metaclass=_ImportStubMeta):
         :param key: The name of the accessed attribute.
         :raises ImportError: Always, because the target module has not been imported.
         """
+        if key.startswith("__") and key.endswith("__"):
+            raise AttributeError(key)
+
         raise ImportError(self._error_message())
 
     def __setattr__(self, key: str, value: object) -> None:

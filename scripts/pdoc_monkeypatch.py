@@ -1,7 +1,40 @@
+import warnings
 from pathlib import Path
 
 import pdoc
 from pdoc import render, doc, extract
+
+
+TOP_LEVEL_MARKDOWN_FILES = ("README.md", "DOCUMENTATION.md")
+_top_level_markdown_overrides: dict[str, Path] = {}
+
+
+def build_top_level_docstring(markdown_dir: Path) -> str:
+    return "\n".join(f".. include:: {(markdown_dir / name).resolve()}" for name in TOP_LEVEL_MARKDOWN_FILES)
+
+
+def configure_top_level_markdown_override(module_name: str, markdown_dir: Path | None) -> None:
+    if markdown_dir is None:
+        _top_level_markdown_overrides.pop(module_name, None)
+        return
+
+    _top_level_markdown_overrides[module_name] = markdown_dir.resolve()
+
+
+def _apply_top_level_markdown_overrides(all_modules: dict[str, doc.Module]) -> None:
+    for module_name, markdown_dir in _top_level_markdown_overrides.items():
+        module = all_modules.get(module_name)
+        if module is None:
+            continue
+
+        missing_files = [name for name in TOP_LEVEL_MARKDOWN_FILES if not markdown_dir.joinpath(name).exists()]
+        if missing_files:
+            warnings.warn(
+                f"Skipping markdown override for {module_name}: missing files in {markdown_dir}: {', '.join(missing_files)}"
+            )
+            continue
+
+        module.docstring = build_top_level_docstring(markdown_dir)
 
 
 def patched_pdoc(
@@ -18,12 +51,16 @@ def patched_pdoc(
 
     Rendering options can be configured by calling `pdoc.render.configure` in advance.
     """
+    doc.Module.from_name.cache_clear()
+    pdoc.docstrings.convert.cache_clear()
+
     all_modules: dict[str, doc.Module] = {}
     for module_name in extract.walk_specs(modules):
         all_modules[module_name] = doc.Module.from_name(module_name)
 
     # filter AutoMock objects
     all_modules = {k: v for k, v in all_modules.items() if isinstance(v.modulename, str)}
+    _apply_top_level_markdown_overrides(all_modules)
 
     for module in all_modules.values():
         out = render.html_module(module, all_modules)

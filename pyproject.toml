@@ -175,6 +175,4 @@ include = [
     "/LICENSE",
     "/pyproject.toml",
     "/CITATION.cff",
-    "/MODEL_LICENSES.md",
-    "/MODELS.md",
 ]

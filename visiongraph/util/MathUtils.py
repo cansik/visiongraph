@@ -118,7 +118,7 @@ class StreamingMovingAverage:
         return float(self.sum) / max(len(self.values), 1)
 
 
-def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: float = 1e-5) -> float:
+def intersection_over_union(a: Sequence[float], b: Sequence[float]) -> float:
     """
     Given two boxes `a` and `b` defined as a list of four numbers:
         [x1,y1,x2,y2]
@@ -131,8 +131,6 @@ def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: flo
 
     :param a: The first box defined by [x1,y1,x2,y2].
     :param b: The second box defined by [x1,y1,x2,y2].
-    :param epsilon: Small value to prevent division by zero. Defaults to 1e-5.
-
     :return: The Intersection over Union score.
     """
     # COORDINATES OF THE INTERSECTION BOX
@@ -154,8 +152,11 @@ def intersection_over_union(a: Sequence[float], b: Sequence[float], epsilon: flo
     area_b = (b[2] - b[0]) * (b[3] - b[1])
     area_combined = area_a + area_b - area_overlap
 
+    if area_combined <= 0.0:
+        return 0.0
+
     # RATIO OF AREA OF OVERLAP OVER COMBINED AREA
-    iou = area_overlap / (area_combined + epsilon)
+    iou = area_overlap / area_combined
     return iou
 
 

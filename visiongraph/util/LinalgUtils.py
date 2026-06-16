@@ -34,10 +34,10 @@ def project_points_to_pixels(points: np.ndarray, intrinsics: CameraIntrinsics) -
 
     :return: Numpy array of 2D pixel positions with shape (n, 2).
     """
-    pixels = np.zeros((points.shape[0], 3), dtype=float)
+    pixels = np.zeros((points.shape[0], 2), dtype=float)
 
-    pixels[:, 0] = points[0] / points[2]
-    pixels[:, 1] = points[1] / points[2]
+    pixels[:, 0] = points[:, 0] / points[:, 2]
+    pixels[:, 1] = points[:, 1] / points[:, 2]
 
     # todo: add distortion coefficients
     # https://github.com/IntelRealSense/librealsense/blob/5e73f7bb906a3cbec8ae43e888f182cc56c18692/include/librealsense2/rsutil.h#L15

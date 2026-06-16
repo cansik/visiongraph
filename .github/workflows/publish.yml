@@ -55,7 +55,7 @@ jobs:
 
       - name: Build
         run: |
-          make generate-repo
+          make generate-artifacts
           uv build
 
       - name: Upload dist artifacts

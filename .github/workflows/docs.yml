@@ -28,13 +28,10 @@ jobs:
         uses: astral-sh/setup-uv@v5
 
       - name: Sync dependencies
-        run: uv sync --all-extras --dev --group docs
-
-      - name: Generate code
-        run: uv run python -m scripts.generate_init
+        run: uv sync --dev --group docs
 
       - name: Build documentation
-        run: uv run python -m scripts.generate_doc
+        run: make docs
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

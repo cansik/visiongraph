@@ -14,7 +14,8 @@
 	fmt \
 	fmt-check \
 	generate-init \
-	generate-repo \
+	generate-public-markdown \
+	generate-artifacts \
 	help \
 	license-check \
 	lint \
@@ -37,8 +38,9 @@ help:
 	@echo "  lint              Run Ruff lint checks"
 	@echo "  autoformat        Format the repository and apply auto-fixable Ruff rules"
 	@echo "  generate-init     Regenerate the top-level visiongraph __init__.py"
+	@echo "  generate-public-markdown Generate build-only markdown variants with absolute GitHub links"
 	@echo "  attributions      Generate $(ATTRIBUTIONS_FILE) from repository model metadata"
-	@echo "  generate-repo     Regenerate repository-generated artifacts needed for distribution"
+	@echo "  generate-artifacts Regenerate repository-generated artifacts committed to the repository"
 	@echo "  list-estimators   Print discovered estimator config enums"
 	@echo "  license-check     Print dependency licenses from pyproject.toml"
 	@echo "  test              Run the full unittest suite"
@@ -73,10 +75,13 @@ check: ci-code test
 generate-init:
 	$(PYTHON) -m scripts.generate_init
 
+generate-public-markdown:
+	$(PYTHON) -m scripts.generate_public_markdown
+
 attributions:
 	$(PYTHON) -m scripts.generate_model_attributions --output $(ATTRIBUTIONS_FILE)
 
-generate-repo: generate-init attributions
+generate-artifacts: generate-init attributions
 
 list-estimators:
 	$(PYTHON) -m scripts.list_estimators
@@ -90,14 +95,14 @@ test:
 test-metadata:
 	$(PYTHON) -m unittest tests.test_repository_asset_metadata -v
 
-docs: generate-init
-	$(PYTHON) -m scripts.generate_doc
+docs: generate-init generate-public-markdown
+	$(PYTHON) -m scripts.generate_doc --public-markdown-dir build/public-markdown
 
 docs-serve: generate-init
 	$(PYTHON) -m scripts.generate_doc --launch
 
-build: generate-repo
-	$(UV) build
+build: generate-artifacts
+	$(PYTHON) -m scripts.build_package
 
 build-ci: build
 

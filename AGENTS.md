@@ -17,24 +17,24 @@ This file is for coding agents and automated contributors working in this reposi
 
 After each repository code change, run these steps before considering the work finished:
 
-1. `make generate-repo`
+1. `make generate-artifacts`
 2. `make autoformat`
 3. Run relevant tests for the touched area
 4. Update `README.md` and/or `DOCUMENTATION.md` when public behavior, public API, build workflow, extras, packaging, or usage changes
 
-`make generate-repo` is the aggregation point for generated repository artifacts required for distribution. At the moment it regenerates:
+`make generate-artifacts` is the aggregation point for generated repository artifacts required for distribution. At the moment it regenerates:
 
 - `visiongraph/vg/__init__.py`
 - `MODEL_ATTRIBUTIONS.md`
 
-If a future change introduces another generated artifact needed for packaging or distribution, extend `make generate-repo` and make CI use that target before build.
+If a future change introduces another generated artifact needed for packaging or distribution, extend `make generate-artifacts` and make CI use that target before build.
 
 ## Build And Distribution Rules
 
 - The build backend is Hatchling.
 - Define wheel and sdist file inclusion in `pyproject.toml`, not in `MANIFEST.in`.
 - `make build` is the standard path for creating the sdist and wheel.
-- For build-related CI or release steps, generate repository artifacts first by using `make generate-repo` before `uv build`.
+- For build-related CI or release steps, generate repository artifacts first by using `make generate-artifacts` before `uv build`.
 
 ## Scripts Vs Library Code
 
@@ -100,7 +100,7 @@ Even when using modern style, keep code compatible with the Python versions decl
 - `make build`
 
 - For repository asset metadata or repository-backed model config changes, always run `make test-metadata`.
-- For packaging or generated-artifact changes, run `make generate-repo` and `make build`.
+- For packaging or generated-artifact changes, run `make generate-artifacts` and `make build`.
 - For documentation renderer or docs-generation changes, run `make docs`.
 
 ## Asset Metadata Rules

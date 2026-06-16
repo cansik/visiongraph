@@ -221,16 +221,15 @@ class BoundingBox2D:
         shift = kernel_size // 2
         return BoundingBox2D(x - shift, y - shift, kernel_size, kernel_size)
 
-    def intersection_over_union(self, box: "BoundingBox2D", epsilon: float = 1e-5) -> float:
+    def intersection_over_union(self, box: "BoundingBox2D") -> float:
         """
         Computes the Intersection over Union (IoU) with another bounding box.
 
         :param box: The bounding box to compute the IoU with.
-        :param epsilon: A small value to avoid division by zero.
 
         :return: The IoU value between the two bounding boxes.
         """
-        return MathUtils.intersection_over_union(self.to_array(True), box.to_array(True), epsilon)
+        return MathUtils.intersection_over_union(self.to_array(True), box.to_array(True))
 
     def contains(self, p: vector.Vector2D) -> bool:
         """

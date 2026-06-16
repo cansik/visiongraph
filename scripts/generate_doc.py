@@ -189,6 +189,7 @@ def generate_doc(
     package_paths: List[Union[str, os.PathLike]],
     optional_modules: Sequence[str] = None,
     extra_asset_path: Union[str, os.PathLike] = "doc",
+    public_markdown_dir: Union[str, os.PathLike, None] = None,
     launch: bool = False,
 ):
     if optional_modules is None:
@@ -223,6 +224,10 @@ def generate_doc(
 
     # add optional modules as patch
     pdoc_monkeypatch.patch()
+    pdoc_monkeypatch.configure_top_level_markdown_override(
+        package_name,
+        Path(public_markdown_dir) if public_markdown_dir is not None else None,
+    )
     for module_name in optional_modules:
         if module_name not in sys.modules:
             sys.modules[module_name] = AutoMock(module_name)
@@ -263,6 +268,11 @@ def main() -> None:
     parser.add_argument("--output", default="docs", help="Output path for the generated documentation.")
     parser.add_argument("--launch", action="store_true", help="Launch the pdoc web server instead of exiting.")
     parser.add_argument("--extra-assets", default="doc", help="Path to extra documentation assets.")
+    parser.add_argument(
+        "--public-markdown-dir",
+        default=None,
+        help="Optional directory containing build-time README.md and DOCUMENTATION.md overrides.",
+    )
     args = parser.parse_args()
 
     from scripts.import_analyzer import VisiongraphAnalyzer
@@ -277,6 +287,7 @@ def main() -> None:
         config.doc_modules,
         result.optional_modules,
         extra_asset_path=args.extra_assets,
+        public_markdown_dir=args.public_markdown_dir,
         launch=args.launch,
     )
 

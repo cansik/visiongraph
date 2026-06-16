@@ -1,4 +1,4 @@
-name: Release Validation
+name: PR Validation
 
 on:
   pull_request:
@@ -7,8 +7,11 @@ on:
 
 jobs:
   validate:
-    name: Build & Test (Ubuntu)
+    name: Quick Validation (Ubuntu)
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
 
@@ -20,17 +23,30 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
 
-      - name: Build package
+      - name: Sync dependencies
         run: |
-          make generate-repo
-          uv build
+          uv sync --dev --group docs
 
-      - name: Install from wheel
+      - name: Regenerate repository artifacts
         run: |
-          WHEEL=$(ls dist/*.whl)
-          pip install "${WHEEL}[mediapipe,depthai]"
+          make generate-artifacts
 
-      - name: Run MediaPipe Pose E2E Test
+      - name: Verify generated files are up to date
         run: |
-          # Run a single model test to verify the installation and automatic model download
-          python -m unittest discover -s ./tests -t ./ -v -k test_mediapipe_pose_estimator
+          git diff --exit-code -- visiongraph/vg/__init__.py MODEL_ATTRIBUTIONS.md
+
+      - name: Check repository asset metadata
+        run: |
+          make test-metadata
+
+      - name: Run quick unit tests
+        run: |
+          uv run python -m unittest tests.test_lazy_import tests.test_graph_node tests.test_repo_maintenance_scripts -v
+
+      - name: Build documentation
+        run: |
+          make docs
+
+      - name: Build distributable artifacts
+        run: |
+          make build

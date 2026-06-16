@@ -615,7 +615,9 @@ print(asset.path)
 The default repository is located
 at [huggingface.co/cansik/visiongraph](https://huggingface.co/cansik/visiongraph/tree/main). It is possible to change
 the repository URL or add custom headers for authentication. Model provenance and license details for bundled and
-repository-hosted assets are documented in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md).
+repository-hosted assets are documented in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md). The visiongraph library code
+is MIT-licensed, but individual downloadable models may be licensed differently, including copyleft licenses such as
+AGPL or GPL.
 
 ## Utilities
 

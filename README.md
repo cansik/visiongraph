@@ -80,6 +80,9 @@ This installs Visiongraph together with the official `mediapipe` package, which 
 ## Model Assets
 
 Most estimators download their model files on demand and store them in `~/.visiongraph/assets/` by default. Set `VISIONGRAPH_ASSET_DIR` to use a different location.
+Visiongraph itself is released under the MIT License, but individual downloadable models can use different licenses,
+including copyleft terms such as AGPL or GPL. Check [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md) for the license of
+the specific model you plan to ship, redistribute, or use in a commercial product.
 
 
 ## Examples
@@ -117,14 +120,10 @@ uv sync --all-extras --dev --group docs
 ```
 
 ### Build
-To build a new wheel package of visiongraph, run the following commands in the repository root. The generated wheel and source distribution will be placed in `./dist`.
+To build a new wheel package of visiongraph, run the following command in the repository root. The generated wheel and source distribution will be placed in `./dist`.
 
 ```bash
-# regenerate distributable repo artefacts
-make generate-repo
-
-# build wheel and source distribution
-uv build
+make build
 ```
 
 ### Docs
@@ -132,11 +131,11 @@ uv build
 To generate the documentation, use the following commands:
 
 ```bash
-# create the documentation into "./docs"
-uv run python -m scripts.generate_doc
+# create deployable documentation into "./docs"
+make docs
 
-# launch pdoc webserver
-uv run python -m scripts.generate_doc --launch
+# launch the local pdoc webserver
+make docs-serve
 ```
 
 ### Linter
@@ -185,7 +184,7 @@ wheel                 MIT License
 
 For more information about the dependencies, see [pyproject.toml](pyproject.toml).
 
-Please **note** that some models, such as Ultralytics YOLOv8 and YOLOv11, have their own licenses (for example AGPLv3). Model provenance and license information is listed in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md).
+Please **note** that the library code is MIT-licensed, but some downloadable models, such as Ultralytics YOLOv8 and YOLOv11, use their own licenses (for example AGPLv3). Model provenance and license information is listed in [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md).
 
 ## Credits
 
