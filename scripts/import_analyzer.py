@@ -57,15 +57,15 @@ class ModuleAnalyzer:
         results: List[Dependency] = []
         module = file_path.replace("/", ".").replace("\\", ".").replace(".py", "")
         optional = False
+        is_excluded_module = any([module.startswith(e) for e in self.excluded_modules])
 
-        # skip if is excluded
-        if any([module.startswith(e) for e in self.excluded_modules]):
-            return results
+        if module.endswith(".__init__"):
+            dependency_graph[module].append(module.removesuffix(".__init__"))
 
         nodes = ast.parse(source)
         for node in ast.iter_child_nodes(nodes):
             # classes
-            if isinstance(node, ast.ClassDef):
+            if isinstance(node, ast.ClassDef) and not is_excluded_module:
                 results.append(Dependency(module, node.name, optional))
 
             # imports to check if is optional module
@@ -76,12 +76,17 @@ class ModuleAnalyzer:
                         optional = True
 
             elif isinstance(node, ast.ImportFrom):
-                dependency_graph[node.module].append(module)
-                if any([node.module.startswith(e) for e in self.optional_modules]):
+                imported_module = self.resolve_import_from_module(module, node.module, node.level)
+                if imported_module is not None:
+                    dependency_graph[imported_module].append(module)
+                if imported_module is not None and any([imported_module.startswith(e) for e in self.optional_modules]):
                     optional = True
 
                 for import_name in node.names:
-                    dependency_graph[import_name.name].append(module)
+                    if node.level > 0 and node.module is None and imported_module is not None:
+                        dependency_graph[f"{imported_module}.{import_name.name}"].append(module)
+                    else:
+                        dependency_graph[import_name.name].append(module)
                     if any([import_name.name.startswith(e) for e in self.optional_modules]):
                         optional = True
 
@@ -94,6 +99,27 @@ class ModuleAnalyzer:
         results = [r for r in results if not r.name.startswith("_")]
 
         return results
+
+    @staticmethod
+    def resolve_import_from_module(module: str, import_module: str | None, level: int) -> str | None:
+        if level == 0:
+            return import_module
+
+        if module.endswith(".__init__"):
+            current_package = module.removesuffix(".__init__")
+        else:
+            current_package = module.rpartition(".")[0]
+
+        for _ in range(level - 1):
+            current_package = current_package.rpartition(".")[0]
+
+        if import_module is None:
+            return current_package or None
+
+        if current_package:
+            return f"{current_package}.{import_module}"
+
+        return import_module
 
     def analyze(self) -> ModuleAnalysisResult:
         result = ModuleAnalysisResult()
@@ -111,8 +137,13 @@ class ModuleAnalyzer:
 
         # go through dependencies to find reverse-recursive optional modules
         optional_modules = [m for m in dependencies.keys() if any([m.startswith(e) for e in self.optional_modules])]
+        visited_optional_modules: Set[str] = set()
         while optional_modules:
             module = optional_modules.pop()
+            if module in visited_optional_modules:
+                continue
+
+            visited_optional_modules.add(module)
             result.optional_modules.append(module)
             for element in imports_dict[module]:
                 element.optional = True

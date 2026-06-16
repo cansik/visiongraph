@@ -56,6 +56,7 @@ class AutoMock(MagicMock):
     def __init__(self, name=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.name = name
+        self.__path__ = []
 
     def __getattr__(self, name):
         # Avoid recursion for internal MagicMock attributes
@@ -66,9 +67,6 @@ class AutoMock(MagicMock):
         return AutoMock(name)
 
     def __name__(self):
-        return self.name
-
-    def __path__(self):
         return self.name
 
 

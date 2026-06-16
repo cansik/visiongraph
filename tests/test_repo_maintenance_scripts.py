@@ -10,6 +10,7 @@ from scripts import (
     build_package,
     generate_model_attributions,
     generate_public_markdown,
+    import_analyzer,
     license_check,
     list_estimators,
     model_asset_inventory,
@@ -207,6 +208,45 @@ class PdocMonkeypatchTests(unittest.TestCase):
 
         self.assertIn(str((temp_path / "README.md").resolve()), docstring)
         self.assertIn(str((temp_path / "DOCUMENTATION.md").resolve()), docstring)
+
+
+class ImportAnalyzerTests(unittest.TestCase):
+    def test_analyze_propagates_optional_modules_through_excluded_relative_imports(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            temp_path = Path(temp_dir)
+            package_root = temp_path / "samplepkg"
+            external_root = package_root / "external" / "optional_pkg"
+            external_root.mkdir(parents=True)
+
+            (package_root / "__init__.py").write_text("\n", encoding="utf-8")
+            (package_root / "consumer.py").write_text(
+                "from samplepkg.external.optional_pkg import OptionalThing\n",
+                encoding="utf-8",
+            )
+            (package_root / "external" / "__init__.py").write_text("\n", encoding="utf-8")
+            (external_root / "__init__.py").write_text(
+                "from .module import OptionalThing\n",
+                encoding="utf-8",
+            )
+            (external_root / "module.py").write_text(
+                "from filterpy.common import helper\n\nclass OptionalThing:\n    pass\n",
+                encoding="utf-8",
+            )
+
+            analyzer = import_analyzer.ModuleAnalyzer(
+                root_package="samplepkg",
+                excluded_modules={"samplepkg.external"},
+                late_import_modules=set(),
+                optional_modules={"filterpy"},
+                module_with_methods=set(),
+            )
+
+            with contextlib.chdir(temp_path):
+                result = analyzer.analyze()
+
+        self.assertIn("samplepkg.consumer", result.optional_modules)
+        self.assertIn("samplepkg.external.optional_pkg.__init__", result.optional_modules)
+        self.assertIn("samplepkg.external.optional_pkg.module", result.optional_modules)
 
 
 class BuildPackageTests(unittest.TestCase):

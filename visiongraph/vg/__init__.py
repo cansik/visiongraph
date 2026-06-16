@@ -493,7 +493,10 @@ if TYPE_CHECKING:
     from visiongraph.tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker  # noqa: F401
     from visiongraph.tracker.CentroidTracker import CentroidTracker  # noqa: F401
     from visiongraph.tracker.FlateTracker import FlateTracker  # noqa: F401
-    from visiongraph.tracker.MotpyTracker import MotpyTracker  # noqa: F401
+    try:
+        from visiongraph.tracker.MotpyTracker import MotpyTracker # noqa: F401
+    except ModuleNotFoundError:
+        logging.info("Module MotpyTracker not found")
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentResult  # noqa: F401
     from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver  # noqa: F401
     from visiongraph.tracker.storage.ObjectDetectionTrackingStorage import ObjectDetectionTrack  # noqa: F401
@@ -821,7 +824,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "BaseObjectDetectionTracker": _LazyImport("BaseObjectDetectionTracker", "visiongraph.tracker.BaseObjectDetectionTracker", False),
     "CentroidTracker": _LazyImport("CentroidTracker", "visiongraph.tracker.CentroidTracker", False),
     "FlateTracker": _LazyImport("FlateTracker", "visiongraph.tracker.FlateTracker", False),
-    "MotpyTracker": _LazyImport("MotpyTracker", "visiongraph.tracker.MotpyTracker", False),
+    "MotpyTracker": _LazyImport("MotpyTracker", "visiongraph.tracker.MotpyTracker", True),
     "ObjectAssignmentResult": _LazyImport("ObjectAssignmentResult", "visiongraph.tracker.ObjectAssignmentSolver", False),
     "ObjectAssignmentSolver": _LazyImport("ObjectAssignmentSolver", "visiongraph.tracker.ObjectAssignmentSolver", False),
     "ObjectDetectionTrack": _LazyImport("ObjectDetectionTrack", "visiongraph.tracker.storage.ObjectDetectionTrackingStorage", False),
