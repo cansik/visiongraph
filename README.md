@@ -126,6 +126,12 @@ To build a new wheel package of visiongraph, run the following command in the re
 make build
 ```
 
+To download local copies of all model license texts referenced by repository-backed assets, run:
+
+```bash
+make download-model-licenses
+```
+
 ### Docs
 
 To generate the documentation, use the following commands:
