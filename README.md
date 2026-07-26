@@ -39,6 +39,15 @@ with (vg.VideoCaptureInput() as cam,
 
 Get started with `visiongraph` by reading the **[documentation](https://cansik.github.io/visiongraph/visiongraph.html#documentation)**.
 
+## Research Origins
+
+Visiongraph grew out of a research repository created to support research projects and rapid prototyping. It has since been used across a range of academic, artistic, and applied projects. Representative examples include:
+
+- [Are You Talking to Me? A Case Study in Emotional Human-Machine Interaction](https://ojs.aaai.org/index.php/AIIDE/article/view/27538)
+- [reconFIGURE: Confronting Audiences with Digital Doppelgängers](https://dl.acm.org/doi/abs/10.1145/3664208)
+- [Space Stream](https://github.com/cansik/space-stream)
+- [Kamituga | Digital Gold](https://blog.zhdk.ch/digitalgold/)
+
 ## Installation
 Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In practice, version compatibility is usually limited by third-party dependencies rather than by visiongraph itself.
 
