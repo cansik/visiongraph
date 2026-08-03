@@ -18,7 +18,7 @@ class FaceDetectionExample(BaseGraph):
         self.add_nodes(self.input, self.network)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

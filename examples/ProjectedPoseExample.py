@@ -1,7 +1,7 @@
 import argparse
 import logging
 from argparse import ArgumentParser
-from typing import Optional, Callable, List
+from collections.abc import Callable
 
 import numpy as np
 import open3d as o3d
@@ -23,12 +23,10 @@ class ProjectedPoseExample(vg.BaseGraph):
         self.network = pose_network
 
         self.add_nodes(self.input, self.network)
-        self.on_result_ready: Optional[Callable[[List[vg.PoseLandmarkResult]], None]] = None
-
-        self.use_projection = True
+        self.on_result_ready: Callable[[list[vg.PoseLandmarkResult]], None] | None = None
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return
@@ -46,19 +44,13 @@ class ProjectedPoseExample(vg.BaseGraph):
                     pose.landmarks.z[i] = 0
                     continue
 
-                if self.use_projection:
-                    p = rs.pixel_to_point(lm.x, lm.y)
+                point = rs.pixel_to_point(lm.x, lm.y)
+                point = point.add(translation_vector)
+                point = point.rotateX(-np.radians(args.angle))
 
-                    # translate & rotate points
-                    p = p.add(translation_vector)
-                    p = p.rotateX(-np.radians(args.angle))
-
-                    pose.landmarks.x[i] = p.x
-                    pose.landmarks.y[i] = p.y
-                    pose.landmarks.z[i] = p.z
-                else:
-                    depth = rs.distance(lm.x, lm.y)
-                    pose.landmarks.z[i] = depth
+                pose.landmarks.x[i] = point.x
+                pose.landmarks.y[i] = point.y
+                pose.landmarks.z[i] = point.z
 
         for result in results:
             result.annotate(frame)
@@ -95,8 +87,8 @@ class MainWindow:
 
         self.vis.add_geometry("realsense", self.camera_geometry)
 
-        self.pose_cloud: Optional[o3d.geometry.PointCloud] = None
-        self.lines: Optional[o3d.geometry.LineSet] = None
+        self.pose_cloud: o3d.geometry.PointCloud | None = None
+        self.lines: o3d.geometry.LineSet | None = None
 
         gui.Application.instance.add_window(self.vis)
 
@@ -114,7 +106,7 @@ class MainWindow:
         gui.Application.instance.post_to_main_thread(self.vis, gui.Application.instance.quit)
         raise ex
 
-    def on_result_ready(self, results: List[vg.PoseLandmarkResult]):
+    def on_result_ready(self, results: list[vg.PoseLandmarkResult]):
         pose_detected = False
 
         if len(results) > 0:
@@ -159,9 +151,6 @@ class MainWindow:
                 self.vis.reset_camera_to_default()
                 self._first_run = False
             elif not self._first_run and pose_detected:
-                # not working atm
-                # update_flags = (rendering.Scene.UPDATE_POINTS_FLAG | rendering.Scene.UPDATE_COLORS_FLAG)
-                # self.vis.update_geometry("pose", self.pose_cloud, update_flags)
                 self.vis.remove_geometry("pose")
                 self.vis.add_geometry("pose", self.pose_cloud)
 
@@ -214,7 +203,7 @@ if __name__ == "__main__":
 
     if args.input is not vg.RealSenseInput:
         logging.error("This example only runs with a RealSense Input")
-        exit(1)
+        raise SystemExit(1)
 
     args.depth = True
     main()

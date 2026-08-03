@@ -1,33 +1,54 @@
+import argparse
+
 import cv2
 import numpy as np
 
 from visiongraph import vg
 
-if __name__ == "__main__":
+
+def main():
+    parser = argparse.ArgumentParser(
+        "Face Mesh Eye State Example", description="Classify each detected eye as open or closed."
+    )
+    vg.VisionGraph.add_params(parser)
+    args = parser.parse_args()
+
     face_mesh = vg.MediaPipeFaceMeshEstimator()
     face_mesh.setup()
 
     eye_classifier = vg.EyeOpenClosedEstimator()
     eye_classifier.setup()
 
-    def check_eye_closed(image: np.ndarray):
+    def annotate_eye_states(image: np.ndarray) -> np.ndarray:
         faces = face_mesh.process(image)
-        if len(faces) == 0:
-            return
+        if not faces:
+            return image
+
         face = faces[0]
 
-        # extract roi
         for name, indices in [("left", face.LEFT_EYE_BOX_INDICES), ("right", face.RIGHT_EYE_BOX_INDICES)]:
-            left_box = vg.bbox_from_landmarks(face.landmarks[indices]).scale_centered(0.3, 0.3)
-            roi, xs, ys = vg.roi_safe(image, left_box, rectified=True)
+            eye_box = vg.bbox_from_landmarks(face.landmarks[indices]).scale_centered(0.3, 0.3)
+            roi, _, _ = vg.roi_safe(image, eye_box, rectified=True)
 
             result = eye_classifier.process(roi)
-            print(f"{name}: {result.class_name}")
+            vg.draw_bbox(image, eye_box)
+            vg.draw_text_normalized(
+                image,
+                f"{name}: {result.class_name}",
+                eye_box.top_left,
+                font=cv2.FONT_HERSHEY_PLAIN,
+            )
 
-            cv2.imshow(f"ROI {name}", roi)
+        return image
 
     graph = (
-        vg.create_graph(name="VisionGraph", input_node=vg.VideoCaptureInput(), handle_signals=True)
-        .then(vg.custom(check_eye_closed))
-        .then(vg.ImagePreview())
-    ).open()
+        vg.create_graph(name="Face Mesh Eye State", input_node=args.input(), handle_signals=True)
+        .then(vg.custom(annotate_eye_states), vg.ImagePreview())
+        .build()
+    )
+    graph.configure(args)
+    graph.open()
+
+
+if __name__ == "__main__":
+    main()

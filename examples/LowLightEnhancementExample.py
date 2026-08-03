@@ -8,7 +8,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     graph = (
-        vg.create_graph(name="LowLight Example", input_node=vg.VideoCaptureInput(), handle_signals=True)
+        vg.create_graph(name="LowLight Example", input_node=args.input(), handle_signals=True)
         .then(vg.ImagePreview("input"))
         .then(vg.MBLLENEstimator.create())
         .then(vg.ImagePreview("corrected"))

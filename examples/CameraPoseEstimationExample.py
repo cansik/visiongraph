@@ -12,11 +12,11 @@ from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 class CameraPoseEstimationExample(BaseGraph):
-    def __init__(self, input: BaseInput):
+    def __init__(self, input: BaseInput, intrinsics_path: str):
         super().__init__()
         self.input = input
 
-        intrinsics = CameraIntrinsics.load("media/calibration.json")
+        intrinsics = CameraIntrinsics.load(intrinsics_path)
 
         self.network = ArUcoCameraPoseEstimator(
             camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
@@ -25,12 +25,11 @@ class CameraPoseEstimationExample(BaseGraph):
         self.add_nodes(self.input, self.network)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return
 
-        # gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY)
         result = self.network.process(frame)
 
         if result is not None:
@@ -49,7 +48,7 @@ class CameraPoseEstimationExample(BaseGraph):
 
 
 def main():
-    pipeline = CameraPoseEstimationExample(args.input())
+    pipeline = CameraPoseEstimationExample(args.input(), args.intrinsics)
     pipeline.configure(args)
     pipeline.open()
 
@@ -59,6 +58,7 @@ if __name__ == "__main__":
     add_logging_parameter(parser)
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group)
+    parser.add_argument("--intrinsics", required=True, help="Path to the camera intrinsics file.")
 
     args = parser.parse_args()
 

@@ -3,7 +3,6 @@ import glob
 import os
 import os.path
 from argparse import ArgumentParser
-from typing import Optional, List
 
 import cv2
 import numpy as np
@@ -11,10 +10,10 @@ from scipy.optimize import linear_sum_assignment
 from scipy.spatial.distance import cdist
 
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator
+from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.result.EmbeddingResult import EmbeddingResult
@@ -34,16 +33,16 @@ def get_files_in_path(path: str, extensions: list[str] | None = None) -> list[st
 
 class Target:
     name: str
-    image: Optional[np.ndarray]
-    embeddings: Optional[np.ndarray]
+    image: np.ndarray | None
+    embeddings: np.ndarray | None
     auto_tracked: bool
     overlap: float
 
     def __init__(
         self,
         name: str,
-        image: Optional[np.ndarray] = None,
-        embeddings: Optional[np.ndarray] = None,
+        image: np.ndarray | None = None,
+        embeddings: np.ndarray | None = None,
         auto_tracked: bool = False,
         overlap: float = 10000.0,
     ):
@@ -68,7 +67,7 @@ class FindFaceExample(BaseGraph):
         self.threshold = 0.25
         self.add_unknown = False
 
-        self.targets: List[Target] = []
+        self.targets: list[Target] = []
 
     def _init(self):
         super()._init()
@@ -82,7 +81,7 @@ class FindFaceExample(BaseGraph):
             target.overlap = recognition_result.landmark_overlap
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return
@@ -98,8 +97,8 @@ class FindFaceExample(BaseGraph):
 
     def recognize(self, frame: np.ndarray, results: ResultList[SpatialCascadeResult]):
         # estimate face embeddings for results
-        recognition_results: List[EmbeddingResult] = []
-        for tr, result in enumerate(results):
+        recognition_results: list[EmbeddingResult] = []
+        for result in results:
             embedding = self.recognition_net.process_detection(frame, result)
             recognition_results.append(embedding)
 
@@ -110,15 +109,12 @@ class FindFaceExample(BaseGraph):
 
         # solve linear assignment
         row_ind, col_ind = linear_sum_assignment(costs)
-        lookup_table = dict(zip(row_ind.tolist(), col_ind.tolist()))
-
-        # unsued, but here is how to calculate the matching error:
-        # matching_error = costs[row_ind, col_ind].sum() / costs.shape[0]
+        lookup_table = dict(zip(row_ind.tolist(), col_ind.tolist(), strict=True))
 
         # display results
         for i, result in enumerate(results):
             color = (255, 255, 255)
-            info_text: Optional[str] = None
+            info_text: str | None = None
 
             recognition_result = recognition_results[i]
 
@@ -132,10 +128,7 @@ class FindFaceExample(BaseGraph):
                 if distance < self.threshold:
                     has_been_recognized = True
 
-                    if target.auto_tracked:
-                        color = (0, 255, 255)
-                    else:
-                        color = (0, 255, 0)
+                    color = (0, 255, 255) if target.auto_tracked else (0, 255, 0)
 
                     # update embeddings if overlap is better
                     overlap = recognition_result.landmark_overlap

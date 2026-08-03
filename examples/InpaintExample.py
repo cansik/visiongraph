@@ -1,6 +1,5 @@
 import argparse
 from argparse import ArgumentParser
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -18,12 +17,12 @@ class InpaintExample(BaseGraph):
         self.input = input
         self.network = GMCNNInpainter.create()
 
-        self.mask: Optional[np.ndarray] = None
+        self.mask: np.ndarray | None = None
 
         self.add_nodes(self.input, self.network)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

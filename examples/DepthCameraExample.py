@@ -4,9 +4,9 @@ from argparse import ArgumentParser
 import cv2
 import numpy as np
 
-from visiongraph import add_logging_parameter
 from visiongraph import vg
 from visiongraph.input import add_input_step_choices
+from visiongraph.util.LoggingUtils import add_logging_parameter
 
 
 class DepthCameraExample(vg.BaseGraph):
@@ -16,7 +16,7 @@ class DepthCameraExample(vg.BaseGraph):
         self.add_nodes(self.input)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

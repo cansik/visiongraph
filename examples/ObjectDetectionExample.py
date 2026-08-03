@@ -4,9 +4,9 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Detector, DEIMv2Config
-from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
+from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Config, DEIMv2Detector
 from visiongraph.estimator.spatial.SlidingWindowEstimator import SlidingWindowEstimator
+from visiongraph.estimator.spatial.SSDDetector import SSDConfig, SSDDetector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.NMSOptions import NMSOptions
@@ -14,24 +14,15 @@ from visiongraph.tracker.CentroidTracker import CentroidTracker
 from visiongraph.tracker.FlateTracker import FlateTracker
 from visiongraph.tracker.ObjectAssignmentSolver import ObjectAssignmentSolver
 from visiongraph.util.LoggingUtils import add_logging_parameter, setup_logging
-from visiongraph.util.TimeUtils import Watch
 
 
 class ObjectDetectionExample(BaseGraph):
     def __init__(self, input: BaseInput, sliding_window=False):
         super().__init__()
         self.input = input
-        # self.network = CrowdHumanDetector.create(CrowdHumanConfig.YOLOv5_N_640)
-
-        # self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_N)
-        # self.network = YOLOv8Detector.create(YOLOv8Config.YOLOv8_S_Open_Images_V7)
 
         self.network = DEIMv2Detector.create(DEIMv2Config.DEIMv2_HgNetv2_Pico_COCO)
-        # self.network = DEIMv2Detector.create(DEIMv2Config.DEIMv2_HgNetv2_N_COCO)
         self.network.nms_options = NMSOptions()
-
-        # self.network = YOLOv5Detector.create(YOLOv5Config.YOLOv5_N)
-        # self.network = YOLOv8OBBDetector.create(YOLOv8OBBConfig.YOLOv8_OBB_N)
 
         if sliding_window:
             self.network = SlidingWindowEstimator(
@@ -44,14 +35,12 @@ class ObjectDetectionExample(BaseGraph):
         self.add_nodes(self.input, self.network, self.tracker)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return
 
-        with Watch("Process"):
-            results = self.network.process(frame)
-
+        results = self.network.process(frame)
         results = self.tracker.process(results)
 
         for result in results:

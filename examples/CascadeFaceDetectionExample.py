@@ -4,11 +4,11 @@ from argparse import ArgumentParser
 import cv2
 
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.estimator.spatial.face.AdasFaceDetector import AdasFaceDetector
 from visiongraph.estimator.spatial.face.emotion.FERPlusEmotionClassifier import FERPlusEmotionClassifier
 from visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator import RegressionLandmarkEstimator
 from visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator import AdasHeadPoseEstimator
+from visiongraph.estimator.spatial.SpatialCascadeEstimator import SpatialCascadeEstimator
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -22,14 +22,13 @@ class CascadeFaceDetectionExample(BaseGraph):
             AdasFaceDetector.create(),
             landmarks=RegressionLandmarkEstimator(),
             head_pose=AdasHeadPoseEstimator(),
-            # emotion=AffectNetEmotionClassifier(ModelPrecision.INT8),
             emotion2=FERPlusEmotionClassifier(),
         )
 
         self.add_nodes(self.input, self.network)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

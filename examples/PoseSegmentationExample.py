@@ -23,7 +23,7 @@ class PoseSegmentationExample(BaseGraph):
         self.add_nodes(self.input, self.network)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return
@@ -36,7 +36,7 @@ class PoseSegmentationExample(BaseGraph):
         self.fps_tracer.update()
         cv2.putText(
             frame,
-            "FPS: %.0f" % self.fps_tracer.smooth_fps,
+            f"FPS: {self.fps_tracer.smooth_fps:.0f}",
             (7, 40),
             cv2.FONT_HERSHEY_SIMPLEX,
             1.0,
@@ -63,7 +63,6 @@ def main():
 if __name__ == "__main__":
     parser = argparse.ArgumentParser("Pose Segmentation Example", description="Example Pipeline")
     add_logging_parameter(parser)
-    parser.add_argument("-p", "--performance", action="store_true", help="Enable performance test (no UI).")
 
     input_group = parser.add_argument_group("input provider")
     add_input_step_choices(input_group)

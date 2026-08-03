@@ -20,7 +20,7 @@ class InputExample(BaseGraph):
         self.fps_tracer = FPSTracer()
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

@@ -1,6 +1,5 @@
 import argparse
 from argparse import ArgumentParser
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -9,7 +8,7 @@ from tqdm import tqdm
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.dsp.OneEuroFilterNumba import OneEuroFilterNumba
 from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
-from visiongraph.input import add_input_step_choices, VideoCaptureInput
+from visiongraph.input import VideoCaptureInput, add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.recorder.CV2VideoRecorder import CV2VideoRecorder
 from visiongraph.util.LoggingUtils import add_logging_parameter
@@ -24,15 +23,15 @@ class RGBDSmoother(BaseGraph):
         self.input.loop = False
         self.input.fps_lock = False
 
-        self.filter: Optional[OneEuroFilterNumpy] = None
+        self.filter: OneEuroFilterNumpy | None = None
         self.output_path = None
 
-        self.recorder: Optional[CV2VideoRecorder] = None
+        self.recorder: CV2VideoRecorder | None = None
         self.fps_tracer = FPSTracer()
 
         self.add_nodes(self.input)
 
-        self.progress_bar: Optional[tqdm] = None
+        self.progress_bar: tqdm | None = None
 
     def _init(self):
         super()._init()
@@ -40,7 +39,7 @@ class RGBDSmoother(BaseGraph):
         self.progress_bar = tqdm(desc="smoothing", total=self.input.frame_count)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             self.close()
@@ -87,7 +86,7 @@ class RGBDSmoother(BaseGraph):
         self.fps_tracer.update()
         cv2.putText(
             stacked,
-            "FPS: %.0f" % self.fps_tracer.smooth_fps,
+            f"FPS: {self.fps_tracer.smooth_fps:.0f}",
             (7, 40),
             cv2.FONT_HERSHEY_SIMPLEX,
             1.0,
@@ -111,13 +110,6 @@ class RGBDSmoother(BaseGraph):
     def configure(self, args: argparse.Namespace):
         super().configure(args)
         self.output_path = args.output
-
-    @staticmethod
-    def get_gradient_2d(start, stop, width, height, is_horizontal):
-        if is_horizontal:
-            return np.tile(np.linspace(start, stop, width), (height, 1))
-        else:
-            return np.tile(np.linspace(start, stop, height), (width, 1)).T
 
     @staticmethod
     def add_params(parser: ArgumentParser):

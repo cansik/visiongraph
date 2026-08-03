@@ -1,6 +1,6 @@
 import argparse
+from collections.abc import Sequence
 from dataclasses import dataclass
-from typing import Optional, Sequence
 
 import cv2
 import numpy as np
@@ -23,7 +23,7 @@ class VVADOptions:
     landmark_indices: Sequence[int] = vg.BlazeFaceMesh.FEATURES_148
     min_score: float = 0.75
 
-    landmark_indices_numpy: Optional[np.ndarray] = None
+    landmark_indices_numpy: np.ndarray | None = None
 
     def __post_init__(self):
         # pre-calculate this indices array
@@ -43,9 +43,9 @@ class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
 
     vvad_options: VVADOptions
     face_mesh: vg.BlazeFaceMesh
-    feature_buffer: Optional[RollingBufferNumpy] = None
-    vvad_result: Optional[vg.VivaVADResult] = None
-    filtered_speaking_score: Optional[vg.OneEuroFilter] = None
+    feature_buffer: RollingBufferNumpy | None = None
+    vvad_result: vg.VivaVADResult | None = None
+    filtered_speaking_score: vg.OneEuroFilter | None = None
 
     @property
     def tracking_id(self) -> int:
@@ -116,8 +116,6 @@ class TrackedFace(vg.BaseResult, vg.SimpleTrackable):
         box_color = (0, 255, 0) if is_speaking else (0, 0, 255)
         vg.draw_bbox(image, bbox, color=box_color)
 
-        # self.face_mesh.annotate(image, landmark_colors=landmark_colors)
-
 
 class VVADApplication:
     """
@@ -176,7 +174,7 @@ class VVADApplication:
         results = self.vvad.process([face.feature_buffer.get() for face in valid_faces])
 
         # update faces with results
-        for face, result in zip(valid_faces, results):
+        for face, result in zip(valid_faces, results, strict=False):
             face.vvad_result = result
 
         return faces

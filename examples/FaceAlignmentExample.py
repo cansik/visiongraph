@@ -1,5 +1,4 @@
 import argparse
-from typing import List, Optional
 
 import cv2
 import numpy as np
@@ -7,8 +6,6 @@ import numpy as np
 from visiongraph import vg
 
 FACE_KEY = "face"
-
-pipeline: Optional[vg.VisionGraph] = None
 
 output_size = vg.Size2D(512, 512)
 blank_image = np.zeros((output_size.height, output_size.width, 3), dtype=np.uint8)
@@ -42,7 +39,7 @@ def extract_landmarks(data) -> vg.ResultList[vg.FaceLandmarkResult]:
 
 def extract_face_texture(result: vg.ResultDict, recognizer: vg.FaceReidentificationEstimator) -> vg.ResultDict:
     image: np.ndarray = result["image"]
-    faces: List[vg.FaceLandmarkResult] = result["faces"]
+    faces: list[vg.FaceLandmarkResult] = result["faces"]
 
     if len(faces) == 0:
         result[FACE_KEY] = blank_image
@@ -52,7 +49,7 @@ def extract_face_texture(result: vg.ResultDict, recognizer: vg.FaceReidentificat
     face.bounding_box = face.bounding_box.scale_centered(0.5, 0.5)
     roi, detection = vg.extract_object_detection_roi(image, face)
 
-    aligned_face, landmark_overlap = recognizer._align_face(roi, detection, normalized_keypoints)
+    aligned_face, _ = recognizer._align_face(roi, detection, normalized_keypoints)
     aligned_face = cv2.resize(aligned_face, (output_size.width, output_size.height))
     result[FACE_KEY] = aligned_face
     return result
@@ -64,22 +61,16 @@ def main():
     vg.CentroidTracker.add_params(parser)
     args = parser.parse_args()
 
-    # hack to use face alignment from face recognition
     recognizer = vg.FaceReidentificationEstimator.create()
 
-    global pipeline
     pipeline = (
         vg.create_graph(name="Face Texture Detection", handle_signals=True)
         .apply(
             faces=vg.sequence(
-                # different networks
-                # vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
-                # vg.SpatialCascadeEstimator(vg.AdasFaceDetector.create(), landmarks=vg.RegressionLandmarkEstimator()),
                 vg.SpatialCascadeEstimator(
                     vg.MediaPipeFaceDetector(vg.MediaPipeFaceModel.Full_Range),
                     landmarks=vg.RegressionLandmarkEstimator(),
                 ),
-                # vg.MediaPipeFaceMeshEstimator(),
                 vg.custom(extract_landmarks),
                 vg.CentroidTracker(),
                 vg.LandmarkSmoothFilter(min_cutoff=1.0, beta=0.03),

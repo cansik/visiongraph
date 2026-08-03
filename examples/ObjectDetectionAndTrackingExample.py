@@ -3,8 +3,9 @@ from argparse import ArgumentParser
 
 import cv2
 import numpy as np
+
 from visiongraph.BaseGraph import BaseGraph
-from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Detector, DEIMv2Config
+from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Config, DEIMv2Detector
 from visiongraph.input import add_input_step_choices
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.NMSOptions import NMSOptions
@@ -31,7 +32,7 @@ class ObjectDetectionAndTrackingExample(BaseGraph):
         self.add_nodes(self.input, self.network, self.tracker, self.storage)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             return

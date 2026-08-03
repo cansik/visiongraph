@@ -6,6 +6,7 @@ from pathlib import Path
 import cv2
 import numpy as np
 import tqdm
+
 from visiongraph import vg
 from visiongraph.input import add_input_step_choices
 from visiongraph.util.DrawingUtils import COLOR_SEQUENCE
@@ -26,7 +27,7 @@ class BaseReadmeGraph(vg.BaseGraph, ABC):
         self.add_nodes(self.input, self.tracker, self.storage, self.recorder)
 
     def _process(self):
-        ts, frame = self.input.read()
+        _, frame = self.input.read()
 
         if frame is None:
             self.close()
@@ -68,8 +69,6 @@ class BaseReadmeGraph(vg.BaseGraph, ABC):
 class PoseGraph(BaseReadmeGraph):
     def __init__(self, input: vg.BaseInput):
         super().__init__(input)
-        self.network = vg.KAPAOPoseEstimator.create(vg.KAPAOPoseConfig.KAPAO_S_COCO_1280)
-        self.network.min_score = 0.1
         self.network = vg.UltralyticsPoseEstimator.create(vg.UltralyticsPoseConfig.YOLOv11_S_640)
 
         self.add_nodes(self.network)
@@ -109,13 +108,10 @@ class ObjectDetectionGraph(BaseReadmeGraph):
     def __init__(self, input: vg.BaseInput):
         super().__init__(input)
 
-        # model = vg.DEIMv2Detector.create(vg.DEIMv2Config.DEIMv2_Dino3_S_COCO)
         model = vg.YOLOv8Detector.create(vg.YOLOv8Config.YOLOv8_L)
         model.min_score = 0.5
 
         self.network = model
-        # self.network = vg.SlidingWindowEstimator(model, 320, (640, 480), 0.8)
-
         self.add_nodes(model)
 
     def detect(self, frame: np.ndarray) -> vg.ResultList[vg.ObjectDetectionResult]:
@@ -202,8 +198,6 @@ def main():
         output_path.parent.mkdir(parents=True, exist_ok=True)
         graph.recorder.output_path = str(output_path)
         graph.open()
-
-    print("done!")
 
 
 if __name__ == "__main__":

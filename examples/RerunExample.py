@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 import rerun as rr  # pip install rerun-sdk
 
-from visiongraph.VisionGraphBuilder import create_graph, custom
 from visiongraph.input.OakDInput import OakDInput
+from visiongraph.VisionGraphBuilder import create_graph, custom
 
 
 def main():

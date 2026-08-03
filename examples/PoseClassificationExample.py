@@ -5,54 +5,33 @@ import numpy as np
 
 from visiongraph import vg
 
-pose_data_path = "media/pose_training.npz"
-pose_classifier = vg.FaissKNNClassifier(data_path=pose_data_path)
 
+def annotate_classification(results: vg.ResultDict, pose_classifier: vg.FaissKNNClassifier) -> vg.ResultDict:
+    """Annotate the image with the closest pose classification."""
 
-def classify(results: vg.ResultDict):
     image: np.ndarray = results["image"]
     embeddings: vg.ResultList[vg.LandmarkEmbeddingResult] = results["embeddings"]
 
     embeddings.annotate(image)
 
     classifications = pose_classifier.process(embeddings)
-    if len(classifications) > 0:
+    if classifications:
         cls = classifications[0]
         cv2.putText(image, f"{cls.class_name} ({cls.score:.2f})", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 2.0, (0, 255, 0))
 
-    cv2.imshow("Pose", image)
-    key = cv2.waitKey(5) & 0xFF
-
-    if key == 27:
-        quit(0)
-
-    if chr(key).lower() == "s":
-        print("saving samples")
-        pose_classifier.save_data(pose_data_path)
-
-    if chr(key).lower() == "l":
-        print("loading samples")
-        pose_classifier.load_data(pose_data_path)
-
-    if chr(key).isnumeric():
-        number = int(chr(key))
-
-        if len(embeddings) > 0:
-            print(f"sample class: {number}")
-            embedding = embeddings[0]
-            pose_classifier.add_sample(embedding, number)
+    return results
 
 
 def main():
     parser = argparse.ArgumentParser("Pose Classification Example", description="Example Pipeline")
+    parser.add_argument("--data", required=True, help="Path to a trained pose-classification dataset.")
     vg.VisionGraph.add_params(parser)
     args = parser.parse_args()
 
+    pose_classifier = vg.FaissKNNClassifier(data_path=args.data)
     pose_classifier.setup()
-
-    if len(pose_classifier.labels) == 0:
-        pose_classifier.labels.append("standing")
-        pose_classifier.labels.append("sitting")
+    if not pose_classifier.labels:
+        raise ValueError(f"Pose-classification dataset contains no labels: {args.data}")
 
     pipeline = (
         vg.create_graph(name="Pose Classification", handle_signals=True)
@@ -60,7 +39,7 @@ def main():
             image=vg.passthrough(),
             embeddings=vg.sequence(vg.MediaPipePoseEstimator(), vg.LandmarkEmbedder(vg.embed_pose)),
         )
-        .then(vg.custom(classify))
+        .then(vg.custom(annotate_classification, pose_classifier), vg.ImagePreview("Pose Classification"))
         .build()
     )
     pipeline.configure(args)

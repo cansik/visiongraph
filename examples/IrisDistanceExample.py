@@ -66,7 +66,7 @@ class IrisDistanceApp:
 def main():
     # parse command line arguments
     parser = argparse.ArgumentParser("Iris Distance Example", description="Detect distance of faces.")
-    parser.add_argument("--intrinsics", type=str, help="Camera intrinsics parameter.")
+    parser.add_argument("--intrinsics", required=True, help="Path to the camera intrinsics file.")
     vg.VisionGraph.add_params(parser)
     args = parser.parse_args()
 
