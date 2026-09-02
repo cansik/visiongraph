@@ -713,8 +713,21 @@ displays it.
 
 ## Extras
 
-It is possible to install optional extras for visiongraph by specifying them during installation. Here is a list of the
-currently supported extras:
+Optional extras add integrations and features that are not part of the core Visiongraph installation. With uv, specify
+the extras needed by your project when adding the package:
+
+```bash
+uv add "visiongraph[realsense,openvino]"
+```
+
+The equivalent pip command is:
+
+```bash
+pip install "visiongraph[realsense,openvino]"
+```
+
+Use `visiongraph[all]` to install every optional dependency, although selecting only the required extras usually keeps
+the environment smaller and avoids unnecessary platform-specific packages. The currently supported extras are:
 
 - `realsense` - Support for Intel RealSense cameras
 - `azure` - Support for Microsoft Azure Kinect cameras

@@ -49,23 +49,34 @@ Visiongraph originated as a research codebase for rapid prototyping in computer 
 * [Kamituga | Digital Gold](https://blog.zhdk.ch/digitalgold/)
 
 ## Installation
-Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In practice, version compatibility is usually limited by third-party dependencies rather than by visiongraph itself.
 
-To install visiongraph with all available optional dependencies, use [pip](https://pypi.org/project/pip/) like this:
+Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In
+practice, version compatibility is usually limited by third-party dependencies rather than by Visiongraph itself.
 
-```bash
-pip install "visiongraph[all]"
-```
+To add Visiongraph with all available optional dependencies to a project managed by
+[uv](https://docs.astral.sh/uv/), run:
 
 ```bash
 uv add "visiongraph[all]"
+```
+
+Alternatively, install it into the active Python environment with [pip](https://pip.pypa.io/):
+
+```bash
+pip install "visiongraph[all]"
 ```
 
 It is also possible, and usually preferable, to install only the extras you actually need:
 
 ```bash
 # example: install RealSense and OpenVINO support only
-pip install "visiongraph[realsense, openvino]"
+uv add "visiongraph[realsense,openvino]"
+```
+
+The equivalent pip command is:
+
+```bash
+pip install "visiongraph[realsense,openvino]"
 ```
 
 Please read more about the extra packages in the [documentation](https://cansik.github.io/visiongraph/visiongraph.html#extras).
@@ -74,17 +85,14 @@ Please read more about the extra packages in the [documentation](https://cansik.
 
 Visiongraph can integrate Google’s [MediaPipe](https://github.com/google-ai-edge/mediapipe) for advanced hand, face, pose and tracking pipelines. Unfortunately, the official PyPI MediaPipe wheels declare a strict dependency on `numpy<2.0`, which prevents installation alongside NumPy 2.x, even though most functionality works fine with NumPy 2.0 and above. To work around this limitation, we maintain a custom [mediapipe-numpy2](https://github.com/cansik/mediapipe-numpy2) build that removes the `<2.0` pin.
 
-When you install with the `mediapipe` extra, pip will automatically fetch the matching patched wheel for your OS and Python version.
+When you install the `mediapipe` extra with uv or pip, the package manager automatically fetches the matching patched
+wheel for your operating system and Python version.
 
-#### Alternative: Use the Official MediaPipe Release
+#### Official MediaPipe Compatibility
 
-If you’re happy to stick with NumPy <2.0, you can skip our custom package entirely and install the upstream MediaPipe wheel from PyPI:
-
-```bash
-pip install visiongraph mediapipe
-```
-
-This installs Visiongraph together with the official `mediapipe` package, which requires `numpy<2.0`. Make sure your environment uses a NumPy version below 2.0 when choosing this route.
+The official `mediapipe` package currently declares `numpy<2.0`, while Visiongraph requires NumPy 2.x. Consequently,
+standard uv and pip dependency resolution cannot install the two packages together. Use the `mediapipe` extra shown
+above unless you deliberately manage and override dependency metadata in your own environment.
 
 ## Model Assets
 
@@ -121,21 +129,25 @@ There are also additional projects that use visiongraph in practice:
 - [WebRTC Input](https://github.com/cansik/visiongraph-webrtc) - WebRTC input example for visiongraph.
 
 ## Development
-To develop visiongraph itself, clone this repository and install the dependencies with [uv](https://docs.astral.sh/uv/getting-started/installation/):
+
+To develop Visiongraph itself, clone this repository and install the dependencies with
+[uv](https://docs.astral.sh/uv/getting-started/installation/):
 
 ```bash
-# from the repository root, install all dependencies
-uv sync --all-extras --dev --group docs
+# from the repository root
+make sync
 ```
 
 ### Build
-To build a new wheel package of visiongraph, run the following command in the repository root. The generated wheel and source distribution will be placed in `./dist`.
+
+Build the source distribution and wheel from the repository root. The build regenerates the required repository
+artifacts first and writes the packages to `./dist`:
 
 ```bash
 make build
 ```
 
-To download local copies of all model license texts referenced by repository-backed assets, run:
+To download local copies of all model license texts referenced by repository-backed assets into `./build/licenses`, run:
 
 ```bash
 make download-model-licenses
@@ -143,20 +155,33 @@ make download-model-licenses
 
 ### Docs
 
-To generate the documentation, use the following commands:
+Generate the deployable documentation in `./docs` with:
 
 ```bash
-# create deployable documentation into "./docs"
 make docs
+```
 
-# launch the local pdoc webserver
+To preview the documentation locally with pdoc's development server, run:
+
+```bash
 make docs-serve
 ```
 
-### Linter
+### Code Quality and Tests
+
+Format the repository and apply auto-fixable Ruff rules:
 
 ```bash
-ruff format && ruff check --fix
+make autoformat
+```
+
+Run the non-mutating lint and formatting checks individually, or run the full validation suite:
+
+```bash
+make lint       # run Ruff lint checks
+make fmt-check  # check formatting without changing files
+make test       # run the full unit test suite
+make check      # run lint, formatting, and tests
 ```
 
 ## Dependencies
