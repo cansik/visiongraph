@@ -101,6 +101,8 @@ Visiongraph itself is released under the MIT License, but individual downloadabl
 including copyleft terms such as AGPL or GPL. Check [MODEL_ATTRIBUTIONS.md](MODEL_ATTRIBUTIONS.md) for the license of
 the specific model you plan to ship, redistribute, or use in a commercial product.
 
+Images and project artwork stored in the repository's `assets` directory are documented in
+[assets/ATTRIBUTIONS.md](assets/ATTRIBUTIONS.md).
 
 ## Examples
 To demonstrate the possibilities of visiongraph, the repository already contains a number of ready-to-run [examples](examples). Here is a selection of the current examples:
