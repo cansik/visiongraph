@@ -17,6 +17,10 @@ is included here.
 | `pexels-nguyendesigner-32123175.jpg` | Nguyen Designer | [Pexels photo 32123175](https://www.pexels.com/photo/32123175/) |
 | `pexels-pavel-danilyuk-6203560.jpg` | Pavel Danilyuk | [Pexels photo 6203560](https://www.pexels.com/photo/6203560/) |
 
+## Pexels Documentation Video
+
+- `doc/tracking-example.webp` - Frame derived from [Pexels video 853889](https://www.pexels.com/video/black-and-white-video-of-people-853889/).
+
 ## Visiongraph Project Assets
 
 The following files were created for this repository and are covered by the repository's [MIT License](../LICENSE):
