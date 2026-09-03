@@ -105,6 +105,8 @@ Images and project artwork stored in the repository's `assets` directory are doc
 [assets/ATTRIBUTIONS.md](assets/ATTRIBUTIONS.md).
 
 ## Examples
+Run an example with `uv run examples/<ExampleFile>.py`, for example `uv run examples/SimpleVisionGraph.py`.
+
 To demonstrate the possibilities of visiongraph, the repository already contains a number of ready-to-run [examples](examples). Here is a selection of the current examples:
 
 - [SimpleVisionGraph](examples/SimpleVisionGraph.py) - A minimal graph example for live object detection and tracking.
