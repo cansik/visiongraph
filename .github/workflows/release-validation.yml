@@ -25,7 +25,7 @@ jobs:
 
       - name: Sync dependencies
         run: |
-          uv sync --dev --group docs
+          uv sync --all-extras --dev --group docs
 
       - name: Regenerate repository artifacts
         run: |
