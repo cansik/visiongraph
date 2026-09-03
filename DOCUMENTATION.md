@@ -138,6 +138,9 @@ while running:
 cam.release()
 ```
 
+The `--input-backend` choices are limited to the video-capture backend constants exposed by the installed OpenCV
+build. Platform-specific backends that OpenCV does not provide on the current system are omitted automatically.
+
 It is also possible to apply post-processing methods like `rotate`, `flip`, `mask` or `crop` by configuring them on the
 `visiongraph.input.BaseInput.BaseInput`.
 

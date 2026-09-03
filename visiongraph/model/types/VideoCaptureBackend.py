@@ -3,7 +3,7 @@ import cv2
 """
     A constant representing the VideoCapture backend that uses the most suitable one.
 
-    Available backends:
+    Available backends depend on the constants exposed by the installed OpenCV build:
     - any: Uses the most suitable backend.
     - vfw, v4l, v4l2: Use VFW, V4L and V4L2 capture drivers respectively.
     - firewire, fireware: Use FireWire or FireWire with Intel QuickStart Technology respectively.
@@ -26,37 +26,49 @@ import cv2
     - xine: Use Xine video player capture driver.
     """
 # https://docs.opencv.org/3.4/d4/d15/group__videoio__flags__base.html#gga023786be1ee68a9105bf2e48c700294dacf10e9692c4166f74de62b7d00c377d0
-VideoCaptureBackend = {
-    "any": cv2.CAP_ANY,
-    "vfw": cv2.CAP_VFW,
-    "v4l": cv2.CAP_V4L,
-    "v4l2": cv2.CAP_V4L2,
-    "firewire": cv2.CAP_FIREWIRE,
-    "fireware": cv2.CAP_FIREWARE,
-    "ieee1394": cv2.CAP_IEEE1394,
-    "dc1394": cv2.CAP_DC1394,
-    "cmu1394": cv2.CAP_CMU1394,
-    "qt": cv2.CAP_QT,
-    "unicap": cv2.CAP_UNICAP,
-    "dshow": cv2.CAP_DSHOW,
-    "pvapi": cv2.CAP_PVAPI,
-    "openni": cv2.CAP_OPENNI,
-    "openni_asus": cv2.CAP_OPENNI_ASUS,
-    "android": cv2.CAP_ANDROID,
-    "xiapi": cv2.CAP_XIAPI,
-    "avfoundation": cv2.CAP_AVFOUNDATION,
-    "giganetix": cv2.CAP_GIGANETIX,
-    "msmf": cv2.CAP_MSMF,
-    "winrt": cv2.CAP_WINRT,
-    "intelperc": cv2.CAP_INTELPERC,
-    "openni2": cv2.CAP_OPENNI2,
-    "openni2_asus": cv2.CAP_OPENNI2_ASUS,
-    "gphoto2": cv2.CAP_GPHOTO2,
-    "gstreamer": cv2.CAP_GSTREAMER,
-    "ffmpeg": cv2.CAP_FFMPEG,
-    "images": cv2.CAP_IMAGES,
-    "aravis": cv2.CAP_ARAVIS,
-    "opencv_mjpeg": cv2.CAP_OPENCV_MJPEG,
-    "intel_mfx": cv2.CAP_INTEL_MFX,
-    "xine": cv2.CAP_XINE,
+_BACKEND_CONSTANTS = {
+    "any": "CAP_ANY",
+    "vfw": "CAP_VFW",
+    "v4l": "CAP_V4L",
+    "v4l2": "CAP_V4L2",
+    "firewire": "CAP_FIREWIRE",
+    "fireware": "CAP_FIREWARE",
+    "ieee1394": "CAP_IEEE1394",
+    "dc1394": "CAP_DC1394",
+    "cmu1394": "CAP_CMU1394",
+    "qt": "CAP_QT",
+    "unicap": "CAP_UNICAP",
+    "dshow": "CAP_DSHOW",
+    "pvapi": "CAP_PVAPI",
+    "openni": "CAP_OPENNI",
+    "openni_asus": "CAP_OPENNI_ASUS",
+    "android": "CAP_ANDROID",
+    "xiapi": "CAP_XIAPI",
+    "avfoundation": "CAP_AVFOUNDATION",
+    "giganetix": "CAP_GIGANETIX",
+    "msmf": "CAP_MSMF",
+    "winrt": "CAP_WINRT",
+    "intelperc": "CAP_INTELPERC",
+    "openni2": "CAP_OPENNI2",
+    "openni2_asus": "CAP_OPENNI2_ASUS",
+    "gphoto2": "CAP_GPHOTO2",
+    "gstreamer": "CAP_GSTREAMER",
+    "ffmpeg": "CAP_FFMPEG",
+    "images": "CAP_IMAGES",
+    "aravis": "CAP_ARAVIS",
+    "opencv_mjpeg": "CAP_OPENCV_MJPEG",
+    "intel_mfx": "CAP_INTEL_MFX",
+    "xine": "CAP_XINE",
 }
+
+
+def _available_video_capture_backends(cv2_module: object) -> dict[str, int]:
+    """Return video capture backends supported by an OpenCV module."""
+    return {
+        backend_name: getattr(cv2_module, constant_name)
+        for backend_name, constant_name in _BACKEND_CONSTANTS.items()
+        if hasattr(cv2_module, constant_name)
+    }
+
+
+VideoCaptureBackend = _available_video_capture_backends(cv2)
