@@ -5,7 +5,12 @@ from unittest.mock import MagicMock, patch
 
 from requests.exceptions import RequestException
 
-from visiongraph.util.NetworkUtils import ASSET_DIR_ENV_VAR, download_file, handle_redirects, prepare_data_file
+from visiongraph.util.NetworkUtils import (
+    ASSET_DIR_ENV_VAR,
+    download_file,
+    handle_redirects,
+    prepare_data_file,
+)
 
 
 class NetworkUtilsTests(unittest.TestCase):

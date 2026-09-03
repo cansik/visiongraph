@@ -27,7 +27,19 @@ _MODEL_METADATA = AssetMetadata.from_values(
     source_name="DEIMv2 object detection",
     source_url="https://github.com/Intellindust-AI-Lab/DEIMv2",
     license_name="Apache License 2.0",
-    license_url="https://github.com/Intellindust-AI-Lab/DEIMv2/blob/main/LICENSE",
+    license_url=("https://github.com/Intellindust-AI-Lab/DEIMv2/blob/3e491c6a6758f8f949e8dea7f5e4a28ab43334f5/LICENSE"),
+)
+
+_DINOV3_METADATA = AssetMetadata.from_values(
+    source_name="DEIMv2 object detection (DINOv3 backbones)",
+    source_url="https://github.com/Intellindust-AI-Lab/DEIMv2",
+    license_name="DINOv3 License (backbone)",
+    license_url="https://github.com/facebookresearch/dinov3/blob/main/LICENSE.md",
+    comment=(
+        "DEIMv2 components are additionally covered by the "
+        "[Apache License 2.0](https://github.com/Intellindust-AI-Lab/DEIMv2/"
+        "blob/3e491c6a6758f8f949e8dea7f5e4a28ab43334f5/LICENSE) that applied when these weights were released."
+    ),
 )
 
 
@@ -50,10 +62,10 @@ class DEIMv2Config(Enum):
     )
     DEIMv2_HgNetv2_N_COCO = RepositoryAsset("deimv2_hgnetv2_n_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
 
-    DEIMv2_Dino3_S_COCO = RepositoryAsset("deimv2_dinov3_s_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
-    DEIMv2_Dino3_M_COCO = RepositoryAsset("deimv2_dinov3_m_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
-    DEIMv2_Dino3_L_COCO = RepositoryAsset("deimv2_dinov3_l_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
-    DEIMv2_Dino3_X_COCO = RepositoryAsset("deimv2_dinov3_x_coco.onnx", metadata=_MODEL_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_S_COCO = RepositoryAsset("deimv2_dinov3_s_coco.onnx", metadata=_DINOV3_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_M_COCO = RepositoryAsset("deimv2_dinov3_m_coco.onnx", metadata=_DINOV3_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_L_COCO = RepositoryAsset("deimv2_dinov3_l_coco.onnx", metadata=_DINOV3_METADATA), COCO_80_LABELS
+    DEIMv2_Dino3_X_COCO = RepositoryAsset("deimv2_dinov3_x_coco.onnx", metadata=_DINOV3_METADATA), COCO_80_LABELS
 
 
 class DEIMv2Detector(ObjectDetector):

@@ -15,7 +15,7 @@ _MODEL_METADATA = AssetMetadata.from_values(
     source_name="ONNX model zoo FERPlus emotion recognition",
     source_url="https://github.com/onnx/models/tree/main/validated/vision/body_analysis/emotion_ferplus",
     license_name="MIT License",
-    license_url="https://github.com/onnx/models/blob/main/LICENSE",
+    license_url="https://github.com/microsoft/FERPlus/blob/master/LICENSE.md",
 )
 
 

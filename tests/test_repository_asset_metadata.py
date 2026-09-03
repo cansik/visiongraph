@@ -28,6 +28,21 @@ def _iter_repository_asset_calls():
 
 
 class RepositoryAssetMetadataTests(unittest.TestCase):
+    def test_corrected_model_licenses(self):
+        from visiongraph.estimator.spatial.DEIMv2Detector import DEIMv2Config
+        from visiongraph.estimator.spatial.face.emotion import FERPlusEmotionClassifier
+
+        dino_asset, _labels = DEIMv2Config.DEIMv2_Dino3_S_COCO.value
+        hgnet_asset, _labels = DEIMv2Config.DEIMv2_HgNetv2_Pico_COCO.value
+        self.assertIn("DINOv3 License", dino_asset.metadata.license.name)
+        self.assertEqual("Apache License 2.0", hgnet_asset.metadata.license.name)
+        self.assertIn("3e491c6a6758f8f949e8dea7f5e4a28ab43334f5/LICENSE", hgnet_asset.metadata.license.url)
+        self.assertIn("applied when these weights were released", dino_asset.metadata.comment)
+        self.assertEqual(
+            "https://github.com/microsoft/FERPlus/blob/master/LICENSE.md",
+            FERPlusEmotionClassifier._MODEL_METADATA.license.url,
+        )
+
     def test_all_discovered_repository_assets_have_complete_metadata(self):
         references, _failed_imports = collect_asset_references(repository_only=True)
         missing_metadata = []

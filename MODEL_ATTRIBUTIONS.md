@@ -18,6 +18,8 @@ Files:
 Origin: https://www.crowdhuman.org/  
 License: [AGPL-3.0 (or Enterprise License from Ultralytics)](https://github.com/ultralytics/yolov5/blob/master/LICENSE)
 
+Trained using CrowdHuman. CrowdHuman's dataset terms limit use of its data to non-commercial research and educational purposes. Visiongraph distributes model weights, not CrowdHuman images.
+
 Files:
 - crowdhuman-yolov5n-640.onnx
 - crowdhuman-yolov5n-p2-640.onnx
@@ -29,17 +31,26 @@ Files:
 ## DEIMv2 object detection
 
 Origin: https://github.com/Intellindust-AI-Lab/DEIMv2  
-License: [Apache License 2.0](https://github.com/Intellindust-AI-Lab/DEIMv2/blob/main/LICENSE)
+License: [Apache License 2.0](https://github.com/Intellindust-AI-Lab/DEIMv2/blob/3e491c6a6758f8f949e8dea7f5e4a28ab43334f5/LICENSE)
+
+Files:
+- deimv2_hgnetv2_atto_coco.onnx
+- deimv2_hgnetv2_femto_coco.onnx
+- deimv2_hgnetv2_n_coco.onnx
+- deimv2_hgnetv2_pico_coco.onnx
+
+## DEIMv2 object detection (DINOv3 backbones)
+
+Origin: https://github.com/Intellindust-AI-Lab/DEIMv2  
+License: [DINOv3 License (backbone)](https://github.com/facebookresearch/dinov3/blob/main/LICENSE.md)
+
+DEIMv2 components are additionally covered by the [Apache License 2.0](https://github.com/Intellindust-AI-Lab/DEIMv2/blob/3e491c6a6758f8f949e8dea7f5e4a28ab43334f5/LICENSE) that applied when these weights were released.
 
 Files:
 - deimv2_dinov3_l_coco.onnx
 - deimv2_dinov3_m_coco.onnx
 - deimv2_dinov3_s_coco.onnx
 - deimv2_dinov3_x_coco.onnx
-- deimv2_hgnetv2_atto_coco.onnx
-- deimv2_hgnetv2_femto_coco.onnx
-- deimv2_hgnetv2_n_coco.onnx
-- deimv2_hgnetv2_pico_coco.onnx
 
 ## DETR ResNet-50 object detection
 

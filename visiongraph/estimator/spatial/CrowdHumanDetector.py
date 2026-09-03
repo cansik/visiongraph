@@ -21,6 +21,10 @@ _MODEL_METADATA = AssetMetadata.from_values(
     source_url="https://www.crowdhuman.org/",
     license_name="AGPL-3.0 (or Enterprise License from Ultralytics)",
     license_url="https://github.com/ultralytics/yolov5/blob/master/LICENSE",
+    comment=(
+        "Trained using CrowdHuman. CrowdHuman's dataset terms limit use of its data to non-commercial research and "
+        "educational purposes. Visiongraph distributes model weights, not CrowdHuman images."
+    ),
 )
 
 

@@ -18,10 +18,19 @@ class AssetLicense:
 class AssetMetadata:
     source: AssetSource
     license: AssetLicense
+    comment: Optional[str] = None
 
     @classmethod
-    def from_values(cls, source_name: str, source_url: str, license_name: str, license_url: str) -> "AssetMetadata":
+    def from_values(
+        cls,
+        source_name: str,
+        source_url: str,
+        license_name: str,
+        license_url: str,
+        comment: Optional[str] = None,
+    ) -> "AssetMetadata":
         return cls(
             source=AssetSource(name=source_name, url=source_url),
             license=AssetLicense(name=license_name, url=license_url),
+            comment=comment,
         )

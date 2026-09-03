@@ -93,6 +93,7 @@ class GenerateModelAttributionsTests(unittest.TestCase):
             "https://example.com/source",
             "Apache License 2.0",
             "https://example.com/license",
+            comment="Model-specific usage note.",
         )
         grouped_repo_a = RepositoryAsset("b-model.onnx", metadata=metadata)
         grouped_repo_b = RepositoryAsset("a-model.onnx", metadata=metadata)
@@ -115,6 +116,7 @@ class GenerateModelAttributionsTests(unittest.TestCase):
         self.assertIn("## Grouped Source", markdown)
         self.assertIn("Origin: https://example.com/source", markdown)
         self.assertIn("License: [Apache License 2.0](https://example.com/license)", markdown)
+        self.assertIn("Model-specific usage note.", markdown)
         self.assertLess(markdown.index("- a-model.onnx"), markdown.index("- b-model.onnx"))
         self.assertIn("## Missing Metadata", markdown)
         self.assertIn("missing.onnx (visiongraph.fake.Cfg.MISSING)", markdown)

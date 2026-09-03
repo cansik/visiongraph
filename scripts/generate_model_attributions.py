@@ -9,7 +9,7 @@ from scripts.model_asset_inventory import collect_asset_references
 def build_markdown() -> str:
     asset_references, failed_imports = collect_asset_references(repository_only=True)
 
-    grouped_assets: Dict[Tuple[str, str, str, str], List[str]] = defaultdict(list)
+    grouped_assets: Dict[Tuple[str, str, str, str, str], List[str]] = defaultdict(list)
     missing_metadata = []
 
     for asset_reference in asset_references:
@@ -28,7 +28,7 @@ def build_markdown() -> str:
         "",
     ]
 
-    for source_name, source_url, license_name, license_url in sorted(grouped_assets):
+    for source_name, source_url, license_name, license_url, comment in sorted(grouped_assets):
         lines.append(f"## {source_name}")
         lines.append("")
         lines.append(f"Origin: {source_url}  ")
@@ -37,9 +37,12 @@ def build_markdown() -> str:
         else:
             lines.append(f"License: {license_name}")
         lines.append("")
+        if comment:
+            lines.append(comment)
+            lines.append("")
         lines.append("Files:")
 
-        for asset_name in sorted(set(grouped_assets[(source_name, source_url, license_name, license_url)])):
+        for asset_name in sorted(set(grouped_assets[(source_name, source_url, license_name, license_url, comment)])):
             lines.append(f"- {asset_name}")
 
         lines.append("")
@@ -69,12 +72,13 @@ def build_markdown() -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def _metadata_key(metadata) -> Tuple[str, str, str, str]:
+def _metadata_key(metadata) -> Tuple[str, str, str, str, str]:
     return (
         metadata.source.name,
         metadata.source.url,
         metadata.license.name,
         metadata.license.url or "",
+        metadata.comment or "",
     )
 
 
