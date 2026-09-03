@@ -138,3 +138,4 @@ annotations/
 
 /*.mp4
 doc/source/
+.audit
