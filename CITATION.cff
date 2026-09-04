@@ -8,6 +8,9 @@ authors:
 title: "visiongraph"
 type: software
 version: "1.2.0"
+date-released: 2026-09-03
+doi: "10.5281/zenodo.22307738"
+abstract: "Visiongraph is a computer vision pipeline that provides ready-to-use modules for quick prototyping of image-based algorithms."
 license: "MIT"
 url: "https://github.com/cansik/visiongraph"
 repository-code: "https://github.com/cansik/visiongraph"
