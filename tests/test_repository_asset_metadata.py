@@ -44,7 +44,8 @@ class RepositoryAssetMetadataTests(unittest.TestCase):
         )
 
     def test_all_discovered_repository_assets_have_complete_metadata(self):
-        references, _failed_imports = collect_asset_references(repository_only=True)
+        references, failed_imports = collect_asset_references(repository_only=True)
+        self.assertEqual([], list(failed_imports), "Cannot verify metadata for configs that failed to import.")
         missing_metadata = []
 
         for reference in references:

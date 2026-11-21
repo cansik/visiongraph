@@ -6,6 +6,7 @@ from typing import Any, Iterable, Iterator, Set, Tuple, Type
 from visiongraph import vg
 from visiongraph.data.Asset import Asset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.model._ImportStub import _ImportStub
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,12 @@ def iter_config_enums() -> Tuple[Iterable[ConfigEnumReference], Iterable[FailedI
             continue
 
         if not inspect.isclass(attribute):
+            continue
+
+        if issubclass(attribute, _ImportStub):
+            failed_imports.append(
+                FailedImport(import_name, lazy_import.module_name, attribute.reason or "Optional import unavailable.")
+            )
             continue
 
         if not issubclass(attribute, enum.Enum) or attribute is enum.Enum:

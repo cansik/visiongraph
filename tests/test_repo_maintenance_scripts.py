@@ -20,6 +20,7 @@ from scripts.model_asset_inventory import AssetReference, ConfigEnumReference, F
 from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.LocalAsset import LocalAsset
 from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.model._LazyImport import _LazyImport
 
 
 class ModelAssetInventoryTests(unittest.TestCase):
@@ -46,6 +47,7 @@ class ModelAssetInventoryTests(unittest.TestCase):
             "GoodConfig": _LazyValue("visiongraph.fake.good", GoodConfig),
             "DuplicateConfig": _LazyValue("visiongraph.fake.duplicate", GoodConfig),
             "BrokenConfig": _LazyValue("visiongraph.fake.broken", error=RuntimeError("boom")),
+            "MissingBackendConfig": _LazyImport("MissingBackendConfig", "visiongraph.fake.missing", is_optional=True),
             "OtherThing": _LazyValue("visiongraph.fake.other", NotAConfig),
         }
 
@@ -55,10 +57,12 @@ class ModelAssetInventoryTests(unittest.TestCase):
         self.assertEqual(1, len(config_enums))
         self.assertEqual("GoodConfig", config_enums[0].enum_name)
         self.assertIs(GoodConfig, config_enums[0].enum_class)
-        self.assertEqual(1, len(failed_imports))
+        self.assertEqual(2, len(failed_imports))
         self.assertEqual("BrokenConfig", failed_imports[0].import_name)
         self.assertEqual("visiongraph.fake.broken", failed_imports[0].module_name)
         self.assertIn("boom", failed_imports[0].error)
+        self.assertEqual("MissingBackendConfig", failed_imports[1].import_name)
+        self.assertIn("No module named", failed_imports[1].error)
 
     def test_collect_asset_references_filters_repository_assets_and_deduplicates_nested_values(self):
         metadata = AssetMetadata.from_values(
@@ -107,7 +111,7 @@ class GenerateModelAttributionsTests(unittest.TestCase):
         failed_imports = [FailedImport("BrokenConfig", "visiongraph.fake", "boom")]
 
         with mock.patch(
-            "scripts.generate_model_attributions.collect_asset_references",
+            "scripts.model_asset_inventory.collect_asset_references",
             return_value=(references, failed_imports),
         ):
             markdown = generate_model_attributions.build_markdown()
@@ -122,6 +126,27 @@ class GenerateModelAttributionsTests(unittest.TestCase):
         self.assertIn("missing.onnx (visiongraph.fake.Cfg.MISSING)", markdown)
         self.assertIn("## Skipped Imports", markdown)
         self.assertIn("BrokenConfig (visiongraph.fake): boom", markdown)
+
+    def test_main_preserves_output_when_config_imports_fail(self):
+        failed_imports = [FailedImport("MissingConfig", "visiongraph.fake", "No module named 'backend'")]
+        stderr = io.StringIO()
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_path = Path(temp_dir) / "MODEL_ATTRIBUTIONS.md"
+            output_path.write_text("Complete inventory\n", encoding="utf-8")
+
+            with (
+                mock.patch("sys.argv", ["generate_model_attributions", "--output", str(output_path)]),
+                mock.patch("scripts.model_asset_inventory.collect_asset_references", return_value=([], failed_imports)),
+                contextlib.redirect_stderr(stderr),
+                self.assertRaises(SystemExit) as error,
+            ):
+                generate_model_attributions.main()
+
+            self.assertEqual(1, error.exception.code)
+            self.assertEqual("Complete inventory\n", output_path.read_text(encoding="utf-8"))
+
+        self.assertIn("MissingConfig (visiongraph.fake): No module named 'backend'", stderr.getvalue())
+        self.assertIn("Run make sync", stderr.getvalue())
 
 
 class GeneratePublicMarkdownTests(unittest.TestCase):

@@ -21,6 +21,9 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Image Processing",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
@@ -28,7 +31,7 @@ classifiers = [
     "Topic :: Software Development :: Libraries",
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-requires-python = ">=3.10,<3.13"
+requires-python = ">=3.11"
 
 dependencies = [
     "requests",
@@ -53,7 +56,6 @@ dev = [
 
 docs = [
     "pdoc~=15.0.4",
-    "tomli>=2.4.0; python_version < '3.11'",
 ]
 
 [project.optional-dependencies]
@@ -109,7 +111,7 @@ numba = ["numba~=0.61"]
 
 fbs = [
     "pyopengl; platform_system == 'Darwin' or platform_system == 'Windows'",
-    "syphon-python~=0.1.1; platform_system == 'Darwin'",
+    "syphon-python~=0.2.0; platform_system == 'Darwin'",
     "SpoutGL~=0.1.1; platform_system == 'Windows'",
 ]
 
@@ -122,7 +124,7 @@ mot = ["filterpy"]
 exclude-newer = "1 week"
 
 [tool.ruff]
-target-version = "py310"
+target-version = "py311"
 line-length = 120
 indent-width = 4
 respect-gitignore = true

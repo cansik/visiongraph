@@ -27,6 +27,7 @@
 
 UV := uv
 PYTHON := $(UV) run python
+PYTHON_NO_SYNC := $(UV) run --no-sync python
 ATTRIBUTIONS_FILE := MODEL_ATTRIBUTIONS.md
 
 default: autoformat
@@ -56,7 +57,7 @@ help:
 	@echo "  clean             Remove generated documentation and build artifacts"
 
 sync:
-	$(UV) sync --all-extras --dev --group docs
+	$(UV) sync --locked --extra all --dev --group docs
 
 fmt:
 	$(UV) run ruff format .
@@ -75,21 +76,21 @@ ci-code: lint fmt-check
 check: ci-code test
 
 generate-init:
-	$(PYTHON) -m scripts.generate_init
+	$(PYTHON_NO_SYNC) -m scripts.generate_init
 
 generate-public-markdown:
 	$(PYTHON) -m scripts.generate_public_markdown
 
-attributions:
-	$(PYTHON) -m scripts.generate_model_attributions --output $(ATTRIBUTIONS_FILE)
+attributions: generate-init
+	$(PYTHON_NO_SYNC) -m scripts.generate_model_attributions --output $(ATTRIBUTIONS_FILE)
 
-download-model-licenses:
-	$(PYTHON) -m scripts.download_model_licenses --output-dir build/licenses
+download-model-licenses: generate-init
+	$(PYTHON_NO_SYNC) -m scripts.download_model_licenses --output-dir build/licenses
 
-generate-artifacts: generate-init attributions
+generate-artifacts: attributions
 
-list-estimators:
-	$(PYTHON) -m scripts.list_estimators
+list-estimators: generate-init
+	$(PYTHON_NO_SYNC) -m scripts.list_estimators
 
 license-check:
 	$(PYTHON) -m scripts.license_check
@@ -98,7 +99,7 @@ test:
 	$(PYTHON) -m unittest discover -s ./tests -t ./ -v
 
 test-metadata:
-	$(PYTHON) -m unittest tests.test_repository_asset_metadata -v
+	$(PYTHON_NO_SYNC) -m unittest tests.test_repository_asset_metadata -v
 
 docs: generate-init generate-public-markdown
 	$(PYTHON) -m scripts.generate_doc --public-markdown-dir build/public-markdown

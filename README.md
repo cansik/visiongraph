@@ -51,8 +51,8 @@ Visiongraph originated as a research codebase for rapid prototyping in computer 
 
 ## Installation
 
-Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In
-practice, version compatibility is usually limited by third-party dependencies rather than by Visiongraph itself.
+Visiongraph supports CPython 3.11 through 3.13. Python 3.14 and newer can be used where the selected dependencies
+provide compatible builds.
 The base installation uses NumPy 2 and OpenCV contrib (`cv2`).
 
 To add Visiongraph with all available optional dependencies to a project managed by
@@ -131,6 +131,8 @@ To develop Visiongraph itself, clone this repository and install the dependencie
 make sync
 ```
 
+uv uses Python 3.13 from the repository's `.python-version` by default.
+
 ### Build
 
 Build the source distribution and wheel from the repository root. The build regenerates the required repository
@@ -139,6 +141,9 @@ artifacts first and writes the packages to `./dist`:
 ```bash
 make build
 ```
+
+Run `make generate-artifacts` to regenerate the public imports and model attributions outside a build. If attribution
+generation reports missing dependencies, run `make sync` and try again.
 
 To download local copies of all model license texts referenced by repository-backed assets into `./build/licenses`, run:
 

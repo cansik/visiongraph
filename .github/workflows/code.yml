@@ -17,13 +17,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version-file: ".python-version"
 
       - name: Set up uv
         uses: astral-sh/setup-uv@v5
 
       - name: Sync dev dependencies
-        run: uv sync --dev
+        run: uv sync --locked --dev
 
       - name: Ruff lint
         run: uv run ruff check . --output-format=github

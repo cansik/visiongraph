@@ -729,8 +729,9 @@ The equivalent pip command is:
 pip install "visiongraph[realsense,openvino]"
 ```
 
-Use `visiongraph[all]` to install every optional dependency, although selecting only the required extras usually keeps
-the environment smaller and avoids unnecessary platform-specific packages. The currently supported extras are:
+Use `visiongraph[all]` for the standard set of optional backends, including CPU ONNX Runtime. For CUDA or DirectML,
+select the corresponding ONNX extra and any other extras individually so the environment contains one ONNX Runtime
+distribution. The currently supported extras are:
 
 - `realsense` - Support for Intel RealSense cameras
 - `azure` - Support for Microsoft Azure Kinect cameras
