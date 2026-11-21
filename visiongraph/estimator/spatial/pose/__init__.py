@@ -2,7 +2,6 @@ import argparse
 import logging
 from argparse import _ArgumentGroup
 from functools import partial
-from typing import Union
 
 from visiongraph.util.ArgUtils import add_step_choice_argument
 

@@ -1,7 +1,6 @@
 import argparse
 import logging
 from argparse import _ArgumentGroup
-from typing import Union
 
 from visiongraph.input.ImageInput import ImageInput
 from visiongraph.input.VideoCaptureInput import VideoCaptureInput

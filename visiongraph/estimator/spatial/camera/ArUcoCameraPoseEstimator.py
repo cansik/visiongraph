@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -11,7 +10,7 @@ from visiongraph.result.ArUcoCameraPose import ArUcoCameraPose
 from visiongraph.result.ArUcoMarkerDetection import ArUcoMarkerDetection
 
 
-class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
+class ArUcoCameraPoseEstimator(VisionEstimator[ArUcoCameraPose | None]):
     """
     A class to estimate camera pose using ArUco markers.
 

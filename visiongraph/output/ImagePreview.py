@@ -1,6 +1,6 @@
 import signal
 from argparse import ArgumentParser, Namespace
-from typing import Callable, Optional
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -9,7 +9,7 @@ from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ImageResult import ImageResult
 from visiongraph.result.ResultDict import ResultDict, DEFAULT_IMAGE_KEY
 
-InputType = Optional[np.ndarray | ResultDict | ImageResult]
+InputType = np.ndarray | ResultDict | ImageResult | None
 
 
 class ImagePreview(GraphNode[np.ndarray, np.ndarray]):

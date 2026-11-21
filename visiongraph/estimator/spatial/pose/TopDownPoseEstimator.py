@@ -21,19 +21,19 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputTyp
 
     def __init__(
         self,
-        human_detector: ObjectDetector[ObjectDetectionResult] = SSDDetector.create(
-            SSDConfig.PersonDetection_0200_256x256_FP32
-        ),
+        human_detector: ObjectDetector[ObjectDetectionResult] | None = None,
         min_score: float = 0.5,
     ):
         """
         Initializes the TopDownPoseEstimator.
 
-        :param human_detector: The human detector used to detect people.
+        :param human_detector: Person detector. Defaults to the SSD person-detection-0200 model.
         :param min_score: The minimum score required for a detection to be considered valid.
         """
         super().__init__(min_score)
 
+        if human_detector is None:
+            human_detector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32)
         self.human_detector = human_detector
         self.human_classes: set[int] | None = None
 

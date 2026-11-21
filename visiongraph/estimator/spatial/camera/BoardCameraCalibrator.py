@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 import numpy as np
 
@@ -7,7 +6,7 @@ from visiongraph.estimator.VisionEstimator import VisionEstimator
 from visiongraph.result.CameraPoseResult import CameraPoseResult
 
 
-class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
+class BoardCameraCalibrator(VisionEstimator[CameraPoseResult | None], ABC):
     """
     Abstract base class for calibrating board cameras.
 

@@ -24,6 +24,7 @@ _MODEL_METADATA = AssetMetadata.from_values(
     license_name="MIT License",
     license_url="https://github.com/ibaiGorordo/ONNX-Mobile-Human-Pose-3D/blob/main/LICENSE",
 )
+_DEFAULT_MODEL = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx", metadata=_MODEL_METADATA)
 
 
 @dataclass
@@ -47,12 +48,14 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
 
     def __init__(
         self,
-        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
-        model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx", metadata=_MODEL_METADATA),
+        human_detector: ObjectDetector | None = None,
+        model: Asset = _DEFAULT_MODEL,
         intrinsics: CameraIntrinsics | None = None,
         abs_depth: float = 1.0,
         min_score: float = 0.5,
     ):
+        if human_detector is None:
+            human_detector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32)
         super().__init__(human_detector, min_score)
 
         self.model = model

@@ -18,6 +18,7 @@ _MODEL_METADATA = AssetMetadata.from_values(
     license_name="Apache License 2.0",
     license_url="https://github.com/google-ai-edge/mediapipe/blob/master/LICENSE",
 )
+_DEFAULT_TASK = RepositoryAsset("face_landmarker.task", metadata=_MODEL_METADATA)
 
 
 class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
@@ -32,7 +33,7 @@ class MediaPipeFaceMeshEstimator(FaceLandmarkEstimator[BlazeFaceMesh]):
         min_tracking_confidence: float = 0.5,
         output_face_blendshapes: bool = False,
         output_facial_transformation_matrixes: bool = False,
-        task: Asset = RepositoryAsset("face_landmarker.task", metadata=_MODEL_METADATA),
+        task: Asset = _DEFAULT_TASK,
     ) -> None:
         """
         Initialize the face mesh estimator.

@@ -1,6 +1,6 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, Optional
+from typing import TypeVar
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ResultDict import ResultDict
@@ -8,7 +8,7 @@ from visiongraph.result.ResultDict import ResultDict
 OutputType = TypeVar("OutputType")
 
 
-class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
+class ExtractNode(GraphNode[ResultDict, OutputType | None]):
     """
     A node in the graph that extracts a key-value pair from a ResultDict.
     """

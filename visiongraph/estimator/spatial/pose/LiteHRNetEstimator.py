@@ -7,7 +7,6 @@ from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
-from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
 from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.result.ResultList import ResultList
@@ -71,7 +70,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         self,
         model: Asset,
         weights: Asset,
-        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
+        human_detector: ObjectDetector | None = None,
         min_score: float = 0.3,
         nms_options: NMSOptions | None = None,
         device: str = "AUTO",

@@ -4,6 +4,8 @@ import numpy as np
 
 from visiongraph.dsp.OneEuroFilter import OneEuroFilter
 from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
+from visiongraph.dsp.VectorNumpySmoothFilter import VectorNumpySmoothFilter
+from visiongraph.util.VectorUtils import array_to_vector, vector_to_array
 
 
 class OneEuroFilterTests(unittest.TestCase):
@@ -56,6 +58,16 @@ class OneEuroFilterTests(unittest.TestCase):
         numpy_value = numpy_filter(np.array([1.0], dtype=float), t=1.0)
 
         self.assertAlmostEqual(scalar_value, float(numpy_value[0]))
+
+    def test_vector_smoothing_nodes_keep_independent_filter_state(self):
+        first_node = VectorNumpySmoothFilter()
+        second_node = VectorNumpySmoothFilter()
+        first_node.process(array_to_vector(np.array([[1.0, 2.0]])))
+
+        second_values = np.array([[3.0, 4.0]])
+        result = second_node.process(array_to_vector(second_values))
+
+        np.testing.assert_array_equal(vector_to_array(result), second_values)
 
 
 if __name__ == "__main__":

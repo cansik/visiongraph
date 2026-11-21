@@ -18,7 +18,7 @@ def dict_choice(table):
             item = table[key]
         except KeyError:
             choices = ", ".join(list(table.keys()))
-            raise argparse.ArgumentTypeError(f"Option {key} is not defined in ({choices})")
+            raise argparse.ArgumentTypeError(f"Option {key} is not defined in ({choices})") from None
 
         return item
 
@@ -42,7 +42,7 @@ def float_range(mini, maxi):
         try:
             f = float(arg)
         except ValueError:
-            raise argparse.ArgumentTypeError("must be a floating point number")
+            raise argparse.ArgumentTypeError("must be a floating point number") from None
         if f < mini or f > maxi:
             raise argparse.ArgumentTypeError("must be in range [" + str(mini) + " .. " + str(maxi) + "]")
         return f
