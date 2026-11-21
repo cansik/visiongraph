@@ -4,6 +4,12 @@ This project, Visiongraph, redistributes or utilizes portions of the following t
 
 ## Vendored Components
 
+### MediaPipe landmark connections
+- **Source:** [MediaPipe v0.10.21](https://github.com/google-ai-edge/mediapipe/tree/v0.10.21/mediapipe/python/solutions)
+- **License:** Apache License 2.0
+- **Location:** `visiongraph/external/mediapipe/blaze_connections.py`
+- **License Text:** `visiongraph/external/mediapipe/LICENSE`
+
 ### Intel Open Model Zoo (Adapters & Pipelines)
 - **Source:** [https://github.com/openvinotoolkit/open_model_zoo](https://github.com/openvinotoolkit/open_model_zoo)
 - **License:** Apache License 2.0

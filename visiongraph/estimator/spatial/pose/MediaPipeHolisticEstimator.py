@@ -1,145 +1,127 @@
-from argparse import Namespace
-from typing import Optional
+from enum import Enum
 
-import cv2
-import mediapipe as mp
 import numpy as np
+from mediapipe.tasks.python import vision
 
+from visiongraph.data.Asset import Asset
+from visiongraph.data.AssetMetadata import AssetMetadata
+from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.spatial.mediapipe.MediaPipeTaskRunner import MediaPipeTaskRunner
 from visiongraph.estimator.spatial.pose.PoseEstimator import PoseEstimator
-from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh
 from visiongraph.result.spatial.hand.BlazeHand import BlazeHand
 from visiongraph.result.spatial.hand.Handedness import Handedness
-from visiongraph.result.spatial.pose.BlazePose import BlazePose
 from visiongraph.result.spatial.pose.HolisticPose import HolisticPose
-from visiongraph.util.MediaPipeUtils import mediapipe_landmarks_to_score_and_vector4d, mediapipe_landmarks_to_vector4d
+from visiongraph.util.MediaPipeUtils import _confidence_mask_to_uint8, mediapipe_landmarks_to_score_and_vector4d
+from visiongraph.util.VectorUtils import list_of_vector4D
 
-_mp_holistic = mp.solutions.holistic
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MediaPipe Holistic Landmarker model",
+    source_url="https://developers.google.com/edge/mediapipe/solutions/vision/holistic_landmarker#models",
+    license_name="Apache License 2.0",
+    license_url="https://www.apache.org/licenses/LICENSE-2.0.txt",
+    comment="Google confirms Apache 2.0 for MediaPipe models unless stated otherwise: "
+    "https://github.com/google-ai-edge/mediapipe/issues/6355#issuecomment-5997480830",
+)
+
+
+class MediaPipeHolisticConfig(Enum):
+    """Model assets for MediaPipe Holistic Landmarker."""
+
+    Default = RepositoryAsset("holistic_landmarker.task", metadata=_MODEL_METADATA)
 
 
 class MediaPipeHolisticEstimator(PoseEstimator[HolisticPose]):
-    """
-    Estimates holistic poses using MediaPipe framework.
-    """
+    """Estimate body, face, and hand landmarks together with MediaPipe Holistic Landmarker."""
 
     def __init__(
         self,
-        complexity: PoseModelComplexity = PoseModelComplexity.Normal,
         min_score: float = 0.5,
-        min_tracking_confidence: float = 0.5,
         static_image_mode: bool = False,
-        smooth_landmarks: bool = True,
         enable_segmentation: bool = False,
-        smooth_segmentation: bool = True,
-        refine_landmarks: bool = True,
-    ):
+        *,
+        min_pose_presence_confidence: float = 0.5,
+        min_face_detection_confidence: float = 0.5,
+        min_face_presence_confidence: float = 0.5,
+        min_hand_landmarks_confidence: float = 0.5,
+        task: Asset = MediaPipeHolisticConfig.Default.value,
+    ) -> None:
         """
-        Initializes the MediaPipeHolisticEstimator with specified parameters.
+        Initialize the holistic estimator.
 
-        :param complexity: The complexity of the pose model to be used.
-        :param min_score: Minimum score threshold for detection.
-        :param min_tracking_confidence: Minimum confidence threshold for tracking.
-        :param static_image_mode: Whether to use static image mode.
-        :param smooth_landmarks: Whether to smooth landmarks.
-        :param enable_segmentation: Whether to enable segmentation.
-        :param smooth_segmentation: Whether to smooth segmentation results.
-        :param refine_landmarks: Whether to refine landmarks.
+        :param min_score: The minimum pose detection confidence.
+        :param static_image_mode: Whether to estimate landmarks independently in each image.
+        :param enable_segmentation: Whether to return a pose segmentation mask.
+        :param min_pose_presence_confidence: The minimum pose presence confidence.
+        :param min_face_detection_confidence: The minimum face detection confidence.
+        :param min_face_presence_confidence: The minimum face presence confidence.
+        :param min_hand_landmarks_confidence: The minimum hand landmarks confidence.
+        :param task: MediaPipe task asset to use for holistic estimation.
         """
         super().__init__(min_score)
-
-        self.smooth_landmarks = smooth_landmarks
         self.static_image_mode = static_image_mode
-        self.min_tracking_confidence = min_tracking_confidence
-        self.complexity = complexity
-
-        self.smooth_segmentation = smooth_segmentation
         self.enable_segmentation = enable_segmentation
-
-        self.refine_landmarks = refine_landmarks
-
-        self.detector: Optional[_mp_holistic.Holistic] = None
-
-    def setup(self):
-        """
-        Sets up the MediaPipe Holistic detector with the specified parameters.
-        """
-        self.detector = _mp_holistic.Holistic(
-            static_image_mode=self.static_image_mode,
-            model_complexity=self.complexity.value,
-            min_detection_confidence=self.min_score,
-            min_tracking_confidence=self.min_tracking_confidence,
-            enable_segmentation=self.enable_segmentation,
-            smooth_segmentation=self.smooth_segmentation,
-            refine_face_landmarks=self.refine_landmarks,
+        self.min_pose_presence_confidence = min_pose_presence_confidence
+        self.min_face_detection_confidence = min_face_detection_confidence
+        self.min_face_presence_confidence = min_face_presence_confidence
+        self.min_hand_landmarks_confidence = min_hand_landmarks_confidence
+        self.task = task
+        self._task = MediaPipeTaskRunner(
+            vision.HolisticLandmarkerOptions,
+            vision.HolisticLandmarker.create_from_options,
+            vision.HolisticLandmarker.detect,
+            vision.HolisticLandmarker.detect_for_video,
         )
 
-    def process(self, data: np.ndarray) -> ResultList[BlazePose]:
+    def _options(self) -> dict[str, vision.RunningMode | float | bool]:
+        return dict(
+            running_mode=vision.RunningMode.IMAGE if self.static_image_mode else vision.RunningMode.VIDEO,
+            min_pose_detection_confidence=self.min_score,
+            min_pose_presence_confidence=self.min_pose_presence_confidence,
+            min_face_detection_confidence=self.min_face_detection_confidence,
+            min_face_presence_confidence=self.min_face_presence_confidence,
+            min_hand_landmarks_confidence=self.min_hand_landmarks_confidence,
+            output_pose_segmentation_masks=self.enable_segmentation,
+        )
+
+    def setup(self) -> None:
+        """Set up the holistic landmarker."""
+        self._task.setup(self.task, **self._options())
+
+    def process(self, data: np.ndarray, timestamp_ms: int | None = None) -> ResultList[HolisticPose]:
         """
-        Processes an input image to extract pose landmarks and additional features.
+        Estimate a pose and its available face, hands, and mask in a BGR frame.
 
-        :param data: Input image in BGR format.
-
-        :return: List of detected poses with associated features.
+        Option changes take effect on the next frame and reset tracking.
         """
-        image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
-
-        image.flags.writeable = False
-        results = self.detector.process(image)
-        image.flags.writeable = True
-
-        # check if results are there
+        results = self._task.process(data, self.task, timestamp_ms, **self._options())
         if not results.pose_landmarks:
             return ResultList()
 
-        # create landmarks
-        pose_score, pose_landmarks = mediapipe_landmarks_to_score_and_vector4d(results.pose_landmarks.landmark)
-        pose = HolisticPose(pose_score, pose_landmarks)
+        score, landmarks = mediapipe_landmarks_to_score_and_vector4d(results.pose_landmarks)
+        pose = HolisticPose(score, landmarks)
 
         if results.face_landmarks:
-            face_landmarks = mediapipe_landmarks_to_vector4d(results.face_landmarks.landmark)
-            face_landmarks.t[:] = 1.0
-            pose.face = BlazeFaceMesh(1.0, face_landmarks)
-
+            face = list_of_vector4D([(point.x, point.y, point.z, 1.0) for point in results.face_landmarks])
+            pose.face = BlazeFaceMesh(1.0, face)
         if results.right_hand_landmarks:
-            rh_landmarks = mediapipe_landmarks_to_vector4d(results.right_hand_landmarks.landmark)
-            rh_landmarks.t[:] = 1.0
-            pose.right_hand = BlazeHand(1.0, rh_landmarks, Handedness.RIGHT)
-
+            right_hand = list_of_vector4D([(point.x, point.y, point.z, 1.0) for point in results.right_hand_landmarks])
+            pose.right_hand = BlazeHand(1.0, right_hand, Handedness.RIGHT)
         if results.left_hand_landmarks:
-            lh_landmarks = mediapipe_landmarks_to_vector4d(results.left_hand_landmarks.landmark)
-            lh_landmarks.t[:] = 1.0
-            pose.left_hand = BlazeHand(1.0, lh_landmarks, Handedness.LEFT)
-
-        # use segmentation
-        if results.segmentation_mask:
-            mask = results.segmentation_mask
-            mask_uint8 = (mask * 255).astype(np.uint8)
-            pose.segmentation_mask = mask_uint8
+            left_hand = list_of_vector4D([(point.x, point.y, point.z, 1.0) for point in results.left_hand_landmarks])
+            pose.left_hand = BlazeHand(1.0, left_hand, Handedness.LEFT)
+        if results.segmentation_mask is not None:
+            pose.segmentation_mask = _confidence_mask_to_uint8(results.segmentation_mask.numpy_view())
 
         return ResultList([pose])
 
-    def release(self):
-        """
-        Releases the resources used by the MediaPipe Holistic detector.
-        """
-        self.detector.close()
-
-    def configure(self, args: Namespace):
-        """
-        Configures the estimator with command-line arguments.
-
-        :param args: Namespace containing configuration parameters.
-        """
-        super().configure(args)
+    def release(self) -> None:
+        """Release the task's resources."""
+        self._task.release()
 
     @staticmethod
-    def create(complexity: PoseModelComplexity = PoseModelComplexity.Normal) -> "MediaPipeHolisticEstimator":
-        """
-        Creates an instance of MediaPipeHolisticEstimator.
-
-        :param complexity: The complexity of the pose model to be used.
-
-        :return: Instance of the estimator.
-        """
-        return MediaPipeHolisticEstimator(complexity)
+    def create() -> "MediaPipeHolisticEstimator":
+        """Create a holistic estimator with the default bundled model."""
+        return MediaPipeHolisticEstimator()

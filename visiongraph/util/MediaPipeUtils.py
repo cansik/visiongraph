@@ -6,6 +6,11 @@ import vector
 from visiongraph.util.VectorUtils import list_of_vector4D
 
 
+def _confidence_mask_to_uint8(mask: np.ndarray) -> np.ndarray:
+    # Tasks can represent a single-channel mask as either H x W or H x W x 1.
+    return (mask.reshape(mask.shape[:2]) * 255).astype(np.uint8)
+
+
 def mediapipe_landmarks_to_vector4d(mediapipe_landmarks) -> vector.VectorNumpy4D:
     """
     Converts Mediapipe landmarks to a collection of 4D vectors.

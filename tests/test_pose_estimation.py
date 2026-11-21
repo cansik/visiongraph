@@ -41,11 +41,8 @@ class PoseEstimationTests(unittest.TestCase):
     def test_mediapipe_pose_estimator(self):
         self._test_model(vg.MediaPipePoseEstimator.create(vg.MediaPipePoseConfig.Light))
 
-    def test_legacy_mediapipe_pose_estimator(self):
-        self._test_model(vg.MediaPipePoseEstimatorLegacy.create(vg.PoseModelComplexity.Light))
-
-    def test_legacy_mediapipe_holistic_estimator(self):
-        self._test_model(vg.MediaPipeHolisticEstimator.create(vg.PoseModelComplexity.Light))
+    def test_mediapipe_holistic_estimator(self):
+        self._test_model(vg.MediaPipeHolisticEstimator.create())
 
     def test_mobile_human_pose_estimator(self):
         self._test_model(vg.MobileHumanPoseEstimator())

@@ -36,8 +36,7 @@ dependencies = [
     "vector~=1.6.3",
     "scipy",
     "numpy>2",
-    "opencv-python~=4.7.0; python_version <= '3.9'",
-    "opencv-python~=4.12; python_version > '3.9'",
+    "opencv-contrib-python~=4.12",
 ]
 
 [project.urls]
@@ -87,11 +86,7 @@ depthai = [
 
 openvino = ["openvino~=2025.4.1"]
 
-mediapipe = [
-    # currently we use a custom mediapipe package
-    # see https://github.com/google-ai-edge/mediapipe/issues/5612
-    "mediapipe-numpy2~=0.10.21"
-]
+mediapipe = ["mediapipe~=1.2.3"]
 
 onnx = ["onnxruntime~=1.23.0"]
 
@@ -123,11 +118,6 @@ faiss = ["faiss-cpu"]
 mot = ["filterpy"]
 
 [tool.uv]
-override-dependencies = [
-    # see https://github.com/google-ai-edge/mediapipe/issues/5612
-    # "numpy>2"
-]
-
 # dependency cooldown
 exclude-newer = "1 week"
 

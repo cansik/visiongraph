@@ -191,6 +191,49 @@ License: [Apache License 2.0](https://github.com/ZHKKKe/MODNet/blob/master/LICEN
 Files:
 - modnet.onnx
 
+## MediaPipe BlazeFace (short range)
+
+Origin: https://storage.googleapis.com/mediapipe-assets/MediaPipe%20BlazeFace%20Model%20Card%20%28Short%20Range%29.pdf  
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+Files:
+- blaze_face_short_range.tflite
+
+## MediaPipe BlazeFace Sparse (full range)
+
+Origin: https://storage.googleapis.com/mediapipe-assets/MediaPipe%20BlazeFace%20Sparse%20Model%20Card%20%28Full%20Range%29.pdf  
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+Files:
+- blaze_face_full_range_sparse.tflite
+
+## MediaPipe Hand Landmarker model
+
+Origin: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20Hand%20Tracking%20%28Lite_Full%29%20with%20Fairness%20Oct%202021.pdf  
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+Files:
+- hand_landmarker.task
+
+## MediaPipe Holistic Landmarker model
+
+Origin: https://developers.google.com/edge/mediapipe/solutions/vision/holistic_landmarker#models  
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+Google confirms Apache 2.0 for MediaPipe models unless stated otherwise: https://github.com/google-ai-edge/mediapipe/issues/6355#issuecomment-5997480830
+
+Files:
+- holistic_landmarker.task
+
+## MediaPipe Selfie Segmenter models
+
+Origin: https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Selfie%20Segmentation.pdf  
+License: [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.txt)
+
+Files:
+- selfie_segmenter.tflite
+- selfie_segmenter_landscape.tflite
+
 ## MediaPipe pose landmarker tasks
 
 Origin: https://github.com/google-ai-edge/mediapipe  

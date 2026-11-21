@@ -158,14 +158,15 @@ if TYPE_CHECKING:
     except ModuleNotFoundError:
         logging.info("Module EyeOpenClosedEstimator not found")
     from visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator import FaceLandmarkEstimator  # noqa: F401
-    try:
-        from visiongraph.estimator.spatial.face.landmark.IrisDistanceCalculator import IrisDistanceCalculator # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module IrisDistanceCalculator not found")
+    from visiongraph.estimator.spatial.face.landmark.IrisDistanceCalculator import IrisDistanceCalculator  # noqa: F401
     try:
         from visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetector # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module MediaPipeFaceDetector not found")
+    try:
+        from visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceDetectorConfig # noqa: F401
+    except ModuleNotFoundError:
+        logging.info("Module MediaPipeFaceDetectorConfig not found")
     try:
         from visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector import MediaPipeFaceModel # noqa: F401
     except ModuleNotFoundError:
@@ -188,28 +189,23 @@ if TYPE_CHECKING:
         from visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator import FaceReidentificationEstimator # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module FaceReidentificationEstimator not found")
-    try:
-        from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVAD # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module VivaVAD not found")
-    try:
-        from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVADConfig # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module VivaVADConfig not found")
+    from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVAD  # noqa: F401
+    from visiongraph.estimator.spatial.face.vad.VivaVAD import VivaVADConfig  # noqa: F401
     from visiongraph.estimator.spatial.hand.HandDetector import HandDetector  # noqa: F401
     from visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator import HandLandmarkEstimator  # noqa: F401
     try:
-        from visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator import HandModelComplexity # noqa: F401
+        from visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandConfig # noqa: F401
     except ModuleNotFoundError:
-        logging.info("Module HandModelComplexity not found")
+        logging.info("Module MediaPipeHandConfig not found")
     try:
         from visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator import MediaPipeHandEstimator # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module MediaPipeHandEstimator not found")
+    from visiongraph.estimator.spatial.hand.landmark.OpenPoseHandEstimator import OpenPoseHandEstimator  # noqa: F401
     try:
-        from visiongraph.estimator.spatial.hand.landmark.OpenPoseHandEstimator import OpenPoseHandEstimator # noqa: F401
+        from visiongraph.estimator.spatial.mediapipe.MediaPipeTaskRunner import MediaPipeTaskRunner # noqa: F401
     except ModuleNotFoundError:
-        logging.info("Module OpenPoseHandEstimator not found")
+        logging.info("Module MediaPipeTaskRunner not found")
     try:
         from visiongraph.estimator.spatial.pose.AEPoseEstimator import AEPoseConfig # noqa: F401
     except ModuleNotFoundError:
@@ -245,6 +241,10 @@ if TYPE_CHECKING:
     except ModuleNotFoundError:
         logging.info("Module LitePoseEstimatorConfig not found")
     try:
+        from visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator import MediaPipeHolisticConfig # noqa: F401
+    except ModuleNotFoundError:
+        logging.info("Module MediaPipeHolisticConfig not found")
+    try:
         from visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator import MediaPipeHolisticEstimator # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module MediaPipeHolisticEstimator not found")
@@ -256,10 +256,6 @@ if TYPE_CHECKING:
         from visiongraph.estimator.spatial.pose.MediaPipePoseEstimator import MediaPipePoseEstimator # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module MediaPipePoseEstimator not found")
-    try:
-        from visiongraph.estimator.spatial.pose.MediaPipePoseEstimatorLegacy import MediaPipePoseEstimatorLegacy # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module MediaPipePoseEstimatorLegacy not found")
     try:
         from visiongraph.estimator.spatial.pose.MobileHumanPoseEstimator import MobileHumanPoseEstimator # noqa: F401
     except ModuleNotFoundError:
@@ -310,6 +306,10 @@ if TYPE_CHECKING:
         from visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation import MediaPipeSelfieSegmentation # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module MediaPipeSelfieSegmentation not found")
+    try:
+        from visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation import MediaPipeSelfieSegmentationConfig # noqa: F401
+    except ModuleNotFoundError:
+        logging.info("Module MediaPipeSelfieSegmentationConfig not found")
     try:
         from visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation import SelfieSegmentationModel # noqa: F401
     except ModuleNotFoundError:
@@ -398,7 +398,6 @@ if TYPE_CHECKING:
     from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable  # noqa: F401
     from visiongraph.model.tracker.Trackable import Trackable  # noqa: F401
     from visiongraph.model.types.InputShapeOrder import InputShapeOrder  # noqa: F401
-    from visiongraph.model.types.MediaPipePoseModelComplexity import PoseModelComplexity  # noqa: F401
     from visiongraph.model.types.ModelPrecision import ModelPrecision  # noqa: F401
     from visiongraph.model.types.RealSenseColorScheme import RealSenseColorScheme  # noqa: F401
     from visiongraph.node.ApplyNode import ApplyNode  # noqa: F401
@@ -449,10 +448,7 @@ if TYPE_CHECKING:
     from visiongraph.result.spatial.OrientedObjectDetectionResult import OrientedObjectDetectionResult  # noqa: F401
     from visiongraph.result.spatial.SpatialCascadeResult import SpatialCascadeResult  # noqa: F401
     from visiongraph.result.spatial.face.BlazeFace import BlazeFace  # noqa: F401
-    try:
-        from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module BlazeFaceMesh not found")
+    from visiongraph.result.spatial.face.BlazeFaceMesh import BlazeFaceMesh  # noqa: F401
     from visiongraph.result.spatial.face.BlendShape import BlendShape  # noqa: F401
     from visiongraph.result.spatial.face.EmotionClassificationResult import EmotionClassificationResult  # noqa: F401
     from visiongraph.result.spatial.face.EyeOpenClosedResult import EyeOpenClosedResult  # noqa: F401
@@ -462,32 +458,17 @@ if TYPE_CHECKING:
     from visiongraph.result.spatial.face.IrisDistanceResult import IrisParameter  # noqa: F401
     from visiongraph.result.spatial.face.RegressionFace import RegressionFace  # noqa: F401
     from visiongraph.result.spatial.face.VivaVADResult import VivaVADResult  # noqa: F401
-    try:
-        from visiongraph.result.spatial.hand.BlazeHand import BlazeHand # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module BlazeHand not found")
+    from visiongraph.result.spatial.hand.BlazeHand import BlazeHand  # noqa: F401
     from visiongraph.result.spatial.hand.HandDetectionResult import HandDetectionResult  # noqa: F401
     from visiongraph.result.spatial.hand.HandLandmarkResult import HandLandmarkResult  # noqa: F401
     from visiongraph.result.spatial.hand.Handedness import Handedness  # noqa: F401
-    try:
-        from visiongraph.result.spatial.hand.OpenPoseHand import OpenPoseHand # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module OpenPoseHand not found")
-    try:
-        from visiongraph.result.spatial.pose.BlazePose import BlazePose # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module BlazePose not found")
-    try:
-        from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module BlazePoseSegmentation not found")
+    from visiongraph.result.spatial.hand.OpenPoseHand import OpenPoseHand  # noqa: F401
+    from visiongraph.result.spatial.pose.BlazePose import BlazePose  # noqa: F401
+    from visiongraph.result.spatial.pose.BlazePoseSegmentation import BlazePoseSegmentation  # noqa: F401
     from visiongraph.result.spatial.pose.COCOOpenPose import COCOOpenPose  # noqa: F401
     from visiongraph.result.spatial.pose.COCOPose import COCOPose  # noqa: F401
     from visiongraph.result.spatial.pose.EfficientPose import EfficientPose  # noqa: F401
-    try:
-        from visiongraph.result.spatial.pose.HolisticPose import HolisticPose # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module HolisticPose not found")
+    from visiongraph.result.spatial.pose.HolisticPose import HolisticPose  # noqa: F401
     from visiongraph.result.spatial.pose.MobileHumanPose import MobileHumanPose  # noqa: F401
     from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult  # noqa: F401
     from visiongraph.tracker.BaseObjectDetectionTracker import BaseObjectDetectionTracker  # noqa: F401
@@ -672,8 +653,9 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "FaceEmotionEstimator": _LazyImport("FaceEmotionEstimator", "visiongraph.estimator.spatial.face.emotion.FaceEmotionEstimator", False),
     "EyeOpenClosedEstimator": _LazyImport("EyeOpenClosedEstimator", "visiongraph.estimator.spatial.face.eye.EyeOpenClosedEstimator", True),
     "FaceLandmarkEstimator": _LazyImport("FaceLandmarkEstimator", "visiongraph.estimator.spatial.face.landmark.FaceLandmarkEstimator", False),
-    "IrisDistanceCalculator": _LazyImport("IrisDistanceCalculator", "visiongraph.estimator.spatial.face.landmark.IrisDistanceCalculator", True),
+    "IrisDistanceCalculator": _LazyImport("IrisDistanceCalculator", "visiongraph.estimator.spatial.face.landmark.IrisDistanceCalculator", False),
     "MediaPipeFaceDetector": _LazyImport("MediaPipeFaceDetector", "visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector", True),
+    "MediaPipeFaceDetectorConfig": _LazyImport("MediaPipeFaceDetectorConfig", "visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector", True),
     "MediaPipeFaceModel": _LazyImport("MediaPipeFaceModel", "visiongraph.estimator.spatial.face.landmark.MediaPipeFaceDetector", True),
     "RegressionLandmarkEstimator": _LazyImport("RegressionLandmarkEstimator", "visiongraph.estimator.spatial.face.landmark.RegressionLandmarkEstimator", True),
     "AdasHeadPoseEstimator": _LazyImport("AdasHeadPoseEstimator", "visiongraph.estimator.spatial.face.pose.AdasHeadPoseEstimator", True),
@@ -681,13 +663,14 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "FaceRecognitionEstimator": _LazyImport("FaceRecognitionEstimator", "visiongraph.estimator.spatial.face.recognition.FaceRecognitionEstimator", False),
     "FaceReidentificationConfig": _LazyImport("FaceReidentificationConfig", "visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator", True),
     "FaceReidentificationEstimator": _LazyImport("FaceReidentificationEstimator", "visiongraph.estimator.spatial.face.recognition.FaceReidentificationEstimator", True),
-    "VivaVAD": _LazyImport("VivaVAD", "visiongraph.estimator.spatial.face.vad.VivaVAD", True),
-    "VivaVADConfig": _LazyImport("VivaVADConfig", "visiongraph.estimator.spatial.face.vad.VivaVAD", True),
+    "VivaVAD": _LazyImport("VivaVAD", "visiongraph.estimator.spatial.face.vad.VivaVAD", False),
+    "VivaVADConfig": _LazyImport("VivaVADConfig", "visiongraph.estimator.spatial.face.vad.VivaVAD", False),
     "HandDetector": _LazyImport("HandDetector", "visiongraph.estimator.spatial.hand.HandDetector", False),
     "HandLandmarkEstimator": _LazyImport("HandLandmarkEstimator", "visiongraph.estimator.spatial.hand.landmark.HandLandmarkEstimator", False),
-    "HandModelComplexity": _LazyImport("HandModelComplexity", "visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator", True),
+    "MediaPipeHandConfig": _LazyImport("MediaPipeHandConfig", "visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator", True),
     "MediaPipeHandEstimator": _LazyImport("MediaPipeHandEstimator", "visiongraph.estimator.spatial.hand.landmark.MediaPipeHandEstimator", True),
-    "OpenPoseHandEstimator": _LazyImport("OpenPoseHandEstimator", "visiongraph.estimator.spatial.hand.landmark.OpenPoseHandEstimator", True),
+    "OpenPoseHandEstimator": _LazyImport("OpenPoseHandEstimator", "visiongraph.estimator.spatial.hand.landmark.OpenPoseHandEstimator", False),
+    "MediaPipeTaskRunner": _LazyImport("MediaPipeTaskRunner", "visiongraph.estimator.spatial.mediapipe.MediaPipeTaskRunner", True),
     "AEPoseConfig": _LazyImport("AEPoseConfig", "visiongraph.estimator.spatial.pose.AEPoseEstimator", True),
     "AEPoseEstimator": _LazyImport("AEPoseEstimator", "visiongraph.estimator.spatial.pose.AEPoseEstimator", True),
     "EfficientPoseEstimator": _LazyImport("EfficientPoseEstimator", "visiongraph.estimator.spatial.pose.EfficientPoseEstimator", True),
@@ -698,10 +681,10 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "LiteHRNetPoseEstimator": _LazyImport("LiteHRNetPoseEstimator", "visiongraph.estimator.spatial.pose.LiteHRNetEstimator", True),
     "LitePoseEstimator": _LazyImport("LitePoseEstimator", "visiongraph.estimator.spatial.pose.LitePoseEstimator", True),
     "LitePoseEstimatorConfig": _LazyImport("LitePoseEstimatorConfig", "visiongraph.estimator.spatial.pose.LitePoseEstimator", True),
+    "MediaPipeHolisticConfig": _LazyImport("MediaPipeHolisticConfig", "visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator", True),
     "MediaPipeHolisticEstimator": _LazyImport("MediaPipeHolisticEstimator", "visiongraph.estimator.spatial.pose.MediaPipeHolisticEstimator", True),
     "MediaPipePoseConfig": _LazyImport("MediaPipePoseConfig", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimator", True),
     "MediaPipePoseEstimator": _LazyImport("MediaPipePoseEstimator", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimator", True),
-    "MediaPipePoseEstimatorLegacy": _LazyImport("MediaPipePoseEstimatorLegacy", "visiongraph.estimator.spatial.pose.MediaPipePoseEstimatorLegacy", True),
     "MobileHumanPoseEstimator": _LazyImport("MobileHumanPoseEstimator", "visiongraph.estimator.spatial.pose.MobileHumanPoseEstimator", True),
     "MobileNetV2PoseEstimator": _LazyImport("MobileNetV2PoseEstimator", "visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator", True),
     "MobileNetV2PoseEstimatorConfig": _LazyImport("MobileNetV2PoseEstimatorConfig", "visiongraph.estimator.spatial.pose.MobileNetV2PoseEstimator", True),
@@ -719,6 +702,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "MaskRCNNConfig": _LazyImport("MaskRCNNConfig", "visiongraph.estimator.spatial.segmentation.MaskRCNNEstimator", True),
     "MaskRCNNEstimator": _LazyImport("MaskRCNNEstimator", "visiongraph.estimator.spatial.segmentation.MaskRCNNEstimator", True),
     "MediaPipeSelfieSegmentation": _LazyImport("MediaPipeSelfieSegmentation", "visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation", True),
+    "MediaPipeSelfieSegmentationConfig": _LazyImport("MediaPipeSelfieSegmentationConfig", "visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation", True),
     "SelfieSegmentationModel": _LazyImport("SelfieSegmentationModel", "visiongraph.estimator.spatial.segmentation.MediaPipeSelfieSegmentation", True),
     "YOLOv8SegmentationConfig": _LazyImport("YOLOv8SegmentationConfig", "visiongraph.estimator.spatial.segmentation.YOLOv8SegmentationEstimator", False),
     "YOLOv8SegmentationEstimator": _LazyImport("YOLOv8SegmentationEstimator", "visiongraph.estimator.spatial.segmentation.YOLOv8SegmentationEstimator", False),
@@ -759,7 +743,6 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "ArgumentConfigurable": _LazyImport("ArgumentConfigurable", "visiongraph.model.parameter.ArgumentConfigurable", False),
     "Trackable": _LazyImport("Trackable", "visiongraph.model.tracker.Trackable", False),
     "InputShapeOrder": _LazyImport("InputShapeOrder", "visiongraph.model.types.InputShapeOrder", False),
-    "PoseModelComplexity": _LazyImport("PoseModelComplexity", "visiongraph.model.types.MediaPipePoseModelComplexity", False),
     "ModelPrecision": _LazyImport("ModelPrecision", "visiongraph.model.types.ModelPrecision", False),
     "RealSenseColorScheme": _LazyImport("RealSenseColorScheme", "visiongraph.model.types.RealSenseColorScheme", False),
     "ApplyNode": _LazyImport("ApplyNode", "visiongraph.node.ApplyNode", False),
@@ -798,7 +781,7 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "OrientedObjectDetectionResult": _LazyImport("OrientedObjectDetectionResult", "visiongraph.result.spatial.OrientedObjectDetectionResult", False),
     "SpatialCascadeResult": _LazyImport("SpatialCascadeResult", "visiongraph.result.spatial.SpatialCascadeResult", False),
     "BlazeFace": _LazyImport("BlazeFace", "visiongraph.result.spatial.face.BlazeFace", False),
-    "BlazeFaceMesh": _LazyImport("BlazeFaceMesh", "visiongraph.result.spatial.face.BlazeFaceMesh", True),
+    "BlazeFaceMesh": _LazyImport("BlazeFaceMesh", "visiongraph.result.spatial.face.BlazeFaceMesh", False),
     "BlendShape": _LazyImport("BlendShape", "visiongraph.result.spatial.face.BlendShape", False),
     "EmotionClassificationResult": _LazyImport("EmotionClassificationResult", "visiongraph.result.spatial.face.EmotionClassificationResult", False),
     "EyeOpenClosedResult": _LazyImport("EyeOpenClosedResult", "visiongraph.result.spatial.face.EyeOpenClosedResult", False),
@@ -808,17 +791,17 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "IrisParameter": _LazyImport("IrisParameter", "visiongraph.result.spatial.face.IrisDistanceResult", False),
     "RegressionFace": _LazyImport("RegressionFace", "visiongraph.result.spatial.face.RegressionFace", False),
     "VivaVADResult": _LazyImport("VivaVADResult", "visiongraph.result.spatial.face.VivaVADResult", False),
-    "BlazeHand": _LazyImport("BlazeHand", "visiongraph.result.spatial.hand.BlazeHand", True),
+    "BlazeHand": _LazyImport("BlazeHand", "visiongraph.result.spatial.hand.BlazeHand", False),
     "HandDetectionResult": _LazyImport("HandDetectionResult", "visiongraph.result.spatial.hand.HandDetectionResult", False),
     "HandLandmarkResult": _LazyImport("HandLandmarkResult", "visiongraph.result.spatial.hand.HandLandmarkResult", False),
     "Handedness": _LazyImport("Handedness", "visiongraph.result.spatial.hand.Handedness", False),
-    "OpenPoseHand": _LazyImport("OpenPoseHand", "visiongraph.result.spatial.hand.OpenPoseHand", True),
-    "BlazePose": _LazyImport("BlazePose", "visiongraph.result.spatial.pose.BlazePose", True),
-    "BlazePoseSegmentation": _LazyImport("BlazePoseSegmentation", "visiongraph.result.spatial.pose.BlazePoseSegmentation", True),
+    "OpenPoseHand": _LazyImport("OpenPoseHand", "visiongraph.result.spatial.hand.OpenPoseHand", False),
+    "BlazePose": _LazyImport("BlazePose", "visiongraph.result.spatial.pose.BlazePose", False),
+    "BlazePoseSegmentation": _LazyImport("BlazePoseSegmentation", "visiongraph.result.spatial.pose.BlazePoseSegmentation", False),
     "COCOOpenPose": _LazyImport("COCOOpenPose", "visiongraph.result.spatial.pose.COCOOpenPose", False),
     "COCOPose": _LazyImport("COCOPose", "visiongraph.result.spatial.pose.COCOPose", False),
     "EfficientPose": _LazyImport("EfficientPose", "visiongraph.result.spatial.pose.EfficientPose", False),
-    "HolisticPose": _LazyImport("HolisticPose", "visiongraph.result.spatial.pose.HolisticPose", True),
+    "HolisticPose": _LazyImport("HolisticPose", "visiongraph.result.spatial.pose.HolisticPose", False),
     "MobileHumanPose": _LazyImport("MobileHumanPose", "visiongraph.result.spatial.pose.MobileHumanPose", False),
     "PoseLandmarkResult": _LazyImport("PoseLandmarkResult", "visiongraph.result.spatial.pose.PoseLandmarkResult", False),
     "BaseObjectDetectionTracker": _LazyImport("BaseObjectDetectionTracker", "visiongraph.tracker.BaseObjectDetectionTracker", False),

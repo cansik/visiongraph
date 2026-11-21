@@ -1,8 +1,8 @@
 from typing import Tuple, FrozenSet
 
-import mediapipe as mp
 import vector
 
+from visiongraph.external.mediapipe.blaze_connections import POSE_CONNECTIONS
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
 
 
@@ -23,7 +23,7 @@ class BlazePose(PoseLandmarkResult):
 
         :return: The connections defined in MediaPipe.
         """
-        return mp.solutions.pose.POSE_CONNECTIONS
+        return POSE_CONNECTIONS
 
     @property
     def nose(self) -> vector.Vector4D:
