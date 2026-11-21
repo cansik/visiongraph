@@ -53,6 +53,7 @@ Visiongraph originated as a research codebase for rapid prototyping in computer 
 
 Visiongraph supports Python 3.10, 3.11 and 3.12. Other versions may also work, but are not officially supported. In
 practice, version compatibility is usually limited by third-party dependencies rather than by Visiongraph itself.
+The base installation uses NumPy 2 and OpenCV contrib (`cv2`).
 
 To add Visiongraph with all available optional dependencies to a project managed by
 [uv](https://docs.astral.sh/uv/), run:
@@ -81,19 +82,6 @@ pip install "visiongraph[realsense,openvino]"
 ```
 
 Please read more about the extra packages in the [documentation](https://cansik.github.io/visiongraph/visiongraph.html#extras).
-
-### Optional Mediapipe Support
-
-Visiongraph can integrate Google’s [MediaPipe](https://github.com/google-ai-edge/mediapipe) for advanced hand, face, pose and tracking pipelines. Unfortunately, the official PyPI MediaPipe wheels declare a strict dependency on `numpy<2.0`, which prevents installation alongside NumPy 2.x, even though most functionality works fine with NumPy 2.0 and above. To work around this limitation, we maintain a custom [mediapipe-numpy2](https://github.com/cansik/mediapipe-numpy2) build that removes the `<2.0` pin.
-
-When you install the `mediapipe` extra with uv or pip, the package manager automatically fetches the matching patched
-wheel for your operating system and Python version.
-
-#### Official MediaPipe Compatibility
-
-The official `mediapipe` package currently declares `numpy<2.0`, while Visiongraph requires NumPy 2.x. Consequently,
-standard uv and pip dependency resolution cannot install the two packages together. Use the `mediapipe` extra shown
-above unless you deliberately manage and override dependency metadata in your own environment.
 
 ## Model Assets
 
@@ -199,14 +187,14 @@ Below is a list of visiongraph dependencies and their licenses, provided without
 depthai               MIT License
 faiss-cpu             MIT License & BSD-3-Clause
 filterpy              MIT License
-mediapipe-numpy2      Apache License 2.0
+mediapipe             Apache License 2.0
 moviepy               MIT License
 numba                 BSD License
 numpy                 MIT License
 onnxruntime           MIT License
 onnxruntime-directml  MIT License
 onnxruntime-gpu       MIT License
-opencv-python         Apache License 2.0
+opencv-contrib-python Apache License 2.0
 openvino              Apache License 2.0
 pdoc                  MIT License
 pyk4a                 MIT License

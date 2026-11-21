@@ -1,9 +1,9 @@
 from typing import Optional, Sequence
 
-import mediapipe as mp
 import numpy as np
 import vector
 
+from visiongraph.external.mediapipe.blaze_connections import HAND_CONNECTIONS
 from visiongraph.result.spatial.hand.HandLandmarkResult import HandLandmarkResult
 
 
@@ -41,7 +41,7 @@ class BlazeHand(HandLandmarkResult):
             color,
             show_bounding_box,
             min_score,
-            connections=mp.solutions.hands.HAND_CONNECTIONS,
+            connections=HAND_CONNECTIONS,
             **kwargs,
         )
 

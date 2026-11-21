@@ -1,96 +1,78 @@
-from argparse import Namespace
 from enum import Enum
-from typing import Optional
 
-import cv2
-import mediapipe as mp
 import numpy as np
+from mediapipe.tasks.python import vision
 
+from visiongraph.data.AssetMetadata import AssetMetadata
+from visiongraph.data.RepositoryAsset import RepositoryAsset
+from visiongraph.estimator.spatial.mediapipe.MediaPipeTaskRunner import MediaPipeTaskRunner
 from visiongraph.estimator.spatial.InstanceSegmentationEstimator import InstanceSegmentationEstimator
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.InstanceSegmentationResult import InstanceSegmentationResult
-from visiongraph.result.spatial.pose.BlazePose import BlazePose
+from visiongraph.util.MediaPipeUtils import _confidence_mask_to_uint8
 
-_mp_selfie_segmentation = mp.solutions.selfie_segmentation
+
+_MODEL_METADATA = AssetMetadata.from_values(
+    source_name="MediaPipe Selfie Segmenter models",
+    source_url="https://storage.googleapis.com/mediapipe-assets/Model%20Card%20MediaPipe%20Selfie%20Segmentation.pdf",
+    license_name="Apache License 2.0",
+    license_url="https://www.apache.org/licenses/LICENSE-2.0.txt",
+)
 
 
 class SelfieSegmentationModel(Enum):
-    """
-    Enum to represent the type of selfie segmentation model.
-    """
+    """Select a square or landscape selfie segmentation model."""
 
     General = 0
     Landscape = 1
 
 
+class MediaPipeSelfieSegmentationConfig(Enum):
+    """Selfie Segmenter model assets for MediaPipe Image Segmenter."""
+
+    General = RepositoryAsset("selfie_segmenter.tflite", metadata=_MODEL_METADATA)
+    Landscape = RepositoryAsset("selfie_segmenter_landscape.tflite", metadata=_MODEL_METADATA)
+
+
 class MediaPipeSelfieSegmentation(InstanceSegmentationEstimator[InstanceSegmentationResult]):
-    """
-    A class to utilize the MediaPipe selfie segmentation model for instance segmentation.
-    """
+    """Estimate person segmentation masks with MediaPipe Image Segmenter."""
 
-    def __init__(self, model_type: SelfieSegmentationModel = SelfieSegmentationModel.General):
+    def __init__(self, model_type: SelfieSegmentationModel = SelfieSegmentationModel.General) -> None:
         """
-        Initializes the MediaPipeSelfieSegmentation estimator.
+        Initialize the selfie segmenter.
 
-        :param model_type: The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
+        :param model_type: The selfie segmentation model preset.
         """
         super().__init__(0.5)
         self.model_type = model_type
+        self._task = MediaPipeTaskRunner(
+            vision.ImageSegmenterOptions,
+            vision.ImageSegmenter.create_from_options,
+            vision.ImageSegmenter.segment,
+            vision.ImageSegmenter.segment_for_video,
+        )
 
-        self.network: Optional[_mp_selfie_segmentation.SelfieSegmentation] = None
+    def setup(self) -> None:
+        """Set up the selfie segmenter."""
+        asset = MediaPipeSelfieSegmentationConfig[self.model_type.name].value
+        self._task.setup(asset, running_mode=vision.RunningMode.IMAGE, output_confidence_masks=True)
 
-    def setup(self):
-        """
-        Sets up the MediaPipe selfie segmentation network.
-
-        Note:
-            If the network is not created, it will be initialized with the specified model type.
-        """
-        if self.network is None:
-            self.network = _mp_selfie_segmentation.SelfieSegmentation(model_selection=self.model_type.value)
-
-    def process(self, data: np.ndarray) -> ResultList[BlazePose]:
-        """
-        Processes the input image using the MediaPipe selfie segmentation model.
-
-        :param data: The input image as a numpy array.
-
-        :return: A list of instance segmentation results.
-        """
-        # pre-process image
-        image = cv2.cvtColor(data, cv2.COLOR_BGR2RGB)
-        results = self.network.process(image)
-
-        # use segmentation
-        mask = results.segmentation_mask
-        mask_uint8 = (mask * 255).astype(np.uint8)
-
-        # todo: find components and combine them to the boundingbox
+    def process(self, data: np.ndarray) -> ResultList[InstanceSegmentationResult]:
+        """Return a frame-sized uint8 person confidence mask from a BGR image."""
+        asset = MediaPipeSelfieSegmentationConfig[self.model_type.name].value
+        result = self._task.process(data, asset, running_mode=vision.RunningMode.IMAGE, output_confidence_masks=True)
+        # Both Selfie Segmenter models output a single sigmoid mask for the person class.
+        person_confidence = result.confidence_masks[0].numpy_view()
+        mask = _confidence_mask_to_uint8(person_confidence)
         box = BoundingBox2D(0, 0, 1, 1)
-        return ResultList([InstanceSegmentationResult(0, "human", 1.0, mask_uint8, box)])
+        return ResultList([InstanceSegmentationResult(0, "human", 1.0, mask, box)])
 
-    def release(self):
-        """
-        Releases the MediaPipe selfie segmentation network.
-        """
-        self.network.close()
-
-    def configure(self, args: Namespace):
-        """
-        Configures the estimator with the provided arguments.
-
-        :param args: The configuration arguments.
-        """
-        super().configure(args)
+    def release(self) -> None:
+        """Release the task's resources."""
+        self._task.release()
 
     @staticmethod
     def create(model_type: SelfieSegmentationModel = SelfieSegmentationModel.General) -> "MediaPipeSelfieSegmentation":
-        """
-        Creates a new instance of the MediaPipe selfie segmentation estimator.
-
-        :param model_type: The type of selfie segmentation model. Defaults to SelfieSegmentationModel.General.
-
-        :return: A new instance of the MediaPipe selfie segmentation estimator.
-        """
+        """Create a selfie segmenter using the selected preset."""
         return MediaPipeSelfieSegmentation(model_type)

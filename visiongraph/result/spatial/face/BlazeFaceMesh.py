@@ -1,20 +1,18 @@
-from typing import Optional, Sequence, List, Tuple
+from typing import Iterable, Optional, Sequence, List, Tuple
 
-import mediapipe as mp
 import numpy as np
 import vector
 
+from visiongraph.external.mediapipe.blaze_connections import FACE_OVAL_CONNECTIONS
 from visiongraph.result.spatial.face.BlendShape import BlendShape
 from visiongraph.result.spatial.face.FaceLandmarkResult import FaceLandmarkResult
 from visiongraph.util.MathUtils import decompose_transformation_matrix
 from visiongraph.util.VectorUtils import landmarks_center_by_indices
 
-_mp_face_mesh = mp.solutions.face_mesh
-
 
 class BlazeFaceMesh(FaceLandmarkResult):
     # more information about the indices:
-    # https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/python/solutions/face_mesh_connections.py
+    # https://github.com/google-ai-edge/mediapipe/blob/v0.10.21/mediapipe/python/solutions/face_mesh_connections.py
     # https://github.com/google-ai-edge/mediapipe/blob/master/mediapipe/modules/face_geometry/data/canonical_face_model_uv_visualization.png
 
     NOSE_INDEX = 1
@@ -210,7 +208,7 @@ class BlazeFaceMesh(FaceLandmarkResult):
         color: Optional[Sequence[int]] = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
-        connections: Optional[List[Tuple[int, int]]] = _mp_face_mesh.FACEMESH_FACE_OVAL,
+        connections: Optional[Iterable[Tuple[int, int]]] = FACE_OVAL_CONNECTIONS,
         marker_size: int = 1,
         stroke_width: int = 1,
         **kwargs,

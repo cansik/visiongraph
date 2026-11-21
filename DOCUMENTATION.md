@@ -250,7 +250,7 @@ from visiongraph import vg
 face_image: np.ndarray
 
 with vg.MediaPipeFaceDetector() as face_detector:
-    results: vg.ResultList[vg.FaceDetectionResult] = face_detector.process(face_image)
+    results: vg.ResultList[vg.BlazeFace] = face_detector.process(face_image)
 
     for face in results:
         print(face.class_id)
