@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, member
 from functools import partial
 from typing import Sequence, Optional, Union, Any
 
@@ -39,9 +39,9 @@ class InferenceEngine(Enum):
     - OpenVINO2: OpenVinoEngine (deprecated, use OpenVINO)
     """
 
-    ONNX = partial(_get_onnx_vision_engine_type)
-    OpenVINO = partial(_get_open_vino_engine_type)
-    OpenVINO2 = partial(_get_open_vino_engine_type)
+    ONNX = member(partial(_get_onnx_vision_engine_type))
+    OpenVINO = member(partial(_get_open_vino_engine_type))
+    OpenVINO2 = member(partial(_get_open_vino_engine_type))
 
 
 class InferenceEngineFactory:

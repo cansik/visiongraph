@@ -3,10 +3,10 @@ from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-from scripts.model_asset_inventory import collect_asset_references
 
+def build_markdown(*, fail_on_import_errors: bool = False) -> str:
+    from scripts.model_asset_inventory import collect_asset_references
 
-def build_markdown() -> str:
     asset_references, failed_imports = collect_asset_references(repository_only=True)
 
     grouped_assets: Dict[Tuple[str, str, str, str, str], List[str]] = defaultdict(list)
@@ -61,12 +61,22 @@ def build_markdown() -> str:
         lines.append("")
 
     if failed_imports:
+        formatted_failures = [
+            f"- {failed_import.import_name} ({failed_import.module_name}): {failed_import.error}"
+            for failed_import in failed_imports
+        ]
+        if fail_on_import_errors:
+            details = "\n".join(formatted_failures)
+            raise RuntimeError(
+                f"Cannot write model attributions because some config imports failed.\n{details}\n"
+                "Run make sync to install the development dependencies, then rerun generation."
+            )
+
         lines.append("## Skipped Imports")
         lines.append("")
         lines.append("Some config enums could not be imported while generating the attribution list.")
         lines.append("")
-        for failed_import in failed_imports:
-            lines.append(f"- {failed_import.import_name} ({failed_import.module_name}): {failed_import.error}")
+        lines.extend(formatted_failures)
         lines.append("")
 
     return "\n".join(lines).rstrip() + "\n"
@@ -87,7 +97,12 @@ def main() -> None:
     parser.add_argument("--output", type=Path, help="Optional output path. Writes to stdout when omitted.")
     args = parser.parse_args()
 
-    markdown = build_markdown()
+    try:
+        markdown = build_markdown(fail_on_import_errors=args.output is not None)
+    except ModuleNotFoundError as exc:
+        parser.exit(1, f"Warning: Model inventory dependencies are missing ({exc}). Run make sync and try again.\n")
+    except RuntimeError as exc:
+        parser.exit(1, f"Warning: {exc}\n")
 
     if args.output:
         args.output.write_text(markdown, encoding="utf-8")
