@@ -741,7 +741,7 @@ distribution. The currently supported extras are:
 - `onnx` - Support for the ONNX machine-learning framework (CPU)
 - `onnx-gpu` - Support for the ONNX machine-learning framework (CUDA GPU)
 - `onnx-directml` - Support for the ONNX machine-learning framework (DirectML GPU)
-- `media` - Support for VidGear and MoviePy video reading and writing
+- `media` - Support for video capture and recording with VidGear
 - `numba` - Improved performance for smoothing and tracking algorithms
 - `fbs` - Support for framebuffer sharing (SpoutGL or Syphon)
 - `faiss` - Support for fast pose classification

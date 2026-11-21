@@ -21,6 +21,7 @@ class Dependency:
 class ModuleAnalysisResult:
     dependencies: List[Dependency] = field(default_factory=list)
     optional_modules: List[str] = field(default_factory=list)
+    optional_imports: list[str] = field(default_factory=list)
 
 
 class ModuleAnalyzer:
@@ -137,6 +138,7 @@ class ModuleAnalyzer:
 
         # go through dependencies to find reverse-recursive optional modules
         optional_modules = [m for m in dependencies.keys() if any([m.startswith(e) for e in self.optional_modules])]
+        result.optional_imports = [m for m in optional_modules if m.partition(".")[0] in self.optional_modules]
         visited_optional_modules: Set[str] = set()
         while optional_modules:
             module = optional_modules.pop()
@@ -178,7 +180,6 @@ class VisiongraphAnalyzer:
             "openvino",
             "mediapipe",
             "onnxruntime",
-            "moviepy",
             "vidgear",
             "numba",
             "aruco",

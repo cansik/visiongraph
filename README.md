@@ -193,7 +193,6 @@ depthai               MIT License
 faiss-cpu             MIT License & BSD-3-Clause
 filterpy              MIT License
 mediapipe             Apache License 2.0
-moviepy               MIT License
 numba                 BSD License
 numpy                 MIT License
 onnxruntime           MIT License

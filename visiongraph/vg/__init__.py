@@ -421,10 +421,6 @@ if TYPE_CHECKING:
     from visiongraph.recorder.CV2VideoRecorder import CV2VideoRecorder  # noqa: F401
     from visiongraph.recorder.FrameSetRecorder import FrameSetRecorder  # noqa: F401
     try:
-        from visiongraph.recorder.MoviePyVideoRecorder import MoviePyVideoRecorder # noqa: F401
-    except ModuleNotFoundError:
-        logging.info("Module MoviePyVideoRecorder not found")
-    try:
         from visiongraph.recorder.VidGearVideoRecorder import VidGearVideoRecorder # noqa: F401
     except ModuleNotFoundError:
         logging.info("Module VidGearVideoRecorder not found")
@@ -759,7 +755,6 @@ _visiongraph_imports: Dict[str, _LazyImport] = {
     "BaseFrameRecorder": _LazyImport("BaseFrameRecorder", "visiongraph.recorder.BaseFrameRecorder", False),
     "CV2VideoRecorder": _LazyImport("CV2VideoRecorder", "visiongraph.recorder.CV2VideoRecorder", False),
     "FrameSetRecorder": _LazyImport("FrameSetRecorder", "visiongraph.recorder.FrameSetRecorder", False),
-    "MoviePyVideoRecorder": _LazyImport("MoviePyVideoRecorder", "visiongraph.recorder.MoviePyVideoRecorder", True),
     "VidGearVideoRecorder": _LazyImport("VidGearVideoRecorder", "visiongraph.recorder.VidGearVideoRecorder", True),
     "ArUcoCameraPose": _LazyImport("ArUcoCameraPose", "visiongraph.result.ArUcoCameraPose", False),
     "ArUcoMarkerDetection": _LazyImport("ArUcoMarkerDetection", "visiongraph.result.ArUcoMarkerDetection", False),
