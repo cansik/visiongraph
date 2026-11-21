@@ -1,5 +1,3 @@
-from typing import FrozenSet, Tuple, List
-
 import vector
 
 from visiongraph.result.spatial.pose.COCOPose import COCOPose
@@ -48,7 +46,7 @@ class COCOOpenPose(PoseLandmarkResult):
     """
 
     @property
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Gets the connections between keypoints defined in COCO OpenPose.
 
@@ -225,7 +223,7 @@ class COCOOpenPose(PoseLandmarkResult):
         :return: An instance of COCOPose representing the landmarks and score.
         """
         # todo: fix this conversion
-        coco_landmarks: List[Tuple[float, float, float, float]] = []
+        coco_landmarks: list[tuple[float, float, float, float]] = []
         for i in COCO_REORDER_MAP:
             if i < 0:
                 continue

@@ -1,4 +1,4 @@
-from typing import Iterable, Optional, Sequence, List, Tuple
+from typing import Iterable, Sequence
 
 import numpy as np
 import vector
@@ -197,18 +197,18 @@ class BlazeFaceMesh(FaceLandmarkResult):
     def __init__(self, score: float, landmarks: vector.VectorNumpy4D):
         super().__init__(score, landmarks)
 
-        self.blend_shapes: Optional[List[BlendShape]] = None
-        self.transformation_matrix: Optional[np.ndarray] = None
+        self.blend_shapes: list[BlendShape] | None = None
+        self.transformation_matrix: np.ndarray | None = None
 
     def annotate(
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
-        connections: Optional[Iterable[Tuple[int, int]]] = FACE_OVAL_CONNECTIONS,
+        connections: Iterable[tuple[int, int]] | None = FACE_OVAL_CONNECTIONS,
         marker_size: int = 1,
         stroke_width: int = 1,
         **kwargs,

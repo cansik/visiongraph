@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional
 
 
 @dataclass(frozen=True)
@@ -11,14 +10,14 @@ class AssetSource:
 @dataclass(frozen=True)
 class AssetLicense:
     name: str
-    url: Optional[str] = None
+    url: str | None = None
 
 
 @dataclass(frozen=True)
 class AssetMetadata:
     source: AssetSource
     license: AssetLicense
-    comment: Optional[str] = None
+    comment: str | None = None
 
     @classmethod
     def from_values(
@@ -27,7 +26,7 @@ class AssetMetadata:
         source_url: str,
         license_name: str,
         license_url: str,
-        comment: Optional[str] = None,
+        comment: str | None = None,
     ) -> "AssetMetadata":
         return cls(
             source=AssetSource(name=source_name, url=source_url),

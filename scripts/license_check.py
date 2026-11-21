@@ -1,7 +1,6 @@
 import argparse
 import importlib.metadata
 import sys
-from typing import List, Set
 
 import requests
 from packaging.requirements import Requirement
@@ -27,7 +26,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def extract_requirements_from_list(req_list: List[str]) -> Set[str]:
+def extract_requirements_from_list(req_list: list[str]) -> set[str]:
     requirements = set()
     for line in req_list:
         if not isinstance(line, str):
@@ -40,7 +39,7 @@ def extract_requirements_from_list(req_list: List[str]) -> Set[str]:
     return requirements
 
 
-def parse_pyproject(path: str) -> Set[str]:
+def parse_pyproject(path: str) -> set[str]:
     with open(path, "rb") as file:
         data = tomllib.load(file)
 

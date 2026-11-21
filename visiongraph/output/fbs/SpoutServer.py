@@ -1,6 +1,5 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional
 
 import SpoutGL
 import cv2
@@ -22,7 +21,7 @@ class SpoutServer(FrameBufferSharingServer):
         :param name: The name of the Spout server. Defaults to "SpoutServer".
         """
         super().__init__(name)
-        self.ctx: Optional[SpoutGL.SpoutSender] = None
+        self.ctx: SpoutGL.SpoutSender | None = None
 
     def setup(self):
         """

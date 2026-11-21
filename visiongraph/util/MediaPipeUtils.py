@@ -1,5 +1,3 @@
-from typing import Tuple
-
 import numpy as np
 import vector
 
@@ -24,7 +22,7 @@ def mediapipe_landmarks_to_vector4d(mediapipe_landmarks) -> vector.VectorNumpy4D
     return landmarks
 
 
-def mediapipe_landmarks_to_score_and_vector4d(mediapipe_landmarks) -> Tuple[float, vector.VectorNumpy4D]:
+def mediapipe_landmarks_to_score_and_vector4d(mediapipe_landmarks) -> tuple[float, vector.VectorNumpy4D]:
     """
     Extracts a visibility score and converts Mediapipe landmarks to a collection of 4D vectors.
 

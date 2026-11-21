@@ -1,12 +1,11 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 
 import numpy as np
 
 from visiongraph.estimator.BaseEstimator import BaseEstimator
 from visiongraph.result.ImageResult import ImageResult
 
-InpaintInputType = Dict[str, np.ndarray]
+InpaintInputType = dict[str, np.ndarray]
 
 
 class BaseInpainter(BaseEstimator[InpaintInputType, ImageResult], ABC):

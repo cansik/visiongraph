@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -33,9 +32,9 @@ class MidasDepthEstimator(DepthEstimator):
         self.model_asset = model
         self.net_size = net_size
 
-        self.model: Optional[rt.InferenceSession] = None
-        self.input_name: Optional[str] = None
-        self.output_name: Optional[str] = None
+        self.model: rt.InferenceSession | None = None
+        self.input_name: str | None = None
+        self.output_name: str | None = None
 
         resize_image = Resize(
             self.net_size,

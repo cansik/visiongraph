@@ -3,7 +3,6 @@ import glob
 import os
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import List, Set, DefaultDict, Optional
 
 
 @dataclass
@@ -19,8 +18,8 @@ class Dependency:
 
 @dataclass
 class ModuleAnalysisResult:
-    dependencies: List[Dependency] = field(default_factory=list)
-    optional_modules: List[str] = field(default_factory=list)
+    dependencies: list[Dependency] = field(default_factory=list)
+    optional_modules: list[str] = field(default_factory=list)
     optional_imports: list[str] = field(default_factory=list)
 
 
@@ -28,10 +27,10 @@ class ModuleAnalyzer:
     def __init__(
         self,
         root_package: str,
-        excluded_modules: Set[str],
-        late_import_modules: Set[str],
-        optional_modules: Set[str],
-        module_with_methods: Set[str],
+        excluded_modules: set[str],
+        late_import_modules: set[str],
+        optional_modules: set[str],
+        module_with_methods: set[str],
     ) -> None:
         self.root_package = root_package
         self.excluded_modules = excluded_modules
@@ -40,12 +39,12 @@ class ModuleAnalyzer:
         self.module_with_methods = module_with_methods
 
     @staticmethod
-    def get_files_in_path(path: str, extensions: Optional[List[str]] = None) -> List[str]:
+    def get_files_in_path(path: str, extensions: list[str] | None = None) -> list[str]:
         if extensions is None:
             extensions = ["*.*"]
         return sorted([f for ext in extensions for f in glob.glob(os.path.join(path, ext), recursive=True)])
 
-    def analyse_source_file(self, file_path: str, dependency_graph: DefaultDict[str, List[str]]) -> List[Dependency]:
+    def analyse_source_file(self, file_path: str, dependency_graph: defaultdict[str, list[str]]) -> list[Dependency]:
         """
         Finds all class definitions in the source files and imports them.
         :param dependency_graph: A dictionary to store dependencies.
@@ -55,7 +54,7 @@ class ModuleAnalyzer:
         with open(file_path, "r") as file:
             source = file.read()
 
-        results: List[Dependency] = []
+        results: list[Dependency] = []
         module = file_path.replace("/", ".").replace("\\", ".").replace(".py", "")
         optional = False
         is_excluded_module = any([module.startswith(e) for e in self.excluded_modules])
@@ -126,20 +125,20 @@ class ModuleAnalyzer:
         result = ModuleAnalysisResult()
 
         # analyze source files
-        dependencies: DefaultDict[str, List[str]] = defaultdict(list)
+        dependencies: defaultdict[str, list[str]] = defaultdict(list)
         source_files = self.get_files_in_path(f"{self.root_package}/**", ["*.py"])
         imports = [self.analyse_source_file(f, dependencies) for f in source_files]
         imports = [i for sublist in imports for i in sublist]  # flatten
 
         # create module to import dict
-        imports_dict: DefaultDict[str, List[Dependency]] = defaultdict(list)
+        imports_dict: defaultdict[str, list[Dependency]] = defaultdict(list)
         for e in imports:
             imports_dict[e.module].append(e)
 
         # go through dependencies to find reverse-recursive optional modules
         optional_modules = [m for m in dependencies.keys() if any([m.startswith(e) for e in self.optional_modules])]
         result.optional_imports = [m for m in optional_modules if m.partition(".")[0] in self.optional_modules]
-        visited_optional_modules: Set[str] = set()
+        visited_optional_modules: set[str] = set()
         while optional_modules:
             module = optional_modules.pop()
             if module in visited_optional_modules:

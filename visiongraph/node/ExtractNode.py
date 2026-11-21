@@ -29,7 +29,7 @@ class ExtractNode(GraphNode[ResultDict, Optional[OutputType]]):
         """
         pass
 
-    def process(self, data: ResultDict) -> Optional[OutputType]:
+    def process(self, data: ResultDict) -> OutputType | None:
         """
         Extracts the value associated with the specified key from the input data.
 

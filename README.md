@@ -24,8 +24,7 @@ Here is a minimal example that opens a live webcam capture, runs SSD object dete
 import cv2
 from visiongraph import vg
 
-with (vg.VideoCaptureInput() as cam,
-      vg.SSDDetector.create(vg.SSDConfig.SSDLiteMobileNetV2_FP32) as ssd):
+with vg.VideoCaptureInput() as cam, vg.SSDDetector.create(vg.SSDConfig.SSDLiteMobileNetV2_FP32) as ssd:
     while True:
         _, frame = cam.read()
         if frame is None:

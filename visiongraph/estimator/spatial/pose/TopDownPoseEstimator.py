@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import TypeVar, Optional, Set, List, Generic
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -35,10 +35,10 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputTyp
         super().__init__(min_score)
 
         self.human_detector = human_detector
-        self.human_classes: Optional[Set[int]] = None
+        self.human_classes: set[int] | None = None
 
         # todo: use roi ratio for roi creation
-        self.roi_ratio: Optional[float] = None
+        self.roi_ratio: float | None = None
         self.roi_rectified = True
 
     def setup(self):
@@ -55,7 +55,7 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputTyp
 
         :return: A list of pose landmark results.
         """
-        detections: List[ObjectDetectionResult] = self.human_detector.process(data)
+        detections: list[ObjectDetectionResult] = self.human_detector.process(data)
 
         # filter non-human classes
         if self.human_classes is not None:
@@ -85,7 +85,7 @@ class TopDownPoseEstimator(LandmarkEstimator[OutputType], ABC, Generic[OutputTyp
         return image
 
     @abstractmethod
-    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[OutputType]:
+    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> list[OutputType]:
         """
         Detects landmarks in a region of interest (ROI).
 

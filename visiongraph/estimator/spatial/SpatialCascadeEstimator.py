@@ -1,5 +1,3 @@
-from typing import Dict
-
 import numpy as np
 
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
@@ -22,7 +20,7 @@ class SpatialCascadeEstimator(ObjectDetector[SpatialCascadeResult]):
         """
         super().__init__(min_score=0)
         self.root_detector = root_detector
-        self.child_detectors: Dict[str, RoiEstimator] = child_detectors
+        self.child_detectors: dict[str, RoiEstimator] = child_detectors
 
         self._detectors = [self.root_detector, *self.child_detectors.values()]
 

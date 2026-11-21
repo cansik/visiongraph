@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -51,7 +50,7 @@ class ModNetEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
         )
 
         self.reference_size: int = 512
-        self.mask_threshold: Optional[int] = 127
+        self.mask_threshold: int | None = 127
 
     def setup(self):
         """

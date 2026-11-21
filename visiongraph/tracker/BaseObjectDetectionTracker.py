@@ -1,5 +1,4 @@
 from abc import abstractmethod, ABC
-from typing import List
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ResultList import ResultList
@@ -14,7 +13,7 @@ class BaseObjectDetectionTracker(GraphNode[ResultList[ObjectDetectionResult], Re
     """
 
     @abstractmethod
-    def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+    def process(self, data: list[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
         Processes a list of detected objects.
 

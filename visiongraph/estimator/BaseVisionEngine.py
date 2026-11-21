@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from argparse import Namespace, ArgumentParser
-from typing import Dict, Optional, List, Any, Sequence, Tuple, Union
+from typing import Any, Sequence
 
 import cv2
 import numpy as np
@@ -22,8 +22,8 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
     def __init__(
         self,
         flip_channels: bool = True,
-        scale: Optional[Union[float, Sequence[float]]] = None,
-        mean: Optional[Union[float, Sequence[float]]] = None,
+        scale: float | Sequence[float] | None = None,
+        mean: float | Sequence[float] | None = None,
         padding: bool = False,
         transpose: bool = True,
         order: InputShapeOrder = InputShapeOrder.NCHW,
@@ -44,15 +44,15 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         self.scale = scale
         self.mean = mean
         self.padding = padding
-        self.padding_color: Optional[Sequence[int]] = None
+        self.padding_color: Sequence[int] | None = None
         self.transpose = transpose
         self.order = order
         self.dtype = dtype
 
-        self.input_names: List[str] = []
-        self.output_names: List[str] = []
+        self.input_names: list[str] = []
+        self.output_names: list[str] = []
 
-        self.dynamic_input_shapes: Dict[str, List[int]] = dict()
+        self.dynamic_input_shapes: dict[str, list[int]] = dict()
 
     @abstractmethod
     def setup(self):
@@ -61,7 +61,7 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         """
         pass
 
-    def process(self, image: np.ndarray, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def process(self, image: np.ndarray, inputs: dict[str, Any] | None = None) -> VisionEngineOutput:
         """
         Processes an input image and performs inference.
 
@@ -95,7 +95,7 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         return outputs
 
     @abstractmethod
-    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: dict[str, Any] | None = None) -> VisionEngineOutput:
         """
         Performs inference on the input image.
 
@@ -110,13 +110,13 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         image: np.ndarray,
         input_name: str,
         flip_channels: bool = True,
-        scale: Optional[Union[float, Sequence[float]]] = None,
-        mean: Optional[Union[float, Sequence[float]]] = None,
+        scale: float | Sequence[float] | None = None,
+        mean: float | Sequence[float] | None = None,
         padding: bool = False,
         transpose: bool = True,
         order: InputShapeOrder = InputShapeOrder.NCHW,
         dtype: np.dtype = np.float32,
-    ) -> Tuple[np.ndarray, BoundingBox2D, Size2D]:
+    ) -> tuple[np.ndarray, BoundingBox2D, Size2D]:
         """
         Preprocesses the input image for inference.
 
@@ -239,7 +239,7 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         pass
 
     @abstractmethod
-    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+    def get_input_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the input layers of the model.
 
@@ -248,7 +248,7 @@ class BaseVisionEngine(GraphNode[np.ndarray, VisionEngineOutput], ABC):
         pass
 
     @abstractmethod
-    def get_output_layers(self) -> List[VisionEngineModelLayer]:
+    def get_output_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the output layers of the model.
 

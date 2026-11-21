@@ -1,7 +1,7 @@
 import enum
 import inspect
 from dataclasses import dataclass
-from typing import Any, Iterable, Iterator, Set, Tuple, Type
+from typing import Any, Iterable, Iterator
 
 from visiongraph import vg
 from visiongraph.data.Asset import Asset
@@ -13,7 +13,7 @@ from visiongraph.model._ImportStub import _ImportStub
 class ConfigEnumReference:
     module_name: str
     enum_name: str
-    enum_class: Type[enum.Enum]
+    enum_class: type[enum.Enum]
 
 
 @dataclass(frozen=True)
@@ -32,7 +32,7 @@ class FailedImport:
     error: str
 
 
-def iter_config_enums() -> Tuple[Iterable[ConfigEnumReference], Iterable[FailedImport]]:
+def iter_config_enums() -> tuple[Iterable[ConfigEnumReference], Iterable[FailedImport]]:
     config_enums = []
     failed_imports = []
     seen = set()
@@ -89,10 +89,10 @@ def iter_assets(value: Any) -> Iterator[Asset]:
             yield from iter_assets(item)
 
 
-def collect_asset_references(repository_only: bool = True) -> Tuple[Iterable[AssetReference], Iterable[FailedImport]]:
+def collect_asset_references(repository_only: bool = True) -> tuple[Iterable[AssetReference], Iterable[FailedImport]]:
     config_enums, failed_imports = iter_config_enums()
     references = []
-    seen: Set[Tuple[str, str, str, str]] = set()
+    seen: set[tuple[str, str, str, str]] = set()
 
     for config_ref in config_enums:
         for member in config_ref.enum_class:

@@ -1,5 +1,5 @@
 from argparse import Namespace, ArgumentParser
-from typing import Optional, Any
+from typing import Any
 
 import cv2
 import numpy as np
@@ -23,8 +23,8 @@ class SyphonServer(FrameBufferSharingServer):
         """
         super().__init__(name)
 
-        self.sender: Optional[syphon.SyphonMetalServer] = None
-        self.texture: Optional[Any] = None
+        self.sender: syphon.SyphonMetalServer | None = None
+        self.texture: Any | None = None
 
     def setup(self):
         """

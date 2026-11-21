@@ -1,7 +1,7 @@
 import importlib
 import logging
 from dataclasses import dataclass
-from typing import Optional, Any
+from typing import Any
 
 from visiongraph.model._ImportStub import _ImportStub
 
@@ -44,7 +44,7 @@ class _LazyImport:
         bool
     """
 
-    _attribute: Optional[Any] = None
+    _attribute: Any | None = None
 
     @property
     def attribute(self) -> Any:

@@ -1,5 +1,4 @@
 from argparse import Namespace
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -36,7 +35,7 @@ class OpenPoseHandEstimator(HandLandmarkEstimator[OpenPoseHand]):
         self.input_size = 368
         self.resize_heatmaps: bool = False
 
-        self.network: Optional[cv2.dnn_Net] = None
+        self.network: cv2.dnn_Net | None = None
 
     def setup(self):
         """

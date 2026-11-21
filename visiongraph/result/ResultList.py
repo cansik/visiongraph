@@ -1,4 +1,4 @@
-from typing import TypeVar, List, Optional, Sequence
+from typing import TypeVar, Sequence
 
 import numpy as np
 
@@ -7,12 +7,12 @@ from visiongraph.result.BaseResult import BaseResult
 ResultType = TypeVar("ResultType", bound=BaseResult)
 
 
-class ResultList(List[ResultType], BaseResult):
+class ResultList(list[ResultType], BaseResult):
     """
     A list of results that can be annotated on an image.
     """
 
-    def __init__(self, base_list: Optional[Sequence[BaseResult]] = ()):
+    def __init__(self, base_list: Sequence[BaseResult] | None = ()):
         """
         Initializes the ResultList object.
 

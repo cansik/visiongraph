@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -47,7 +46,7 @@ class ZEDInput(BaseDepthCamera):
 
         self.runtime_parameters = sl.RuntimeParameters()
 
-        self._last_color_frame: Optional[np.ndarray] = None
+        self._last_color_frame: np.ndarray | None = None
 
     def setup(self):
         """
@@ -60,7 +59,7 @@ class ZEDInput(BaseDepthCamera):
             raise Exception(f"Could not start ZED camera: {err}")
         print("camera has been opened")
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Captures the next frame from the ZED camera.
 
@@ -266,7 +265,7 @@ class ZEDInput(BaseDepthCamera):
 
     def pre_process_image(
         self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Pre-processes the input image based on the stream type.
 
@@ -280,7 +279,7 @@ class ZEDInput(BaseDepthCamera):
 
         return image
 
-    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray | None:
         """
         Retrieves the raw image from the camera based on the stream type.
 

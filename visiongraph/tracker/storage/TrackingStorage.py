@@ -1,4 +1,4 @@
-from typing import Generic, TypeVar, List, Dict, Callable, Optional
+from typing import Generic, TypeVar, Callable
 
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 
@@ -11,19 +11,19 @@ class TrackingStorage(Generic[T, K]):
         self,
         on_create: Callable[[T], K],
         on_update: Callable[[T, K], K],
-        on_remove: Optional[Callable[[K], None]] = None,
+        on_remove: Callable[[K], None] | None = None,
     ):
         """
         :param on_create: Function to create a new track from a detected object.
         :param on_update: Function to update an existing track with a detected object.
         :param on_remove: Optional function to handle cleanup when a track is removed.
         """
-        self.tracks: Dict[int, K] = {}  # Maps tracking IDs to tracking data
+        self.tracks: dict[int, K] = {}  # Maps tracking IDs to tracking data
         self.on_create: Callable[[T], K] = on_create
         self.on_update: Callable[[T, K], K] = on_update
-        self.on_remove: Optional[Callable[[K], None]] = on_remove
+        self.on_remove: Callable[[K], None] | None = on_remove
 
-    def update(self, detected_objects: List[T]):
+    def update(self, detected_objects: list[T]):
         """
         Updates the tracking storage with a list of tracked objects.
         :param detected_objects: List of detected objects with tracking IDs.

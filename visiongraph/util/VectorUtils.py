@@ -1,4 +1,4 @@
-from typing import List, Tuple, Sequence, Union
+from typing import Sequence
 
 import numpy as np
 import vector
@@ -8,7 +8,7 @@ from vector._methods import VectorProtocolPlanar
 from visiongraph.util.CodeUtils import deprecated
 
 
-def list_of_vector2D(data: List[Tuple[float, float]]) -> vector.VectorNumpy2D:
+def list_of_vector2D(data: list[tuple[float, float]]) -> vector.VectorNumpy2D:
     """
     Converts a list of 2D tuples into a VectorNumpy2D.
 
@@ -19,7 +19,7 @@ def list_of_vector2D(data: List[Tuple[float, float]]) -> vector.VectorNumpy2D:
     return vector.array(data, dtype=[("x", float), ("y", float)]).view(vector.VectorNumpy2D)
 
 
-def list_of_vector3D(data: List[Tuple[float, float, float]]) -> vector.VectorNumpy3D:
+def list_of_vector3D(data: list[tuple[float, float, float]]) -> vector.VectorNumpy3D:
     """
     Converts a list of 3D tuples into a VectorNumpy3D.
 
@@ -30,7 +30,7 @@ def list_of_vector3D(data: List[Tuple[float, float, float]]) -> vector.VectorNum
     return vector.array(data, dtype=[("x", float), ("y", float), ("z", float)]).view(vector.VectorNumpy3D)
 
 
-def list_of_vector4D(data: List[Tuple[float, float, float, float]]) -> vector.VectorNumpy4D:
+def list_of_vector4D(data: list[tuple[float, float, float, float]]) -> vector.VectorNumpy4D:
     """
     Converts a list of 4D tuples into a VectorNumpy4D.
 
@@ -78,7 +78,7 @@ def array_to_vector(data: np.ndarray) -> vector.VectorNumpy:
         raise Exception(f"Shape ({h}, {w}) is not a valid vector numpy shape.")
 
 
-def vector_as_list(v: vector.Vector) -> List[float]:
+def vector_as_list(v: vector.Vector) -> list[float]:
     """
     Converts a vector to a list of its components.
 
@@ -113,7 +113,7 @@ def lerp4d(a: vector.VectorNumpy4D, b: vector.VectorNumpy4D, amt: float) -> vect
 
 
 def lerp_vector_2d(
-    a: Union[vector.Vector2D, VectorProtocolPlanar], b: Union[vector.Vector2D, VectorProtocolPlanar], amt: float
+    a: vector.Vector2D | VectorProtocolPlanar, b: vector.Vector2D | VectorProtocolPlanar, amt: float
 ) -> vector.Vector2D:
     """
     Performs linear interpolation between two 2D vectors.
@@ -128,7 +128,7 @@ def lerp_vector_2d(
 
 
 def lerp_vector_3d(
-    a: Union[vector.Vector3D, VectorProtocolPlanar], b: Union[vector.Vector3D, VectorProtocolPlanar], amt: float
+    a: vector.Vector3D | VectorProtocolPlanar, b: vector.Vector3D | VectorProtocolPlanar, amt: float
 ) -> vector.Vector3D:
     """
     Performs linear interpolation between two 3D vectors.
@@ -145,7 +145,7 @@ def lerp_vector_3d(
 
 
 def lerp_vector_4d(
-    a: Union[vector.Vector4D, VectorProtocolPlanar], b: Union[vector.Vector4D, VectorProtocolPlanar], amt: float
+    a: vector.Vector4D | VectorProtocolPlanar, b: vector.Vector4D | VectorProtocolPlanar, amt: float
 ) -> vector.Vector4D:
     """
     Performs linear interpolation between two 4D vectors.

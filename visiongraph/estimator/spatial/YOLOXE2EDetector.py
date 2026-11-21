@@ -1,5 +1,3 @@
-from typing import List, Optional
-
 import numpy as np
 
 from visiongraph.data.Asset import Asset
@@ -21,9 +19,9 @@ class YOLOXE2EDetector(ObjectDetector):
     def __init__(
         self,
         *assets: Asset,
-        labels: List[str],
+        labels: list[str],
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
@@ -40,7 +38,7 @@ class YOLOXE2EDetector(ObjectDetector):
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
-        self.labels: List[str] = labels
+        self.labels: list[str] = labels
         self.nms_options = nms_options or NMSOptions()
 
     def setup(self):

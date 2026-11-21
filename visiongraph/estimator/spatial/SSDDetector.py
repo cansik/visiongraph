@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple
 
 import openvino
 
@@ -24,7 +23,7 @@ _SSDLITE_MODEL_METADATA = AssetMetadata.from_values(
 )
 
 
-def _person_net(name: str) -> Tuple:
+def _person_net(name: str) -> tuple:
     """
     Helper function to create a person detection model based on the input name.
 
@@ -73,7 +72,7 @@ class SSDDetector(OpenVinoObjectDetector):
     A class representing an SSD detector based on OpenVino.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: list[str], min_score: float = 0.5, device: str = "AUTO"):
         """
         Initializes the SSDDetector with the model, weights, labels, minimum score, and device.
 

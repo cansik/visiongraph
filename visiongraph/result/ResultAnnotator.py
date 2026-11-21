@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from typing import List, Optional
 
 import numpy as np
 
@@ -13,7 +12,7 @@ class ResultAnnotator(GraphNode[ResultDict, np.ndarray]):
     A graph node responsible for annotating the results of a computation on an image.
     """
 
-    def __init__(self, image_key: str = DEFAULT_IMAGE_KEY, result_keys: Optional[List[str]] = None, **annotation_args):
+    def __init__(self, image_key: str = DEFAULT_IMAGE_KEY, result_keys: list[str] | None = None, **annotation_args):
         """
         Initializes the ResultAnnotator node.
 

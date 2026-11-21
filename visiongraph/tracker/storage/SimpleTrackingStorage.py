@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace
-from typing import List, TypeVar, Generic
+from typing import TypeVar, Generic
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.result.ResultList import ResultList
@@ -25,7 +25,7 @@ class SimpleTrackable(Generic[T], ABC):
 K = TypeVar("K", bound=SimpleTrackable)
 
 
-class SimpleTrackingStorage(TrackingStorage[T, K], GraphNode[List[T], ResultList[K]], ABC):
+class SimpleTrackingStorage(TrackingStorage[T, K], GraphNode[list[T], ResultList[K]], ABC):
     """
     A simple tracking storage implementation that integrates tracking and graph processing.
 
@@ -67,7 +67,7 @@ class SimpleTrackingStorage(TrackingStorage[T, K], GraphNode[List[T], ResultList
         """
         pass
 
-    def process(self, detections: List[T]) -> ResultList[K]:
+    def process(self, detections: list[T]) -> ResultList[K]:
         """
         Processes a list of detections, updating tracks accordingly.
 

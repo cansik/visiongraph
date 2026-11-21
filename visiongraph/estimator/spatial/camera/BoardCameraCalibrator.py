@@ -39,7 +39,7 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         pass
 
     @abstractmethod
-    def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+    def process(self, data: np.ndarray) -> CameraPoseResult | None:
         """
         Processes a batch of image data from the board camera.
 
@@ -50,7 +50,7 @@ class BoardCameraCalibrator(VisionEstimator[Optional[CameraPoseResult]], ABC):
         pass
 
     @abstractmethod
-    def calibrate(self) -> Optional[CameraPoseResult]:
+    def calibrate(self) -> CameraPoseResult | None:
         """
         Calibrates the board camera.
 

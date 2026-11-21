@@ -1,6 +1,5 @@
 import copy
 from abc import abstractmethod, ABC
-from typing import Optional, Tuple
 
 import cv2
 import numpy as np
@@ -24,7 +23,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         Initializes the FaceRecognitionEstimator with default attributes.
         """
         self.landmarks_key = "landmarks"
-        self._landmarks: Optional[FaceLandmarkResult] = None
+        self._landmarks: FaceLandmarkResult | None = None
 
     def process_detection(
         self, image: np.ndarray, detection: SpatialCascadeResult, rectified: bool = True
@@ -54,7 +53,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         return super().process_detection(image, detection, rectified)
 
     @abstractmethod
-    def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
+    def process(self, image: np.ndarray, landmarks: FaceLandmarkResult | None = None) -> EmbeddingResult:
         """
         Processes the input image and landmarks to produce an embedding result.
 
@@ -66,8 +65,8 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
         pass
 
     def _pre_process_input(
-        self, data: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None
-    ) -> Tuple[np.ndarray, FaceLandmarkResult]:
+        self, data: np.ndarray, landmarks: FaceLandmarkResult | None = None
+    ) -> tuple[np.ndarray, FaceLandmarkResult]:
         """
         Prepares the input data and landmarks for processing.
 
@@ -83,7 +82,7 @@ class FaceRecognitionEstimator(RoiEstimator, ABC):
 
     def _align_face(
         self, image: np.ndarray, landmarks: FaceLandmarkResult, normalized_keypoints: np.ndarray
-    ) -> Tuple[np.ndarray, float]:
+    ) -> tuple[np.ndarray, float]:
         """
         Aligns the face in the image based on the provided landmarks and normalized keypoints.
 

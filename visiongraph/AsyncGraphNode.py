@@ -1,6 +1,6 @@
 import multiprocessing as mp
 from argparse import Namespace, ArgumentParser
-from typing import TypeVar, Optional
+from typing import TypeVar
 
 from visiongraph.GraphNode import GraphNode
 
@@ -38,7 +38,7 @@ class AsyncGraphNode(GraphNode[InputType, OutputType]):
         self.input_queue = mp.Queue(maxsize=input_queue_size)
         self.output_queue = mp.Queue(maxsize=output_queue_size)
 
-        self._loop_executor: Optional[mp.Process] = None
+        self._loop_executor: mp.Process | None = None
         self._running = False
 
     def setup(self):

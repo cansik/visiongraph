@@ -1,5 +1,5 @@
 import os
-from typing import Optional, Tuple, Dict, Any
+from typing import Any
 
 from visiongraph.data.Asset import Asset
 from visiongraph.data.AssetMetadata import AssetMetadata
@@ -15,8 +15,8 @@ class RepositoryAsset(Asset):
         self,
         name: str,
         repository_url: str = PUBLIC_DATA_URL,
-        headers: Optional[Dict[str, Any]] = PUBLIC_DATA_HEADERS,
-        metadata: Optional[AssetMetadata] = None,
+        headers: dict[str, Any] | None = PUBLIC_DATA_HEADERS,
+        metadata: AssetMetadata | None = None,
     ):
         """
         Initializes a RepositoryAsset object.
@@ -27,7 +27,7 @@ class RepositoryAsset(Asset):
         :param metadata: Optional structured metadata describing the asset provenance.
         """
         self.name = name
-        self._local_path: Optional[str] = None
+        self._local_path: str | None = None
         self.repository_url = repository_url
         self.headers = headers
         self._metadata = metadata
@@ -57,7 +57,7 @@ class RepositoryAsset(Asset):
         return os.path.abspath(self._local_path)
 
     @property
-    def metadata(self) -> Optional[AssetMetadata]:
+    def metadata(self) -> AssetMetadata | None:
         """
         Returns the optional structured metadata associated with the asset.
 
@@ -78,8 +78,8 @@ class RepositoryAsset(Asset):
     def openVino(
         name: str,
         repository_url: str = PUBLIC_DATA_URL,
-        metadata: Optional[AssetMetadata] = None,
-    ) -> Tuple["RepositoryAsset", "RepositoryAsset"]:
+        metadata: AssetMetadata | None = None,
+    ) -> tuple["RepositoryAsset", "RepositoryAsset"]:
         """
         Helper method to download openVINO assets (XML and binary files).
 

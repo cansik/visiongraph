@@ -1,4 +1,4 @@
-from typing import TypeVar, Dict
+from typing import TypeVar
 
 import numpy as np
 
@@ -12,7 +12,7 @@ Default key for referencing images in the result dictionary.
 ResultType = TypeVar("ResultType", bound=BaseResult)
 
 
-class ResultDict(Dict[str, ResultType], BaseResult):
+class ResultDict(dict[str, ResultType], BaseResult):
     """
     A dictionary-like class that stores results indexed by string keys.
 

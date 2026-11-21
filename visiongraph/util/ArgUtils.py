@@ -1,5 +1,5 @@
 import argparse
-from typing import Dict, Any, Optional, Callable, Union
+from typing import Any, Callable
 
 from visiongraph.GraphNode import GraphNode
 
@@ -53,11 +53,11 @@ def float_range(mini, maxi):
 
 def add_dict_choice_argument(
     parser: argparse.ArgumentParser,
-    source: Dict[str, Any],
+    source: dict[str, Any],
     name: str,
     help: str = "",
-    default: Optional[Union[int, str]] = 0,
-    nargs: Optional[Union[str, int]] = None,
+    default: int | str | None = 0,
+    nargs: str | int | None = None,
 ):
     """
     Add an argument to the ArgumentParser that uses a dictionary of choices.
@@ -92,10 +92,10 @@ def add_dict_choice_argument(
 
 def add_step_choice_argument(
     parser: argparse.ArgumentParser,
-    steps: Dict[str, GraphNode],
+    steps: dict[str, GraphNode],
     name: str,
     help: str = "",
-    default: Optional[Union[int, str]] = 0,
+    default: int | str | None = 0,
     add_params: bool = True,
 ):
     """
@@ -117,7 +117,7 @@ def add_step_choice_argument(
 
 
 def add_enum_choice_argument(
-    parser: argparse.ArgumentParser, enum_type: Any, name: str, help: str = "", default: Optional[Any] = None
+    parser: argparse.ArgumentParser, enum_type: Any, name: str, help: str = "", default: Any | None = None
 ):
     """
     Add an argument to the ArgumentParser that uses an enumeration type for choices.

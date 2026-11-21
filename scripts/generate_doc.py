@@ -7,7 +7,7 @@ from dataclasses import dataclass
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType
-from typing import Union, Optional, List, Sequence
+from typing import Sequence
 from unittest.mock import MagicMock
 
 import pdoc
@@ -207,12 +207,12 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
 def generate_doc(
     package_name: str,
     package_version: str,
-    package_url: Optional[str],
-    output_path: Union[str, os.PathLike],
-    package_paths: List[Union[str, os.PathLike]],
+    package_url: str | None,
+    output_path: str | os.PathLike,
+    package_paths: list[str | os.PathLike],
     optional_imports: Sequence[str] = (),
-    extra_asset_path: Union[str, os.PathLike] = "doc",
-    public_markdown_dir: Union[str, os.PathLike, None] = None,
+    extra_asset_path: str | os.PathLike = "doc",
+    public_markdown_dir: str | os.PathLike | None = None,
     launch: bool = False,
 ):
     output_path = Path(output_path)

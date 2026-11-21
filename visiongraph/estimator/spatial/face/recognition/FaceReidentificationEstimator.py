@@ -1,6 +1,5 @@
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from typing import Optional
 
 import numpy as np
 
@@ -63,7 +62,7 @@ class FaceReidentificationEstimator(FaceRecognitionEstimator):
         """
         self.engine.setup()
 
-    def process(self, image: np.ndarray, landmarks: Optional[FaceLandmarkResult] = None) -> EmbeddingResult:
+    def process(self, image: np.ndarray, landmarks: FaceLandmarkResult | None = None) -> EmbeddingResult:
         """
         Processes a given image and optional face landmarks.
 

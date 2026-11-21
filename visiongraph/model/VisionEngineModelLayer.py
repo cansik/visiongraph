@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Sequence, List
+from typing import Sequence
 
 import numpy as np
 
@@ -13,4 +13,4 @@ class VisionEngineModelLayer:
     name: str
     shape: Sequence[int]
     numpy_dtype: np.dtype
-    layer_names: List[str] = field(default_factory=lambda: [])
+    layer_names: list[str] = field(default_factory=lambda: [])

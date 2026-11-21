@@ -1,6 +1,5 @@
 from abc import ABC
 from argparse import Namespace, ArgumentParser, ArgumentError
-from typing import Optional
 
 from visiongraph.input.BaseInput import BaseInput
 from visiongraph.model.DepthBuffer import DepthBuffer
@@ -21,8 +20,8 @@ class BaseDepthInput(DepthBuffer, BaseInput, ABC):
         self.enable_depth: bool = False
         self.use_depth_as_input: bool = False
 
-        self.depth_width: Optional[int] = None
-        self.depth_height: Optional[int] = None
+        self.depth_width: int | None = None
+        self.depth_height: int | None = None
 
     def configure(self, args: Namespace):
         """

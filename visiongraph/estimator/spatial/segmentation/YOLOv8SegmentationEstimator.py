@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Tuple, List, Optional, Set
 
 import cv2
 import numpy as np
@@ -45,11 +44,11 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
     def __init__(
         self,
         *assets: Asset,
-        labels: List[str],
+        labels: list[str],
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
-        allowed_classes: Optional[Set[int]] = None,
+        allowed_classes: set[int] | None = None,
         mask_threshold: float = 0.5,
     ):
         """
@@ -71,10 +70,10 @@ class YOLOv8SegmentationEstimator(UltralyticsYOLODetector[InstanceSegmentationRe
             engine=engine,
         )
 
-        self.allowed_classes: Optional[Set[int]] = allowed_classes
+        self.allowed_classes: set[int] | None = allowed_classes
         self.mask_threshold = mask_threshold
 
-    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> tuple[np.ndarray, np.ndarray]:
         """
         Filters predictions based on a minimum score.
 

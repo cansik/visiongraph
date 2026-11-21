@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple
 
 import cv2
 import numpy as np
@@ -80,7 +79,7 @@ class LitePoseEstimator(PoseEstimator[COCOPose]):
         poses: ResultList[COCOPose] = ResultList()
 
         total_score = 0.0
-        key_points: List[Tuple[float, float, float, float]] = []
+        key_points: list[tuple[float, float, float, float]] = []
 
         for heatmap in keypoints:
             w, h = heatmap.shape[:2]

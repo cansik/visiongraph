@@ -1,8 +1,8 @@
 from collections import defaultdict
-from typing import Any, Dict
+from typing import Any
 
 
-def default_value_dict(value: Any, source: Dict) -> Dict:
+def default_value_dict(value: Any, source: dict) -> dict:
     """
     Creates a dictionary with a default value for keys that do not exist.
 

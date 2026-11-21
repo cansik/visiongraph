@@ -1,6 +1,6 @@
 from abc import abstractmethod, ABC
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Optional, List, Callable
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -26,18 +26,18 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         self.height: int = 480
         self.fps: float = 30.0
 
-        self.rotate: Optional[int] = None
-        self.flip: Optional[int] = None
-        self.crop: Optional[BoundingBox2D] = None
-        self.mask: Optional[np.ndarray] = None
+        self.rotate: int | None = None
+        self.flip: int | None = None
+        self.crop: BoundingBox2D | None = None
+        self.mask: np.ndarray | None = None
 
-        self.pre_processing_hooks: List[Callable[[Optional[np.ndarray]], np.ndarray]] = []
-        self.post_processing_hooks: List[Callable[[Optional[np.ndarray]], np.ndarray]] = []
+        self.pre_processing_hooks: list[Callable[[np.ndarray | None], np.ndarray]] = []
+        self.post_processing_hooks: list[Callable[[np.ndarray | None], np.ndarray]] = []
 
         self.raw_input = False
 
     @abstractmethod
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads a frame from the input source.
 
@@ -56,7 +56,7 @@ class BaseInput(GraphNode[None, np.ndarray], ABC):
         ts, image = self.read()
         return image
 
-    def _post_process(self, ts: int, image: Optional[np.ndarray]) -> tuple[int, Optional[np.ndarray]]:
+    def _post_process(self, ts: int, image: np.ndarray | None) -> tuple[int, np.ndarray | None]:
         """
         Applies the processing pipeline on the input image including pre-processing, cropping, masking,
         rotation, and flipping.

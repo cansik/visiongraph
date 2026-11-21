@@ -1,5 +1,4 @@
 import logging
-from typing import Union, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -21,7 +20,7 @@ class CamGearInput(VideoCaptureInput):
 
     def __init__(
         self,
-        channel: Union[str, int] = 0,
+        channel: str | int = 0,
         input_skip: int = -1,
         loop: bool = True,
         fps_lock: bool = False,
@@ -40,7 +39,7 @@ class CamGearInput(VideoCaptureInput):
         self.stream_mode: bool = stream_mode
         self.input_options = {}
 
-        self._cap: Optional[CamGear] = None
+        self._cap: CamGear | None = None
 
     def _setup_cap(self):
         """
@@ -84,7 +83,7 @@ class CamGearInput(VideoCaptureInput):
         """
         return self._cap is not None and self._cap.stream.isOpened()
 
-    def _read_next_frame(self) -> Tuple[bool, Optional[np.ndarray]]:
+    def _read_next_frame(self) -> tuple[bool, np.ndarray | None]:
         """
         Reads the next frame from the video capture.
 

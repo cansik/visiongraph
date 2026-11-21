@@ -2,7 +2,7 @@
 import os
 import sys
 import logging
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 from visiongraph.model._LazyImport import _LazyImport
 
 LOGLEVEL = os.environ.get("VISIONGRAPH_LOGLEVEL", "WARNING").upper()
@@ -565,7 +565,7 @@ if TYPE_CHECKING:
         logging.info("Module MediaPipeFaceMeshEstimator not found")
 
 
-_visiongraph_imports: Dict[str, _LazyImport] = {
+_visiongraph_imports: dict[str, _LazyImport] = {
     "AsyncGraphNode": _LazyImport("AsyncGraphNode", "visiongraph.AsyncGraphNode", False),
     "BaseGraph": _LazyImport("BaseGraph", "visiongraph.BaseGraph", False),
     "GraphNode": _LazyImport("GraphNode", "visiongraph.GraphNode", False),

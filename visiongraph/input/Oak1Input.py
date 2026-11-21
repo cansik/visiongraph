@@ -1,5 +1,3 @@
-from typing import Optional
-
 import numpy as np
 
 from visiongraph.input.DepthAIBaseInput import DepthAIBaseInput
@@ -11,7 +9,7 @@ class Oak1Input(DepthAIBaseInput):
     inheriting from the DepthAIBaseInput class.
     """
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the latest timestamp and RGB frame from the Oak1 device.
 

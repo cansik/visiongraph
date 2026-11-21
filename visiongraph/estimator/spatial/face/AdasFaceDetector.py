@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Dict, List, Tuple
 
 import numpy as np
 
@@ -20,7 +19,7 @@ class AdasFaceConfig(Enum):
 
 
 class AdasFaceDetector(OpenVinoFaceDetector):
-    def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
+    def _get_results(self, outputs: dict[str, np.ndarray]) -> list[tuple[float, float, float, float, float]]:
         """
         Extracts face detection results from the output of the detector.
 

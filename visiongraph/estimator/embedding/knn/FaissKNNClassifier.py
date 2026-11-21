@@ -1,6 +1,5 @@
 import os
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Union
 
 import numpy as np
 from faiss import IndexFlat, IndexFlatL2
@@ -17,9 +16,9 @@ class FaissKNNClassifier(BaseKNNClassifier):
 
     def __init__(
         self,
-        index_dimensions: Optional[int] = None,
+        index_dimensions: int | None = None,
         store_training_data: bool = True,
-        data_path: Optional[Union[str, os.PathLike]] = None,
+        data_path: str | os.PathLike | None = None,
     ):
         """
         Initializes the FaissKNNClassifier object.
@@ -29,7 +28,7 @@ class FaissKNNClassifier(BaseKNNClassifier):
         :param data_path: The path to the data. Defaults to None.
         """
         super().__init__(min_score=0.5, store_training_data=store_training_data, data_path=data_path)
-        self.index: Optional[IndexFlat] = None
+        self.index: IndexFlat | None = None
         self.index_dimensions = index_dimensions
 
     def setup(self):

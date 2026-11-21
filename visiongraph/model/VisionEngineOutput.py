@@ -1,5 +1,3 @@
-from typing import Union, Dict
-
 import numpy as np
 
 from visiongraph.model.geometry.BoundingBox2D import BoundingBox2D
@@ -9,7 +7,7 @@ PADDING_BOX_OUTPUT_NAME = "padding-box"
 IMAGE_SIZE_OUTPUT_NAME = "image-box"
 
 
-class VisionEngineOutput(Dict[str, Union[np.ndarray, BoundingBox2D, Size2D]]):
+class VisionEngineOutput(dict[str, np.ndarray | BoundingBox2D | Size2D]):
     """
     Represents the output of a vision engine, containing bounding boxes and image sizes.
     """

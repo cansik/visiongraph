@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Optional, List, Dict
 
 import cv2
 import numpy as np
@@ -99,7 +98,7 @@ class _OutputLayerName:
     """
 
     name: str
-    options: List[str] = field(default_factory=lambda: [])
+    options: list[str] = field(default_factory=lambda: [])
 
 
 class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult]):
@@ -111,7 +110,7 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         instance segmentation estimators.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: list[str], min_score: float = 0.5, device: str = "AUTO"):
         """
         Initializes the MaskRCNNEstimator with the specified model, weights, and labels.
 
@@ -125,15 +124,15 @@ class MaskRCNNEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult
         self.model = model
         self.weights = weights
 
-        self.width: Optional[int] = None
-        self.height: Optional[int] = None
+        self.width: int | None = None
+        self.height: int | None = None
 
         self.labels = labels
 
         self.device = device
-        self.engine: Optional[OpenVinoEngine] = None
+        self.engine: OpenVinoEngine | None = None
 
-        self.output_layer_mapping: Dict[str, _OutputLayerName] = {
+        self.output_layer_mapping: dict[str, _OutputLayerName] = {
             "boxes": _OutputLayerName("boxes"),
             "labels": _OutputLayerName("labels"),
             "classes": _OutputLayerName("classes"),

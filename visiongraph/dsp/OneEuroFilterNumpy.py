@@ -25,7 +25,6 @@ SOFTWARE.
 """
 
 from time import time
-from typing import Optional
 
 import numpy as np
 
@@ -70,12 +69,12 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
     def __init__(
         self,
         x0: np.ndarray,
-        t0: Optional[float] = None,
+        t0: float | None = None,
         dx0: float = 0.0,
         min_cutoff: float = 1.0,
         beta: float = 0.0,
         d_cutoff: float = 1.0,
-        invalid_value: Optional[float] = None,
+        invalid_value: float | None = None,
     ):
         """
         Initialize the OneEuro filter.
@@ -117,7 +116,7 @@ class OneEuroFilterNumpy(BaseFilterNumpy):
 
         self.t_prev = time()
 
-    def __call__(self, x: np.ndarray, t: Optional[float] = None) -> np.ndarray:
+    def __call__(self, x: np.ndarray, t: float | None = None) -> np.ndarray:
         """
         Compute the filtered signal.
 

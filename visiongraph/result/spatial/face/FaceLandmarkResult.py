@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 import vector
 
@@ -13,7 +12,7 @@ class FaceLandmarkResult(LandmarkDetectionResult, ABC):
     Abstract base class for face landmark detection results.
     """
 
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D | None = None):
         """
         Initializes the FaceLandmarkResult object with a score and detected landmarks.
 

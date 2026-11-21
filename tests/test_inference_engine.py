@@ -1,5 +1,5 @@
 import unittest
-from typing import Callable, Optional
+from typing import Callable
 
 import cv2
 
@@ -8,7 +8,7 @@ from visiongraph import vg
 
 class TestInferenceEngine(unittest.TestCase):
     @staticmethod
-    def _engine_test(engine_type: vg.InferenceEngine, test_method: Optional[Callable[[vg.BaseVisionEngine], None]]):
+    def _engine_test(engine_type: vg.InferenceEngine, test_method: Callable[[vg.BaseVisionEngine], None] | None):
         asset = vg.KAPAOPoseConfig.KAPAO_N_COCO_640.value[0]
 
         engine = vg.InferenceEngineFactory.create(engine_type, [asset])

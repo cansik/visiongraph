@@ -1,5 +1,3 @@
-from typing import Optional
-
 import numpy as np
 from vidgear.gears import WriteGear
 
@@ -8,7 +6,7 @@ from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
 
 class VidGearVideoRecorder(BaseFrameRecorder):
     def __init__(
-        self, output_path: str = "video.mp4", width: Optional[int] = None, height: Optional[int] = None, fps: float = 30
+        self, output_path: str = "video.mp4", width: int | None = None, height: int | None = None, fps: float = 30
     ):
         """
         Initializes the VidGearVideoRecorder.
@@ -24,7 +22,7 @@ class VidGearVideoRecorder(BaseFrameRecorder):
         self.fps = fps
         self.width = width
         self.height = height
-        self._writer: Optional[WriteGear] = None
+        self._writer: WriteGear | None = None
 
         self.output_params = {
             "-vcodec": "libx264",

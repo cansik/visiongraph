@@ -1,6 +1,5 @@
 import math
 from enum import Enum
-from typing import List, Tuple
 
 import numpy as np
 from scipy.ndimage import gaussian_filter
@@ -106,7 +105,7 @@ class EfficientPoseEstimator(PoseEstimator[EfficientPose]):
         outputs_nchw = np.transpose(outputs, (0, 3, 1, 2))
         body_parts = self._extract_coordinates(outputs_nchw)
 
-        landmarks: List[Tuple[float, float, float, float]] = []
+        landmarks: list[tuple[float, float, float, float]] = []
         max_score = 0.0
         for name, x, y, score in body_parts:
             landmarks.append(

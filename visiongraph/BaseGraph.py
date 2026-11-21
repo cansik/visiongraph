@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from argparse import Namespace
 from multiprocessing import Process
 from threading import Thread
-from typing import List, Callable, Optional, Union
+from typing import Callable
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.model.parameter.ArgumentConfigurable import ArgumentConfigurable
@@ -34,10 +34,10 @@ class BaseGraph(ArgumentConfigurable, ABC):
         self.multi_threaded = multi_threaded
         self.new_process = new_process
         self.daemon = daemon
-        self._loop_executor: Optional[Union[Thread, Process]] = None
-        self.nodes: List[GraphNode] = []
+        self._loop_executor: Thread | Process | None = None
+        self.nodes: list[GraphNode] = []
 
-        self.on_exception: Optional[Callable[[BaseGraph, Exception], None]] = None
+        self.on_exception: Callable[[BaseGraph, Exception], None] | None = None
 
         if handle_signals:
             signal.signal(signal.SIGINT, self._signal_handler)

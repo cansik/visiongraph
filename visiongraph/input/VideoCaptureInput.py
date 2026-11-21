@@ -1,7 +1,6 @@
 import logging
 import time
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Optional, Union, Tuple
 
 import cv2
 import numpy as np
@@ -18,7 +17,7 @@ class VideoCaptureInput(BaseInput):
     A class to handle video capture from a camera or video file.
     """
 
-    def __init__(self, channel: Union[str, int] = 0, input_skip: int = -1, loop: bool = True, fps_lock: bool = False):
+    def __init__(self, channel: str | int = 0, input_skip: int = -1, loop: bool = True, fps_lock: bool = False):
         """
         Initializes the VideoCaptureInput with specified parameters.
 
@@ -32,7 +31,7 @@ class VideoCaptureInput(BaseInput):
         self.input_skip = input_skip
         self.loop = loop
         self.fps_lock = fps_lock
-        self._cap: Optional[cv2.VideoCapture] = None
+        self._cap: cv2.VideoCapture | None = None
         self.capture_backend: VideoCaptureBackend = cv2.CAP_ANY
 
         self._last_read_time = 0
@@ -54,7 +53,7 @@ class VideoCaptureInput(BaseInput):
         """
         self._release_cap()
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the next frame from the video capture.
 
@@ -197,7 +196,7 @@ class VideoCaptureInput(BaseInput):
         """
         return self._cap is not None and self._cap.isOpened()
 
-    def _read_next_frame(self) -> Tuple[bool, Optional[np.ndarray]]:
+    def _read_next_frame(self) -> tuple[bool, np.ndarray | None]:
         """
         Reads the next frame from the video capture.
 

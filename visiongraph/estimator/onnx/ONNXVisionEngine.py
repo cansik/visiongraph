@@ -1,4 +1,4 @@
-from typing import Sequence, Optional, Dict, Any, List, Union
+from typing import Sequence, Any
 
 import numpy as np
 import onnxruntime as rt
@@ -19,10 +19,10 @@ class ONNXVisionEngine(BaseVisionEngine):
     def __init__(
         self,
         model: Asset,
-        execution_providers: Optional[List[str]] = None,
+        execution_providers: list[str] | None = None,
         flip_channels: bool = True,
-        scale: Optional[Union[float, Sequence[float]]] = None,
-        mean: Optional[Union[float, Sequence[float]]] = None,
+        scale: float | Sequence[float] | None = None,
+        mean: float | Sequence[float] | None = None,
         padding: bool = False,
     ):
         """
@@ -40,7 +40,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.model = model
         self.execution_providers = execution_providers
 
-        self.session: Optional[rt.InferenceSession] = None
+        self.session: rt.InferenceSession | None = None
         self.session_options = rt.SessionOptions()
 
         self.preferred_execution_providers = [
@@ -75,7 +75,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         self.input_names = [e.name for e in self.session.get_inputs()]
         self.output_names = [e.name for e in self.session.get_outputs()]
 
-    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: dict[str, Any] | None = None) -> VisionEngineOutput:
         """
         Performs inference on the input image using the ONNX model.
 
@@ -110,7 +110,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         self.session = None
 
-    def get_execution_providers(self) -> List[str]:
+    def get_execution_providers(self) -> list[str]:
         """
         Returns a list of available execution providers, with preference given to user-specified providers if available.
 
@@ -135,7 +135,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         return self.session.get_providers()[0]
 
-    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+    def get_input_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the input layers of the ONNX model.
 
@@ -143,7 +143,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         return self._get_model_layer(self.session.get_inputs())
 
-    def get_output_layers(self) -> List[VisionEngineModelLayer]:
+    def get_output_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the output layers of the ONNX model.
 
@@ -151,7 +151,7 @@ class ONNXVisionEngine(BaseVisionEngine):
         """
         return self._get_model_layer(self.session.get_outputs())
 
-    def _get_model_layer(self, compiled_layers: List[rt.NodeArg]) -> List[VisionEngineModelLayer]:
+    def _get_model_layer(self, compiled_layers: list[rt.NodeArg]) -> list[VisionEngineModelLayer]:
         """
         Gets the model layers from a list of NodeArgs.
 

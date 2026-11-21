@@ -1,6 +1,5 @@
 import collections
 from enum import Enum
-from typing import Union, List
 
 import numpy as np
 from scipy.spatial.distance import cdist
@@ -58,7 +57,7 @@ class CrowdHumanDetector(YOLOv5Detector):
         self.assign_head_to_person = assign_head_to_person
         self.assignment_solver = ObjectAssignmentSolver(self.crowd_human_l2_cost_function)
 
-    def process(self, image: np.ndarray) -> ResultList[Union[CrowdHumanResult, ObjectDetectionResult]]:
+    def process(self, image: np.ndarray) -> ResultList[CrowdHumanResult | ObjectDetectionResult]:
         """
         Processes the input image for object detection and assignment.
 
@@ -109,7 +108,7 @@ class CrowdHumanDetector(YOLOv5Detector):
 
     @staticmethod
     def crowd_human_l2_cost_function(
-        tracks: List[ObjectDetectionResult], detections: List[ObjectDetectionResult]
+        tracks: list[ObjectDetectionResult], detections: list[ObjectDetectionResult]
     ) -> np.ndarray:
         """
         Calculates the L2 cost matrix for object tracking.
@@ -120,7 +119,7 @@ class CrowdHumanDetector(YOLOv5Detector):
         :return: L2 distance matrix between tracks and detections.
         """
 
-        def get_centers(results: List[ObjectDetectionResult]) -> np.ndarray:
+        def get_centers(results: list[ObjectDetectionResult]) -> np.ndarray:
             return np.array(
                 [
                     vector_as_list(lerp_vector_2d(r.bounding_box.top_left, r.bounding_box.top_right, 0.5))

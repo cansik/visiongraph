@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 import openvino
 
@@ -36,7 +35,7 @@ class DETRDetector(OpenVinoObjectDetector):
     Inherits from OpenVinoObjectDetector.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float = 0.5, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: list[str], min_score: float = 0.5, device: str = "AUTO"):
         """
         Initializes the DETRDetector object with the provided model, weights, labels, minimum score, and device.
 

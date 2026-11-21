@@ -1,11 +1,11 @@
 import math
-from typing import Optional, Tuple, Sequence
+from typing import Sequence
 
 import cv2
 import numpy as np
 
 
-def transform_coordinates(x: float, y: float, rotate: Optional[int], flip: Optional[int]) -> Tuple[float, float]:
+def transform_coordinates(x: float, y: float, rotate: int | None, flip: int | None) -> tuple[float, float]:
     """
     Transforms the (x, y) coordinates based on specified rotation and flipping.
 
@@ -170,7 +170,7 @@ def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
 
-def decompose_transformation_matrix(matrix: np.ndarray) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def decompose_transformation_matrix(matrix: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Decomposes a 4x4 transformation matrix into rotation, translation, and scale components.
 

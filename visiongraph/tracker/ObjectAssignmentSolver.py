@@ -1,6 +1,6 @@
 import sys
 from dataclasses import dataclass
-from typing import Optional, Callable, List, TypeVar, Generic, Dict
+from typing import Callable, TypeVar, Generic
 
 import numpy as np
 from scipy.optimize import linear_sum_assignment
@@ -9,7 +9,7 @@ from scipy.spatial.distance import cdist
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.util.VectorUtils import vector_as_list
 
-CostFunctionType = Callable[[List[ObjectDetectionResult], List[ObjectDetectionResult]], np.ndarray]
+CostFunctionType = Callable[[list[ObjectDetectionResult], list[ObjectDetectionResult]], np.ndarray]
 
 T = TypeVar("T", bound=ObjectDetectionResult)
 
@@ -20,12 +20,12 @@ class ObjectAssignmentResult(Generic[T]):
     Data class representing the result of an object assignment process.
     """
 
-    assignments: Dict[T, Optional[T]]
-    unassigned_destinations: List[T]
-    costs: Dict[T, float]
+    assignments: dict[T, T | None]
+    unassigned_destinations: list[T]
+    costs: dict[T, float]
 
     @property
-    def unassigned_sources(self) -> List[T]:
+    def unassigned_sources(self) -> list[T]:
         """
         Returns a list of source objects that were not assigned to any destination.
 
@@ -39,7 +39,7 @@ class ObjectAssignmentSolver(Generic[T]):
     Solver for assigning source objects to destination objects based on a given cost function.
     """
 
-    def __init__(self, cost_function: Optional[CostFunctionType] = None, max_cost: float = sys.maxsize):
+    def __init__(self, cost_function: CostFunctionType | None = None, max_cost: float = sys.maxsize):
         """
         Initializes the ObjectAssignmentSolver with a given cost function and maximum cost.
 
@@ -49,7 +49,7 @@ class ObjectAssignmentSolver(Generic[T]):
         self.cost_function: CostFunctionType = self.l2_cost_function if cost_function is None else cost_function
         self.max_cost = max_cost
 
-    def solve(self, source_list: List[T], destination_list: List[T]) -> ObjectAssignmentResult[T]:
+    def solve(self, source_list: list[T], destination_list: list[T]) -> ObjectAssignmentResult[T]:
         """
         Solves the assignment problem for the given lists of source and destination objects.
 
@@ -104,7 +104,7 @@ class ObjectAssignmentSolver(Generic[T]):
         return ObjectAssignmentResult(assignments, unassigned_destinations, costs)
 
     @staticmethod
-    def l2_cost_function(tracks: List[T], detections: List[T]) -> np.ndarray:
+    def l2_cost_function(tracks: list[T], detections: list[T]) -> np.ndarray:
         """
         Computes the L2 (Euclidean) distance cost matrix between source and destination objects.
 
@@ -120,7 +120,7 @@ class ObjectAssignmentSolver(Generic[T]):
         return distances
 
     @staticmethod
-    def iou_cost_function(tracks: List[T], detections: List[T], class_exclusive: bool = False) -> np.ndarray:
+    def iou_cost_function(tracks: list[T], detections: list[T], class_exclusive: bool = False) -> np.ndarray:
         """
         Computes the Intersection-over-Union (IoU) cost matrix between source and destination objects.
 

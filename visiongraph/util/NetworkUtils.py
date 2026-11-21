@@ -2,7 +2,7 @@ import logging
 import os
 import shutil
 import sys
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 from urllib.parse import urljoin
 
 import requests
@@ -32,7 +32,7 @@ def get_asset_dir() -> str:
     return os.path.abspath(os.path.expanduser(asset_dir))
 
 
-def handle_redirects(url: str, headers: Optional[Dict[str, Any]] = None) -> str:
+def handle_redirects(url: str, headers: dict[str, Any] | None = None) -> str:
     """
     Follow HTTP redirects manually, preserving headers, and raise on error.
 
@@ -72,7 +72,7 @@ def download_file(
     path: str,
     description: str = "download",
     with_progress: bool = True,
-    headers: Optional[Dict[str, Any]] = None,
+    headers: dict[str, Any] | None = None,
 ):
     """
     Download a file from URL to local path, with optional progress and error handling.
@@ -131,7 +131,7 @@ def download_file(
         raise HTTPDownloadError(f"Streaming download failed for {resolved_url}: {e}") from e
 
 
-def prepare_openvino_model(model_name: str, url: Optional[str] = None) -> Tuple[str, str]:
+def prepare_openvino_model(model_name: str, url: str | None = None) -> tuple[str, str]:
     """
     Prepare OpenVINO model XML and BIN by downloading if needed.
 
@@ -144,7 +144,7 @@ def prepare_openvino_model(model_name: str, url: Optional[str] = None) -> Tuple[
     return model_path, weights_path
 
 
-def prepare_data_file(file_name: str, url: Optional[str] = None, headers: Optional[Dict[str, Any]] = None) -> str:
+def prepare_data_file(file_name: str, url: str | None = None, headers: dict[str, Any] | None = None) -> str:
     """
     Ensure a data file is available locally, downloading if missing.
 

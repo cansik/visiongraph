@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 from collections import defaultdict
 from dataclasses import dataclass
-from typing import List, Optional, Dict
 
 from visiongraph.result.ResultList import ResultList
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
@@ -31,7 +30,7 @@ class FlateTracker(BaseObjectDetectionTracker):
         min_alive: int = 0,
         max_lost: int = 5,
         class_aware: bool = False,
-        cost_function: Optional[CostFunctionType] = None,
+        cost_function: CostFunctionType | None = None,
     ):
         """
         Initializes the FlateTracker with specified parameters.
@@ -54,7 +53,7 @@ class FlateTracker(BaseObjectDetectionTracker):
             cost_function if cost_function is not None else ObjectAssignmentSolver.l2_cost_function
         )
 
-        self._tracks: List[_FlateTrack] = []
+        self._tracks: list[_FlateTrack] = []
         self._unique_id: int = 0
 
     def setup(self):
@@ -74,7 +73,7 @@ class FlateTracker(BaseObjectDetectionTracker):
         self._unique_id += 1
         return track_id
 
-    def process(self, detections: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+    def process(self, detections: list[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
         Processes the given detections to update tracks and create new ones if necessary.
 
@@ -105,8 +104,8 @@ class FlateTracker(BaseObjectDetectionTracker):
 
         solver = ObjectAssignmentSolver(self.cost_function, self.max_cost)
 
-        assignments: Dict[ObjectDetectionResult, Optional[ObjectDetectionResult]] = {}
-        unassigned_destinations: List[ObjectDetectionResult] = []
+        assignments: dict[ObjectDetectionResult, ObjectDetectionResult | None] = {}
+        unassigned_destinations: list[ObjectDetectionResult] = []
 
         if not self.class_aware:
             result = solver.solve(tracks_ref, detections)

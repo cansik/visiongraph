@@ -1,5 +1,3 @@
-from typing import Tuple, FrozenSet
-
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
@@ -36,7 +34,7 @@ class COCOPose(PoseLandmarkResult):
     """
 
     @property
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Retrieves the predefined connections between landmarks based on COCO keypoints.
 

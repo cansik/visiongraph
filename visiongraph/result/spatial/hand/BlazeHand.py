@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Sequence
 
 import numpy as np
 import vector
@@ -16,8 +16,8 @@ class BlazeHand(HandLandmarkResult):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
         **kwargs,

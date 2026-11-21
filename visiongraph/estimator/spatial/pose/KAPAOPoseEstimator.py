@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Optional, Tuple
 
 import cv2
 import numpy as np
@@ -96,7 +95,7 @@ class KAPAOPoseEstimator(PoseEstimator):
         poses = ResultList()
         for i, raw_pose in enumerate(raw_poses):
             score = pose_scores[i]
-            key_points: List[Tuple[float, float, float, float]] = []
+            key_points: list[tuple[float, float, float, float]] = []
 
             for kp in raw_pose:
                 # todo: find out why keypoint conf for last keypoint is not valid
@@ -115,8 +114,8 @@ class KAPAOPoseEstimator(PoseEstimator):
         self.engine.release()
 
     def _nms_predictions(
-        self, prediction: np.ndarray, threshold: float, nms_threshold: float, classes: Optional[List[int]] = None
-    ) -> List[np.ndarray]:
+        self, prediction: np.ndarray, threshold: float, nms_threshold: float, classes: list[int] | None = None
+    ) -> list[np.ndarray]:
         """
         Applies Non-Maximum Suppression (NMS) to filter predictions.
 

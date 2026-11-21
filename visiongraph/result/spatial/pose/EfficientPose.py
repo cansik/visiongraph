@@ -1,5 +1,3 @@
-from typing import FrozenSet, Tuple
-
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
@@ -39,7 +37,7 @@ class EfficientPose(PoseLandmarkResult):
     """
 
     @property
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Returns the frozen set of connections representing efficient pairs of pose landmarks.
 
