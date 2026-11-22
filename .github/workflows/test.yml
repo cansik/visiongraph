@@ -43,7 +43,7 @@ jobs:
         shell: bash
         run: |
           pip install uv "huggingface_hub[cli]"
-          uv sync --locked --extra all --dev
+          uv sync --locked --extra all --dev --group docs
 
       - name: Download all models from Hugging Face
         shell: bash
