@@ -34,13 +34,8 @@ jobs:
         run: |
           git diff --exit-code -- visiongraph/vg/__init__.py MODEL_ATTRIBUTIONS.md
 
-      - name: Check repository asset metadata
-        run: |
-          make test-metadata
-
-      - name: Run quick unit tests
-        run: |
-          uv run python -m unittest tests.test_lazy_import tests.test_graph_node tests.test_repo_maintenance_scripts -v
+      - name: Run routine tests
+        run: make test-routine
 
       - name: Build documentation
         run: |

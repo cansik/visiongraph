@@ -177,11 +177,21 @@ make autoformat
 Run the non-mutating lint and formatting checks individually, or run the full validation suite:
 
 ```bash
-make lint       # run Ruff lint checks
-make fmt-check  # check formatting without changing files
-make test       # run the full unit test suite
-make check      # run lint, formatting, and tests
+make lint          # run Ruff lint checks
+make fmt-check     # check formatting without changing files
+make test-routine  # run unit tests and backend import checks
+make test          # run the full test suite, including model inference
+make check         # run lint, formatting, and tests
 ```
+
+The **Visiongraph Test** workflow offers three suites:
+
+- `routine` is the default and runs unit tests and optional backend import checks on Windows, macOS, and Linux with
+  Python 3.11–3.13.
+- `inference` runs the full suite on Ubuntu with Python 3.13.
+- `full` runs the full suite across the OS and Python matrix.
+
+The inference suites fetch model assets on demand and cache them by model mirror revision.
 
 ## Dependencies
 

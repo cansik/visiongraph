@@ -19,26 +19,30 @@ class ONNXVisionEngine(BaseVisionEngine):
     def __init__(
         self,
         model: Asset,
-        execution_providers: list[str] | None = None,
+        execution_providers: Sequence[str | tuple[str, dict[str, str]]] | None = None,
         flip_channels: bool = True,
         scale: float | Sequence[float] | None = None,
         mean: float | Sequence[float] | None = None,
         padding: bool = False,
+        *,
+        execution_provider_options: dict[str, dict[str, str]] | None = None,
     ):
         """
         Initializes the ONNXVisionEngine object.
 
         :param model: The ONNX model to be executed.
-        :param execution_providers: The list of execution providers. Defaults to None.
+        :param execution_providers: Providers in priority order, with optional per-provider overrides.
         :param flip_channels: Whether to flip channels or not. Defaults to True.
         :param scale: The scaling factor for input data. Defaults to None.
         :param mean: The mean value for normalization. Defaults to None.
         :param padding: Whether to pad input data or not. Defaults to False.
+        :param execution_provider_options: Default options keyed by execution provider name.
         """
         super().__init__(flip_channels, scale, mean, padding)
 
         self.model = model
         self.execution_providers = execution_providers
+        self.execution_provider_options = execution_provider_options or {}
 
         self.session: rt.InferenceSession | None = None
         self.session_options = rt.SessionOptions()
@@ -67,9 +71,13 @@ class ONNXVisionEngine(BaseVisionEngine):
         if self.execution_providers is None:
             self.execution_providers = self.get_execution_providers()
 
-        self.session = rt.InferenceSession(
-            self.model.path, providers=self.execution_providers, sess_options=self.session_options
-        )
+        providers = [
+            (provider, self.execution_provider_options[provider])
+            if isinstance(provider, str) and provider in self.execution_provider_options
+            else provider
+            for provider in self.execution_providers
+        ]
+        self.session = rt.InferenceSession(self.model.path, providers=providers, sess_options=self.session_options)
 
         # read input infos
         self.input_names = [e.name for e in self.session.get_inputs()]

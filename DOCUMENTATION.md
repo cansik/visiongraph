@@ -108,7 +108,7 @@ with vg.MediaPipePoseEstimator.create(vg.MediaPipePoseConfig.Light) as mp_pose:
 ## Input
 
 Since there are many cameras with different capture modes, visiongraph implements a basic abstraction for various
-computer-vision inputs such as UVC webcams, RealSense, Azure Kinect, ZED, OAK, and simple media sources. This
+computer-vision inputs such as UVC webcams, RealSense, Azure Kinect on Windows, ZED, OAK, and simple media sources. This
 abstraction is called `visiongraph.input.BaseInput.BaseInput` and allows you to `read()` from a specific device or
 stream. In most cases the input is a camera, but it can also be an image, a video file, or another media source.
 
@@ -732,7 +732,7 @@ select the corresponding ONNX extra and any other extras individually so the env
 distribution. The currently supported extras are:
 
 - `realsense` - Support for Intel RealSense cameras
-- `azure` - Support for Microsoft Azure Kinect cameras
+- `azure` - Support for Microsoft Azure Kinect cameras on Windows
 - `depthai` - Support for the Luxonis cameras
 - `openvino` - Support for the Intel OpenVINO machine-learning framework
 - `mediapipe` - Support for the Google MediaPipe machine learning framework

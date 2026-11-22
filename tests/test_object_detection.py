@@ -4,7 +4,6 @@ import cv2
 
 from tests.utils_for_testing import run_estimator_test
 from visiongraph import vg
-from visiongraph.util import OSUtils
 
 
 class ObjectDetectionTests(unittest.TestCase):
@@ -48,11 +47,9 @@ class ObjectDetectionTests(unittest.TestCase):
     def test_yolov4_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_FP32))
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_yolov4_tiny_detector_fp16(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_Tiny_FP16))
 
-    @unittest.skipUnless(not OSUtils.isMacOSX(), "Not supported on MacOS")
     def test_yolov4_tiny_detector_fp32(self):
         self._test_model(vg.YOLODetector.create(vg.YOLOConfig.YOLOv4_Tiny_FP32))
 
