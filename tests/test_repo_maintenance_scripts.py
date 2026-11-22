@@ -241,18 +241,25 @@ class PdocMonkeypatchTests(unittest.TestCase):
 
 
 class OptionalDocumentationImportsTests(unittest.TestCase):
-    def test_imports_available_dependencies_and_stubs_missing_nested_modules(self):
-        missing_package = "visiongraph_test_missing_backend"
-        missing_module = f"{missing_package}.api"
+    def test_stubs_optional_backend_without_importing_it(self):
+        package_name = "visiongraph_test_doc_backend"
+        module_name = f"{package_name}.api"
 
-        with mock.patch.dict(sys.modules):
-            generate_doc.stub_unavailable_imports(["pathlib", missing_module])
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = Path(temp_dir) / package_name
+            package.mkdir()
+            (package / "__init__.py").write_text(
+                'raise AssertionError("Unexpected backend import")\n', encoding="utf-8"
+            )
 
-            self.assertIs(import_module("pathlib").Path, Path)
-            module = import_module(missing_module)
-            self.assertEqual(module.__name__, missing_module)
-            self.assertIs(import_module(missing_package).api, module)
-            self.assertIsInstance(module.Camera, generate_doc.AutoMock)
+            with mock.patch.dict(sys.modules), mock.patch.object(sys, "path", [temp_dir, *sys.path]):
+                generate_doc.stub_optional_imports(["pathlib", module_name])
+
+                self.assertIs(import_module("pathlib").Path, Path)
+                module = import_module(module_name)
+                self.assertEqual(module.__name__, module_name)
+                self.assertIs(import_module(package_name).api, module)
+                self.assertIsInstance(module.Camera, generate_doc.AutoMock)
 
 
 class ImportAnalyzerTests(unittest.TestCase):

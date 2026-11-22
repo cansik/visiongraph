@@ -4,7 +4,6 @@ import re
 import shutil
 import sys
 from dataclasses import dataclass
-from importlib import import_module
 from pathlib import Path
 from types import ModuleType
 from typing import Sequence
@@ -50,7 +49,7 @@ def load_project_config(path: Path = Path("pyproject.toml")) -> ProjectConfig:
 
 
 class AutoMock(MagicMock):
-    """Supply stand-ins for attributes of an unavailable optional dependency."""
+    """Supply stand-ins for attributes of optional dependencies during docs generation."""
 
     def __getattr__(self, name):
         # Avoid recursion for internal MagicMock attributes
@@ -62,7 +61,7 @@ class AutoMock(MagicMock):
 
 
 class OptionalModuleStub(ModuleType):
-    """Allow pdoc to import modules that use an unavailable optional dependency."""
+    """Represent an optional dependency while pdoc loads Visiongraph modules."""
 
     def __init__(self, name: str):
         super().__init__(name)
@@ -74,7 +73,7 @@ class OptionalModuleStub(ModuleType):
         return AutoMock(name=name)
 
 
-def stub_unavailable_imports(optional_imports: Sequence[str]) -> None:
+def stub_optional_imports(optional_imports: Sequence[str]) -> None:
     module_names: set[str] = set()
     for name in optional_imports:
         while name:
@@ -84,14 +83,11 @@ def stub_unavailable_imports(optional_imports: Sequence[str]) -> None:
     for name in sorted(module_names):
         if name in sys.modules:
             continue
-        try:
-            import_module(name)
-        except ImportError:
-            stub = OptionalModuleStub(name)
-            sys.modules[name] = stub
-            parent, _, member = name.rpartition(".")
-            if parent:
-                setattr(sys.modules[parent], member, stub)
+        stub = OptionalModuleStub(name)
+        sys.modules[name] = stub
+        parent, _, member = name.rpartition(".")
+        if parent:
+            setattr(sys.modules[parent], member, stub)
 
 
 @pass_context
@@ -248,7 +244,7 @@ def generate_doc(
         package_name,
         Path(public_markdown_dir) if public_markdown_dir is not None else None,
     )
-    stub_unavailable_imports(optional_imports)
+    stub_optional_imports(optional_imports)
 
     if launch:
         host = "localhost"

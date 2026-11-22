@@ -158,6 +158,8 @@ Generate the deployable documentation in `./docs` with:
 make docs
 ```
 
+The docs builder uses stubs for optional backends so API pages can be built with the base and docs dependencies.
+
 To preview the documentation locally with pdoc's development server, run:
 
 ```bash
