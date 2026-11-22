@@ -91,7 +91,13 @@ class DEIMv2Detector(ObjectDetector):
         :param engine: The inference engine to use (default is ONNX).
         """
         super().__init__(min_score)
-        self.engine = InferenceEngineFactory.create(engine, assets, flip_channels=True, scale=255.0, padding=True)
+        engine_options = {}
+        if engine is InferenceEngine.ONNX:
+            # Core ML's NeuralNetwork format can return tensors with the wrong rank for DEIMv2.
+            engine_options["execution_provider_options"] = {"CoreMLExecutionProvider": {"ModelFormat": "MLProgram"}}
+        self.engine = InferenceEngineFactory.create(
+            engine, assets, flip_channels=True, scale=255.0, padding=True, **engine_options
+        )
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
