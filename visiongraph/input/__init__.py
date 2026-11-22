@@ -2,6 +2,7 @@ import argparse
 import logging
 import sys
 from argparse import _ArgumentGroup
+from functools import cache
 from importlib import import_module
 
 from visiongraph.input.BaseInput import BaseInput
@@ -25,11 +26,13 @@ if sys.platform != "win32":
 
 def _load_input_class(name: str) -> type[BaseInput]:
     provider = getattr(import_module(f".{name}", __name__), name)
+    # Expose the class on the package under the same name as its module.
     globals()[name] = provider
     return provider
 
 
-def _load_input_providers() -> dict[str, type[BaseInput]]:
+@cache
+def _get_input_providers() -> dict[str, type[BaseInput]]:
     providers: dict[str, type[BaseInput]] = {"video-capture": VideoCaptureInput, "image": ImageInput}
     for key, name in _OPTIONAL_INPUT_PROVIDERS.items():
         try:
@@ -39,11 +42,9 @@ def _load_input_providers() -> dict[str, type[BaseInput]]:
     return providers
 
 
-def __getattr__(name: str):
+def __getattr__(name: str) -> dict[str, type[BaseInput]] | type[BaseInput]:
     if name == "InputProviders":
-        providers = _load_input_providers()
-        globals()[name] = providers
-        return providers
+        return _get_input_providers()
     if name in _OPTIONAL_INPUT_PROVIDERS.values():
         try:
             return _load_input_class(name)
@@ -65,7 +66,6 @@ def add_input_step_choices(
     :param default: The default value for the input choice. Default is 0.
     :param add_params: A flag indicating whether to add additional parameters for the input choice. Default is True.
     """
-    providers = getattr(sys.modules[__name__], "InputProviders")
     add_step_choice_argument(
-        parser, providers, "--input", help="Image input provider", default=default, add_params=add_params
+        parser, _get_input_providers(), "--input", help="Image input provider", default=default, add_params=add_params
     )

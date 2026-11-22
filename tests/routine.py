@@ -2,6 +2,7 @@ import argparse
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 from visiongraph import vg
 from visiongraph.model._ImportStub import _ImportStub
@@ -35,9 +36,12 @@ class OptionalBackendImportTests(unittest.TestCase):
                 "-c",
                 "import sys\n"
                 "from visiongraph import vg\n"
+                "from visiongraph.input import add_input_step_choices\n"
                 "from visiongraph.model._ImportStub import _ImportStub\n"
+                "other_sdks = {'pyk4a', 'pyrealsense2', 'vidgear.gears', 'pyzed.sl'}\n"
+                "assert (other_sdks | {'depthai'}).isdisjoint(sys.modules)\n"
                 "assert not issubclass(vg.OakDInput, _ImportStub)\n"
-                "assert {'pyk4a', 'pyrealsense2', 'vidgear.gears', 'pyzed.sl'}.isdisjoint(sys.modules)\n",
+                "assert other_sdks.isdisjoint(sys.modules)\n",
             ],
             capture_output=True,
             text=True,
@@ -48,7 +52,9 @@ class OptionalBackendImportTests(unittest.TestCase):
         from visiongraph.input import InputProviders, add_input_step_choices
 
         parser = argparse.ArgumentParser()
-        add_input_step_choices(parser, add_params=False)
+        with patch.dict(InputProviders, {"custom-image": vg.ImageInput}):
+            add_input_step_choices(parser, add_params=False)
+            self.assertIs(parser.parse_args(["--input", "custom-image"]).input, vg.ImageInput)
 
         self.assertIs(parser.parse_args(["--input", "oakd"]).input, vg.OakDInput)
         self.assertEqual("azure" in InputProviders, sys.platform == "win32")
