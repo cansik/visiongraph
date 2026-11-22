@@ -33,6 +33,12 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Install MediaPipe runtime libraries
+        if: inputs.suite != 'routine' && runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libegl1 libgles2
+
       - name: Install ffmpeg
         if: inputs.suite != 'routine' && runner.os == 'macOS'
         run: |
