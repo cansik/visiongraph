@@ -23,7 +23,8 @@
 	list-estimators \
 	sync \
 	test \
-	test-metadata
+	test-metadata \
+	test-routine
 
 UV := uv
 PYTHON := $(UV) run python
@@ -48,6 +49,7 @@ help:
 	@echo "  license-check     Print dependency licenses from pyproject.toml"
 	@echo "  test              Run the full unittest suite"
 	@echo "  test-metadata     Run the repository model metadata enforcement tests"
+	@echo "  test-routine      Run unit tests and optional backend import checks"
 	@echo "  docs              Generate the static documentation into ./docs"
 	@echo "  docs-serve        Launch the pdoc documentation web server"
 	@echo "  build             Regenerate distributable artifacts and build sdist/wheel artifacts"
@@ -100,6 +102,9 @@ test:
 
 test-metadata:
 	$(PYTHON_NO_SYNC) -m unittest tests.test_repository_asset_metadata -v
+
+test-routine:
+	$(PYTHON_NO_SYNC) -X faulthandler -m unittest tests.routine -v
 
 docs: generate-init generate-public-markdown
 	$(PYTHON) -m scripts.generate_doc --public-markdown-dir build/public-markdown

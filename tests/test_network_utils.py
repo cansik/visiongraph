@@ -61,7 +61,7 @@ class NetworkUtilsTests(unittest.TestCase):
 
     def test_prepare_data_file_defaults_to_user_asset_directory(self):
         with tempfile.TemporaryDirectory() as home_dir:
-            env_updates = {"HOME": home_dir}
+            env_updates = {"HOME": home_dir, "USERPROFILE": home_dir}
             with patch.dict(os.environ, env_updates, clear=False):
                 os.environ.pop(ASSET_DIR_ENV_VAR, None)
 

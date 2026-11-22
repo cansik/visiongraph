@@ -2,6 +2,15 @@ name: Visiongraph Test
 
 on:
   workflow_dispatch:
+    inputs:
+      suite:
+        description: Test suite
+        type: choice
+        default: routine
+        options:
+          - routine
+          - inference
+          - full
 
 jobs:
   test:
@@ -9,25 +18,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os:
-          - name: windows
-            host: windows-latest
-            args:
+        os: ${{ fromJSON(inputs.suite == 'inference' && '["ubuntu-latest"]' || '["windows-latest","macos-latest","ubuntu-latest"]') }}
+        python-version: ${{ fromJSON(inputs.suite == 'inference' && '["3.13"]' || '["3.11","3.12","3.13"]') }}
 
-          - name: macos-silicon
-            host: macos-latest
-            args:
-
-          - name: ubuntu
-            host: ubuntu-latest
-            args:
-        python-version: ["3.11", "3.12", "3.13"]
-
-    runs-on: ${{ matrix.os.host }}
+    runs-on: ${{ matrix.os }}
     env:
       UV_PYTHON: ${{ matrix.python-version }}
+      VISIONGRAPH_ASSET_DIR: build/test-assets
 
-    name: python ${{ matrix.python-version }} on ${{ matrix.os.host }}
+    name: ${{ inputs.suite }} / Python ${{ matrix.python-version }} on ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -35,36 +34,37 @@ jobs:
           python-version: ${{ matrix.python-version }}
 
       - name: Install ffmpeg
-        if: runner.os == 'macOS'
+        if: inputs.suite != 'routine' && runner.os == 'macOS'
         run: |
           brew install ffmpeg
 
       - name: Install visiongraph
         shell: bash
         run: |
-          pip install uv "huggingface_hub[cli]"
+          pip install uv
           uv sync --locked --extra all --dev --group docs
 
-      - name: Download all models from Hugging Face
+      - name: Get model mirror revision
+        if: inputs.suite != 'routine'
+        id: model-revision
         shell: bash
-        env:
-          HF_TOKEN: ${{ secrets.HF_HUB_TOKEN }}
         run: |
-          python - <<'EOF'
-          import os
-          from huggingface_hub import snapshot_download
-          snapshot_download(
-              repo_id="cansik/visiongraph",
-              local_dir="visiongraph/cache"
-          )
-          EOF
+          revision="$(git ls-remote --exit-code https://huggingface.co/cansik/visiongraph refs/heads/main | cut -f1)"
+          printf 'sha=%s\n' "$revision" >> "$GITHUB_OUTPUT"
 
-      - name: Check networks
-        shell: bash
-        run: |
-          ls -la visiongraph/cache
+      - name: Cache model assets
+        if: inputs.suite != 'routine'
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.VISIONGRAPH_ASSET_DIR }}
+          key: visiongraph-models-v1-${{ runner.os }}-${{ steps.model-revision.outputs.sha }}-${{ hashFiles('tests/test_*.py', 'visiongraph/estimator/**/*.py') }}
+          restore-keys: |
+            visiongraph-models-v1-${{ runner.os }}-${{ steps.model-revision.outputs.sha }}-
 
-      - name: Test visiongraph
-        shell: bash
-        run: |
-          uv run python -m unittest discover -s ./tests -t ./ -v
+      - name: Run routine tests
+        if: inputs.suite == 'routine'
+        run: uv run --no-sync python -X faulthandler -m unittest tests.routine -v
+
+      - name: Run full tests
+        if: inputs.suite != 'routine'
+        run: uv run --no-sync python -X faulthandler -m unittest discover -s ./tests -t ./ -v
