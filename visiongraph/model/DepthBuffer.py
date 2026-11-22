@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from statistics import median
-from typing import List, Tuple
 
 import numpy as np
 
@@ -24,7 +23,7 @@ class DepthBuffer(ABC):
         """
         pass
 
-    def median_distance(self, points: List[Tuple[float, float]]) -> float:
+    def median_distance(self, points: list[tuple[float, float]]) -> float:
         """
         Calculates the median distance from a list of points to the depth buffer.
 

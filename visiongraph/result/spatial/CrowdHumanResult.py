@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Sequence
 
 import numpy as np
 
@@ -11,7 +11,7 @@ class CrowdHumanResult(ObjectDetectionResult):
     about the person and their head if available.
     """
 
-    def __init__(self, person: ObjectDetectionResult, head: Optional[ObjectDetectionResult]):
+    def __init__(self, person: ObjectDetectionResult, head: ObjectDetectionResult | None):
         """
         Initializes the CrowdHumanResult with the detected person and an optional head detection.
 
@@ -25,8 +25,8 @@ class CrowdHumanResult(ObjectDetectionResult):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         **kwargs,
     ):
         """

@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Optional, List, Tuple
 
 import cv2
 import numpy as np
@@ -25,6 +24,7 @@ _MODEL_METADATA = AssetMetadata.from_values(
     license_name="MIT License",
     license_url="https://github.com/ibaiGorordo/ONNX-Mobile-Human-Pose-3D/blob/main/LICENSE",
 )
+_DEFAULT_MODEL = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx", metadata=_MODEL_METADATA)
 
 
 @dataclass
@@ -32,7 +32,7 @@ class _RawMobileHumanPoseResult:
     pose_2d: np.ndarray
     pose_3d: np.ndarray
     scores: np.ndarray
-    person_heatmap: Optional[np.ndarray] = None
+    person_heatmap: np.ndarray | None = None
 
 
 class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
@@ -48,30 +48,32 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
 
     def __init__(
         self,
-        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32),
-        model: Asset = RepositoryAsset("mobile_human_pose_working_well_256x256.onnx", metadata=_MODEL_METADATA),
-        intrinsics: Optional[CameraIntrinsics] = None,
+        human_detector: ObjectDetector | None = None,
+        model: Asset = _DEFAULT_MODEL,
+        intrinsics: CameraIntrinsics | None = None,
         abs_depth: float = 1.0,
         min_score: float = 0.5,
     ):
+        if human_detector is None:
+            human_detector = SSDDetector.create(SSDConfig.PersonDetection_0201_384x384_FP32)
         super().__init__(human_detector, min_score)
 
         self.model = model
         self.intrinsics = intrinsics
         self.abs_depth = abs_depth
 
-        self.session: Optional[rt.InferenceSession] = None
+        self.session: rt.InferenceSession | None = None
         self.session_options = rt.SessionOptions()
 
         self.input_name: str = ""
-        self.channels: Optional[int] = None
-        self.input_width: Optional[int] = None
-        self.input_height: Optional[int] = None
+        self.channels: int | None = None
+        self.input_width: int | None = None
+        self.input_height: int | None = None
 
-        self.output_names: Optional[List[str]] = None
-        self.output_depth: Optional[int] = None
-        self.output_width: Optional[int] = None
-        self.output_height: Optional[int] = None
+        self.output_names: list[str] | None = None
+        self.output_depth: int | None = None
+        self.output_width: int | None = None
+        self.output_height: int | None = None
 
     def setup(self):
         """
@@ -142,7 +144,7 @@ class MobileHumanPoseEstimator(TopDownPoseEstimator[MobileHumanPose]):
         raw_result = self._post_process(output)
 
         # create pose
-        landmarks: List[Tuple[float, float, float, float]] = []
+        landmarks: list[tuple[float, float, float, float]] = []
         max_score = 0.0
         for i, point in enumerate(raw_result.pose_3d):
             score = raw_result.scores[i]

@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Tuple, List, Optional
 
 import numpy as np
 
@@ -8,7 +7,6 @@ from visiongraph.data.AssetMetadata import AssetMetadata
 from visiongraph.data.RepositoryAsset import RepositoryAsset
 from visiongraph.estimator.openvino.OpenVinoEngine import OpenVinoEngine
 from visiongraph.estimator.spatial.ObjectDetector import ObjectDetector
-from visiongraph.estimator.spatial.SSDDetector import SSDDetector, SSDConfig
 from visiongraph.estimator.spatial.pose.TopDownPoseEstimator import TopDownPoseEstimator
 from visiongraph.model.NMSOptions import NMSOptions
 from visiongraph.result.ResultList import ResultList
@@ -72,9 +70,9 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         self,
         model: Asset,
         weights: Asset,
-        human_detector: ObjectDetector = SSDDetector.create(SSDConfig.PersonDetection_0200_256x256_FP32),
+        human_detector: ObjectDetector | None = None,
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         device: str = "AUTO",
     ):
         """
@@ -101,7 +99,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
         super().setup()
         self.engine.setup()
 
-    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> List[COCOPose]:
+    def _detect_landmarks(self, image: np.ndarray, roi: np.ndarray, xs: int, ys: int) -> list[COCOPose]:
         """
         Detects key points in the provided region of interest (ROI) of the image.
 
@@ -120,7 +118,7 @@ class LiteHRNetPoseEstimator(TopDownPoseEstimator[COCOPose]):
 
         poses: ResultList[COCOPose] = ResultList()
         for raw_result in output:
-            key_points: List[Tuple[float, float, float, float]] = []
+            key_points: list[tuple[float, float, float, float]] = []
             max_score = 0.0
 
             for index in range(LITE_HRNET_KEY_POINT_COUNT):

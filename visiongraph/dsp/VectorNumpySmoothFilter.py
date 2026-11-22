@@ -18,13 +18,13 @@ class VectorNumpySmoothFilter(GraphNode[InputType, OutputType]):
     A filter node that applies a smoothing operation to the input data using a one-euro filter.
     """
 
-    def __init__(self, np_filter: BaseFilterNumpy = OneEuroFilterNumpy(np.zeros(1))):
+    def __init__(self, np_filter: BaseFilterNumpy | None = None):
         """
         Initializes the VectorNumpySmoothFilter node.
 
-        :param np_filter: The filter to be used for smoothing. Defaults to an instance of OneEuroFilterNumpy with a zero-filled input.
+        :param np_filter: Smoothing filter. Defaults to a OneEuroFilterNumpy initialized with zeros.
         """
-        self._filter = np_filter
+        self._filter = np_filter if np_filter is not None else OneEuroFilterNumpy(np.zeros(1))
 
     def setup(self):
         """

@@ -1,7 +1,6 @@
 import argparse
 import logging
 from argparse import _ArgumentGroup
-from typing import Union
 
 from visiongraph.input.ImageInput import ImageInput
 from visiongraph.input.VideoCaptureInput import VideoCaptureInput
@@ -52,7 +51,7 @@ except ImportError as ex:
 
 
 def add_input_step_choices(
-    parser: Union[argparse.ArgumentParser, _ArgumentGroup], default: Union[int, str] = 0, add_params: bool = True
+    parser: argparse.ArgumentParser | _ArgumentGroup, default: int | str = 0, add_params: bool = True
 ):
     """
     Adds input step choices to the given parser.

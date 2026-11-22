@@ -2,7 +2,7 @@ import logging
 import os
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import TypeVar, Optional, Union, Generic
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -15,9 +15,7 @@ T = TypeVar("T", bound=EmbeddingResult)
 
 
 class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationResult]], ABC, Generic[T]):
-    def __init__(
-        self, min_score: float, store_training_data: bool = True, data_path: Optional[Union[str, os.PathLike]] = None
-    ):
+    def __init__(self, min_score: float, store_training_data: bool = True, data_path: str | os.PathLike | None = None):
         """
         Initializes the K-Nearest Neighbors classifier.
 
@@ -29,7 +27,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
 
         self.store_training_data = store_training_data
 
-        self._training_data: Optional[np.ndarray] = None
+        self._training_data: np.ndarray | None = None
         self._data_labels = np.array([], dtype=int)
 
         self._data_path = data_path
@@ -109,7 +107,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
 
         return classifications
 
-    def save_data(self, path: Union[str, os.PathLike]):
+    def save_data(self, path: str | os.PathLike):
         """
         Saves the training data to a file.
 
@@ -122,7 +120,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         path = Path(path)
         np.savez_compressed(path, x=self._training_data, y=self._data_labels, labels=self.labels)
 
-    def load_data(self, path: Union[str, os.PathLike]):
+    def load_data(self, path: str | os.PathLike):
         """
         Loads the training data from a file.
 
@@ -139,7 +137,7 @@ class BaseKNNClassifier(BaseClassifier[ResultList[T], ResultList[ClassificationR
         self.add_samples(x, y)
 
     @property
-    def training_data(self) -> Optional[np.ndarray]:
+    def training_data(self) -> np.ndarray | None:
         return self._training_data
 
     @property

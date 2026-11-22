@@ -1,5 +1,5 @@
 import numbers
-from typing import Optional, List, Tuple, Sequence, Union
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -25,7 +25,7 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         class_name: str,
         score: float,
         landmarks: vector.VectorNumpy4D,
-        bounding_box: Optional[BoundingBox2D] = None,
+        bounding_box: BoundingBox2D | None = None,
     ):
         """
         Initializes the LandmarkDetectionResult with class ID, name, score, landmarks, and an optional bounding box.
@@ -46,15 +46,15 @@ class LandmarkDetectionResult(ObjectDetectionResult):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
-        connections: Optional[List[Tuple[int, int]]] = None,
+        connections: list[tuple[int, int]] | None = None,
         marker_size: int = 3,
-        marker_type: Optional[int] = None,
+        marker_type: int | None = None,
         stroke_width: int = 2,
-        landmark_colors: Optional[Union[Sequence[int], Sequence[Sequence[int]]]] = None,
+        landmark_colors: Sequence[int] | Sequence[Sequence[int]] | None = None,
         **kwargs,
     ):
         """
@@ -114,10 +114,10 @@ class LandmarkDetectionResult(ObjectDetectionResult):
 
     def map_coordinates(
         self,
-        src_size: Union[Sequence[float], Size2D],
-        dest_size: Union[Sequence[float], Size2D],
-        src_roi: Optional[BoundingBox2D] = None,
-        dest_roi: Optional[BoundingBox2D] = None,
+        src_size: Sequence[float] | Size2D,
+        dest_size: Sequence[float] | Size2D,
+        src_roi: BoundingBox2D | None = None,
+        dest_roi: BoundingBox2D | None = None,
     ):
         """
         Maps the landmark coordinates from source size to destination size optionally using regions of interest.

@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Dict, Tuple, Optional
 
 import numpy as np
 
@@ -57,8 +56,8 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         """
         super().__init__(min_score)
 
-        self.width: Optional[int] = None
-        self.height: Optional[int] = None
+        self.width: int | None = None
+        self.height: int | None = None
 
         self.engine = OpenVinoEngine(model, weights, device=device)
 
@@ -98,7 +97,7 @@ class OpenVinoFaceDetector(FaceDetector[FaceDetectionResult]):
         """
         self.engine.release()
 
-    def _get_results(self, outputs: Dict[str, np.ndarray]) -> List[Tuple[float, float, float, float, float]]:
+    def _get_results(self, outputs: dict[str, np.ndarray]) -> list[tuple[float, float, float, float, float]]:
         results = []
 
         output_name = BOXES_NAME if BOXES_NAME in self.engine.output_names else self.engine.output_names[0]

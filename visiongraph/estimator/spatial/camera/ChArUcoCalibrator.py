@@ -1,6 +1,5 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Tuple
 
 import cv2
 import numpy as np
@@ -41,17 +40,17 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         self.square_length_in_m = square_length_in_m
         self.aruco_config = aruco_config
 
-        self.board: Optional[aruco.CharucoBoard] = None
-        self.detector: Optional[aruco.CharucoDetector] = None
-        self.aruco_params: Optional[aruco.CharucoParameters] = None
-        self.aruco_dict: Optional[int] = None
+        self.board: aruco.CharucoBoard | None = None
+        self.detector: aruco.CharucoDetector | None = None
+        self.aruco_params: aruco.CharucoParameters | None = None
+        self.aruco_dict: int | None = None
 
         self.corners = []
         self.ids = []
 
-        self.image_size: Optional[Tuple[int, int]] = None
+        self.image_size: tuple[int, int] | None = None
 
-        self.pose_result: Optional[CameraPoseResult] = None
+        self.pose_result: CameraPoseResult | None = None
 
         self.criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 100, 0.00001)
 
@@ -69,7 +68,7 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
         )
         self.detector = aruco.CharucoDetector(self.board)
 
-    def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+    def process(self, data: np.ndarray) -> CameraPoseResult | None:
         """
         Processes the input data to detect ChArUco markers and calibrate the camera.
 
@@ -102,7 +101,7 @@ class ChArUcoCalibrator(BoardCameraCalibrator):
 
         return None
 
-    def calibrate(self) -> Optional[CameraPoseResult]:
+    def calibrate(self) -> CameraPoseResult | None:
         """
         Calibrates the camera using the detected corners and IDs.
 

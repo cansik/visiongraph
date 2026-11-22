@@ -1,5 +1,3 @@
-from typing import Optional
-
 import cv2
 import numpy as np
 
@@ -32,7 +30,7 @@ class InstanceSegmentationResult(ObjectDetectionResult):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
+        info_text: str | None = None,
         show_bounding_box: bool = True,
         use_class_color: bool = True,
         min_score: float = 0,

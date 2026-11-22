@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-from typing import Union
 
 from visiongraph.data.Asset import Asset
 
@@ -10,7 +9,7 @@ class LocalAsset(Asset):
     A local asset implementation, representing a file-based asset.
     """
 
-    def __init__(self, file_path: Union[str, os.PathLike]):
+    def __init__(self, file_path: str | os.PathLike):
         """
         Initializes the LocalAsset object with a given file path.
 

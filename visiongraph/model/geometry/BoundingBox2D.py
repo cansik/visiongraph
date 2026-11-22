@@ -1,4 +1,4 @@
-from typing import Sequence, Union
+from typing import Sequence
 
 import numpy as np
 import vector
@@ -178,7 +178,7 @@ class BoundingBox2D:
         return self.add_border(size.width, size.height)
 
     @staticmethod
-    def from_array(data: Union[Sequence, np.ndarray], tl_br_format: bool = False):
+    def from_array(data: Sequence | np.ndarray, tl_br_format: bool = False):
         """
         Creates a BoundingBox2D from a sequence or NumPy array.
 

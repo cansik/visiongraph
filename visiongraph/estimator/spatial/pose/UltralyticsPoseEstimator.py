@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple, Optional
 
 import numpy as np
 
@@ -61,7 +60,7 @@ class UltralyticsPoseEstimator(PoseEstimator):
         *assets: Asset,
         num_keypoints: int,
         min_score: float = 0.7,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         engine: InferenceEngine = InferenceEngine.OpenVINO2,
     ):
         """
@@ -121,7 +120,7 @@ class UltralyticsPoseEstimator(PoseEstimator):
                 x1 / tensor_size.width, y1 / tensor_size.height, bw / tensor_size.width, bh / tensor_size.height
             )
 
-            key_points: List[Tuple[float, float, float, float]] = []
+            key_points: list[tuple[float, float, float, float]] = []
             for kp in raw_key_points:
                 key_points.append((kp[0] / tensor_size.width, kp[1] / tensor_size.height, 0, float(kp[2])))
 

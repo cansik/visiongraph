@@ -1,7 +1,6 @@
 import typing
 from argparse import Namespace, ArgumentParser
 from enum import Enum
-from typing import Optional
 
 import cv2
 import depthai as dai
@@ -24,7 +23,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
     and depth camera functionalities.
     """
 
-    def __init__(self, mxid_or_name: Optional[str] = None):
+    def __init__(self, mxid_or_name: str | None = None):
         """
         Initializes the OakDInput object, setting up camera properties and
         internal states.
@@ -40,14 +39,14 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
         self.select_ir_camera: dai.CameraBoardSocket = dai.CameraBoardSocket.LEFT
 
-        self.ir_left_camera: Optional[dai.node.MonoCamera] = None
-        self.ir_right_camera: Optional[dai.node.MonoCamera] = None
-        self.active_ir_camera: Optional[dai.node.MonoCamera] = None
+        self.ir_left_camera: dai.node.MonoCamera | None = None
+        self.ir_right_camera: dai.node.MonoCamera | None = None
+        self.active_ir_camera: dai.node.MonoCamera | None = None
         self.ir_sensor_resolution: dai.MonoCameraProperties.SensorResolution = (
             dai.MonoCameraProperties.SensorResolution.THE_720_P
         )
 
-        self.depth_node: Optional[dai.node.StereoDepth] = None
+        self.depth_node: dai.node.StereoDepth | None = None
         self.depth_preset_mode: dai.node.StereoDepth.PresetMode = dai.node.StereoDepth.PresetMode.HIGH_DENSITY
         self.depth_median_filter: dai.MedianFilter = dai.MedianFilter.KERNEL_7x7
         self.depth_left_right_check: bool = True  # better handling for occlusions
@@ -62,15 +61,15 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.depth_stream_name = "depth"
 
         # nodes
-        self.ir_x_out: Optional[dai.node.XLinkOut] = None
-        self.depth_x_out: Optional[dai.node.XLinkOut] = None
+        self.ir_x_out: dai.node.XLinkOut | None = None
+        self.depth_x_out: dai.node.XLinkOut | None = None
 
-        self.ir_queue: Optional[dai.DataOutputQueue] = None
-        self.depth_queue: Optional[dai.DataOutputQueue] = None
+        self.ir_queue: dai.DataOutputQueue | None = None
+        self.depth_queue: dai.DataOutputQueue | None = None
 
         # capture
-        self._last_ir_frame: Optional[np.ndarray] = None
-        self._last_depth_frame: Optional[np.ndarray] = None
+        self._last_ir_frame: np.ndarray | None = None
+        self._last_depth_frame: np.ndarray | None = None
 
     def pre_start_setup(self):
         """
@@ -144,7 +143,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
         self.device.setIrLaserDotProjectorIntensity(self._ir_laser_dot_projector_intensity)
         self.device.setIrFloodLightIntensity(self._ir_flood_light_intensity)
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the most recent infrared and depth frames from the respective queues.
 
@@ -255,7 +254,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
     def pre_process_image(
         self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Pre-processes the input image based on the specified stream type.
 
@@ -269,7 +268,7 @@ class OakDInput(DepthAIBaseInput, BaseDepthCamera):
 
         return image
 
-    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray | None:
         """
         Retrieves the raw image data based on the specified stream type.
 

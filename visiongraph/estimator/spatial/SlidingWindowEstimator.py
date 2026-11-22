@@ -1,5 +1,5 @@
 from argparse import Namespace
-from typing import TypeVar, Tuple, List, Generic, Optional, Any, Generator
+from typing import TypeVar, Generic, Any, Generator
 
 import numpy as np
 
@@ -25,9 +25,9 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
         self,
         network: ObjectDetector[OutputType],
         step_size: int,
-        window_size: Tuple[int, int],
+        window_size: tuple[int, int],
         min_score: float = 0.5,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
     ):
         """
         Initializes the Sliding Window Estimator.
@@ -59,7 +59,7 @@ class SlidingWindowEstimator(ObjectDetector[OutputType], Generic[OutputType]):
 
         :return: A list of detected object results.
         """
-        detections: List[OutputType] = []
+        detections: list[OutputType] = []
         ih, iw = frame.shape[:2]
 
         for x, y, roi in self._sliding_window(frame, self.step_size, self.window_size):

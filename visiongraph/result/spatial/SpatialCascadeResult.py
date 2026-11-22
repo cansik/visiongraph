@@ -1,5 +1,3 @@
-from typing import Optional
-
 import numpy as np
 
 from visiongraph.result.BaseResult import BaseResult
@@ -26,7 +24,7 @@ class SpatialCascadeResult(ObjectDetectionResult):
         self.root_result = root_result
         self.results = results
 
-    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: Optional[str] = None, **kwargs):
+    def annotate(self, image: np.ndarray, show_info: bool = True, info_text: str | None = None, **kwargs):
         """
         Annotates the given image with the results of the object detection.
 

@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Any, Sequence, Union, List
+from typing import Any, Sequence
 
 import openvino as ov
 
@@ -16,10 +16,10 @@ class OpenVinoEngine(BaseVisionEngine):
     def __init__(
         self,
         model: Asset,
-        weights: Optional[Asset] = None,
+        weights: Asset | None = None,
         flip_channels: bool = True,
-        scale: Optional[Union[float, Sequence[float]]] = None,
-        mean: Optional[Union[float, Sequence[float]]] = None,
+        scale: float | Sequence[float] | None = None,
+        mean: float | Sequence[float] | None = None,
         padding: bool = False,
         device: str = "AUTO",
         **config,
@@ -40,12 +40,12 @@ class OpenVinoEngine(BaseVisionEngine):
         self.device = device
 
         self.model: Asset = model
-        self.weights: Optional[Asset] = weights
-        self.config: Dict = config
+        self.weights: Asset | None = weights
+        self.config: dict = config
 
-        self.ie: Optional[ov.Core] = None
-        self.parsed_model: Optional[ov.Model] = None
-        self.compiled_model: Optional[ov.CompiledModel] = None
+        self.ie: ov.Core | None = None
+        self.parsed_model: ov.Model | None = None
+        self.compiled_model: ov.CompiledModel | None = None
 
         self._input_lut = {}
 
@@ -69,7 +69,7 @@ class OpenVinoEngine(BaseVisionEngine):
 
         self._input_lut = {layer.any_name: layer for layer in self.compiled_model.inputs}
 
-    def predict(self, inputs: Optional[Dict[str, Any]] = None) -> VisionEngineOutput:
+    def predict(self, inputs: dict[str, Any] | None = None) -> VisionEngineOutput:
         """
         Performs inference on the input image.
 
@@ -107,7 +107,7 @@ class OpenVinoEngine(BaseVisionEngine):
         device_name = self.ie.get_property(self.device, "FULL_DEVICE_NAME")
         return f"{device_name}"
 
-    def get_input_layers(self) -> List[VisionEngineModelLayer]:
+    def get_input_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the input layers of the model.
 
@@ -115,7 +115,7 @@ class OpenVinoEngine(BaseVisionEngine):
         """
         return self._get_model_layer(self.compiled_model.inputs)
 
-    def get_output_layers(self) -> List[VisionEngineModelLayer]:
+    def get_output_layers(self) -> list[VisionEngineModelLayer]:
         """
         Gets the output layers of the model.
 
@@ -124,7 +124,7 @@ class OpenVinoEngine(BaseVisionEngine):
         return self._get_model_layer(self.compiled_model.outputs)
 
     @staticmethod
-    def _get_model_layer(compiled_layers: List) -> List[VisionEngineModelLayer]:
+    def _get_model_layer(compiled_layers: list) -> list[VisionEngineModelLayer]:
         """
         Gets a list of VisionEngineModelLayer objects from compiled layers.
 

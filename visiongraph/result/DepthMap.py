@@ -1,5 +1,3 @@
-from typing import Optional
-
 import cv2
 import numpy as np
 
@@ -53,7 +51,7 @@ class DepthMap(DepthBuffer, ImageResult):
         return self.output
 
     def normalize_buffer(
-        self, bit_depth: int = 8, depth_min: Optional[float] = None, depth_max: Optional[float] = None
+        self, bit_depth: int = 8, depth_min: float | None = None, depth_max: float | None = None
     ) -> np.ndarray:
         """
         Normalizes the depth buffer values to a specified range.

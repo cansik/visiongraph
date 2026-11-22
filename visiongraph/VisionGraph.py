@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, List
 
 from visiongraph.BaseGraph import BaseGraph
 from visiongraph.GraphNode import GraphNode
@@ -17,7 +16,7 @@ class VisionGraph(BaseGraph):
 
     def __init__(
         self,
-        input: Optional[BaseInput] = None,
+        input: BaseInput | None = None,
         name: str = "VisionPipeline",
         skip_none_frame: bool = True,
         multi_threaded: bool = False,
@@ -40,7 +39,7 @@ class VisionGraph(BaseGraph):
         """
         super().__init__(multi_threaded, daemon, handle_signals, new_process)
 
-        self.input: Optional[BaseInput] = input
+        self.input: BaseInput | None = input
         self.fps = FPSTracer()
 
         # add nodes
@@ -48,7 +47,7 @@ class VisionGraph(BaseGraph):
             self.nodes.append(self.input)
         self.nodes = self.nodes + list(nodes)
 
-        self.unlinked_nodes: List[GraphNode] = []
+        self.unlinked_nodes: list[GraphNode] = []
 
         self.name = name
         self.skip_none_frame = skip_none_frame
@@ -74,7 +73,7 @@ class VisionGraph(BaseGraph):
         self._inference()
         self.fps.update()
 
-    def _inference(self) -> Optional[BaseResult]:
+    def _inference(self) -> BaseResult | None:
         """
         Performs inference on the graph by calling each node's process method.
 

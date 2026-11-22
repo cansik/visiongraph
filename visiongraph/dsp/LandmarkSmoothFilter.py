@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, List, Dict, Generic
+from typing import TypeVar, Generic
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.dsp.OneEuroFilterNumpy import OneEuroFilterNumpy
@@ -7,8 +7,8 @@ from visiongraph.dsp.VectorNumpySmoothFilter import VectorNumpySmoothFilter
 from visiongraph.result.spatial.LandmarkDetectionResult import LandmarkDetectionResult
 from visiongraph.util.VectorUtils import vector_to_array
 
-InputType = TypeVar("InputType", bound=List[LandmarkDetectionResult])
-OutputType = TypeVar("OutputType", bound=List[LandmarkDetectionResult])
+InputType = TypeVar("InputType", bound=list[LandmarkDetectionResult])
+OutputType = TypeVar("OutputType", bound=list[LandmarkDetectionResult])
 
 
 class LandmarkSmoothFilter(GraphNode[InputType, OutputType], Generic[InputType, OutputType]):
@@ -28,7 +28,7 @@ class LandmarkSmoothFilter(GraphNode[InputType, OutputType], Generic[InputType, 
         self.beta = beta
         self.d_cutoff = d_cutoff
 
-        self.filters: Dict[int, VectorNumpySmoothFilter] = {}
+        self.filters: dict[int, VectorNumpySmoothFilter] = {}
 
     def setup(self):
         """

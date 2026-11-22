@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from visiongraph.external.intel.models.model import Model
@@ -28,7 +26,7 @@ class SyncInferencePipeline:
         if not self.model.model_loaded:
             self.model.load()
 
-    def process(self, data: np.ndarray) -> List:
+    def process(self, data: np.ndarray) -> list:
         """
         Processes the given input data through the synchronized inference pipeline.
 

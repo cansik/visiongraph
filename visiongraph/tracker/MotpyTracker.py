@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from typing import Optional, List
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.external.motpy import MultiObjectTracker, Detection
@@ -44,7 +43,7 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
 
         self.use_predicted_bounding_box = use_predicted_bounding_box
 
-        self.tracker: Optional[MultiObjectTracker] = None
+        self.tracker: MultiObjectTracker | None = None
 
     def setup(self):
         """
@@ -59,7 +58,7 @@ class MotpyTracker(GraphNode[ResultList[ObjectDetectionResult], ResultList[Objec
                 matching_fn_kwargs={"min_iou": self.min_iou, "multi_match_min_iou": self.multi_match_min_iou},
             )
 
-    def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+    def process(self, data: list[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
         Processes the given object detection results and returns the tracked objects.
 

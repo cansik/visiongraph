@@ -1,4 +1,4 @@
-from typing import Union, Sequence
+from typing import Sequence
 
 import numpy as np
 
@@ -40,7 +40,7 @@ class Size2D:
         return Size2D(self.width * width, self.height * height)
 
     @staticmethod
-    def from_array(data: Union[Sequence, np.ndarray]):
+    def from_array(data: Sequence | np.ndarray):
         """
         Creates a Size2D object from a sequence or numpy array.
 

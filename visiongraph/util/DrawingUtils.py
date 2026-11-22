@@ -1,4 +1,4 @@
-from typing import Sequence, Union
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -150,7 +150,7 @@ def draw_text(
 def draw_text_normalized(
     image: np.ndarray,
     text: str,
-    position: Union[vector.Vector2D, vector._methods.VectorProtocol],
+    position: vector.Vector2D | vector._methods.VectorProtocol,
     font: int = cv2.FONT_HERSHEY_SIMPLEX,
     font_scale: float = 1.0,
     color: Sequence[int] = (255, 255, 255),

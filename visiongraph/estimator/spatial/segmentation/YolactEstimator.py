@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 import cv2
 import numpy as np
@@ -41,7 +40,7 @@ class YolcatEstimator(InstanceSegmentationEstimator[InstanceSegmentationResult])
     An instance segmentation estimator using the Yolcat model.
     """
 
-    def __init__(self, model: Asset, labels: List[str], min_score: float = 0.1):
+    def __init__(self, model: Asset, labels: list[str], min_score: float = 0.1):
         """
         Initializes the Yolcat estimator.
 

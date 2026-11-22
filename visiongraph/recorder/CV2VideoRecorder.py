@@ -1,5 +1,3 @@
-from typing import Optional
-
 import cv2
 import numpy as np
 
@@ -7,7 +5,7 @@ from visiongraph.recorder.BaseFrameRecorder import BaseFrameRecorder
 
 
 class CV2VideoRecorder(BaseFrameRecorder):
-    def __init__(self, width: Optional[int], height: Optional[int], output_path: str = "video.mp4", fps: float = 30):
+    def __init__(self, width: int | None, height: int | None, output_path: str = "video.mp4", fps: float = 30):
         """
         Initializes the CV2VideoRecorder.
 
@@ -21,7 +19,7 @@ class CV2VideoRecorder(BaseFrameRecorder):
         self.fps = fps
         self.width = width
         self.height = height
-        self._writer: Optional[cv2.VideoWriter] = None
+        self._writer: cv2.VideoWriter | None = None
 
     def open(self):
         """

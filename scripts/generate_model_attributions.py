@@ -1,7 +1,6 @@
 import argparse
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
 
 
 def build_markdown(*, fail_on_import_errors: bool = False) -> str:
@@ -9,7 +8,7 @@ def build_markdown(*, fail_on_import_errors: bool = False) -> str:
 
     asset_references, failed_imports = collect_asset_references(repository_only=True)
 
-    grouped_assets: Dict[Tuple[str, str, str, str, str], List[str]] = defaultdict(list)
+    grouped_assets: dict[tuple[str, str, str, str, str], list[str]] = defaultdict(list)
     missing_metadata = []
 
     for asset_reference in asset_references:
@@ -82,7 +81,7 @@ def build_markdown(*, fail_on_import_errors: bool = False) -> str:
     return "\n".join(lines).rstrip() + "\n"
 
 
-def _metadata_key(metadata) -> Tuple[str, str, str, str, str]:
+def _metadata_key(metadata) -> tuple[str, str, str, str, str]:
     return (
         metadata.source.name,
         metadata.source.url,

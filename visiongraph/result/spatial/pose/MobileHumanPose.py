@@ -1,5 +1,3 @@
-from typing import FrozenSet, Tuple
-
 import vector
 
 from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResult
@@ -41,7 +39,7 @@ class MobileHumanPose(PoseLandmarkResult):
     """
 
     @property
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Provides the connections between key points of the mobile human pose.
 

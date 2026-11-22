@@ -1,4 +1,4 @@
-from typing import Optional, Sequence, Union
+from typing import Sequence
 
 import numpy as np
 
@@ -33,8 +33,8 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         **kwargs,
     ):
         """
@@ -141,10 +141,10 @@ class ObjectDetectionResult(ClassificationResult, Trackable):
 
     def map_coordinates(
         self,
-        src_size: Union[Sequence[float], Size2D],
-        dest_size: Union[Sequence[float], Size2D],
-        src_roi: Optional[BoundingBox2D] = None,
-        dest_roi: Optional[BoundingBox2D] = None,
+        src_size: Sequence[float] | Size2D,
+        dest_size: Sequence[float] | Size2D,
+        src_roi: BoundingBox2D | None = None,
+        dest_roi: BoundingBox2D | None = None,
     ):
         """
         Maps the coordinates of the bounding box from source size to destination size.

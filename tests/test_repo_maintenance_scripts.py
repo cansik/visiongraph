@@ -1,13 +1,16 @@
 import contextlib
 import enum
 import io
+import sys
 import tempfile
 import unittest
+from importlib import import_module
 from pathlib import Path
 from unittest import mock
 
 from scripts import (
     build_package,
+    generate_doc,
     generate_model_attributions,
     generate_public_markdown,
     import_analyzer,
@@ -237,6 +240,28 @@ class PdocMonkeypatchTests(unittest.TestCase):
         self.assertIn(str((temp_path / "DOCUMENTATION.md").resolve()), docstring)
 
 
+class OptionalDocumentationImportsTests(unittest.TestCase):
+    def test_stubs_optional_backend_without_importing_it(self):
+        package_name = "visiongraph_test_doc_backend"
+        module_name = f"{package_name}.api"
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            package = Path(temp_dir) / package_name
+            package.mkdir()
+            (package / "__init__.py").write_text(
+                'raise AssertionError("Unexpected backend import")\n', encoding="utf-8"
+            )
+
+            with mock.patch.dict(sys.modules), mock.patch.object(sys, "path", [temp_dir, *sys.path]):
+                generate_doc.stub_optional_imports(["pathlib", module_name])
+
+                self.assertIs(import_module("pathlib").Path, Path)
+                module = import_module(module_name)
+                self.assertEqual(module.__name__, module_name)
+                self.assertIs(import_module(package_name).api, module)
+                self.assertIsInstance(module.Camera, generate_doc.AutoMock)
+
+
 class ImportAnalyzerTests(unittest.TestCase):
     def test_analyze_propagates_optional_modules_through_excluded_relative_imports(self):
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -274,6 +299,7 @@ class ImportAnalyzerTests(unittest.TestCase):
         self.assertIn("samplepkg.consumer", result.optional_modules)
         self.assertIn("samplepkg.external.optional_pkg.__init__", result.optional_modules)
         self.assertIn("samplepkg.external.optional_pkg.module", result.optional_modules)
+        self.assertEqual(["filterpy.common"], result.optional_imports)
 
 
 class BuildPackageTests(unittest.TestCase):
@@ -344,7 +370,7 @@ class LicenseCheckTests(unittest.TestCase):
 dependencies = ["requests>=2", "opencv-python~=4.12"]
 
 [project.optional-dependencies]
-media = ["moviepy", "vidgear[core]~=0.3.3"]
+media = ["vidgear[core]~=0.3.7"]
 
 [dependency-groups]
 dev = ["pytest", "ruff>=0.12"]
@@ -357,7 +383,7 @@ dev = ["pytest", "ruff>=0.12"]
             requirements = license_check.parse_pyproject(str(pyproject_path))
 
         self.assertEqual(
-            {"requests", "opencv-python", "moviepy", "vidgear", "pytest", "ruff"},
+            {"requests", "opencv-python", "vidgear", "pytest", "ruff"},
             requirements,
         )
 

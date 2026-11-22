@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from enum import Enum
-from typing import Optional
 
 
 class NMSBatchMode(Enum):
@@ -33,6 +32,6 @@ class NMSOptions:
     enabled: bool = True
     score_threshold: float = 0.3
     nms_threshold: float = 0.3
-    eta: Optional[float] = None
-    top_k: Optional[int] = None
+    eta: float | None = None
+    top_k: int | None = None
     batch_mode: NMSBatchMode = NMSBatchMode.Auto

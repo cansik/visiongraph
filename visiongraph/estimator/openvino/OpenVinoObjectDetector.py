@@ -1,5 +1,4 @@
 from abc import abstractmethod, ABC
-from typing import List, Optional
 
 import numpy as np
 
@@ -20,7 +19,7 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
     It provides a pre-built pipeline for inference and automatic model preparation.
     """
 
-    def __init__(self, model: Asset, weights: Asset, labels: List[str], min_score: float, device: str = "AUTO"):
+    def __init__(self, model: Asset, weights: Asset, labels: list[str], min_score: float, device: str = "AUTO"):
         """
         Initializes the OpenVinoObjectDetector object.
 
@@ -36,8 +35,8 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         self.labels = labels
         self.device = device
 
-        self.pipeline: Optional[SyncInferencePipeline] = None
-        self.ie_model: Optional[Model] = None
+        self.pipeline: SyncInferencePipeline | None = None
+        self.ie_model: Model | None = None
 
     def setup(self):
         """
@@ -60,7 +59,7 @@ class OpenVinoObjectDetector(ObjectDetector[ObjectDetectionResult], ABC):
         :return: A list of object detection results.
         """
         h, w = data.shape[:2]
-        output: List[Detection] = self.pipeline.process(data)
+        output: list[Detection] = self.pipeline.process(data)
 
         return ResultList(
             [

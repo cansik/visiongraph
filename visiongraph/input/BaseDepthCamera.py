@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Tuple, Optional
 
 import cv2
 import numpy as np
@@ -32,7 +31,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         super().configure(args)
         self.use_infrared = args.infrared
 
-    def _calculate_depth_coordinates(self, x: float, y: float, width: int, height: int) -> Tuple[int, int]:
+    def _calculate_depth_coordinates(self, x: float, y: float, width: int, height: int) -> tuple[int, int]:
         """
         Calculates depth coordinates from given normalized coordinates.
 
@@ -60,8 +59,8 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
     @staticmethod
     def _colorize(
         image: np.ndarray,
-        clipping_range: Tuple[Optional[int], Optional[int]] = (None, None),
-        colormap: Optional[int] = None,
+        clipping_range: tuple[int | None, int | None] = (None, None),
+        colormap: int | None = None,
     ) -> np.ndarray:
         """
         Colorizes a depth image within a specified clipping range.
@@ -89,7 +88,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
     @abstractmethod
     def pre_process_image(
         self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Pre-processes the input image based on the stream type.
 
@@ -101,7 +100,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return image
 
     @abstractmethod
-    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray | None:
         """
         Retrieves the raw image from the camera based on the stream type.
 
@@ -116,7 +115,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         stream_type: CameraStreamType = CameraStreamType.Color,
         pre_processed: bool = True,
         post_processed: bool = True,
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Retrieves and processes the image from the camera stream.
 
@@ -143,7 +142,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return frame
 
     @property
-    def color_image(self) -> Optional[np.ndarray]:
+    def color_image(self) -> np.ndarray | None:
         """
         Returns the processed color image.
 
@@ -152,7 +151,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return self.get_image(CameraStreamType.Color, True, True)
 
     @property
-    def depth_image(self) -> Optional[np.ndarray]:
+    def depth_image(self) -> np.ndarray | None:
         """
         Returns the processed depth image.
 
@@ -161,7 +160,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return self.get_image(CameraStreamType.Depth, True, True)
 
     @property
-    def infrared_image(self) -> Optional[np.ndarray]:
+    def infrared_image(self) -> np.ndarray | None:
         """
         Returns the processed infrared image.
 
@@ -170,7 +169,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return self.get_image(CameraStreamType.Infrared, True, True)
 
     @property
-    def raw_color_image(self) -> Optional[np.ndarray]:
+    def raw_color_image(self) -> np.ndarray | None:
         """
         Returns the raw color image from the camera.
 
@@ -179,7 +178,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return self.get_raw_image(CameraStreamType.Color)
 
     @property
-    def raw_depth_image(self) -> Optional[np.ndarray]:
+    def raw_depth_image(self) -> np.ndarray | None:
         """
         Returns the raw depth image from the camera.
 
@@ -188,7 +187,7 @@ class BaseDepthCamera(BaseCamera, BaseDepthInput, ABC):
         return self.get_raw_image(CameraStreamType.Depth)
 
     @property
-    def raw_infrared_image(self) -> Optional[np.ndarray]:
+    def raw_infrared_image(self) -> np.ndarray | None:
         """
         Returns the raw infrared image from the camera.
 

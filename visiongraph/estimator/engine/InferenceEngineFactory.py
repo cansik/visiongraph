@@ -1,6 +1,6 @@
 from enum import Enum, member
 from functools import partial
-from typing import Sequence, Optional, Union, Any
+from typing import Sequence, Any
 
 from visiongraph.data.Asset import Asset
 from visiongraph.estimator.BaseVisionEngine import BaseVisionEngine
@@ -50,8 +50,8 @@ class InferenceEngineFactory:
         engine: InferenceEngine,
         assets: Sequence[Asset],
         flip_channels: bool = True,
-        scale: Optional[Union[float, Sequence[float]]] = None,
-        mean: Optional[Union[float, Sequence[float]]] = None,
+        scale: float | Sequence[float] | None = None,
+        mean: float | Sequence[float] | None = None,
         padding: bool = False,
         transpose: bool = True,
         order: InputShapeOrder = InputShapeOrder.NCHW,

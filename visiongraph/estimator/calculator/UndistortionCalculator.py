@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Tuple, Any
+from typing import Any
 
 import cv2
 import numpy as np
@@ -26,11 +26,11 @@ class UndistortionCalculator(VisionEstimator[np.ndarray]):
         self.width = width
         self.height = height
 
-        self.new_camera_matrix: Optional[np.ndarray] = None
-        self.roi: Optional[Tuple[int, int, int, int]] = None
+        self.new_camera_matrix: np.ndarray | None = None
+        self.roi: tuple[int, int, int, int] | None = None
 
-        self.rectify_map_x: Optional[Any] = None
-        self.rectify_map_y: Optional[Any] = None
+        self.rectify_map_x: Any | None = None
+        self.rectify_map_y: Any | None = None
 
     def setup(self):
         """

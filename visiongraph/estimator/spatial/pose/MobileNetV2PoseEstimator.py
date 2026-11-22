@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple
 
 import cv2
 import numpy as np
@@ -177,7 +176,7 @@ class MobileNetV2PoseEstimator(PoseEstimator[COCOOpenPose]):
         poses: ResultList[COCOOpenPose] = ResultList()
         for person in personwise_keypoints:
             total_score = 0.0
-            key_points: List[Tuple[float, float, float, float]] = []
+            key_points: list[tuple[float, float, float, float]] = []
 
             for i in range(COCO_OPEN_POSE_KEYPOINT_COUNT):
                 index = int(person[i])

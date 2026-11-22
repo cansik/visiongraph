@@ -3,7 +3,6 @@ import hashlib
 import re
 from collections import defaultdict
 from pathlib import Path
-from typing import Dict, List, Tuple
 from urllib.parse import urlparse
 
 import requests
@@ -11,9 +10,9 @@ import requests
 from scripts.model_asset_inventory import AssetReference, FailedImport, collect_asset_references
 
 
-def build_download_plan() -> Tuple[Dict[Tuple[str, str, str, str], List[AssetReference]], List[FailedImport]]:
+def build_download_plan() -> tuple[dict[tuple[str, str, str, str], list[AssetReference]], list[FailedImport]]:
     asset_references, failed_imports = collect_asset_references(repository_only=True)
-    grouped_assets: Dict[Tuple[str, str, str, str], List[AssetReference]] = defaultdict(list)
+    grouped_assets: dict[tuple[str, str, str, str], list[AssetReference]] = defaultdict(list)
 
     for asset_reference in asset_references:
         metadata = asset_reference.asset.metadata
@@ -62,7 +61,7 @@ def build_output_filename(source_name: str, license_name: str, license_url: str)
     return f"{slug}-{url_hash}{suffix}"
 
 
-def download_licenses(output_dir: Path) -> List[Path]:
+def download_licenses(output_dir: Path) -> list[Path]:
     grouped_assets, failed_imports = build_download_plan()
     if failed_imports:
         formatted_failures = "\n".join(

@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import List, Optional, TypeVar, Generic, Tuple
+from typing import TypeVar, Generic
 
 import numpy as np
 
@@ -27,9 +27,9 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
     def __init__(
         self,
         *assets: Asset,
-        labels: List[str],
+        labels: list[str],
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
@@ -46,7 +46,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
-        self.labels: List[str] = labels
+        self.labels: list[str] = labels
         self.nms_options = nms_options or NMSOptions()
 
     def setup(self):
@@ -82,7 +82,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
             results = ResultList(non_maximum_suppression_from_options(results, self.nms_options))
         return results
 
-    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> tuple[np.ndarray, np.ndarray]:
         """
         Filters the predictions based on the minimum score.
 
@@ -98,7 +98,7 @@ class UltralyticsYOLODetector(ObjectDetector, ABC, Generic[R]):
         predictions = predictions[valid_indices, :]
         return predictions, scores[valid_indices]
 
-    def _unpack_box_prediction(self, prediction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def _unpack_box_prediction(self, prediction: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """
         Extracts and unpacks box predictions.
 

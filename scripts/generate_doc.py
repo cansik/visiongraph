@@ -5,7 +5,8 @@ import shutil
 import sys
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Union, Optional, List, Sequence
+from types import ModuleType
+from typing import Sequence
 from unittest.mock import MagicMock
 
 import pdoc
@@ -48,15 +49,7 @@ def load_project_config(path: Path = Path("pyproject.toml")) -> ProjectConfig:
 
 
 class AutoMock(MagicMock):
-    """
-    A MagicMock subclass that returns an AutoMock instance for any attribute or submodule access.
-    Additionally, handles type annotations and sets `__path__` for modules so they are treated as packages when needed.
-    """
-
-    def __init__(self, name=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.name = name
-        self.__path__ = []
+    """Supply stand-ins for attributes of optional dependencies during docs generation."""
 
     def __getattr__(self, name):
         # Avoid recursion for internal MagicMock attributes
@@ -64,10 +57,37 @@ class AutoMock(MagicMock):
             return super().__getattr__(name)
 
         # For any other attribute access, return another AutoMock
-        return AutoMock(name)
+        return AutoMock(name=name)
 
-    def __name__(self):
-        return self.name
+
+class OptionalModuleStub(ModuleType):
+    """Represent an optional dependency while pdoc loads Visiongraph modules."""
+
+    def __init__(self, name: str):
+        super().__init__(name)
+        self.__path__: list[str] = []
+
+    def __getattr__(self, name: str) -> AutoMock:
+        if name.startswith("_"):
+            raise AttributeError(name)
+        return AutoMock(name=name)
+
+
+def stub_optional_imports(optional_imports: Sequence[str]) -> None:
+    module_names: set[str] = set()
+    for name in optional_imports:
+        while name:
+            module_names.add(name)
+            name = name.rpartition(".")[0]
+
+    for name in sorted(module_names):
+        if name in sys.modules:
+            continue
+        stub = OptionalModuleStub(name)
+        sys.modules[name] = stub
+        parent, _, member = name.rpartition(".")
+        if parent:
+            setattr(sys.modules[parent], member, stub)
 
 
 @pass_context
@@ -131,6 +151,7 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
                     doc = doc.get(qualname)
                 except Exception as ex:
                     print(f"Doc linkify issue: {qualname}:\n{ex}")
+                    return text
             target_exists_and_public = doc is not None and context["is_public"](doc).strip()
             if target_exists_and_public:
                 assert doc is not None  # mypy
@@ -182,17 +203,14 @@ def custom_linkify(context: Context, code: str, namespace: str = "") -> str:
 def generate_doc(
     package_name: str,
     package_version: str,
-    package_url: Optional[str],
-    output_path: Union[str, os.PathLike],
-    package_paths: List[Union[str, os.PathLike]],
-    optional_modules: Sequence[str] = None,
-    extra_asset_path: Union[str, os.PathLike] = "doc",
-    public_markdown_dir: Union[str, os.PathLike, None] = None,
+    package_url: str | None,
+    output_path: str | os.PathLike,
+    package_paths: list[str | os.PathLike],
+    optional_imports: Sequence[str] = (),
+    extra_asset_path: str | os.PathLike = "doc",
+    public_markdown_dir: str | os.PathLike | None = None,
     launch: bool = False,
 ):
-    if optional_modules is None:
-        optional_modules = []
-
     output_path = Path(output_path)
     extra_asset_path = Path(extra_asset_path)
 
@@ -226,9 +244,7 @@ def generate_doc(
         package_name,
         Path(public_markdown_dir) if public_markdown_dir is not None else None,
     )
-    for module_name in optional_modules:
-        if module_name not in sys.modules:
-            sys.modules[module_name] = AutoMock(module_name)
+    stub_optional_imports(optional_imports)
 
     if launch:
         host = "localhost"
@@ -283,7 +299,7 @@ def main() -> None:
         config.url,
         args.output,
         config.doc_modules,
-        result.optional_modules,
+        result.optional_imports,
         extra_asset_path=args.extra_assets,
         public_markdown_dir=args.public_markdown_dir,
         launch=args.launch,

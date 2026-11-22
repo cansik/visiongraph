@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Tuple, Optional
 
 import numpy as np
 
@@ -98,7 +97,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
         weights: Asset,
         multi_pose: bool = False,
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         device: str = "AUTO",
     ):
         """
@@ -142,7 +141,7 @@ class MoveNetPoseEstimator(PoseEstimator[COCOPose]):
 
         poses: ResultList[COCOPose] = ResultList()
         for key_points_with_score in key_points_with_scores:
-            key_points: List[Tuple[float, float, float, float]] = []
+            key_points: list[tuple[float, float, float, float]] = []
             max_score = 0.0
 
             # keypoint

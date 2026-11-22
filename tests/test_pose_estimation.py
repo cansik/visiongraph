@@ -47,6 +47,11 @@ class PoseEstimationTests(unittest.TestCase):
     def test_mobile_human_pose_estimator(self):
         self._test_model(vg.MobileHumanPoseEstimator())
 
+    def test_pose_estimators_create_independent_default_detectors(self):
+        for create in (vg.LiteHRNetPoseEstimator.create, vg.MobileHumanPoseEstimator):
+            with self.subTest(create=create):
+                self.assertIsNot(create().human_detector, create().human_detector)
+
     def test_mobilenetv2_pose_estimator_fp16(self):
         self._test_model(vg.MobileNetV2PoseEstimator.create(vg.MobileNetV2PoseEstimatorConfig.MNV2PE_0_5_224_FP16))
 

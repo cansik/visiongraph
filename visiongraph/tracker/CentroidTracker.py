@@ -1,5 +1,4 @@
 from argparse import ArgumentParser
-from typing import Optional, List
 
 import numpy as np
 
@@ -14,7 +13,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
     A class to track objects in a video sequence using centroid detection.
     """
 
-    def __init__(self, tracker: Optional[Tracker] = None):
+    def __init__(self, tracker: Tracker | None = None):
         """
         Initializes a new instance of the CentroidTracker class.
 
@@ -32,7 +31,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
         if not self.tracker:
             self.tracker = Tracker(max_lost=self.max_lost, tracker_output_format="raw")
 
-    def track(self, detections: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+    def track(self, detections: list[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
         Tracks the given detections using the underlying object tracker.
 
@@ -55,7 +54,7 @@ class CentroidTracker(BaseObjectDetectionTracker):
 
         return tracked_detections
 
-    def process(self, data: List[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
+    def process(self, data: list[ObjectDetectionResult]) -> ResultList[ObjectDetectionResult]:
         """
         Processes the given data by tracking the detections.
 

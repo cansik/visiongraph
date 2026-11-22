@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List, Optional
 
 # Import Self (supporting 3.10 and 3.11)
 try:
@@ -77,9 +76,9 @@ class DEIMv2Detector(ObjectDetector):
     def __init__(
         self,
         *assets: Asset,
-        labels: List[str],
+        labels: list[str],
         min_score: float = 0.3,
-        nms_options: Optional[NMSOptions] = None,
+        nms_options: NMSOptions | None = None,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """
@@ -96,7 +95,7 @@ class DEIMv2Detector(ObjectDetector):
         # set padding color
         self.engine.padding_color = (125, 125, 125)
 
-        self.labels: List[str] = labels
+        self.labels: list[str] = labels
         self.nms_options = nms_options or NMSOptions(enabled=False)
 
     def setup(self):

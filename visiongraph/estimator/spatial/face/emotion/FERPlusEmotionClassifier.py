@@ -17,6 +17,7 @@ _MODEL_METADATA = AssetMetadata.from_values(
     license_name="MIT License",
     license_url="https://github.com/microsoft/FERPlus/blob/master/LICENSE.md",
 )
+_DEFAULT_MODEL = RepositoryAsset("emotion-ferplus-8.onnx", metadata=_MODEL_METADATA)
 
 
 class FERPlusEmotionClassifier(FaceEmotionEstimator):
@@ -28,7 +29,7 @@ class FERPlusEmotionClassifier(FaceEmotionEstimator):
 
     def __init__(
         self,
-        model: Asset = RepositoryAsset("emotion-ferplus-8.onnx", metadata=_MODEL_METADATA),
+        model: Asset = _DEFAULT_MODEL,
         engine: InferenceEngine = InferenceEngine.ONNX,
     ):
         """

@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Tuple
 
 import numpy as np
 
@@ -29,7 +28,7 @@ class YOLOv5Detector(UltralyticsYOLODetector):
     A detector class for YOLOv5 models based on UltralyticsYOLODetector.
     """
 
-    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> Tuple[np.ndarray, np.ndarray]:
+    def _filter_predictions(self, predictions: np.ndarray, min_score: float) -> tuple[np.ndarray, np.ndarray]:
         """
         Filters the predictions based on a minimum score.
 
@@ -43,7 +42,7 @@ class YOLOv5Detector(UltralyticsYOLODetector):
         scores = predictions[:, 4]
         return predictions, scores
 
-    def _unpack_box_prediction(self, prediction: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+    def _unpack_box_prediction(self, prediction: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         """
         Unpacks the box prediction.
 

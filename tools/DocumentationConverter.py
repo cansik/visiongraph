@@ -2,7 +2,6 @@ import argparse
 import re
 from enum import Enum
 from pathlib import Path
-from typing import List
 
 import tqdm
 
@@ -109,7 +108,7 @@ def parse_args() -> argparse.Namespace:
 def main() -> None:
     args = parse_args()
 
-    files: List[Path] = list(Path(args.directory).rglob("*.py"))
+    files: list[Path] = list(Path(args.directory).rglob("*.py"))
 
     for file in tqdm.tqdm(files, "converting"):
         text = file.read_text(encoding="utf-8")

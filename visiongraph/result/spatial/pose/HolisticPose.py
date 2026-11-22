@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Sequence
 
 import numpy as np
 import vector
@@ -15,7 +15,7 @@ class HolisticPose(BlazePose):
     """
 
     def __init__(
-        self, pose_score: float, pose_landmarks: vector.VectorNumpy4D, segmentation_mask: Optional[np.ndarray] = None
+        self, pose_score: float, pose_landmarks: vector.VectorNumpy4D, segmentation_mask: np.ndarray | None = None
     ):
         """
         Initializes a HolisticPose object with specified score, landmarks, and optional segmentation mask.
@@ -26,18 +26,18 @@ class HolisticPose(BlazePose):
         """
         super().__init__(pose_score, pose_landmarks)
 
-        self.face: Optional[BlazeFaceMesh] = None
-        self.right_hand: Optional[BlazeHand] = None
-        self.left_hand: Optional[BlazeHand] = None
+        self.face: BlazeFaceMesh | None = None
+        self.right_hand: BlazeHand | None = None
+        self.left_hand: BlazeHand | None = None
 
-        self.segmentation_mask: Optional[np.ndarray] = segmentation_mask
+        self.segmentation_mask: np.ndarray | None = segmentation_mask
 
     def annotate(
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
         use_class_color: bool = True,

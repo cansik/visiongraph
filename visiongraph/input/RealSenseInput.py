@@ -1,7 +1,7 @@
 import json
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, List, Any
+from typing import Any
 
 import numpy as np
 import pyrealsense2 as rs
@@ -29,44 +29,44 @@ class RealSenseInput(BaseDepthCamera):
         super().__init__()
 
         self.disable_emitter = False
-        self.selected_serial: Optional[str] = None
+        self.selected_serial: str | None = None
 
-        self.input_bag_file: Optional[str] = None
-        self.output_bag_file: Optional[str] = None
+        self.input_bag_file: str | None = None
+        self.output_bag_file: str | None = None
 
-        self.colorizer: Optional[rs.colorizer] = None
+        self.colorizer: rs.colorizer | None = None
         self.color_scheme = RealSenseColorScheme.WhiteToBlack
 
-        self.pipeline: Optional[rs.pipeline] = None
-        self.frames: Optional[rs.composite_frame] = None
-        self.align: Optional[rs.align] = None
+        self.pipeline: rs.pipeline | None = None
+        self.frames: rs.composite_frame | None = None
+        self.align: rs.align | None = None
 
-        self.profile: Optional[rs.pipeline_profile] = None
-        self.device: Optional[rs.device] = None
-        self.image_sensor: Optional[rs.sensor] = None
+        self.profile: rs.pipeline_profile | None = None
+        self.device: rs.device | None = None
+        self.image_sensor: rs.sensor | None = None
 
-        self._depth_frame: Optional[rs.depth_frame] = None
+        self._depth_frame: rs.depth_frame | None = None
 
         self.color_format: rs.format = rs.format.bgr8
         self.depth_format: rs.format = rs.format.z16
 
-        self.infrared_width: Optional[int] = None
-        self.infrared_height: Optional[int] = None
+        self.infrared_width: int | None = None
+        self.infrared_height: int | None = None
         self.infrared_format: rs.format = rs.format.y8
 
         self.play_any_bag_stream = True
         self.bag_offline_playback = True
 
-        self.json_config_path: Optional[str] = None
+        self.json_config_path: str | None = None
 
-        self.auto_exposure_limit: Optional[int] = None
-        self.auto_gain_limit: Optional[int] = None
+        self.auto_exposure_limit: int | None = None
+        self.auto_gain_limit: int | None = None
 
         # filter
-        self.depth_filters: List[rs.filter] = []
-        self._filters_to_enable: List[type(rs.filter)] = []
+        self.depth_filters: list[rs.filter] = []
+        self._filters_to_enable: list[type(rs.filter)] = []
 
-        self.config: Optional[rs.config] = None
+        self.config: rs.config | None = None
 
         self.frame_read_timeout: int = 5000
 
@@ -132,7 +132,7 @@ class RealSenseInput(BaseDepthCamera):
 
             if depth_sensor is not None:
 
-                def get_option_max_or_value(option: rs.option, value: Optional[Any]) -> float:
+                def get_option_max_or_value(option: rs.option, value: Any | None) -> float:
                     if not depth_sensor.supports(option):
                         logging.warning(f"The option {option} is not supported!")
                         return value
@@ -193,7 +193,7 @@ class RealSenseInput(BaseDepthCamera):
         """
         self.pipeline.stop()
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the next frame from the camera.
 
@@ -248,7 +248,7 @@ class RealSenseInput(BaseDepthCamera):
 
         return self._depth_frame
 
-    def _find_current_device(self, ctx: rs.context, serial: Optional[str] = None) -> rs.device:
+    def _find_current_device(self, ctx: rs.context, serial: str | None = None) -> rs.device:
         """
         Finds the current RealSense device.
 
@@ -259,7 +259,7 @@ class RealSenseInput(BaseDepthCamera):
 
         :raises Exception: If no RealSense device is connected or specified device cannot be found.
         """
-        devices: List[rs.device] = ctx.devices
+        devices: list[rs.device] = ctx.devices
 
         if len(devices) == 0:
             raise Exception("No RealSense device is connected.")
@@ -391,9 +391,7 @@ class RealSenseInput(BaseDepthCamera):
         serdev = rs.serializable_device(self.device)
         return serdev.serialize_json()
 
-    def get_realsense_intrinsics(
-        self, stream_type: Optional[rs.stream] = None, stream_index: int = -1
-    ) -> rs.intrinsics:
+    def get_realsense_intrinsics(self, stream_type: rs.stream | None = None, stream_index: int = -1) -> rs.intrinsics:
         """
         Retrieves the intrinsics of the selected stream type.
 
@@ -460,7 +458,7 @@ class RealSenseInput(BaseDepthCamera):
 
     def pre_process_image(
         self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Preprocesses the given image based on the stream type.
 
@@ -474,7 +472,7 @@ class RealSenseInput(BaseDepthCamera):
 
         return image
 
-    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray | None:
         """
         Retrieves the raw image data for the specified stream type.
 
@@ -499,7 +497,7 @@ class RealSenseInput(BaseDepthCamera):
         ctx = rs.context()
         return len(ctx.query_devices())
 
-    def get_option(self, option: rs.option, sensor: Optional[rs.sensor] = None) -> float:
+    def get_option(self, option: rs.option, sensor: rs.sensor | None = None) -> float:
         """
                 Retrieves the value of the specified option for the given sensor.
 
@@ -523,7 +521,7 @@ class RealSenseInput(BaseDepthCamera):
             logging.warning(f"The option {option} is not supported!")
             return 0.0
 
-    def set_option(self, option: rs.option, value: float, sensor: Optional[rs.sensor] = None):
+    def set_option(self, option: rs.option, value: float, sensor: rs.sensor | None = None):
         """
                 Sets the specified option for the given sensor.
 

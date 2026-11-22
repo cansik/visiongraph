@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import List
 
 import openvino
 
@@ -125,7 +124,7 @@ class YOLODetector(OpenVinoObjectDetector):
         self,
         model: Asset,
         weights: Asset,
-        labels: List[str],
+        labels: list[str],
         min_score: float = 0.5,
         architecture: YOLOArchitecture = YOLOArchitecture.YOLOv4,
         device: str = "AUTO",

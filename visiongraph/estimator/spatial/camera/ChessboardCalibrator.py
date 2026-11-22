@@ -1,6 +1,5 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional, Tuple
 
 import cv2
 import numpy as np
@@ -35,9 +34,9 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         self.obj_points = []  # 3d point in real world space
         self.img_points = []  # 2d points in image plane.
 
-        self.image_size: Optional[Tuple[int, int]] = None
+        self.image_size: tuple[int, int] | None = None
 
-        self.pose_result: Optional[CameraPoseResult] = None
+        self.pose_result: CameraPoseResult | None = None
 
     def setup(self):
         """
@@ -45,7 +44,7 @@ class ChessboardCalibrator(BoardCameraCalibrator):
         """
         pass
 
-    def process(self, data: np.ndarray) -> Optional[CameraPoseResult]:
+    def process(self, data: np.ndarray) -> CameraPoseResult | None:
         """
         Processes a frame of image data to detect chessboard corners.
 
@@ -80,7 +79,7 @@ class ChessboardCalibrator(BoardCameraCalibrator):
 
         return None
 
-    def calibrate(self) -> Optional[CameraPoseResult]:
+    def calibrate(self) -> CameraPoseResult | None:
         """
         Calculates the camera pose using the detected chessboard corners.
 

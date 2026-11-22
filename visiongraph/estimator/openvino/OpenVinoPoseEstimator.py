@@ -2,7 +2,6 @@ import logging
 import math
 import time
 from abc import abstractmethod, ABC
-from typing import Optional
 
 import numpy as np
 
@@ -32,7 +31,7 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         self,
         model: Asset,
         weights: Asset,
-        target_size: Optional[int] = None,
+        target_size: int | None = None,
         aspect_ratio: float = 16 / 9,
         min_score: float = 0.5,
         auto_adjust_aspect_ratio: bool = True,
@@ -47,8 +46,8 @@ class OpenVinoPoseEstimator(PoseEstimator[COCOPose], ABC):
         self.auto_adjust_aspect_ratio = auto_adjust_aspect_ratio
         self.device = device
 
-        self.pipeline: Optional[SyncInferencePipeline] = None
-        self.ie_model: Optional[Model] = None
+        self.pipeline: SyncInferencePipeline | None = None
+        self.ie_model: Model | None = None
 
     def setup(self):
         """

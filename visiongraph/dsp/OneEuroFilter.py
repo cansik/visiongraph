@@ -1,6 +1,5 @@
 import math
 from time import time
-from typing import Optional
 
 
 def _smoothing_factor(t_e, cutoff):
@@ -40,7 +39,7 @@ class OneEuroFilter:
     def __init__(
         self,
         x0: float,
-        t0: Optional[float] = None,
+        t0: float | None = None,
         dx0: float = 0.0,
         min_cutoff: float = 1.0,
         beta: float = 0.0,
@@ -65,7 +64,7 @@ class OneEuroFilter:
         self.dx_prev = float(dx0)
         self.t_prev = time() if t0 is None else t0
 
-    def __call__(self, x: float, t: Optional[float] = None) -> float:
+    def __call__(self, x: float, t: float | None = None) -> float:
         """
         Computes the filtered signal.
 

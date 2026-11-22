@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, Namespace
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -11,7 +10,7 @@ from visiongraph.result.ArUcoCameraPose import ArUcoCameraPose
 from visiongraph.result.ArUcoMarkerDetection import ArUcoMarkerDetection
 
 
-class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
+class ArUcoCameraPoseEstimator(VisionEstimator[ArUcoCameraPose | None]):
     """
     A class to estimate camera pose using ArUco markers.
 
@@ -41,9 +40,9 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
 
         self.marker_size_in_m: float = marker_length_in_m
 
-        self.aruco_dict: Optional[int] = None
-        self.aruco_params: Optional[aruco.DetectorParameters] = None
-        self.aruco_detector: Optional[aruco.ArucoDetector] = None
+        self.aruco_dict: int | None = None
+        self.aruco_params: aruco.DetectorParameters | None = None
+        self.aruco_detector: aruco.ArucoDetector | None = None
 
     def setup(self):
         """
@@ -53,7 +52,7 @@ class ArUcoCameraPoseEstimator(VisionEstimator[Optional[ArUcoCameraPose]]):
         self.aruco_params = aruco.DetectorParameters()
         self.aruco_detector = aruco.ArucoDetector(self.aruco_dict, self.aruco_params)
 
-    def process(self, data: np.ndarray) -> Optional[ArUcoCameraPose]:
+    def process(self, data: np.ndarray) -> ArUcoCameraPose | None:
         """
         Processes the input image or video frame to detect ArUco markers and estimate camera pose.
 

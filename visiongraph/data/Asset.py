@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Optional
 
 from visiongraph.data.AssetMetadata import AssetMetadata
 
@@ -30,7 +29,7 @@ class Asset(ABC):
         pass
 
     @property
-    def metadata(self) -> Optional[AssetMetadata]:
+    def metadata(self) -> AssetMetadata | None:
         """
         Optional structured metadata describing the asset provenance.
 

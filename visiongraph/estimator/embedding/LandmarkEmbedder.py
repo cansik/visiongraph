@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, Callable, Optional, Generic
+from typing import TypeVar, Callable, Generic
 
 import numpy as np
 
@@ -12,7 +12,7 @@ T = TypeVar("T", bound=LandmarkDetectionResult)
 
 
 class LandmarkEmbedder(GraphNode[ResultList[T], ResultList[LandmarkEmbeddingResult]], Generic[T]):
-    def __init__(self, embedding_function: Callable[[T], Optional[np.ndarray]]):
+    def __init__(self, embedding_function: Callable[[T], np.ndarray | None]):
         """
         Initializes the LandmarkEmbedder node with a given embedding function.
 

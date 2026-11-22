@@ -24,8 +24,7 @@ Here is a minimal example that opens a live webcam capture, runs SSD object dete
 import cv2
 from visiongraph import vg
 
-with (vg.VideoCaptureInput() as cam,
-      vg.SSDDetector.create(vg.SSDConfig.SSDLiteMobileNetV2_FP32) as ssd):
+with vg.VideoCaptureInput() as cam, vg.SSDDetector.create(vg.SSDConfig.SSDLiteMobileNetV2_FP32) as ssd:
     while True:
         _, frame = cam.read()
         if frame is None:
@@ -159,6 +158,8 @@ Generate the deployable documentation in `./docs` with:
 make docs
 ```
 
+The docs builder uses stubs for optional backends so API pages can be built with the base and docs dependencies.
+
 To preview the documentation locally with pdoc's development server, run:
 
 ```bash
@@ -193,7 +194,6 @@ depthai               MIT License
 faiss-cpu             MIT License & BSD-3-Clause
 filterpy              MIT License
 mediapipe             Apache License 2.0
-moviepy               MIT License
 numba                 BSD License
 numpy                 MIT License
 onnxruntime           MIT License

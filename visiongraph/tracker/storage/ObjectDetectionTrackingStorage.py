@@ -1,5 +1,5 @@
 from collections import deque
-from typing import TypeVar, Generic, Deque, Tuple
+from typing import TypeVar, Generic
 
 from visiongraph.result.spatial.ObjectDetectionResult import ObjectDetectionResult
 from visiongraph.tracker.storage.SimpleTrackingStorage import SimpleTrackingStorage, SimpleTrackable
@@ -26,7 +26,7 @@ class ObjectDetectionTrack(SimpleTrackable[T], ObjectDetectionResult, Generic[T]
         self.staleness = detection.staleness
         self.age = 0
         self.hits = 1
-        self.history: Deque[Tuple[float, float]] = deque(maxlen=maxlen)
+        self.history: deque[tuple[float, float]] = deque(maxlen=maxlen)
         self.history.append((detection.bounding_box.center.x, detection.bounding_box.center.y))
 
     def update_track(self, detection: T):

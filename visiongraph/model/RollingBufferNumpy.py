@@ -1,10 +1,10 @@
-from typing import Tuple, Any, Union
+from typing import Any
 
 import numpy as np
 
 
 class RollingBufferNumpy:
-    def __init__(self, buffer_size: int, feature_shape: Union[int, Tuple[int, ...]], dtype: Any = np.float32):
+    def __init__(self, buffer_size: int, feature_shape: int | tuple[int, ...], dtype: Any = np.float32):
         """
         Initialize a rolling buffer with a fixed block size and customizable data type.
 

@@ -30,7 +30,7 @@ def generate_init():
         "import os\n"
         "import sys\n"
         "import logging\n"
-        "from typing import Dict, TYPE_CHECKING\n"
+        "from typing import TYPE_CHECKING\n"
         "from visiongraph.model._LazyImport import _LazyImport\n"
         "\n"
         'LOGLEVEL = os.environ.get("VISIONGRAPH_LOGLEVEL", "WARNING").upper()\n'
@@ -39,7 +39,7 @@ def generate_init():
     lines.append("\n")
 
     # create dictionary for type imports
-    lines.append("_visiongraph_imports: Dict[str, _LazyImport] = {")
+    lines.append("_visiongraph_imports: dict[str, _LazyImport] = {")
     for imp in result.dependencies:
         lines.append(f'    "{imp.name}": _LazyImport("{imp.name}", "{imp.module}", {imp.optional}),')
     lines.append("}")

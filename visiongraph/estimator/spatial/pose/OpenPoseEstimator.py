@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Optional
 
 import openvino
 
@@ -34,7 +33,7 @@ class OpenPoseEstimator(OpenVinoPoseEstimator):
         self,
         model: Asset,
         weights: Asset,
-        target_size: Optional[int] = None,
+        target_size: int | None = None,
         aspect_ratio: float = 16 / 9,
         min_score: float = 0.1,
         auto_adjust_aspect_ratio: bool = True,

@@ -5,7 +5,6 @@ MIT License
 """
 
 from time import time
-from typing import Optional
 
 import numpy as np
 from numba import njit
@@ -91,7 +90,7 @@ def _apply_filter(
 
 
 class OneEuroFilterNumba(OneEuroFilterNumpy):
-    def __call__(self, x: np.ndarray, t: Optional[float] = None) -> np.ndarray:
+    def __call__(self, x: np.ndarray, t: float | None = None) -> np.ndarray:
         """
         Computes the filtered signal using the OneEuro filter algorithm.
 

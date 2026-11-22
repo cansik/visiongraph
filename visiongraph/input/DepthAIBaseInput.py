@@ -2,7 +2,6 @@ import typing
 from abc import ABC, abstractmethod
 from argparse import Namespace, ArgumentParser, ArgumentError
 from datetime import timedelta
-from typing import Optional, Tuple
 
 import cv2
 import depthai as dai
@@ -24,7 +23,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
     and data streams for DepthAI-compatible cameras.
     """
 
-    def __init__(self, mxid_or_name: Optional[str] = None):
+    def __init__(self, mxid_or_name: str | None = None):
         """
         Initializes the DepthAIBaseInput object with default settings for camera properties.
 
@@ -43,9 +42,9 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.enable_color_still: bool = False
 
         self.interleaved: bool = False
-        self.color_isp_scale: Optional[Tuple[int, int]] = None
+        self.color_isp_scale: tuple[int, int] | None = None
         self.color_board_socket: dai.CameraBoardSocket = dai.CameraBoardSocket.CAM_A
-        self.color_fps: Optional[float] = None
+        self.color_fps: float | None = None
 
         # settings
         self._focus_mode: dai.RawCameraControl.AutoFocusMode = dai.RawCameraControl.AutoFocusMode.AUTO
@@ -72,14 +71,14 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self._chroma_denoise: int = 0
 
         # device info
-        self.mxid_or_name: Optional[str] = mxid_or_name
-        self._initial_device_info: Optional[dai.DeviceInfo] = None
+        self.mxid_or_name: str | None = mxid_or_name
+        self._initial_device_info: dai.DeviceInfo | None = None
 
         # pipeline objects
-        self.pipeline: Optional[dai.Pipeline] = None
-        self.color_camera: Optional[dai.node.ColorCamera] = None
-        self.device: Optional[dai.Device] = None
-        self.color_still_encoder: Optional[dai.node.VideoEncoder] = None
+        self.pipeline: dai.Pipeline | None = None
+        self.color_camera: dai.node.ColorCamera | None = None
+        self.device: dai.Device | None = None
+        self.color_still_encoder: dai.node.VideoEncoder | None = None
 
         # node names
         self.rgb_stream_name = "rgb"
@@ -88,20 +87,20 @@ class DepthAIBaseInput(BaseCamera, ABC):
         self.rgb_still_stream_name = "rgb_still"
 
         # nodes
-        self.color_x_out: Optional[dai.node.XLinkOut] = None
-        self.color_isp_out: Optional[dai.node.XLinkOut] = None
-        self.color_still_out: Optional[dai.node.XLinkOut] = None
-        self.color_control_in: Optional[dai.node.XLinkIn] = None
+        self.color_x_out: dai.node.XLinkOut | None = None
+        self.color_isp_out: dai.node.XLinkOut | None = None
+        self.color_still_out: dai.node.XLinkOut | None = None
+        self.color_control_in: dai.node.XLinkIn | None = None
 
-        self.rgb_control_queue: Optional[dai.DataInputQueue] = None
-        self.rgb_queue: Optional[dai.DataOutputQueue] = None
-        self.rgb_isp_queue: Optional[dai.DataOutputQueue] = None
-        self.rgb_still_queue: Optional[dai.DataOutputQueue] = None
+        self.rgb_control_queue: dai.DataInputQueue | None = None
+        self.rgb_queue: dai.DataOutputQueue | None = None
+        self.rgb_isp_queue: dai.DataOutputQueue | None = None
+        self.rgb_still_queue: dai.DataOutputQueue | None = None
 
         # capture
         self._last_ts: int = 0
-        self._last_rgb_frame: Optional[np.ndarray] = None
-        self._last_rgb_still_frame: Optional[np.ndarray] = None
+        self._last_rgb_frame: np.ndarray | None = None
+        self._last_rgb_still_frame: np.ndarray | None = None
 
     def setup(self):
         """
@@ -187,7 +186,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
                 self.color_still_encoder.bitstream.link(self.color_still_out.input)
 
     @abstractmethod
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the next RGB frame from the camera queue and updates internal properties.
 
@@ -208,7 +207,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
             self._last_rgb_frame = image
             self._last_ts = ts
 
-    def capture_color_still(self, post_processed: bool = True) -> Optional[np.ndarray]:
+    def capture_color_still(self, post_processed: bool = True) -> np.ndarray | None:
         """
         Captures a still image from the color camera if the device is running and still capture is enabled.
 
@@ -780,7 +779,7 @@ class DepthAIBaseInput(BaseCamera, ABC):
         return info.mxid
 
     @property
-    def camera_features(self) -> typing.List[CameraFeatures]:
+    def camera_features(self) -> list[CameraFeatures]:
         """
         Retrieves a list of connected camera features.
 

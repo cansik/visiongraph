@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple, FrozenSet, Optional, Sequence
+from typing import Sequence
 
 import numpy as np
 import vector
@@ -36,7 +36,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
     Inherits from LandmarkDetectionResult and provides properties for pose landmarks.
     """
 
-    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: Optional[BoundingBox2D] = None):
+    def __init__(self, score: float, landmarks: vector.VectorNumpy4D, bounding_box: BoundingBox2D | None = None):
         """
         Initializes the PoseLandmarkResult with a score, landmarks, and an optional bounding box.
 
@@ -50,8 +50,8 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         show_bounding_box: bool = False,
         min_score: float = 0,
         **kwargs,
@@ -72,7 +72,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
         )
 
     @property
-    def default_landmarks(self) -> List[vector.Vector4D]:
+    def default_landmarks(self) -> list[vector.Vector4D]:
         """
         Retrieves the default landmarks for the pose.
 
@@ -82,7 +82,7 @@ class PoseLandmarkResult(LandmarkDetectionResult, ABC):
 
     @property
     @abstractmethod
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Abstract property that must return the connections between landmarks as a set of tuples.
 

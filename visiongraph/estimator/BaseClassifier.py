@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, TypeVar, Generic
+from typing import TypeVar, Generic
 
 from visiongraph.estimator.ScoreThresholdEstimator import ScoreThresholdEstimator
 from visiongraph.result.ClassificationResult import ClassificationResult
@@ -20,7 +20,7 @@ class BaseClassifier(ScoreThresholdEstimator[InputType, OutputType], ABC, Generi
         :param min_score: The minimum score required to classify a sample as positive.
         """
         super().__init__(min_score)
-        self.labels: List[str] = []
+        self.labels: list[str] = []
 
     @abstractmethod
     def process(self, data: InputType) -> OutputType:

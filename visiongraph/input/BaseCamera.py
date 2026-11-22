@@ -1,6 +1,5 @@
 from abc import ABC, abstractmethod
 from argparse import ArgumentParser, Namespace, ArgumentError
-from typing import Optional
 
 import numpy as np
 
@@ -26,9 +25,9 @@ class BaseCamera(BaseInput, ABC):
         """
         super().__init__()
 
-        self._initial_exposure: Optional[float] = None
-        self._initial_gain: Optional[float] = None
-        self._initial_white_balance: Optional[float] = None
+        self._initial_exposure: float | None = None
+        self._initial_gain: float | None = None
+        self._initial_white_balance: float | None = None
 
     def _apply_initial_settings(self):
         """

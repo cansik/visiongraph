@@ -1,4 +1,4 @@
-from typing import Callable, Optional
+from typing import Callable
 
 from visiongraph.GraphNode import GraphNode
 from visiongraph.VisionGraph import VisionGraph
@@ -112,7 +112,7 @@ class _VisionGraphBuilder:
 
 
 def create_graph(
-    input_node: Optional[BaseInput] = None,
+    input_node: BaseInput | None = None,
     name: str = "VisionGraph",
     multi_threaded: bool = False,
     daemon: bool = False,

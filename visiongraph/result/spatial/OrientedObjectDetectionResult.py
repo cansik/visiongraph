@@ -1,4 +1,4 @@
-from typing import Optional, Sequence
+from typing import Sequence
 
 import cv2
 import numpy as np
@@ -30,8 +30,8 @@ class OrientedObjectDetectionResult(ObjectDetectionResult):
         self,
         image: np.ndarray,
         show_info: bool = True,
-        info_text: Optional[str] = None,
-        color: Optional[Sequence[int]] = None,
+        info_text: str | None = None,
+        color: Sequence[int] | None = None,
         **kwargs,
     ):
         """

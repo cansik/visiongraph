@@ -1,5 +1,5 @@
 from argparse import ArgumentParser, Namespace
-from typing import TypeVar, Optional, Union
+from typing import TypeVar
 
 import numpy as np
 
@@ -9,7 +9,7 @@ from visiongraph.result.ResultDict import ResultDict
 OutputType = TypeVar("OutputType")
 
 
-class BreakpointNode(GraphNode[Union[np.ndarray, ResultDict], Optional[Union[np.ndarray, ResultDict]]]):
+class BreakpointNode(GraphNode[np.ndarray | ResultDict, np.ndarray | ResultDict | None]):
     """
     A node in the graph that triggers a breakpoint.
     """
@@ -29,7 +29,7 @@ class BreakpointNode(GraphNode[Union[np.ndarray, ResultDict], Optional[Union[np.
         """
         pass
 
-    def process(self, data: Union[np.ndarray, ResultDict]) -> Optional[Union[np.ndarray, ResultDict]]:
+    def process(self, data: np.ndarray | ResultDict) -> np.ndarray | ResultDict | None:
         """
         Processes the input data and returns an optional result.
 

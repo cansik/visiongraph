@@ -1,5 +1,3 @@
-from typing import Tuple, FrozenSet
-
 import vector
 
 from visiongraph.external.mediapipe.blaze_connections import POSE_CONNECTIONS
@@ -15,7 +13,7 @@ class BlazePose(PoseLandmarkResult):
     """
 
     @property
-    def connections(self) -> FrozenSet[Tuple[int, int]]:
+    def connections(self) -> frozenset[tuple[int, int]]:
         """
         Returns the connections between pose landmarks as a frozen set of tuples.
 

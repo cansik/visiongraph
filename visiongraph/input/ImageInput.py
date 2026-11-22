@@ -1,7 +1,6 @@
 import os.path
 import time
 from argparse import ArgumentParser, Namespace
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -17,7 +16,7 @@ class ImageInput(BaseInput):
     of image path and delay time.
     """
 
-    def __init__(self, path: Optional[str] = None, delay: float = 1.0):
+    def __init__(self, path: str | None = None, delay: float = 1.0):
         """
         Initializes the ImageInput instance with a specified image path and delay.
 
@@ -26,10 +25,10 @@ class ImageInput(BaseInput):
         """
         super().__init__()
 
-        self.path: Optional[str] = path
+        self.path: str | None = path
         self.delay: float = delay
 
-        self.image: Optional[np.ndarray] = None
+        self.image: np.ndarray | None = None
 
     def setup(self):
         """
@@ -42,7 +41,7 @@ class ImageInput(BaseInput):
 
         self.image = cv2.imread(self.path)
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the image and captures the current timestamp.
 

@@ -1,6 +1,6 @@
 from argparse import ArgumentParser, Namespace
 from enum import Enum
-from typing import Sequence, List
+from typing import Sequence
 
 import numpy as np
 from scipy.special import softmax
@@ -45,7 +45,7 @@ class VivaVADConfig(Enum):
     )
 
 
-class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
+class VivaVAD(BaseClassifier[list[np.ndarray], ResultList[VivaVADResult]]):
     """
     A voice activity detection (VAD) classifier that processes sequences of facial landmarks
     to determine speaking activity.
@@ -82,7 +82,7 @@ class VivaVAD(BaseClassifier[List[np.ndarray], ResultList[VivaVADResult]]):
         """
         self.engine.setup()
 
-    def process(self, samples: List[np.ndarray]) -> ResultList[VivaVADResult]:
+    def process(self, samples: list[np.ndarray]) -> ResultList[VivaVADResult]:
         """
         Processes a sequence of facial landmarks to classify speaking activity.
 

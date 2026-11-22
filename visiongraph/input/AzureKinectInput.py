@@ -1,6 +1,5 @@
 import logging
 from argparse import ArgumentParser, Namespace
-from typing import Optional
 
 import cv2
 import numpy as np
@@ -52,42 +51,42 @@ class AzureKinectInput(BaseDepthCamera):
         self.align_frames_to_color: bool = False
         self.align_frames_to_depth: bool = False
 
-        self.depth_min_clipping: Optional[int] = 0
-        self.depth_max_clipping: Optional[int] = 5000
-        self.depth_color_map: Optional[int] = cv2.COLORMAP_JET
+        self.depth_min_clipping: int | None = 0
+        self.depth_max_clipping: int | None = 5000
+        self.depth_color_map: int | None = cv2.COLORMAP_JET
 
-        self.ir_min_clipping: Optional[int] = 0
-        self.ir_max_clipping: Optional[int] = 5000
-        self.ir_color_map: Optional[int] = None
+        self.ir_min_clipping: int | None = 0
+        self.ir_max_clipping: int | None = 5000
+        self.ir_color_map: int | None = None
         self.passive_ir: bool = False
 
-        self.device: Optional[PyK4A] = None
-        self.capture: Optional[PyK4ACapture] = None
+        self.device: PyK4A | None = None
+        self.capture: PyK4ACapture | None = None
 
-        self.wired_sync_mode: Optional[pyk4a.WiredSyncMode] = None
+        self.wired_sync_mode: pyk4a.WiredSyncMode | None = None
         self.subordinate_delay_off_master_usec = 0
 
         self.device_id: int = device_id
-        self.color_resolution: Optional[pyk4a.ColorResolution] = None
+        self.color_resolution: pyk4a.ColorResolution | None = None
         self.color_format: pyk4a.ImageFormat = pyk4a.ImageFormat.COLOR_BGRA32
         self.depth_mode: pyk4a.DepthMode = pyk4a.DepthMode.NFOV_UNBINNED
 
-        self.config: Optional[Config] = None
+        self.config: Config | None = None
 
         # recording / playback
-        self.input_mkv_file: Optional[str] = None
-        self.output_mkv_file: Optional[str] = None
+        self.input_mkv_file: str | None = None
+        self.output_mkv_file: str | None = None
 
-        self._record: Optional[PyK4ARecord] = None
-        self._playback: Optional[PyK4APlayback] = None
+        self._record: PyK4ARecord | None = None
+        self._playback: PyK4APlayback | None = None
 
         self.loop: bool = True
 
-        self._last_color_frame: Optional[np.ndarray] = None
-        self._last_ir_frame: Optional[np.ndarray] = None
-        self._last_depth_frame: Optional[np.ndarray] = None
+        self._last_color_frame: np.ndarray | None = None
+        self._last_ir_frame: np.ndarray | None = None
+        self._last_depth_frame: np.ndarray | None = None
 
-    def setup(self, config: Optional[Config] = None):
+    def setup(self, config: Config | None = None):
         """
         Sets up the Azure Kinect device by initializing it and configuring settings.
 
@@ -147,7 +146,7 @@ class AzureKinectInput(BaseDepthCamera):
             self._record = PyK4ARecord(device=self.device, config=config, path=self.output_mkv_file)
             self._record.create()
 
-    def read(self) -> tuple[int, Optional[np.ndarray]]:
+    def read(self) -> tuple[int, np.ndarray | None]:
         """
         Reads the next frame from the Azure Kinect device.
 
@@ -518,7 +517,7 @@ class AzureKinectInput(BaseDepthCamera):
 
     def pre_process_image(
         self, image: np.ndarray, stream_type: CameraStreamType = CameraStreamType.Color
-    ) -> Optional[np.ndarray]:
+    ) -> np.ndarray | None:
         """
         Pre-processes the input image based on the stream type.
 
@@ -534,7 +533,7 @@ class AzureKinectInput(BaseDepthCamera):
 
         return image
 
-    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> Optional[np.ndarray]:
+    def get_raw_image(self, stream_type: CameraStreamType = CameraStreamType.Color) -> np.ndarray | None:
         """
         Retrieves the raw image from the specified stream type.
 
@@ -647,7 +646,7 @@ class AzureKinectInput(BaseDepthCamera):
         return self._playback is not None
 
     @property
-    def playback(self) -> Optional[PyK4APlayback]:
+    def playback(self) -> PyK4APlayback | None:
         """
         Gets the playback object if available.
 

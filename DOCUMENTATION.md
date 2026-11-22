@@ -438,7 +438,7 @@ intrinsics = vg.CameraIntrinsics.load("media/calibration.json")
 image: np.ndarray
 
 with vg.ArUcoCameraPoseEstimator(
-        camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
+    camera_matrix=intrinsics.intrinsic_matrix, fisheye_distortion=intrinsics.distortion_coefficients
 ) as model:
     pose = model.process(image)
     print(f"Camera position: {pose.position} / rotation {pose.rotation}")
@@ -497,9 +497,7 @@ Here is an example of how to use the inference engine factory:
 from visiongraph import vg
 
 # run inference with the onnx engine
-with vg.InferenceEngineFactory.create(
-        vg.InferenceEngine.ONNX,
-        assets=[vg.RepositoryAsset("model.onnx")]) as engine:
+with vg.InferenceEngineFactory.create(vg.InferenceEngine.ONNX, assets=[vg.RepositoryAsset("model.onnx")]) as engine:
     result = engine.process(image)
 ```
 
@@ -741,7 +739,7 @@ distribution. The currently supported extras are:
 - `onnx` - Support for the ONNX machine-learning framework (CPU)
 - `onnx-gpu` - Support for the ONNX machine-learning framework (CUDA GPU)
 - `onnx-directml` - Support for the ONNX machine-learning framework (DirectML GPU)
-- `media` - Support for VidGear and MoviePy video reading and writing
+- `media` - Support for video capture and recording with VidGear
 - `numba` - Improved performance for smoothing and tracking algorithms
 - `fbs` - Support for framebuffer sharing (SpoutGL or Syphon)
 - `faiss` - Support for fast pose classification

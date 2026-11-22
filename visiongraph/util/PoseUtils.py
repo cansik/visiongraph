@@ -3,7 +3,6 @@ Based on https://colab.research.google.com/drive/19txHpN8exWhstO6WVkfmYYVC6uug_o
 """
 
 import copy
-from typing import Optional
 
 import numpy as np
 import vector
@@ -12,7 +11,7 @@ from visiongraph.result.spatial.pose.PoseLandmarkResult import PoseLandmarkResul
 from visiongraph.util.VectorUtils import lerp_vector_3d, lerp_vector_2d, vector_distance
 
 
-def embed_pose(pose: PoseLandmarkResult, torso_size_multiplier: float = 2.5) -> Optional[np.ndarray]:
+def embed_pose(pose: PoseLandmarkResult, torso_size_multiplier: float = 2.5) -> np.ndarray | None:
     """
     Normalizes pose landmarks and converts to embedding.
 
