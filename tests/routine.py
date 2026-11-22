@@ -1,3 +1,5 @@
+import argparse
+import subprocess
 import sys
 import unittest
 
@@ -24,6 +26,33 @@ ROUTINE_TEST_MODULES = (
 
 
 class OptionalBackendImportTests(unittest.TestCase):
+    def test_oak_import_leaves_other_camera_sdks_unloaded(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                "-X",
+                "faulthandler",
+                "-c",
+                "import sys\n"
+                "from visiongraph import vg\n"
+                "from visiongraph.model._ImportStub import _ImportStub\n"
+                "assert not issubclass(vg.OakDInput, _ImportStub)\n"
+                "assert {'pyk4a', 'pyrealsense2', 'vidgear.gears', 'pyzed.sl'}.isdisjoint(sys.modules)\n",
+            ],
+            capture_output=True,
+            text=True,
+        )
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_cli_resolves_provider_classes(self):
+        from visiongraph.input import InputProviders, add_input_step_choices
+
+        parser = argparse.ArgumentParser()
+        add_input_step_choices(parser, add_params=False)
+
+        self.assertIs(parser.parse_args(["--input", "oakd"]).input, vg.OakDInput)
+        self.assertEqual("azure" in InputProviders, sys.platform == "win32")
+
     def test_public_classes_import_with_the_all_extra(self):
         classes = [
             "OakDInput",
@@ -37,10 +66,8 @@ class OptionalBackendImportTests(unittest.TestCase):
             "FaissKNNClassifier",
             "MotpyTracker",
         ]
-        if sys.platform in ("linux", "win32"):
-            classes.append("AzureKinectInput")
         if sys.platform == "win32":
-            classes.append("SpoutServer")
+            classes.extend(("AzureKinectInput", "SpoutServer"))
         if sys.platform == "darwin":
             classes.append("SyphonServer")
 
