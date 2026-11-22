@@ -33,7 +33,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install MediaPipe runtime libraries
+      - name: Install Linux prerequisites
         if: inputs.suite != 'routine' && runner.os == 'Linux'
         run: |
           sudo apt-get update
@@ -58,14 +58,16 @@ jobs:
           revision="$(git ls-remote --exit-code https://huggingface.co/cansik/visiongraph refs/heads/main | cut -f1)"
           printf 'sha=%s\n' "$revision" >> "$GITHUB_OUTPUT"
 
-      - name: Cache model assets
+      - name: Restore model assets
         if: inputs.suite != 'routine'
-        uses: actions/cache@v5
+        id: model-cache
+        uses: actions/cache/restore@v5
         with:
           path: ${{ env.VISIONGRAPH_ASSET_DIR }}
-          key: visiongraph-models-v1-${{ runner.os }}-${{ steps.model-revision.outputs.sha }}-${{ hashFiles('tests/test_*.py', 'visiongraph/estimator/**/*.py') }}
+          key: visiongraph-models-v2-${{ steps.model-revision.outputs.sha }}-${{ hashFiles('tests/test_*.py', 'visiongraph/estimator/**/*.py') }}
           restore-keys: |
-            visiongraph-models-v1-${{ runner.os }}-${{ steps.model-revision.outputs.sha }}-
+            visiongraph-models-v2-${{ steps.model-revision.outputs.sha }}-
+          enableCrossOsArchive: true
 
       - name: Run routine tests
         if: inputs.suite == 'routine'
@@ -74,3 +76,11 @@ jobs:
       - name: Run full tests
         if: inputs.suite != 'routine'
         run: uv run --no-sync python -X faulthandler -m unittest discover -s ./tests -t ./ -v
+
+      - name: Save model assets
+        if: inputs.suite != 'routine' && runner.os == 'Linux' && matrix.python-version == '3.13' && steps.model-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: ${{ env.VISIONGRAPH_ASSET_DIR }}
+          key: ${{ steps.model-cache.outputs.cache-primary-key }}
+          enableCrossOsArchive: true
