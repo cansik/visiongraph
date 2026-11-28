@@ -53,6 +53,7 @@ def rewrite_markdown_links(
     repository_url: str,
     ref: str = "main",
     repo_root: Path | None = None,
+    local_image_dir: Path | None = None,
 ) -> str:
     if repo_root is None:
         repo_root = REPO_ROOT
@@ -84,6 +85,9 @@ def rewrite_markdown_links(
         if not resolved_target.exists():
             return match.group(0)
 
+        if is_image and local_image_dir is not None and relative_path.is_relative_to(local_image_dir):
+            return match.group(0)
+
         public_url = build_public_url(
             repository_url, ref, relative_path, is_image=is_image, is_directory=resolved_target.is_dir()
         )
@@ -97,6 +101,7 @@ def generate_public_markdown(
     ref: str = "main",
     repo_root: Path | None = None,
     source_names: Sequence[str] = SOURCE_MARKDOWN_FILES,
+    local_image_dir: Path | None = None,
 ) -> list[Path]:
     if repo_root is None:
         repo_root = REPO_ROOT
@@ -113,6 +118,7 @@ def generate_public_markdown(
             repository_url,
             ref=ref,
             repo_root=repo_root,
+            local_image_dir=local_image_dir,
         )
         target_path = output_dir / source_name
         target_path.write_text(rewritten, encoding="utf-8")
@@ -125,9 +131,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Generate public markdown files with absolute GitHub links.")
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR, help="Output directory.")
     parser.add_argument("--ref", default="main", help="Git reference used in generated public links.")
+    parser.add_argument(
+        "--local-image-dir",
+        type=Path,
+        help="Keep images relative under this repository directory when the output site serves those assets.",
+    )
     args = parser.parse_args()
 
-    generate_public_markdown(output_dir=args.output_dir, ref=args.ref)
+    generate_public_markdown(output_dir=args.output_dir, ref=args.ref, local_image_dir=args.local_image_dir)
 
 
 if __name__ == "__main__":

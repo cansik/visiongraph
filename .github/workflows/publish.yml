@@ -121,3 +121,16 @@ jobs:
 
       - name: Publish package to PyPI (Trusted Publishing)
         uses: pypa/gh-action-pypi-publish@release/v1
+
+  publish-docs:
+    needs: [github-release, pypi-publish]
+    if: >-
+      ${{ !cancelled()
+          && (needs.github-release.result == 'success' || needs.pypi-publish.result == 'success')
+          && (needs.github-release.result == 'success' || needs.github-release.result == 'skipped')
+          && (needs.pypi-publish.result == 'success' || needs.pypi-publish.result == 'skipped') }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/docs.yml

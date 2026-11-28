@@ -1,5 +1,116 @@
 {% extends "default/module.html.jinja2" %}
 
+{% set project_module = root_module_name or module.modulename %}
+{% set overview_url = "../" * module.modulename.count(".") ~ project_module ~ ".html" %}
+
+{% macro documentation_links() %}
+    <a href="{{ overview_url }}#installation">Install</a>
+    <a href="{{ overview_url }}#documentation">Guide</a>
+    <a href="{{ overview_url }}#api-reference">API reference</a>
+    {% if logo_link %}<a class="docs-repository" href="{{ logo_link }}">GitHub</a>{% endif %}
+{% endmacro %}
+
+{% block body %}
+    <header class="pdoc docs-header">
+        <a class="skip-link" href="#main-content">Skip to content</a>
+        <a class="docs-brand" href="{{ overview_url }}">Visiongraph</a>
+        <button class="docs-menu" type="button" aria-controls="docs-nav" aria-expanded="false" hidden>Menu</button>
+        <nav class="docs-links" aria-label="Documentation sections">
+            {{ documentation_links() }}
+        </nav>
+    </header>
+    <nav class="pdoc docs-nav" id="docs-nav" aria-label="Documentation">
+        <div>{{ self.nav() }}</div>
+    </nav>
+    {{ self.content() }}
+    <script>
+        const docsMenu = document.querySelector(".docs-menu");
+        const docsNav = document.getElementById("docs-nav");
+        const setDocsMenu = (open) => docsMenu.setAttribute("aria-expanded", String(open));
+
+        docsMenu.hidden = false;
+        const docsSearch = docsNav.querySelector("input[type=search]");
+        setDocsMenu(Boolean(docsSearch?.value));
+        docsMenu.addEventListener("click", () => setDocsMenu(docsMenu.getAttribute("aria-expanded") === "false"));
+        docsNav.addEventListener("click", (event) => {
+            const link = event.target.closest("a");
+            if (link?.hash && link.origin === location.origin && link.pathname === location.pathname && docsMenu.getClientRects().length) {
+                setDocsMenu(false);
+                docsMenu.focus({preventScroll: true});
+            }
+        });
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape" && docsMenu.getAttribute("aria-expanded") === "true" && docsMenu.getClientRects().length) {
+                setDocsMenu(false);
+                docsMenu.focus();
+            }
+        });
+
+        const contents = [...docsNav.querySelectorAll(".docs-contents a[href^='#']")]
+            .map(link => ({link, target: document.getElementById(link.hash.slice(1))}))
+            .filter(entry => entry.target);
+        if (contents.length) {
+            const header = document.querySelector(".docs-header");
+            let currentLink;
+            const updateLocation = () => {
+                const readingLine = header.getBoundingClientRect().bottom + 20;
+                const entry = contents.findLast(({target}) => target.getBoundingClientRect().top <= readingLine);
+                if (currentLink === entry?.link) return;
+                currentLink?.removeAttribute("aria-current");
+                currentLink = entry?.link;
+                currentLink?.setAttribute("aria-current", "location");
+            };
+            window.addEventListener("scroll", updateLocation, {passive: true});
+            window.addEventListener("resize", updateLocation);
+            window.addEventListener("pageshow", updateLocation);
+            updateLocation();
+        }
+    </script>
+{% endblock %}
+
+{% block search_box %}
+    {% if search and all_modules|length > 1 %}
+        <input type="search" placeholder="Search docs…" aria-label="Search documentation" pattern=".+" required>
+    {% endif %}
+    <div class="docs-mobile-links">{{ documentation_links() }}</div>
+{% endblock %}
+
+{% block nav_index %}
+    {% set index = module.docstring | to_markdown | to_html | attr("toc_html") %}
+    {% if index or (module.modulename == root_module_name and module.submodules) %}
+        <h2>Contents</h2>
+        <div class="docs-contents">
+            {{ index | safe }}
+            {% if module.modulename == root_module_name and module.submodules %}
+                <ul><li><a href="#api-reference">API reference</a></li></ul>
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% macro submodule_links(submodules) %}
+    <ul>
+        {% for submodule in submodules if is_public(submodule) | trim %}
+            <li>{{ submodule.taken_from | link(text=submodule.name) }}</li>
+        {% endfor %}
+    </ul>
+{% endmacro %}
+
+{% block nav_submodules %}
+    {% if module.submodules and module.modulename != root_module_name %}
+        <h2>Submodules</h2>
+        {{ submodule_links(module.submodules) }}
+    {% endif %}
+{% endblock %}
+
+{% block nav_members %}
+    {% set members = nav_members(module.members.values()) | trim %}
+    {% if members | striptags | trim %}
+        <h2>API members</h2>
+        {{ members | safe }}
+    {% endif %}
+{% endblock %}
+
 {% block nav_footer %}
     <footer>{% if logo_link %}<a href="{{ logo_link }}">{% endif %}
         {{ footer_text }}
@@ -7,9 +118,33 @@
     </footer>
 {% endblock %}
 
+{% block module_info %}
+    <div id="main-content" tabindex="-1"></div>
+    {{ super() }}
+{% endblock %}
+
+{% block module_contents %}
+    {% if module.modulename == root_module_name and module.submodules %}
+        <section class="module-directory docstring" id="api-reference">
+            <h2>API reference</h2>
+            <div class="directory-groups">
+                {% for label, items in [("Modules", module.submodules | rejectattr("is_package")), ("Packages", module.submodules | selectattr("is_package"))] %}
+                    {% set links = submodule_links(items) %}
+                    {% if links | striptags | trim %}
+                        <div>
+                            <h3>{{ label }}</h3>
+                            {{ links }}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+    {{ super() }}
+{% endblock %}
 
 {% defaultmacro docstring(var) %}
     {% if var.docstring %}
-        <div class="docstring">{{ var.docstring | to_markdown | to_html | linkify(namespace=var.qualname) }}</div>
+        <div class="docstring{% if var == module and module.modulename == root_module_name %} docs-overview{% endif %}">{{ var.docstring | to_markdown | to_html | linkify(namespace=var.qualname) }}</div>
     {% endif %}
 {% enddefaultmacro %}

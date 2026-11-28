@@ -106,8 +106,9 @@ test-metadata:
 test-routine:
 	$(PYTHON_NO_SYNC) -X faulthandler -m unittest tests.routine -v
 
-docs: generate-init generate-public-markdown
-	$(PYTHON) -m scripts.generate_doc --public-markdown-dir build/public-markdown
+docs: generate-init
+	$(PYTHON) -m scripts.generate_public_markdown --output-dir build/docs-markdown --local-image-dir doc
+	$(PYTHON) -m scripts.generate_doc --public-markdown-dir build/docs-markdown
 
 docs-serve: generate-init
 	$(PYTHON) -m scripts.generate_doc --launch
