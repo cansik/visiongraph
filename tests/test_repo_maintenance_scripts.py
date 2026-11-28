@@ -198,6 +198,8 @@ class GeneratePublicMarkdownTests(unittest.TestCase):
             output_dir = temp_root / "build" / "public-markdown"
             (temp_root / "examples").mkdir()
             (temp_root / "examples" / "Demo.py").write_text("print('demo')\n", encoding="utf-8")
+            (temp_root / "doc").mkdir()
+            (temp_root / "doc" / "sample.webp").write_bytes(b"image")
             (temp_root / "pyproject.toml").write_text(
                 "\n".join(
                     [
@@ -211,11 +213,13 @@ class GeneratePublicMarkdownTests(unittest.TestCase):
                 ),
                 encoding="utf-8",
             )
-            (temp_root / "README.md").write_text("[Demo](examples/Demo.py)\n", encoding="utf-8")
+            (temp_root / "README.md").write_text(
+                "[Demo](examples/Demo.py)\n![Sample](doc/sample.webp)\n", encoding="utf-8"
+            )
             (temp_root / "DOCUMENTATION.md").write_text("[Docs](README.md)\n", encoding="utf-8")
 
             generated_paths = generate_public_markdown.generate_public_markdown(
-                output_dir=output_dir, repo_root=temp_root
+                output_dir=output_dir, repo_root=temp_root, local_image_dir=Path("doc")
             )
 
             self.assertEqual([output_dir / "README.md", output_dir / "DOCUMENTATION.md"], generated_paths)
@@ -225,6 +229,7 @@ class GeneratePublicMarkdownTests(unittest.TestCase):
             "[Demo](https://github.com/example/project/blob/main/examples/Demo.py)",
             generated_readme,
         )
+        self.assertIn("![Sample](doc/sample.webp)", generated_readme)
 
 
 class PdocMonkeypatchTests(unittest.TestCase):

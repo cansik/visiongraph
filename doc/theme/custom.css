@@ -1,0 +1,417 @@
+:root {
+    --docs-header-height: 3.5rem;
+    --docs-gutter: clamp(1.25rem, 4vw, 3.5rem);
+    --font-ui: "Helvetica Neue", Roboto, Arial, sans-serif;
+    --font-code: ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+
+html, main {
+    scroll-behavior: auto;
+}
+
+body {
+    min-height: 100vh;
+    height: auto;
+    font-family: var(--font-ui);
+}
+
+.pdoc :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+.pdoc ::selection {
+    background: var(--active);
+    color: var(--text);
+}
+
+header.docs-header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    width: 100%;
+    min-height: var(--docs-header-height);
+    padding: 0 1.25rem;
+    background: var(--pdoc-background);
+    border-bottom: 1px solid var(--accent2);
+    font-size: .875rem;
+}
+
+.docs-header .docs-brand {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.docs-links {
+    position: static;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 1.25rem;
+    width: auto;
+    height: auto;
+    overflow: visible;
+}
+
+.docs-links a,
+.docs-menu {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--muted);
+}
+
+.docs-links a:hover,
+.docs-menu:hover,
+.docs-menu[aria-expanded="true"] {
+    color: var(--text);
+    text-decoration: underline;
+    text-underline-offset: .2em;
+}
+
+.docs-repository,
+.docs-menu {
+    margin-left: auto;
+}
+
+.docs-menu {
+    display: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.docs-mobile-links {
+    display: none;
+}
+
+.docs-header .skip-link {
+    position: absolute;
+    top: .5rem;
+    left: 1rem;
+    z-index: 1;
+    padding: .35rem .65rem;
+    background: var(--pdoc-background);
+}
+
+.docs-header .skip-link:not(:focus) {
+    clip-path: inset(50%);
+}
+
+nav.docs-nav {
+    --pad: 1.25rem;
+    --indent: .875rem;
+    background: var(--pdoc-background);
+    box-shadow: none;
+    font-size: .875rem;
+}
+
+nav.docs-nav h2 {
+    margin: 1.5rem 0 .375rem;
+    padding: 0;
+    color: var(--muted);
+    font-size: .8125rem;
+    font-weight: 600;
+}
+
+nav.docs-nav input[type="search"] {
+    max-width: none;
+    min-height: 2.5rem;
+    margin-top: 0;
+    padding: .4rem .625rem;
+    border: 1px solid var(--accent2);
+    border-radius: 2px;
+    background: var(--code);
+    color: var(--text);
+    caret-color: var(--focus);
+}
+
+nav.docs-nav input::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+
+nav.docs-nav li:hover {
+    background: transparent;
+}
+
+nav.docs-nav li a {
+    padding-right: var(--pad);
+}
+
+nav.docs-nav li a:hover {
+    background: var(--nav-hover);
+}
+
+nav.docs-nav .docs-contents > ul {
+    margin-left: calc(-1 * var(--pad));
+}
+
+nav.docs-nav .docs-contents > ul > li > a {
+    padding-left: var(--pad);
+}
+
+nav.docs-nav .docs-contents a[aria-current="location"] {
+    background: var(--active);
+    color: var(--text);
+    font-weight: 600;
+}
+
+nav.docs-nav li a:focus-visible {
+    outline-offset: -2px;
+}
+
+nav.docs-nav a[href="#visiongraph"] {
+    display: none;
+}
+
+nav.docs-nav li:has(> a[href="#visiongraph"]) {
+    --indent: 0rem;
+    margin-bottom: .625rem;
+}
+
+nav.docs-nav .module-list-button {
+    margin-bottom: .75rem;
+    padding-inline: 0;
+    border: 0;
+    font-size: inherit;
+}
+
+nav.docs-nav footer,
+nav.docs-nav .attribution {
+    color: var(--muted);
+}
+
+nav.docs-nav .attribution {
+    margin-top: .5rem;
+}
+
+.docs-header ~ main.pdoc {
+    width: 100%;
+    padding: 2rem var(--docs-gutter) 4rem;
+    line-height: 1.55;
+    overflow-wrap: anywhere;
+}
+
+.docs-header ~ main.pdoc * {
+    scroll-margin-top: calc(var(--docs-header-height) + 1rem);
+}
+
+.pdoc .docstring {
+    max-width: 68ch;
+    font-size: 1.0625rem;
+    line-height: 1.65;
+}
+
+.pdoc .modulename,
+.pdoc .docstring :is(h1, h2, h3, h4) {
+    padding: 0;
+    line-height: 1.2;
+    text-wrap: balance;
+}
+
+.pdoc .modulename,
+.pdoc .docs-overview h1 {
+    margin: 2.5rem 0 .75rem;
+    font-size: 2.25rem;
+    font-weight: 500;
+}
+
+.pdoc .modulename,
+.pdoc .docs-overview #visiongraph {
+    margin-top: 0;
+}
+
+.pdoc .modulename:has(+ .docs-overview),
+.pdoc .docs-overview > p:first-child:has(> picture:only-child),
+.pdoc .docs-overview > #visiongraph + p:has(img) {
+    display: none;
+}
+
+.pdoc .docstring h2 {
+    margin: 2rem 0 .625rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.pdoc .docstring :is(h3, h4) {
+    margin: 1.5rem 0 .5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+}
+
+.pdoc .docstring a {
+    text-decoration: underline;
+    text-decoration-color: var(--muted);
+    text-underline-offset: .16em;
+}
+
+.pdoc .docstring a:hover {
+    text-decoration-color: currentColor;
+}
+
+.pdoc .docstring img {
+    max-width: 100%;
+    height: auto;
+}
+
+.pdoc .docs-overview p:has(> img:only-child) {
+    margin-bottom: .375rem;
+}
+
+.pdoc .docs-overview p:has(> img:only-child) + p > em:only-child {
+    color: var(--muted);
+    font-size: .9em;
+}
+
+.pdoc .module-directory {
+    margin-block-start: 2rem;
+    min-block-size: calc(100dvh - var(--docs-header-height));
+}
+
+.pdoc .module-directory h2 {
+    margin: 0 0 1.5rem;
+}
+
+.pdoc .directory-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+    gap: 1.5rem 2rem;
+}
+
+.pdoc .directory-groups h3 {
+    margin: 0 0 .5rem;
+}
+
+.pdoc .directory-groups ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.pdoc .directory-groups a {
+    display: inline-block;
+    padding-block: .2rem;
+    font-family: var(--font-code);
+    font-size: .9375rem;
+}
+
+.pdoc pre,
+.pdoc code,
+.pdoc .attr {
+    font-family: var(--font-code);
+}
+
+.pdoc pre {
+    padding: .875rem 1rem;
+    border: 0;
+    font-size: .8125rem;
+    line-height: 1.55;
+    overflow-wrap: normal;
+}
+
+.pdoc .docstring .pdoc-code {
+    margin-inline: 0;
+}
+
+.pdoc .attr {
+    margin-top: 1rem;
+    padding: .625rem 0;
+    border-top: 1px solid var(--accent2);
+    background: transparent;
+    font-size: .875rem;
+}
+
+.pdoc .attr:hover {
+    filter: none;
+}
+
+.pdoc a.attr:hover {
+    text-decoration: underline;
+}
+
+.pdoc .classattr,
+.pdoc .inherited {
+    margin-left: clamp(.5rem, 2vw, 1.5rem);
+}
+
+.pdoc .decorator-deprecated {
+    color: var(--syntax-error);
+}
+
+.pdoc .docstring :is(h1, h2, h3, h4, h5, h6):target {
+    box-shadow: none;
+}
+
+@media (min-width: 770px) {
+    :root {
+        --sidebar-width: clamp(13rem, 22vw, 17rem);
+    }
+
+    nav.docs-nav {
+        top: var(--docs-header-height);
+        height: calc(100dvh - var(--docs-header-height));
+    }
+
+    .docs-header ~ main.pdoc {
+        margin-left: var(--sidebar-width);
+        width: min(54rem, calc(100% - var(--sidebar-width)));
+        padding-top: 2.75rem;
+    }
+}
+
+@media (max-width: 769px) {
+    .docs-header .docs-links,
+    body:has(.docs-menu[aria-expanded="false"]:not([hidden])) nav.docs-nav {
+        display: none;
+    }
+
+    .docs-menu:not([hidden]) {
+        display: inline-flex;
+    }
+
+    nav.docs-nav {
+        position: sticky;
+        top: var(--docs-header-height);
+        max-height: min(56dvh, 28rem);
+        overflow: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--accent2);
+    }
+
+    nav.docs-nav input[type="search"]:first-child {
+        margin-top: 0;
+    }
+
+    nav.docs-nav > div:has(input:valid) > :not(input) {
+        display: none;
+    }
+
+    nav.docs-nav .docs-mobile-links {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: .125rem 1rem;
+        margin: .75rem var(--pad) 0 0;
+        border-bottom: 1px solid var(--accent2);
+    }
+
+    .docs-mobile-links a {
+        display: inline-flex;
+        align-items: center;
+        min-height: 2.75rem;
+    }
+
+    .docs-mobile-links .docs-repository {
+        margin-left: 0;
+    }
+
+    .pdoc .modulename,
+    .pdoc .docs-overview h1 {
+        font-size: 1.875rem;
+    }
+}
